@@ -41,24 +41,25 @@ const mapStateToProps = mapResultToProps(['user', 'follower']);
 export default connect(mapStateToProps)(ControlComponent);
 ```
 
-## example
+## Example
 
-```
+```bash
 git clone https://github.com/dancerphil/redux-loadings.git
 cd example
 npm i
 npm start
 ```
 
-## feature
+## Document
 
 ### load
 
-``` javascript
+```javascript
 dispatch(load(key, Promise, config));
-```
 
-We have `{ params, forceUpdate, format } = config`:
+// inside load
+const { params, forceUpdate, format } = config;
+```
 
 `param` is what `Promise` may need. Throttle is important, so Promise is not called at once.
 
@@ -72,7 +73,7 @@ We have `{ params, forceUpdate, format } = config`:
 
 ### asyncLoad
 
-``` javascript
+```javascript
 dispatch(async (dispatch, getState) => {
   const result = await asyncLoad(dispatch, getState, key, Promise, config);
   // do something with result
@@ -123,6 +124,16 @@ You may need to map other things to props.
 
 `getFetchTimes` returns `date.getTime()` the moment result is resolved and stored.
 
-## todo
+```javascript
+const mapStateToProps = (state) => {
+  const loading = getLoading(state, 'user');
+  const [user, follower] = getResults(state, ['user', 'follower']);
+  return { loading, user, follower };
+}
+```
+
+This is useful when some results are optional. In this case, Component needs `user` to render, but `follower` can be displayed later. 
+
+## TODO
 
 - [ ] release 0.1.0
