@@ -50,6 +50,65 @@ npm i
 npm start
 ```
 
+## feature
+
+``` javascript
+dispatch(load(key, Promise, config));
+```
+
+We have `{ params, forceUpdate, format } = config`:
+
+`param` is what `Promise` may need. Throttle is important, so Promise is not called at once.
+
+`forceUpdate: 'always' | 'need' | 'never'`, default as `need`, throttles if the last load call is in the past 5 minutes.
+
+`forceUpdate: 'always'` calls Promise at once and `forceUpdate: 'never'` calls Promise only if there is no result.
+
+`format` effects after Promise resolved and before result is stored, you may do some heavy-calculating task. It may be something like `result => result.map(...)`.
+
+> `redux-saga` has its `throttle` effect, it throttles saga calls. While `redux-loadings` throttles right before Promise calls.
+
+``` javascript
+dispatch(async (dispatch, getState) => {
+  const result = await asyncLoad(dispatch, getState, key, Promise, config);
+  // do something with result
+);
+```
+
+Sometimes we want access result to do some side effect task, use `asyncLoad`. It performed as `load` and returns result.
+
+If Promise is not called, which means load is throttled, `asyncLoad` returns the last result.
+
+```javascript
+const mapStateToProps = mapResultToProps(['user', 'follower']);
+// gets
+const { loading, user, follower } = this.props;
+
+
+const mapStateToProps = mapResultToProps('user');
+// gets
+const { loading, user } = this.props;
+```
+
+`loading === true` if `user.loading === true || follower.loading === true`, `loading === false` if `user.loading === (false | undefined) && follower.loading === (false | undefined)`
+
+If you have a transparent loading layer, dom will render part of the data while loading.
+
+If `fetchUser` is called, while `fetchFollower` not, `loading` will still turns `false`, and requires the handle of `follower === undefined`.
+
+This is useful if you have two different panel renders two parts of data. The `undefined` part is not used at first and it toggles loading when user switch the panel.
+
+```javascript
+const mapStateToProps = (state) => {
+  const loading = getLoading(state, ['user', 'follower']);
+  const [user, follower] = getResults(state, ['user', 'follower']);
+  // ...other
+  return { loading, user, follower, ... };
+}
+```
+
+map others to props
+
 ## todo
 
 - [ ] release 0.1.0
