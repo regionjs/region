@@ -52,6 +52,8 @@ npm start
 
 ## feature
 
+### load
+
 ``` javascript
 dispatch(load(key, Promise, config));
 ```
@@ -66,7 +68,9 @@ We have `{ params, forceUpdate, format } = config`:
 
 `format` effects after Promise resolved and before result is stored, you may do some heavy-calculating task. It may be something like `result => result.map(...)`.
 
-> `redux-saga` has its `throttle` effect, it throttles saga calls. While `redux-loadings` throttles right before Promise calls.
+> `redux-saga` has its `throttle` effect, it throttles saga calls. While `redux-loadings` throttles before Promise calls.
+
+### asyncLoad
 
 ``` javascript
 dispatch(async (dispatch, getState) => {
@@ -78,6 +82,11 @@ dispatch(async (dispatch, getState) => {
 Sometimes we want access result to do some side effect task, use `asyncLoad`. It performed as `load` and returns result.
 
 If Promise is not called, which means load is throttled, `asyncLoad` returns the last result.
+
+> `redux-saga` deals async stuff with generator and yield, which is like `co`.
+> While `async` and `await` was widely implemented, `co-style` will be finally outdated to me.
+
+### mapResultToProps
 
 ```javascript
 const mapStateToProps = mapResultToProps(['user', 'follower']);
@@ -98,16 +107,21 @@ If `fetchUser` is called, while `fetchFollower` not, `loading` will still turns 
 
 This is useful if you have two different panel renders two parts of data. The `undefined` part is not used at first and it toggles loading when user switch the panel.
 
+### getLoading & getResults & getFetchTimes
+
 ```javascript
 const mapStateToProps = (state) => {
   const loading = getLoading(state, ['user', 'follower']);
   const [user, follower] = getResults(state, ['user', 'follower']);
+  const [userFetchTime, followerFetchTime] = getFetchTimes(state, ['user', 'follower']);
   // ...other
   return { loading, user, follower, ... };
 }
 ```
 
-map others to props
+You may need to map other things to props.
+
+`getFetchTimes` returns `date.getTime()` the moment result is resolved and stored.
 
 ## todo
 
