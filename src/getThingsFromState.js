@@ -1,15 +1,15 @@
 let reducerPath = null;
 
 const getReducerState = (state) => {
-  if(reducerPath === null) {
+  if (reducerPath === null) {
     return state;
   }
   return state[reducerPath];
-}
+};
 
 export const setReducerPath = (path) => {
   reducerPath = path;
-}
+};
 
 export const getLoading = (state, path) => {
   const { loadings } = getReducerState(state);
@@ -60,9 +60,9 @@ export const mapResultToProps = (path) => (state) => {
   if (Array.isArray(path)) {
     path.forEach((key, index) => {
       props[key] = results[index];
-    })
+    });
     return props;
   }
   props[path] = results;
   return props;
-}
+};

@@ -3,7 +3,7 @@ import { getResults, getFetchTimes } from './getThingsFromState';
 
 const FETCH_DATE_CACHE_TIME = 5 * 60 * 1000;
 
-export const {
+const {
   setLoading,
   setResult,
 } = createActions(
@@ -33,7 +33,11 @@ export async function asyncLoad(dispatch, getState, key, Promise, config = {}) {
     }
   }
   dispatch(setLoading({ key }));
-  result = await Promise(params);
+  if (typeof Promise === 'function') {
+    result = await Promise(params);
+  } else {
+    result = Promise;
+  }
   if (typeof format === 'function') {
     result = format(result);
   }
