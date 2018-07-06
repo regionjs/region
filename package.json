@@ -1,6 +1,6 @@
 {
   "name": "redux-loadings",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "redux-loadings",
   "main": "./src/index.js",
   "directories": {
@@ -10,5 +10,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Cong Zhang",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "redux-actions": "^2.4.0"
+  }
 }

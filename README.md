@@ -50,6 +50,24 @@ npm i
 npm start
 ```
 
+### Config redux-loadings
+
+`redux-loadings` needs [redux-thunk](https://www.npmjs.com/package/redux-thunk).
+
+```javascript
+import thunk from 'redux-thunk';
+const middleware = applyMiddleware(thunk);
+```
+
+If you use combineReducers, the reducer path should be told.
+
+```javascript
+import { reducer as loadingReducer, setReducerPath } from 'redux-loadings';
+
+const reducer = combineReducers({ results: loadingReducer });
+setReducerPath('results');
+```
+
 ## Document
 
 ### load
@@ -136,4 +154,4 @@ This is useful when some results are optional. In this case, Component needs `us
 
 ## TODO
 
-- [ ] release 0.1.0
+- [x] release 0.1.0

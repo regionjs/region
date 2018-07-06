@@ -1,6 +1,18 @@
+let reducerPath = null;
+
+const getReducerState = (state) => {
+  if(reducerPath === null) {
+    return state;
+  }
+  return state[reducerPath];
+}
+
+export const setReducerPath = (path) => {
+  reducerPath = path;
+}
 
 export const getLoading = (state, path) => {
-  const { loadings } = state;
+  const { loadings } = getReducerState(state);
   if (!loadings) {
     return true;
   }
@@ -16,7 +28,7 @@ export const getLoading = (state, path) => {
 };
 
 export const getResults = (state, path) => {
-  const { results = {} } = state;
+  const { results = {} } = getReducerState(state);
   if (Array.isArray(path)) {
     const ans = [];
     for (let i = 0; i < path.length; i++) {
@@ -29,7 +41,7 @@ export const getResults = (state, path) => {
 };
 
 export const getFetchTimes = (state, path) => {
-  const { fetchTimes = {} } = state;
+  const { fetchTimes = {} } = getReducerState(state);
   if (Array.isArray(path)) {
     const ans = [];
     for (let i = 0; i < path.length; i++) {
