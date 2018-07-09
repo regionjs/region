@@ -4,6 +4,8 @@
 [![npm downloads](https://img.shields.io/npm/dm/redux-loadings.svg?style=flat-square)](https://www.npmjs.com/package/redux-loadings)
 [![MIT License](https://img.shields.io/npm/l/redux-loadings.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 
+![](https://github.com/dancerphil/redux-loadings/blob/master/screenshot.gif)
+
 Yes, you use `redux` to manage you data, and you are loading data from api.
 
 You are writing these with `redux-actions`, `redux-thunk`, `redux-promise`, `redux-saga`, maybe even `dva` with `dva-loading`.
