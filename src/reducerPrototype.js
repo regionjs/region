@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 
 export function assignValue(state, key, value) {
   const obj = { [key]: value };

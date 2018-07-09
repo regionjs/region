@@ -20,4 +20,4 @@ const factory = (logger) => (...args) => {
 
 export const debug = factory(console.debug);
 export const group = factory(console.groupCollapsed);
-export const groupEnd = console.groupEnd;
+export const groupEnd = console.groupEnd; // eslint-disable-line prefer-destructuring
