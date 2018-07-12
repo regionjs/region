@@ -1,14 +1,14 @@
 let reducerPath = null;
 
+export const setReducerPath = (path = null) => {
+  reducerPath = path;
+};
+
 const getReducerState = (state) => {
   if (reducerPath === null) {
     return state;
   }
   return state[reducerPath];
-};
-
-export const setReducerPath = (path) => {
-  reducerPath = path;
 };
 
 export const getLoading = (state, path) => {

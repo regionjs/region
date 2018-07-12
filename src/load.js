@@ -1,7 +1,11 @@
 import { createActions } from 'redux-actions';
 import { getResults, getFetchTimes } from './getThingsFromState';
 
-const FETCH_DATE_CACHE_TIME = 5 * 60 * 1000;
+let expiredTime = 5 * 60 * 1000;
+
+export const setExpiredTime = (value = 5 * 60 * 1000) => {
+  expiredTime = value;
+}
 
 const {
   setLoading,
@@ -14,7 +18,7 @@ const {
 const isExpired = (getState, key) => {
   const fetchTime = getFetchTimes(getState(), key);
   const now = new Date().getTime();
-  return now - fetchTime > FETCH_DATE_CACHE_TIME;
+  return now - fetchTime > expiredTime;
 };
 
 /**

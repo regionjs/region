@@ -2,33 +2,44 @@ import { handleActions } from 'redux-actions';
 import { assignValueDeep, setValueDeep } from './reducerPrototype';
 import { debug, group, groupEnd } from './logger';
 
-const enableSetResult = true;
+let enableLog = true;
+let setLoading = 'SET_LOADING';
+let setResult = 'SET_RESULT'
+
+export const setEnableLog = (value = true) => {
+  enableLog = value;
+}
 
 function log(key) {
-  if (enableSetResult) {
-    debug('result', `SET_LOADING ${key}`);
+  if (enableLog) {
+    debug('redux-loadings', `${setLoading} ${key}`);
   }
 }
 
 function groupLog(key, result) {
-  if (enableSetResult) {
-    group('result', `SET_RESULT ${key}`);
+  if (enableLog) {
+    group('redux-loadings', `${setResult} ${key}`);
     console.debug(result);
     groupEnd();
   }
 }
 
-export const reducer = handleActions({
-  SET_LOADING: (state, action) => {
-    const { key } = action.payload;
-    log(key);
-    return assignValueDeep(state, ['loadings', key], true);
-  },
-  SET_RESULT: (state, action) => {
-    const { key, result } = action.payload;
-    groupLog(key, result);
-    setValueDeep(state, ['results', key], result);
-    setValueDeep(state, ['fetchTimes', key], new Date().getTime());
-    return assignValueDeep(state, ['loadings', key], false);
-  },
-}, {});
+export const getReducer = (setLoadingType = 'SET_LOADING', setResultType = 'SET_RESULT') => {
+  setLoading = setLoadingType;
+  setResult = setResultType;
+  return handleActions({
+    [setLoading]: (state, action) => {
+      const { key } = action.payload;
+      log(key);
+      return assignValueDeep(state, ['loadings', key], true);
+    },
+    [setResult]: (state, action) => {
+      const { key, result } = action.payload;
+      groupLog(key, result);
+      setValueDeep(state, ['results', key], result);
+      setValueDeep(state, ['fetchTimes', key], new Date().getTime());
+      return assignValueDeep(state, ['loadings', key], false);
+    },
+  }, {});
+}
+
