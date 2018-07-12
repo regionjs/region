@@ -23,6 +23,9 @@ const isExpired = (getState, key) => {
  * @param config.forceUpdate 'always' | 'need' | 'never'
  */
 export async function asyncLoad(dispatch, getState, key, Promise, config = {}) {
+  if (typeof dispatch !== 'function' || typeof getState !== 'function') {
+    throw Error('dispatch and getState is required when you use asyncLoad()');
+  }
   const { params = {}, format, forceUpdate = 'need' } = config;
   let result;
   // eslint-disable-next-line no-mixed-operators
