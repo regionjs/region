@@ -56,7 +56,7 @@ npm i
 npm start
 ```
 
-### Config redux-loadings
+## Config
 
 `redux-loadings` needs [redux-thunk](https://www.npmjs.com/package/redux-thunk).
 
@@ -67,11 +67,24 @@ const middleware = applyMiddleware(thunk);
 
 If you use combineReducers, the reducer path should be told.
 
-```javascript
-import { reducer as loadingReducer, setReducerPath } from 'redux-loadings';
+> new in 0.2.1
 
-const reducer = combineReducers({ results: loadingReducer });
-setReducerPath('results');
+```javascript
+import { getReducer, setConfig } from 'redux-loadings';
+
+const reducer = combineReducers({ results: getReducer() });
+setConfig({ reducerPath: 'results' });
+```
+
+Some configs are optional.
+
+The default `expiredTime` is `300,000` ms. The default `enableLog` is `env !== 'production''`.
+
+```javascript
+import { getReducer, setConfig } from 'redux-loadings';
+
+const reducer = combineReducers({ results: getReducer('SET_LOADING', 'SET_RESULT') });
+setConfig({ reducerPath: 'results', expiredTime: 300000, enableLog: false });
 ```
 
 ## Document
@@ -160,4 +173,6 @@ This is useful when some results are optional. In this case, Component needs `us
 
 ## TODO
 
-- [x] release 0.1.0
+- [x] release first version in 0.1.0
+- [ ] babel
+- [ ] test

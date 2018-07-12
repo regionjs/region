@@ -11,13 +11,13 @@ export const setEnableLog = (value = true) => {
 }
 
 function log(key) {
-  if (enableLog) {
+  if (process.env.NODE_ENV !== 'production' && enableLog) {
     debug('redux-loadings', `${setLoading} ${key}`);
   }
 }
 
 function groupLog(key, result) {
-  if (enableLog) {
+  if (process.env.NODE_ENV !== 'production' && enableLog) {
     group('redux-loadings', `${setResult} ${key}`);
     console.debug(result);
     groupEnd();
