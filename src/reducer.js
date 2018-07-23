@@ -1,14 +1,14 @@
 import { handleActions } from 'redux-actions';
-import { assignValueDeep, setValueDeep } from './reducerPrototype';
-import { debug, group, groupEnd } from './logger';
+import { assignValueDeep, setValueDeep } from './util/reducerPrototype';
+import { debug, group, groupEnd } from './util/logger';
 
 let enableLog = true;
 let setLoading = 'SET_LOADING';
-let setResult = 'SET_RESULT'
+let setResult = 'SET_RESULT';
 
 export const setEnableLog = (value = true) => {
   enableLog = value;
-}
+};
 
 function log(key) {
   if (process.env.NODE_ENV !== 'production' && enableLog) {
@@ -41,5 +41,4 @@ export const getReducer = (setLoadingType = 'SET_LOADING', setResultType = 'SET_
       return assignValueDeep(state, ['loadings', key], false);
     },
   }, {});
-}
-
+};

@@ -1,12 +1,13 @@
 import { createActions } from 'redux-actions';
-import { getResults, getFetchTimes } from './getThingsFromState';
+import { getResults, getFetchTimes } from './util/getThingsFromState';
 
 let expiredTime = 5 * 60 * 1000;
 
 export const setExpiredTime = (value = 5 * 60 * 1000) => {
   expiredTime = value;
-}
+};
 
+// FIXME
 const {
   setLoading,
   setResult,
