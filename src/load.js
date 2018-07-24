@@ -33,11 +33,11 @@ export async function asyncLoad(dispatch, getState, key, Promise, config = {}) {
   }
 
   const { params = {}, forceUpdate = 'need', format, willSetResult, didSetResult } = config;
-  const resultSnapshot = getResults(getState(), key);
+  const snapshot = getResults(getState(), key);
 
   if (forceUpdate === 'never' || forceUpdate === 'need' && !isExpired(getState, key)) { // eslint-disable-line no-mixed-operators
-    if (resultSnapshot) {
-      return resultSnapshot;
+    if (snapshot) {
+      return snapshot;
     }
   }
 
@@ -50,17 +50,17 @@ export async function asyncLoad(dispatch, getState, key, Promise, config = {}) {
     result = Promise;
   }
   if (typeof format === 'function') {
-    result = format(result, resultSnapshot);
+    result = format(result, snapshot);
   }
 
   if (typeof willSetResult === 'function') {
-    result = willSetResult(dispatch, getState, result, resultSnapshot);
+    result = willSetResult({ dispatch, getState, result, snapshot });
   }
 
   dispatch(setResult({ key, result }));
 
   if (typeof didSetResult === 'function') {
-    result = didSetResult(dispatch, getState, result, resultSnapshot);
+    result = didSetResult({ dispatch, getState, result, snapshot });
   }
   return result;
 }
