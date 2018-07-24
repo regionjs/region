@@ -31,25 +31,37 @@ export async function asyncLoad(dispatch, getState, key, Promise, config = {}) {
   if (typeof dispatch !== 'function' || typeof getState !== 'function') {
     throw Error('dispatch and getState is required when you use asyncLoad()');
   }
-  const { params = {}, format, forceUpdate = 'need' } = config;
-  let result;
-  // eslint-disable-next-line no-mixed-operators
-  if (forceUpdate === 'never' || forceUpdate === 'need' && !isExpired(getState, key)) {
-    result = getResults(getState(), key);
-    if (result) {
-      return result;
+
+  const { params = {}, forceUpdate = 'need', format, willSetResult, didSetResult } = config;
+  const resultSnapshot = getResults(getState(), key);
+
+  if (forceUpdate === 'never' || forceUpdate === 'need' && !isExpired(getState, key)) { // eslint-disable-line no-mixed-operators
+    if (resultSnapshot) {
+      return resultSnapshot;
     }
   }
+
   dispatch(setLoading({ key }));
+  let result;
   if (typeof Promise === 'function') {
     result = await Promise(params);
   } else {
+    // TODO fire warning
     result = Promise;
   }
   if (typeof format === 'function') {
-    result = format(result);
+    result = format(result, resultSnapshot);
   }
+
+  if (typeof willSetResult === 'function') {
+    result = willSetResult(dispatch, getState, result, resultSnapshot);
+  }
+
   dispatch(setResult({ key, result }));
+
+  if (typeof didSetResult === 'function') {
+    result = didSetResult(dispatch, getState, result, resultSnapshot);
+  }
   return result;
 }
 
