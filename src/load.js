@@ -35,32 +35,30 @@ export async function asyncLoad(dispatch, getState, key, Promise, config = {}) {
   const { params = {}, forceUpdate = 'need', format, willSetResult, didSetResult } = config;
   const snapshot = getResults(getState(), key);
 
-  if (forceUpdate === 'never' || forceUpdate === 'need' && !isExpired(getState, key)) { // eslint-disable-line no-mixed-operators
-    if (snapshot) {
-      return snapshot;
+  let result;
+  if (forceUpdate === 'never' && snapshot) { // eslint-disable-line no-mixed-operators
+    result = snapshot;
+  } else if(forceUpdate === 'need' && !isExpired(getState, key) && snapshot) {
+    result = snapshot
+  } else if(typeof Promise !== 'function'){
+    // TODO fire warning
+    result = Promise;
+  } else {
+    dispatch(setLoading({ key }));
+    result = await Promise(params);
+    if (typeof format === 'function') {
+      result = format(result, snapshot);
     }
   }
 
-  dispatch(setLoading({ key }));
-  let result;
-  if (typeof Promise === 'function') {
-    result = await Promise(params);
-  } else {
-    // TODO fire warning
-    result = Promise;
-  }
-  if (typeof format === 'function') {
-    result = format(result, snapshot);
-  }
-
   if (typeof willSetResult === 'function') {
-    result = willSetResult({ dispatch, getState, result, snapshot });
+    willSetResult({ dispatch, getState, result, snapshot });
   }
 
   dispatch(setResult({ key, result }));
 
   if (typeof didSetResult === 'function') {
-    result = didSetResult({ dispatch, getState, result, snapshot });
+    didSetResult({ dispatch, getState, result, snapshot });
   }
   return result;
 }
