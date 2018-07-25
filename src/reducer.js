@@ -1,6 +1,6 @@
 import { handleActions } from 'redux-actions';
 import { assignValueDeep, setValueDeep } from './util/reducerPrototype';
-import { debug, group, groupEnd } from './util/logger';
+import { debug, group } from './util/logger';
 
 let enableLog = true;
 let setLoading = 'SET_LOADING';
@@ -16,11 +16,9 @@ function log(key) {
   }
 }
 
-function groupLog(key, result) {
+function groupLog(key, result, nextState) {
   if (process.env.NODE_ENV !== 'production' && enableLog) {
-    group('redux-loadings', `${setResult} ${key}`);
-    console.debug(result);
-    groupEnd();
+    group('redux-loadings', `${setResult} ${key}`, result, nextState);
   }
 }
 
@@ -35,10 +33,11 @@ export const getReducer = (setLoadingType = 'SET_LOADING', setResultType = 'SET_
     },
     [setResult]: (state, action) => {
       const { key, result } = action.payload;
-      groupLog(key, result);
       setValueDeep(state, ['results', key], result);
       setValueDeep(state, ['fetchTimes', key], new Date().getTime());
-      return assignValueDeep(state, ['loadings', key], false);
+      const nextState = assignValueDeep(state, ['loadings', key], false);
+      groupLog(key, result, nextState);
+      return nextState;
     },
   }, {});
 };
