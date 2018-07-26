@@ -1,26 +1,30 @@
 {
   "name": "redux-loadings",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "redux-loadings",
   "repository": "github:dancerphil/redux-loadings",
   "keywords": [
     "redux",
     "redux-loadings"
   ],
-  "main": "./src/index.js",
+  "main": "./lib/index.js",
   "directories": {
     "example": "example"
   },
   "scripts": {
     "lint": "eslint --ignore-path .gitignore --ext .js,jsx ./src",
-    "test": "npm run lint"
+    "test": "npm run lint",
+    "build": "babel src --out-dir lib"
   },
   "author": "Cong Zhang",
   "license": "MIT",
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
     "redux-actions": "^2.4.0"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^13.0.0",
     "eslint-plugin-import": "^2.13.0"
