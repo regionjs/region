@@ -38,9 +38,9 @@ export async function asyncLoad(dispatch, getState, key, Promise, config = {}) {
   let result;
   if (forceUpdate === 'never' && snapshot) { // eslint-disable-line no-mixed-operators
     result = snapshot;
-  } else if(forceUpdate === 'need' && !isExpired(getState, key) && snapshot) {
-    result = snapshot
-  } else if(typeof Promise !== 'function'){
+  } else if (forceUpdate === 'need' && !isExpired(getState, key) && snapshot) {
+    result = snapshot;
+  } else if (typeof Promise !== 'function') {
     // TODO fire warning
     result = Promise;
   } else {

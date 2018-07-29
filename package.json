@@ -13,7 +13,7 @@
   },
   "scripts": {
     "lint": "eslint --ignore-path .gitignore --ext .js,jsx ./src",
-    "test": "npm run lint",
+    "test": "jest --colors --coverage",
     "build": "babel src --out-dir lib"
   },
   "author": "Cong Zhang",
@@ -27,6 +27,12 @@
     "babel-preset-env": "^1.7.0",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^13.0.0",
-    "eslint-plugin-import": "^2.13.0"
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-jest": "^21.18.0",
+    "jest": "^23.4.1"
+  },
+  "jest": {
+    "verbose": true,
+    "testURL": "http://localhost/"
   }
 }
