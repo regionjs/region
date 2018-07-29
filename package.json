@@ -14,6 +14,7 @@
   "scripts": {
     "lint": "eslint --ignore-path .gitignore --ext .js,jsx ./src",
     "test": "jest --colors --coverage",
+    "codecov": "jest --colors --coverage && codecov",
     "build": "babel src --out-dir lib"
   },
   "author": "Cong Zhang",
@@ -25,6 +26,7 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
+    "codecov": "^3.0.4",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^13.0.0",
     "eslint-plugin-import": "^2.13.0",
