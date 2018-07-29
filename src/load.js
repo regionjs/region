@@ -1,11 +1,8 @@
 import { createActions } from 'redux-actions';
 import { getResults, getFetchTimes } from './util/getThingsFromState';
+import { config as utilConfig } from './util/config';
 
-let expiredTime = 5 * 60 * 1000;
-
-export const setExpiredTime = (value = 5 * 60 * 1000) => {
-  expiredTime = value;
-};
+const { expiredTime } = utilConfig;
 
 // FIXME
 const {

@@ -1,8 +1,6 @@
-let reducerPath = null;
+import { config } from './config';
 
-export const setReducerPath = (path = null) => {
-  reducerPath = path;
-};
+const { reducerPath } = config;
 
 const getReducerState = (state) => {
   if (reducerPath === null) {

@@ -1,14 +1,12 @@
 import { handleActions } from 'redux-actions';
 import { assignValueDeep, setValueDeep } from './util/reducerPrototype';
 import { debug, group } from './util/logger';
+import { config } from './util/config';
 
-let enableLog = true;
+const { enableLog } = config;
+
 let setLoading = 'SET_LOADING';
 let setResult = 'SET_RESULT';
-
-export const setEnableLog = (value = true) => {
-  enableLog = value;
-};
 
 function log(key) {
   if (process.env.NODE_ENV !== 'production' && enableLog) {
