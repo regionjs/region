@@ -5,7 +5,8 @@ export const config = {
 };
 
 
-export const setConfig = ({ reducerPath, expiredTime, enableLog }) => {
+export const setConfig = (configObj = {}) => {
+  const { reducerPath, expiredTime, enableLog } = configObj;
   if (reducerPath !== undefined) {
     config.reducerPath = reducerPath;
   }
