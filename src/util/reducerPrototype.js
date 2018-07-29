@@ -13,6 +13,10 @@ export function assignValue(state, key, value) {
  * @returns {Object} - state
  */
 export function assignValueDeep(state = {}, pathOrigin, value) {
+  if (!pathOrigin) {
+    console.warn('empty path invalid');
+    return Object.assign({}, state, value);
+  }
   if (!Array.isArray(pathOrigin)) {
     return assignValue(state, pathOrigin, value);
   }
@@ -39,6 +43,11 @@ export function assignValueDeep(state = {}, pathOrigin, value) {
  * @returns null
  */
 export function setValueDeep(state = {}, path, value) {
+  if (!path) {
+    console.warn('empty path invalid');
+    Object.assign(state, value);
+    return null;
+  }
   if (!Array.isArray(path)) {
     state[path] = value;
     return null;
