@@ -1,7 +1,5 @@
 import { getResults, getFetchTimes } from './util/getThingsFromState';
-import config from './util/config';
-
-const { expiredTime } = config;
+import { expiredTime } from './util/config';
 
 const isExpired = (getState, key) => {
   const fetchTime = getFetchTimes(getState(), key);

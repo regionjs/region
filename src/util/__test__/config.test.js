@@ -1,19 +1,27 @@
-import config, { setConfig } from '../config';
+import { reducerPath, expiredTime, enableLog, setConfig } from '../config';
 
 describe('config', () => {
   test('default', () => {
-    expect(config).toEqual({ enableLog: true, expiredTime: 300000, reducerPath: null });
+    expect(reducerPath).toBe(null);
+    expect(expiredTime).toBe(300000);
+    expect(enableLog).toBe(true);
   });
   test('set nothing', () => {
     setConfig();
-    expect(config).toEqual({ enableLog: true, expiredTime: 300000, reducerPath: null });
+    expect(reducerPath).toBe(null);
+    expect(expiredTime).toBe(300000);
+    expect(enableLog).toBe(true);
   });
   test('set enableLog as false', () => {
     setConfig({ enableLog: false });
-    expect(config).toEqual({ enableLog: false, expiredTime: 300000, reducerPath: null });
+    expect(reducerPath).toBe(null);
+    expect(expiredTime).toBe(300000);
+    expect(enableLog).toBe(false);
   });
   test('set config', () => {
-    setConfig({ enableLog: false, expiredTime: 30000, reducerPath: 'results' });
-    expect(config).toEqual({ enableLog: false, expiredTime: 30000, reducerPath: 'results' });
+    setConfig({ enableLog: false, expiredTime: 30000, reducerPath: 'result' });
+    expect(reducerPath).toBe('result');
+    expect(expiredTime).toBe(30000);
+    expect(enableLog).toBe(false);
   });
 });

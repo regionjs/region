@@ -1,6 +1,4 @@
-import config from './config';
-
-const { reducerPath } = config;
+import { reducerPath } from './config';
 
 const getReducerState = (state) => {
   // TODO complex path

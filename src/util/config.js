@@ -1,20 +1,17 @@
-const config = {
-  reducerPath: null,
-  enableLog: true,
-  expiredTime: 5 * 60 * 1000
-};
-
-export default config;
+/* eslint-disable import/no-mutable-exports */
+export let reducerPath = null;
+export let enableLog = true;
+export let expiredTime = 5 * 60 * 1000;
 
 export const setConfig = (configObj = {}) => {
-  const { reducerPath, expiredTime, enableLog } = configObj;
-  if (reducerPath !== undefined) {
-    config.reducerPath = reducerPath;
+  const { reducerPath: _reducerPath, expiredTime: _expiredTime, enableLog: _enableLog } = configObj;
+  if (_reducerPath !== undefined) {
+    reducerPath = _reducerPath;
   }
-  if (expiredTime !== undefined) {
-    config.expiredTime = expiredTime;
+  if (_expiredTime !== undefined) {
+    expiredTime = _expiredTime;
   }
-  if (enableLog !== undefined) {
-    config.enableLog = enableLog;
+  if (_enableLog !== undefined) {
+    enableLog = _enableLog;
   }
 };
