@@ -1,17 +1,13 @@
 import { debug, group } from '../logger';
 
 describe('logger', () => {
-  test('works', () => {
-    debug('a', 'b');
-    group('a', 'b', 'c', 'd');
-  });
   test('debug trip', () => {
     const trip = [];
     console.debug = () => trip.push('debug');
     debug('a', 'b');
     expect(trip).toEqual(['debug']);
   });
-  test('group value', () => {
+  test('group trip', () => {
     const trip = [];
     console.groupCollapsed = () => trip.push('groupCollapsed');
     console.debug = () => trip.push('debug');

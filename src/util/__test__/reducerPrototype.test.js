@@ -29,6 +29,10 @@ describe('reducerPrototype', () => {
     setValueDeep(state, ['a'], 1);
     expect(state).toEqual({ a: 1 });
   });
+
+  let count = 0;
+  console.warn = () => count++;
+
   test('assignValueDeep empty path', () => {
     expect(assignValueDeep({}, [], { a: 1 })).toEqual({ a: 1 });
   });
@@ -52,5 +56,9 @@ describe('reducerPrototype', () => {
     const state = {};
     setValueDeep(state, null, 1);
     expect(state).toEqual({});
+  });
+
+  test('warn when path invalid', () => {
+    expect(count).toBe(6);
   });
 });
