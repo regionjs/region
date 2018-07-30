@@ -1,14 +1,11 @@
-let reducerPath = null;
-
-export const setReducerPath = (path = null) => {
-  reducerPath = path;
-};
+import { reducerPath } from './config';
 
 const getReducerState = (state) => {
+  // TODO complex path
   if (reducerPath === null) {
-    return state;
+    return state || {};
   }
-  return state[reducerPath];
+  return state[reducerPath] || {};
 };
 
 export const getLoading = (state, path) => {
@@ -33,11 +30,11 @@ export const getResults = (state, path) => {
     const ans = [];
     for (let i = 0; i < path.length; i++) {
       const key = path[i];
-      ans.push(results[key] || undefined);
+      ans.push(results[key]);
     }
     return ans;
   }
-  return results[path] || undefined;
+  return results[path];
 };
 
 export const getFetchTimes = (state, path) => {
@@ -46,11 +43,11 @@ export const getFetchTimes = (state, path) => {
     const ans = [];
     for (let i = 0; i < path.length; i++) {
       const key = path[i];
-      ans.push(fetchTimes[key] || undefined);
+      ans.push(fetchTimes[key]);
     }
     return ans;
   }
-  return fetchTimes[path] || undefined;
+  return fetchTimes[path];
 };
 
 export const mapResultToProps = (path) => (state) => {

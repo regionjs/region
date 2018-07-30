@@ -2,11 +2,12 @@
 
 [![version](https://img.shields.io/npm/v/redux-loadings.svg?style=flat-square)](http://npm.im/redux-loadings)
 [![npm downloads](https://img.shields.io/npm/dm/redux-loadings.svg?style=flat-square)](https://www.npmjs.com/package/redux-loadings)
+[![codecov](https://codecov.io/gh/dancerphil/redux-loadings/branch/develop/graph/badge.svg)](https://codecov.io/gh/dancerphil/redux-loadings)
 [![MIT License](https://img.shields.io/npm/l/redux-loadings.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 
 ![](https://github.com/dancerphil/redux-loadings/blob/master/screenshot.gif)
 
-Yes, you use `redux` to manage you data, and you are loading data from api.
+For those who uses `redux` to manage you data, and loads data from api.
 
 You are writing these with `redux-actions`, `redux-thunk`, `redux-promise`, `redux-saga`, maybe even `dva` with `dva-loading`.
 
@@ -67,13 +68,11 @@ const middleware = applyMiddleware(thunk);
 
 If you use combineReducers, the reducer path should be told.
 
-> new in 0.2.1
-
 ```javascript
 import { getReducer, setConfig } from 'redux-loadings';
 
 const reducer = combineReducers({ results: getReducer() });
-setConfig({ reducerPath: 'results' });
+setConfig({ reducerPath: 'result' });
 ```
 
 Some configs are optional.
@@ -83,8 +82,8 @@ The default `expiredTime` is `300,000` ms. The default `enableLog` is `env !== '
 ```javascript
 import { getReducer, setConfig } from 'redux-loadings';
 
-const reducer = combineReducers({ results: getReducer('SET_LOADING', 'SET_RESULT') });
-setConfig({ reducerPath: 'results', expiredTime: 300000, enableLog: false });
+const reducer = combineReducers({ results: getReducer() });
+setConfig({ reducerPath: 'result', expiredTime: 300000, enableLog: false });
 ```
 
 ## Document
@@ -92,10 +91,10 @@ setConfig({ reducerPath: 'results', expiredTime: 300000, enableLog: false });
 ### load
 
 ```javascript
-dispatch(load(key, Promise, config));
+dispatch(load(key, Promise, props));
 
 // inside load
-const { params, forceUpdate, format } = config;
+const { params, forceUpdate, format } = props;
 ```
 
 `param` is what `Promise` may need. Throttle is important, so Promise is not called at once.
@@ -112,7 +111,7 @@ const { params, forceUpdate, format } = config;
 
 ```javascript
 dispatch(async (dispatch, getState) => {
-  const result = await asyncLoad(dispatch, getState, key, Promise, config);
+  const result = await asyncLoad(dispatch, getState, key, Promise, props);
   // do something with result
 );
 ```
@@ -173,6 +172,7 @@ This is useful when some results are optional. In this case, Component needs `us
 
 ## TODO
 
-- [x] release first version in 0.1.0
+- [x] release first version
 - [x] babel
-- [ ] test
+- [x] test
+- [ ] release 1.0

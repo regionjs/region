@@ -1,6 +1,6 @@
 {
   "name": "redux-loadings",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "redux-loadings",
   "repository": "github:dancerphil/redux-loadings",
   "keywords": [
@@ -13,8 +13,11 @@
   },
   "scripts": {
     "lint": "eslint --ignore-path .gitignore --ext .js,jsx ./src",
-    "test": "npm run lint",
-    "build": "babel src --out-dir lib"
+    "test": "jest --colors --coverage",
+    "codecov": "jest --colors --coverage && codecov",
+    "build": "babel src --out-dir lib",
+    "check": "npm run build && npm run lint && npm run test",
+    "prepublish": "npm run check"
   },
   "author": "Cong Zhang",
   "license": "MIT",
@@ -25,8 +28,21 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
+    "codecov": "^3.0.4",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^13.0.0",
-    "eslint-plugin-import": "^2.13.0"
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-jest": "^21.18.0",
+    "husky": "^1.0.0-rc.13",
+    "jest": "^23.4.1"
+  },
+  "jest": {
+    "verbose": true,
+    "testURL": "http://localhost/"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run check"
+    }
   }
 }

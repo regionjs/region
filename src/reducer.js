@@ -1,14 +1,10 @@
 import { handleActions } from 'redux-actions';
 import { assignValueDeep, setValueDeep } from './util/reducerPrototype';
 import { debug, group } from './util/logger';
+import { enableLog, setConfig } from './util/config';
 
-let enableLog = true;
-let setLoading = 'SET_LOADING';
-let setResult = 'SET_RESULT';
-
-export const setEnableLog = (value = true) => {
-  enableLog = value;
-};
+const setLoading = 'SET_LOADING';
+const setResult = 'SET_RESULT';
 
 function log(key) {
   if (process.env.NODE_ENV !== 'production' && enableLog) {
@@ -22,9 +18,12 @@ function groupLog(key, result, nextState) {
   }
 }
 
-export const getReducer = (setLoadingType = 'SET_LOADING', setResultType = 'SET_RESULT') => {
-  setLoading = setLoadingType;
-  setResult = setResultType;
+export const getReducer = (config) => {
+  if (typeof config !== 'object') {
+    console.warn('getReducer params is deprecated');
+    config = {}; // eslint-disable-line no-param-reassign
+  }
+  setConfig(config);
   return handleActions({
     [setLoading]: (state, action) => {
       const { key } = action.payload;
