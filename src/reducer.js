@@ -19,6 +19,10 @@ function groupLog(key, result, nextState) {
 }
 
 export const getReducer = (config) => {
+  if (typeof config !== 'object') {
+    console.warn('getReducer params is deprecated');
+    config = {}; // eslint-disable-line no-param-reassign
+  }
   setConfig(config);
   return handleActions({
     [setLoading]: (state, action) => {
