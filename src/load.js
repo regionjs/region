@@ -1,5 +1,5 @@
 import { getResults, getFetchTimes } from './util/getThingsFromState';
-import { expiredTime } from './util/config';
+import { expiredTime, setLoading, setResult } from './util/config';
 
 const isExpired = (getState, key) => {
   const fetchTime = getFetchTimes(getState(), key);
@@ -29,7 +29,7 @@ export async function asyncLoad(dispatch, getState, key, Promise, props = {}) {
     // TODO fire warning
     result = Promise;
   } else {
-    dispatch({ type: 'SET_LOADING', payload: { key } });
+    dispatch({ type: setLoading, payload: { key } });
     result = await Promise(params);
     if (typeof format === 'function') {
       result = format(result, snapshot);
@@ -40,7 +40,7 @@ export async function asyncLoad(dispatch, getState, key, Promise, props = {}) {
     willSetResult({ dispatch, getState, result, snapshot });
   }
 
-  dispatch({ type: 'SET_RESULT', payload: { key, result } });
+  dispatch({ type: setResult, payload: { key, result } });
 
   if (typeof didSetResult === 'function') {
     didSetResult({ dispatch, getState, result, snapshot });

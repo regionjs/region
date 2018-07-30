@@ -15,7 +15,7 @@
     "lint": "eslint --ignore-path .gitignore --ext .js,jsx ./src",
     "test": "jest --colors --coverage",
     "codecov": "jest --colors --coverage && codecov",
-    "build": "babel src --out-dir lib",
+    "build": "babel src --out-dir lib --ignore **/*.test.js",
     "check": "npm run build && npm run lint && npm run test",
     "prepublish": "npm run check"
   },
