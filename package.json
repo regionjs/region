@@ -1,6 +1,6 @@
 {
   "name": "redux-loadings",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "redux-loadings",
   "repository": "github:dancerphil/redux-loadings",
   "keywords": [
@@ -23,7 +23,6 @@
   "license": "MIT",
   "dependencies": {
     "babel-polyfill": "^6.26.0",
-    "husky": "^0.14.3",
     "redux-actions": "^2.4.0"
   },
   "devDependencies": {
@@ -34,6 +33,7 @@
     "eslint-config-airbnb-base": "^13.0.0",
     "eslint-plugin-import": "^2.13.0",
     "eslint-plugin-jest": "^21.18.0",
+    "husky": "^0.14.3",
     "jest": "^23.4.1"
   },
   "jest": {
