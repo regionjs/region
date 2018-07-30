@@ -1,17 +1,7 @@
-import { createActions } from 'redux-actions';
 import { getResults, getFetchTimes } from './util/getThingsFromState';
 import config from './util/config';
 
 const { expiredTime } = config;
-
-// FIXME
-const {
-  setLoading,
-  setResult,
-} = createActions(
-  'SET_LOADING',
-  'SET_RESULT',
-);
 
 const isExpired = (getState, key) => {
   const fetchTime = getFetchTimes(getState(), key);
@@ -41,7 +31,7 @@ export async function asyncLoad(dispatch, getState, key, Promise, props = {}) {
     // TODO fire warning
     result = Promise;
   } else {
-    dispatch(setLoading({ key }));
+    dispatch({ type: 'SET_LOADING', payload: { key } });
     result = await Promise(params);
     if (typeof format === 'function') {
       result = format(result, snapshot);
@@ -52,7 +42,7 @@ export async function asyncLoad(dispatch, getState, key, Promise, props = {}) {
     willSetResult({ dispatch, getState, result, snapshot });
   }
 
-  dispatch(setResult({ key, result }));
+  dispatch({ type: 'SET_RESULT', payload: { key, result } });
 
   if (typeof didSetResult === 'function') {
     didSetResult({ dispatch, getState, result, snapshot });
