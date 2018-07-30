@@ -1,4 +1,4 @@
-import { config, setConfig } from '../config';
+import config, { setConfig } from '../config';
 
 describe('config', () => {
   test('default', () => {

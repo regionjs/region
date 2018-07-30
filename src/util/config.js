@@ -1,9 +1,10 @@
-export const config = {
+const config = {
   reducerPath: null,
   enableLog: true,
   expiredTime: 5 * 60 * 1000
 };
 
+export default config;
 
 export const setConfig = (configObj = {}) => {
   const { reducerPath, expiredTime, enableLog } = configObj;

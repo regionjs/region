@@ -1,8 +1,8 @@
 import { createActions } from 'redux-actions';
 import { getResults, getFetchTimes } from './util/getThingsFromState';
-import { config as utilConfig } from './util/config';
+import config from './util/config';
 
-const { expiredTime } = utilConfig;
+const { expiredTime } = config;
 
 // FIXME
 const {
@@ -20,16 +20,16 @@ const isExpired = (getState, key) => {
 };
 
 /**
- * @param config.params Promise may need
- * @param config.format A pure function format result to other data structure
- * @param config.forceUpdate 'always' | 'need' | 'never'
+ * @param props.params Promise may need
+ * @param props.format A pure function format result to other data structure
+ * @param props.forceUpdate 'always' | 'need' | 'never'
  */
-export async function asyncLoad(dispatch, getState, key, Promise, config = {}) {
+export async function asyncLoad(dispatch, getState, key, Promise, props = {}) {
   if (typeof dispatch !== 'function' || typeof getState !== 'function') {
     throw Error('dispatch and getState is required when you use asyncLoad()');
   }
 
-  const { params = {}, forceUpdate = 'need', format, willSetResult, didSetResult } = config;
+  const { params = {}, forceUpdate = 'need', format, willSetResult, didSetResult } = props;
   const snapshot = getResults(getState(), key);
 
   let result;
@@ -60,6 +60,6 @@ export async function asyncLoad(dispatch, getState, key, Promise, config = {}) {
   return result;
 }
 
-export const load = (key, Promise, config) => (dispatch, getState) => {
-  asyncLoad(dispatch, getState, key, Promise, config);
+export const load = (key, Promise, props) => (dispatch, getState) => {
+  asyncLoad(dispatch, getState, key, Promise, props);
 };

@@ -1,7 +1,7 @@
 import { handleActions } from 'redux-actions';
 import { assignValueDeep, setValueDeep } from './util/reducerPrototype';
 import { debug, group } from './util/logger';
-import { config } from './util/config';
+import config from './util/config';
 
 const { enableLog } = config;
 
