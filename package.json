@@ -15,12 +15,15 @@
     "lint": "eslint --ignore-path .gitignore --ext .js,jsx ./src",
     "test": "jest --colors --coverage",
     "codecov": "jest --colors --coverage && codecov",
-    "build": "babel src --out-dir lib"
+    "build": "babel src --out-dir lib",
+    "check": "npm run lint && npm run test && npm run build",
+    "prepublish": "npm run check"
   },
   "author": "Cong Zhang",
   "license": "MIT",
   "dependencies": {
     "babel-polyfill": "^6.26.0",
+    "husky": "^0.14.3",
     "redux-actions": "^2.4.0"
   },
   "devDependencies": {
@@ -36,5 +39,10 @@
   "jest": {
     "verbose": true,
     "testURL": "http://localhost/"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run check"
+    }
   }
 }
