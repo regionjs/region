@@ -1,6 +1,6 @@
 {
   "name": "redux-loadings",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "redux-loadings",
   "repository": "github:dancerphil/redux-loadings",
   "keywords": [
@@ -22,8 +22,7 @@
   "author": "Cong Zhang",
   "license": "MIT",
   "dependencies": {
-    "babel-polyfill": "^6.26.0",
-    "redux-actions": "^2.4.0"
+    "babel-polyfill": "^6.26.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

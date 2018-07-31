@@ -9,7 +9,7 @@
 
 For those who uses `redux` to manage you data, and loads data from api.
 
-You are writing these with `redux-actions`, `redux-thunk`, `redux-promise`, `redux-saga`, maybe even `dva` with `dva-loading`.
+You are writing these with `redux-thunk`, `redux-promise`, `redux-saga`, maybe even `dva` with `dva-loading`.
 
 You may not need them. You may not need to write `actions`, `middlewares`, `reducers`, and you may not need to write anything about async stuff.
  
