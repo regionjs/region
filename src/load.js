@@ -28,7 +28,7 @@ export async function asyncLoad(dispatch, getState, key, Promise, props = {}) {
     result = snapshot;
   } else if (typeof Promise !== 'function') {
     // TODO fire warning if Promise is a promise, it should be a Promise
-    console.warn('redux-loadings: function which returns a promise is required. A non-func Promise works, but it may cause performance problem and bugs');
+    console.warn('redux-loadings: function which returns a promise is required. Plain object and non-func Promise works, but it may cause performance problem and bugs');
     result = Promise;
   } else {
     dispatch({ type: setLoading, payload: { key } });

@@ -1,36 +1,39 @@
 /* eslint-disable no-param-reassign */
 
-export function assignValue(state, key, value) {
+function assignValue(state, key, value) {
   const obj = { [key]: value };
   return Object.assign({}, state, obj);
 }
 
+const isPathInvalid = (path) => {
+  if (!path) {
+    return true;
+  }
+  return Array.isArray(path) && path.length === 0;
+};
+
 /**
  * assignValueDeep
  * @param {Object} state
- * @param {Array|string} pathOrigin
+ * @param {Array|string} path
  * @param {*} value - value assign to path
  * @returns {Object} - state
  */
-export function assignValueDeep(state = {}, pathOrigin, value) {
-  if (!pathOrigin) {
+export function assignValueDeep(state = {}, path, value) {
+  if (isPathInvalid(path)) {
     console.warn('empty path invalid');
     return Object.assign({}, state, value);
   }
-  if (!Array.isArray(pathOrigin)) {
-    return assignValue(state, pathOrigin, value);
+  if (!Array.isArray(path)) {
+    return assignValue(state, path, value);
   }
-  if (pathOrigin.length === 0) {
-    console.warn('empty path invalid');
-    return Object.assign({}, state, value);
+  if (path.length === 1) {
+    return assignValue(state, path[0], value);
   }
-  if (pathOrigin.length === 1) {
-    return assignValue(state, pathOrigin[0], value);
-  }
-  const path = pathOrigin.slice();
-  const key = path.shift();
+  const pathCopied = path.slice();
+  const key = pathCopied.shift();
   const formatObj = {
-    [key]: assignValueDeep(state[key], path, value)
+    [key]: assignValueDeep(state[key], pathCopied, value)
   };
   return Object.assign({}, state, formatObj);
 }
@@ -43,18 +46,13 @@ export function assignValueDeep(state = {}, pathOrigin, value) {
  * @returns null
  */
 export function setValueDeep(state = {}, path, value) {
-  if (!path) {
+  if (isPathInvalid(path)) {
     console.warn('empty path invalid');
     Object.assign(state, value);
     return null;
   }
   if (!Array.isArray(path)) {
     state[path] = value;
-    return null;
-  }
-  if (path.length === 0) {
-    console.warn('empty path invalid');
-    Object.assign(state, value);
     return null;
   }
   if (path.length === 1) {

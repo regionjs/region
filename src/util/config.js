@@ -6,14 +6,14 @@ export let expiredTime = 5 * 60 * 1000;
 export let setLoading = 'SET_LOADING';
 export let setResult = 'SET_RESULT';
 
-export const setConfig = (configObj = {}) => {
+export const setConfig = (config = {}) => {
   const {
     reducerPath: _reducerPath,
     expiredTime: _expiredTime,
     enableLog: _enableLog,
     setLoading: _setLoading,
     setResult: _setResult
-  } = configObj;
+  } = config;
 
   if (_reducerPath !== undefined) {
     reducerPath = _reducerPath;
