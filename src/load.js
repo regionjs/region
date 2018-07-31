@@ -1,5 +1,5 @@
-import { getResults, getFetchTimes } from './util/getThingsFromState';
-import { expiredTime } from './util/config';
+import { getResults as getSnapshot, getFetchTimes } from './util/getThingsFromState';
+import { expiredTime, setLoading, setResult } from './util/config';
 
 const isExpired = (getState, key) => {
   const fetchTime = getFetchTimes(getState(), key);
@@ -17,19 +17,21 @@ export async function asyncLoad(dispatch, getState, key, Promise, props = {}) {
     throw Error('dispatch and getState is required when you use asyncLoad()');
   }
 
+  const snapshot = getSnapshot(getState(), key);
+
   const { params = {}, forceUpdate = 'need', format, willSetResult, didSetResult } = props;
-  const snapshot = getResults(getState(), key);
 
   let result;
-  if (forceUpdate === 'never' && snapshot) { // eslint-disable-line no-mixed-operators
+  if (forceUpdate === 'never' && snapshot) {
     result = snapshot;
   } else if (forceUpdate === 'need' && !isExpired(getState, key) && snapshot) {
     result = snapshot;
   } else if (typeof Promise !== 'function') {
-    // TODO fire warning
+    // TODO fire warning if Promise is a promise, it should be a Promise
+    console.warn('redux-loadings: function which returns a promise is required. Plain object and non-func Promise works, but it may cause performance problem and bugs');
     result = Promise;
   } else {
-    dispatch({ type: 'SET_LOADING', payload: { key } });
+    dispatch({ type: setLoading, payload: { key } });
     result = await Promise(params);
     if (typeof format === 'function') {
       result = format(result, snapshot);
@@ -40,7 +42,7 @@ export async function asyncLoad(dispatch, getState, key, Promise, props = {}) {
     willSetResult({ dispatch, getState, result, snapshot });
   }
 
-  dispatch({ type: 'SET_RESULT', payload: { key, result } });
+  dispatch({ type: setResult, payload: { key, result } });
 
   if (typeof didSetResult === 'function') {
     didSetResult({ dispatch, getState, result, snapshot });

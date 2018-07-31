@@ -9,7 +9,7 @@
 
 For those who uses `redux` to manage you data, and loads data from api.
 
-You are writing these with `redux-actions`, `redux-thunk`, `redux-promise`, `redux-saga`, maybe even `dva` with `dva-loading`.
+You are writing these with `redux-thunk`, `redux-promise`, `redux-saga`, maybe even `dva` with `dva-loading`.
 
 You may not need them. You may not need to write `actions`, `middlewares`, `reducers`, and you may not need to write anything about async stuff.
  
@@ -69,10 +69,9 @@ const middleware = applyMiddleware(thunk);
 If you use combineReducers, the reducer path should be told.
 
 ```javascript
-import { getReducer, setConfig } from 'redux-loadings';
+import { getReducer } from 'redux-loadings';
 
-const reducer = combineReducers({ results: getReducer() });
-setConfig({ reducerPath: 'result' });
+const reducer = combineReducers({ result: getReducer({ reducerPath: 'result' }) });
 ```
 
 Some configs are optional.
@@ -80,10 +79,15 @@ Some configs are optional.
 The default `expiredTime` is `300,000` ms. The default `enableLog` is `env !== 'production''`.
 
 ```javascript
-import { getReducer, setConfig } from 'redux-loadings';
+import { getReducer } from 'redux-loadings';
 
-const reducer = combineReducers({ results: getReducer() });
-setConfig({ reducerPath: 'result', expiredTime: 300000, enableLog: false });
+const reducer = combineReducers({
+  result: getReducer({
+    reducerPath: 'result',
+    expiredTime: 300000,
+    enableLog: false
+  })
+});
 ```
 
 ## Document
@@ -94,8 +98,10 @@ setConfig({ reducerPath: 'result', expiredTime: 300000, enableLog: false });
 dispatch(load(key, Promise, props));
 
 // inside load
-const { params, forceUpdate, format } = props;
+const { params, forceUpdate, format, willSetResult, didSetResult } = props;
 ```
+
+`Promise` is a function returns a promise.
 
 `param` is what `Promise` may need. Throttle is important, so Promise is not called at once.
 
@@ -103,9 +109,13 @@ const { params, forceUpdate, format } = props;
 
 `forceUpdate: 'always'` calls Promise at once and `forceUpdate: 'never'` calls Promise only if there is no result.
 
-`format` effects after Promise resolved and before result is stored, you may do some heavy-calculating task. It may be something like `result => result.map(...)`.
+`format` effects after Promise resolved and before result is stored, you may do some heavy-calculating task. It may be something like `(result, snapshot) => result.map(...)`.
+
+`snapshot` is the preview result, it is useful when you try to merge the result of `POST/PUT/DELETE` method.
 
 > `redux-saga` has its `throttle` effect, it throttles saga calls. While `redux-loadings` throttles before Promise calls.
+
+`willSetResult` and `didSetResult` calls as `didSetResult({ dispatch, getState, result, snapshot })`. Notice that if `didSetResult` dispatch nothing, the change will not be rendered immediately. 
 
 ### asyncLoad
 
