@@ -69,9 +69,10 @@ const middleware = applyMiddleware(thunk);
 If you use combineReducers, the reducer path should be told.
 
 ```javascript
-import { getReducer } from 'redux-loadings';
+import { reducer as result, setConfig } from 'redux-loadings';
 
-const reducer = combineReducers({ result: getReducer({ reducerPath: 'result' }) });
+const reducer = combineReducers({ result });
+setConfig({ reducerPath: 'result' });
 ```
 
 Some configs are optional.
@@ -79,14 +80,13 @@ Some configs are optional.
 The default `expiredTime` is `300,000` ms. The default `enableLog` is `env !== 'production''`.
 
 ```javascript
-import { getReducer } from 'redux-loadings';
+import { reducer as result, setConfig } from 'redux-loadings';
 
-const reducer = combineReducers({
-  result: getReducer({
-    reducerPath: 'result',
-    expiredTime: 300000,
-    enableLog: false
-  })
+const reducer = combineReducers({ result });
+setConfig({
+  reducerPath: 'result',
+  expiredTime: 300000,
+  enableLog: false
 });
 ```
 
@@ -116,22 +116,6 @@ const { params, forceUpdate, format, willSetResult, didSetResult } = props;
 > `redux-saga` has its `throttle` effect, it throttles saga calls. While `redux-loadings` throttles before Promise calls.
 
 `willSetResult` and `didSetResult` calls as `didSetResult({ dispatch, getState, result, snapshot })`. Notice that if `didSetResult` dispatch nothing, the change will not be rendered immediately. 
-
-### asyncLoad
-
-```javascript
-dispatch(async (dispatch, getState) => {
-  const result = await asyncLoad(dispatch, getState, key, Promise, props);
-  // do something with result
-);
-```
-
-Sometimes we want access result to do some side effect task, use `asyncLoad`. It performed as `load` and returns result.
-
-If Promise is not called, which means load is throttled, `asyncLoad` returns the last result.
-
-> `redux-saga` deals async stuff with generator and yield, which is like `co`.
-> While `async` and `await` was widely implemented, `co-style` will be finally outdated to me.
 
 ### mapResultToProps
 

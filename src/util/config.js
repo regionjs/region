@@ -1,5 +1,5 @@
 /* eslint-disable import/no-mutable-exports */
-// TODO NOTE mutable-exports is need
+// NOTE mutable-exports is need
 export let reducerPath = null;
 export let enableLog = true;
 export let expiredTime = 5 * 60 * 1000;
