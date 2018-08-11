@@ -34,7 +34,11 @@ export async function asyncLoad(dispatch, getState, key, Promise, props = {}) {
     dispatch({ type: setLoading, payload: { key } });
     result = await Promise(params);
     if (typeof format === 'function') {
-      result = format(result, snapshot);
+      try {
+        result = format(result, snapshot);
+      } catch (e) {
+        result = null;
+      }
     }
   }
 
