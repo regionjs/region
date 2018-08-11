@@ -34,7 +34,16 @@ export async function asyncLoad(dispatch, getState, key, Promise, props = {}) {
     dispatch({ type: setLoading, payload: { key } });
     result = await Promise(params);
     if (typeof format === 'function') {
-      result = format(result, snapshot);
+      try {
+        result = format(result, snapshot);
+      } catch (e) {
+        if (process.env.NODE_ENV !== 'production') {
+          console.groupCollapsed(`Catch an error when format ${key}, return null instead.`);
+          console.debug(e);
+          console.groupEnd();
+        }
+        result = null;
+      }
     }
   }
 
