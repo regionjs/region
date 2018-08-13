@@ -26,14 +26,14 @@ async function promiseCall(dispatch, key, Promise, props, snapshot) {
   const { params = {}, format, formatSplit } = props;
   dispatch({ type: setLoading, payload: { key } });
   result = await Promise(params);
-  if (typeof format === 'function') {
-    result = formatResult(result, format, snapshot, key);
-  }
   if (Array.isArray(result) && formatSplit) {
     result.forEach((item, index) => {
       const itemKey = item[formatSplit] || item.id || index;
       dispatch({ type: setResult, payload: { key: `${key}/${itemKey}`, result: item } });
     });
+  }
+  if (typeof format === 'function') {
+    result = formatResult(result, format, snapshot, key);
   }
   return result;
 }
