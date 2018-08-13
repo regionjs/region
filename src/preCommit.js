@@ -1,5 +1,5 @@
 import { getFetchTimes } from './util/getThingsFromState';
-import { expiredTime, setLoading, setResult } from './util/config';
+import { expiredTime, setLoading } from './util/config';
 
 const isExpired = (getState, key) => {
   const fetchTime = getFetchTimes(getState(), key);
@@ -7,33 +7,42 @@ const isExpired = (getState, key) => {
   return now - fetchTime > expiredTime;
 };
 
-function formatResult(result, format, snapshot, key) {
+const groupLog = (title, e) => {
+  if (process.env.NODE_ENV !== 'production') {
+    console.groupCollapsed(title);
+    console.debug(e);
+    console.groupEnd();
+  }
+};
+
+function willFormatResult(result, snapshot, key, willFormat) {
+  try {
+    willFormat(result, snapshot);
+  } catch (e) {
+    groupLog(`Catch an error when willFormat ${key}.`, e);
+  }
+}
+
+function formatResult(result, snapshot, key, format) {
   try {
     const formattedResult = format(result, snapshot);
     return formattedResult;
   } catch (e) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.groupCollapsed(`Catch an error when format ${key}, return null instead.`);
-      console.debug(e);
-      console.groupEnd();
-    }
+    groupLog(`Catch an error when format ${key}, return null instead.`, e);
     return null;
   }
 }
 
 async function promiseCall(dispatch, key, Promise, props, snapshot) {
   let result;
-  const { params = {}, format, formatSplit } = props;
+  const { params = {}, format, willFormat } = props;
   dispatch({ type: setLoading, payload: { key } });
   result = await Promise(params);
-  if (Array.isArray(result) && formatSplit) {
-    result.forEach((item, index) => {
-      const itemKey = item[formatSplit] || item.id || index;
-      dispatch({ type: setResult, payload: { key: `${key}/${itemKey}`, result: item } });
-    });
+  if (typeof willFormat === 'function') {
+    willFormatResult(result, snapshot, key, willFormat);
   }
   if (typeof format === 'function') {
-    result = formatResult(result, format, snapshot, key);
+    result = formatResult(result, snapshot, key, format);
   }
   return result;
 }
