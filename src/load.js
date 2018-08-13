@@ -1,11 +1,6 @@
-import { getResults as getSnapshot, getFetchTimes } from './util/getThingsFromState';
-import { expiredTime, setLoading, setResult } from './util/config';
-
-const isExpired = (getState, key) => {
-  const fetchTime = getFetchTimes(getState(), key);
-  const now = new Date().getTime();
-  return now - fetchTime > expiredTime;
-};
+import { getResults as getSnapshot } from './util/getThingsFromState';
+import preCommit from './preCommit';
+import commit from './commit';
 
 /**
  * @param props.params Promise may need
@@ -18,44 +13,8 @@ export async function asyncLoad(dispatch, getState, key, Promise, props = {}) {
   }
 
   const snapshot = getSnapshot(getState(), key);
-
-  const { params = {}, forceUpdate = 'need', format, willSetResult, didSetResult } = props;
-
-  let result;
-  if (forceUpdate === 'never' && snapshot) {
-    result = snapshot;
-  } else if (forceUpdate === 'need' && !isExpired(getState, key) && snapshot) {
-    result = snapshot;
-  } else if (typeof Promise !== 'function') {
-    // TODO fire warning if Promise is a promise, it should be a Promise
-    console.warn('redux-loadings: function which returns a promise is required. Plain object and non-func Promise works, but it may cause performance problem and bugs');
-    result = Promise;
-  } else {
-    dispatch({ type: setLoading, payload: { key } });
-    result = await Promise(params);
-    if (typeof format === 'function') {
-      try {
-        result = format(result, snapshot);
-      } catch (e) {
-        if (process.env.NODE_ENV !== 'production') {
-          console.groupCollapsed(`Catch an error when format ${key}, return null instead.`);
-          console.debug(e);
-          console.groupEnd();
-        }
-        result = null;
-      }
-    }
-  }
-
-  if (typeof willSetResult === 'function') {
-    willSetResult({ dispatch, getState, result, snapshot });
-  }
-
-  dispatch({ type: setResult, payload: { key, result } });
-
-  if (typeof didSetResult === 'function') {
-    didSetResult({ dispatch, getState, result, snapshot });
-  }
+  const result = await preCommit(dispatch, getState, key, Promise, snapshot, props);
+  commit(dispatch, getState, key, result, snapshot, props);
   return result;
 }
 
