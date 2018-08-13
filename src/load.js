@@ -7,6 +7,20 @@ const isExpired = (getState, key) => {
   return now - fetchTime > expiredTime;
 };
 
+function formatResult(result, format, snapshot, key) {
+  try {
+    const formattedResult = format(result, snapshot);
+    return formattedResult;
+  } catch (e) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.groupCollapsed(`Catch an error when format ${key}, return null instead.`);
+      console.debug(e);
+      console.groupEnd();
+    }
+    return null;
+  }
+}
+
 /**
  * @param props.params Promise may need
  * @param props.format A pure function format result to other data structure
@@ -19,7 +33,7 @@ export async function asyncLoad(dispatch, getState, key, Promise, props = {}) {
 
   const snapshot = getSnapshot(getState(), key);
 
-  const { params = {}, forceUpdate = 'need', format, willSetResult, didSetResult } = props;
+  const { params = {}, forceUpdate = 'need', format, formatSplit, willSetResult, didSetResult } = props;
 
   let result;
   if (forceUpdate === 'never' && snapshot) {
@@ -34,16 +48,13 @@ export async function asyncLoad(dispatch, getState, key, Promise, props = {}) {
     dispatch({ type: setLoading, payload: { key } });
     result = await Promise(params);
     if (typeof format === 'function') {
-      try {
-        result = format(result, snapshot);
-      } catch (e) {
-        if (process.env.NODE_ENV !== 'production') {
-          console.groupCollapsed(`Catch an error when format ${key}, return null instead.`);
-          console.debug(e);
-          console.groupEnd();
-        }
-        result = null;
-      }
+      result = formatResult(result, format, snapshot, key);
+    }
+    if (Array.isArray(result) && formatSplit) {
+      result.forEach((item, index) => {
+        const itemKey = item[formatSplit] || item.id || index;
+        dispatch({ type: setResult, payload: { key: `${key}/${itemKey}`, result: item } });
+      });
     }
   }
 

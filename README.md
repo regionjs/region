@@ -182,7 +182,5 @@ This is useful when some results are optional. In this case, Component needs `us
 
 ## TODO
 
-- [x] release first version
-- [x] babel
-- [x] test
+- [ ] release es version
 - [ ] release 1.0
