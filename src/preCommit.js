@@ -56,9 +56,12 @@ export default async function (dispatch, getState, key, Promise, snapshot, props
   if (forceUpdate === 'need' && !isExpired(getState, key) && snapshot) {
     return snapshot;
   }
+  if (typeof Promise === 'object' && typeof Promise.then === 'function') {
+    console.warn('redux-loadings: You are passing promise, it may cause performance problem and bugs. Pass a function returns a promise instead');
+    const result = await Promise;
+    return result;
+  }
   if (typeof Promise !== 'function') {
-    // TODO fire warning if Promise is a promise, it should be a Promise
-    console.warn('redux-loadings: function which returns a promise is required. Plain object and non-func Promise works, but it may cause performance problem and bugs');
     return Promise;
   }
   const result = await promiseCall(dispatch, key, Promise, props, snapshot);
