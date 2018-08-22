@@ -182,5 +182,8 @@ This is useful when some results are optional. In this case, Component needs `us
 
 ## TODO
 
+- [ ] 0.3.0 make dispatch & getState inline & you don't need to surround dispatch: dispatch(load(...)) ==> load(...)
+- [ ] 0.4.0 build own middleware, deprecate redux-thunk or make it an inline dependency
+- [ ] more examples
 - [ ] release es version
 - [ ] release 1.0
