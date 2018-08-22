@@ -1,6 +1,6 @@
 import { assignValueDeep, setValueDeep } from './util/reducerPrototype';
 import { debug, group } from './util/logger';
-import { enableLog, setLoading, setResult, setConfig } from './util/config';
+import { enableLog, setLoading, setResult } from './util/config';
 
 function log(key) {
   if (process.env.NODE_ENV !== 'production' && enableLog) {
@@ -29,17 +29,4 @@ export const reducer = (state = {}, action) => {
     return nextState;
   }
   return state;
-};
-
-export const getReducer = (config) => {
-  // TODO remove in 0.3
-  if (typeof config === 'object') {
-    console.warn('getReducer options is deprecated');
-    console.log(config);
-    setConfig(config);
-  }
-  if (config !== undefined) {
-    console.warn('getReducer params is deprecated');
-  }
-  return reducer;
 };

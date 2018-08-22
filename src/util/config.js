@@ -1,5 +1,6 @@
 /* eslint-disable import/no-mutable-exports */
-// TODO NOTE mutable-exports is need
+// NOTE mutable-exports is need
+export let store = null;
 export let reducerPath = null;
 export let enableLog = true;
 export let expiredTime = 5 * 60 * 1000;
@@ -8,6 +9,7 @@ export let setResult = 'SET_RESULT';
 
 export const setConfig = (config = {}) => {
   const {
+    store: _store,
     reducerPath: _reducerPath,
     expiredTime: _expiredTime,
     enableLog: _enableLog,
@@ -15,6 +17,9 @@ export const setConfig = (config = {}) => {
     setResult: _setResult
   } = config;
 
+  if (_store !== undefined) {
+    store = _store;
+  }
   if (_reducerPath !== undefined) {
     reducerPath = _reducerPath;
   }

@@ -15,14 +15,6 @@ const groupLog = (title, e) => {
   }
 };
 
-function willFormatResult(result, snapshot, key, willFormat) {
-  try {
-    willFormat(result, snapshot);
-  } catch (e) {
-    groupLog(`Catch an error when willFormat ${key}.`, e);
-  }
-}
-
 function formatResult(result, snapshot, key, format) {
   try {
     const formattedResult = format(result, snapshot);
@@ -35,13 +27,9 @@ function formatResult(result, snapshot, key, format) {
 
 async function promiseCall(dispatch, key, Promise, props, snapshot) {
   let result;
-  const { params = {}, format, willFormat } = props;
+  const { params = {}, format } = props;
   dispatch({ type: setLoading, payload: { key } });
   result = await Promise(params);
-  if (typeof willFormat === 'function') {
-    console.warn('willFormat is deprecated, just do side effects in format');
-    willFormatResult(result, snapshot, key, willFormat);
-  }
   if (typeof format === 'function') {
     result = formatResult(result, snapshot, key, format);
   }
