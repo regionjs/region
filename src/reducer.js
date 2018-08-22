@@ -33,11 +33,12 @@ export const reducer = (state = {}, action) => {
 
 export const getReducer = (config) => {
   // TODO remove in 0.3
-  if (config !== undefined && typeof config === 'object') {
+  if (typeof config === 'object') {
     console.warn('getReducer options is deprecated');
+    console.log(config);
     setConfig(config);
   }
-  if (config !== undefined && typeof config !== 'object') {
+  if (config !== undefined) {
     console.warn('getReducer params is deprecated');
   }
   return reducer;
