@@ -39,6 +39,7 @@ async function promiseCall(dispatch, key, Promise, props, snapshot) {
   dispatch({ type: setLoading, payload: { key } });
   result = await Promise(params);
   if (typeof willFormat === 'function') {
+    console.warn('willFormat is deprecated, just do side effects in format');
     willFormatResult(result, snapshot, key, willFormat);
   }
   if (typeof format === 'function') {
