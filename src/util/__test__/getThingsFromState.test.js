@@ -1,47 +1,58 @@
+import { setConfig } from '../config';
 import { getLoading, getResults, getFetchTimes } from '../getThingsFromState';
+
+const setState = (state) => {
+  setConfig({
+    store: {
+      getState() {
+        return state;
+      }
+    }
+  });
+};
 
 describe('getThingsFromState', () => {
   test('get things from nothing', () => {
     // NOTE loading is true because we want to display loading ui when state is undefined.
-    const state = undefined;
-    expect(getLoading(state, 'a')).toEqual(true);
-    expect(getResults(state, 'a')).toEqual(undefined);
-    expect(getFetchTimes(state, 'a')).toEqual(undefined);
-    expect(getLoading(state, ['a', 'b'])).toEqual(true);
-    expect(getResults(state, ['a', 'b'])).toEqual([undefined, undefined]);
-    expect(getFetchTimes(state, ['a', 'b'])).toEqual([undefined, undefined]);
+    setState(undefined);
+    expect(getLoading('a')).toEqual(true);
+    expect(getResults('a')).toEqual(undefined);
+    expect(getFetchTimes('a')).toEqual(undefined);
+    expect(getLoading(['a', 'b'])).toEqual(true);
+    expect(getResults(['a', 'b'])).toEqual([undefined, undefined]);
+    expect(getFetchTimes(['a', 'b'])).toEqual([undefined, undefined]);
   });
   test('get things from initial state', () => {
-    const state = {};
-    expect(getLoading(state, 'a')).toEqual(true);
-    expect(getResults(state, 'a')).toEqual(undefined);
-    expect(getFetchTimes(state, 'a')).toEqual(undefined);
-    expect(getLoading(state, ['a', 'b'])).toEqual(true);
-    expect(getResults(state, ['a', 'b'])).toEqual([undefined, undefined]);
-    expect(getFetchTimes(state, ['a', 'b'])).toEqual([undefined, undefined]);
+    setState({});
+    expect(getLoading('a')).toEqual(true);
+    expect(getResults('a')).toEqual(undefined);
+    expect(getFetchTimes('a')).toEqual(undefined);
+    expect(getLoading(['a', 'b'])).toEqual(true);
+    expect(getResults(['a', 'b'])).toEqual([undefined, undefined]);
+    expect(getFetchTimes(['a', 'b'])).toEqual([undefined, undefined]);
   });
   test('get things from start loading', () => {
-    const state = {
+    setState({
       loadings: { a: true }
-    };
-    expect(getLoading(state, 'a')).toEqual(true);
-    expect(getResults(state, 'a')).toEqual(undefined);
-    expect(getFetchTimes(state, 'a')).toEqual(undefined);
-    expect(getLoading(state, ['a', 'b'])).toEqual(true);
-    expect(getResults(state, ['a', 'b'])).toEqual([undefined, undefined]);
-    expect(getFetchTimes(state, ['a', 'b'])).toEqual([undefined, undefined]);
+    });
+    expect(getLoading('a')).toEqual(true);
+    expect(getResults('a')).toEqual(undefined);
+    expect(getFetchTimes('a')).toEqual(undefined);
+    expect(getLoading(['a', 'b'])).toEqual(true);
+    expect(getResults(['a', 'b'])).toEqual([undefined, undefined]);
+    expect(getFetchTimes(['a', 'b'])).toEqual([undefined, undefined]);
   });
   test('get things from stop loading', () => {
-    const state = {
+    setState({
       loadings: { a: false },
       fetchTimes: { a: 0 },
       results: { a: { name: '66', type: 'cat' } }
-    };
-    expect(getLoading(state, 'a')).toEqual(false);
-    expect(getResults(state, 'a')).toEqual({ name: '66', type: 'cat' });
-    expect(getFetchTimes(state, 'a')).toEqual(0);
-    expect(getLoading(state, ['a', 'b'])).toEqual(false);
-    expect(getResults(state, ['a', 'b'])).toEqual([{ name: '66', type: 'cat' }, undefined]);
-    expect(getFetchTimes(state, ['a', 'b'])).toEqual([0, undefined]);
+    });
+    expect(getLoading('a')).toEqual(false);
+    expect(getResults('a')).toEqual({ name: '66', type: 'cat' });
+    expect(getFetchTimes('a')).toEqual(0);
+    expect(getLoading(['a', 'b'])).toEqual(false);
+    expect(getResults(['a', 'b'])).toEqual([{ name: '66', type: 'cat' }, undefined]);
+    expect(getFetchTimes(['a', 'b'])).toEqual([0, undefined]);
   });
 });
