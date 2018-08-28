@@ -1,15 +1,16 @@
-import { reducerPath } from './config';
+import { reducerPath, store } from './config';
 
-const getReducerState = (state) => {
+const getReducerState = () => {
   // TODO complex path
+  const state = store.getState();
   if (reducerPath === null) {
     return state || {};
   }
   return state[reducerPath] || {};
 };
 
-export const getLoading = (state, path) => {
-  const { loadings } = getReducerState(state);
+export const getLoading = (path) => {
+  const { loadings } = getReducerState();
   if (!loadings) {
     return true;
   }
@@ -24,8 +25,8 @@ export const getLoading = (state, path) => {
   return loadings[path];
 };
 
-export const getResults = (state, path) => {
-  const { results = {} } = getReducerState(state);
+export const getResults = (path) => {
+  const { results = {} } = getReducerState();
   if (Array.isArray(path)) {
     const ans = [];
     for (let i = 0; i < path.length; i++) {
@@ -37,8 +38,8 @@ export const getResults = (state, path) => {
   return results[path];
 };
 
-export const getFetchTimes = (state, path) => {
-  const { fetchTimes = {} } = getReducerState(state);
+export const getFetchTimes = (path) => {
+  const { fetchTimes = {} } = getReducerState();
   if (Array.isArray(path)) {
     const ans = [];
     for (let i = 0; i < path.length; i++) {
@@ -50,9 +51,9 @@ export const getFetchTimes = (state, path) => {
   return fetchTimes[path];
 };
 
-export const mapResultToProps = (path) => (state) => {
-  const loading = getLoading(state, path);
-  const results = getResults(state, path);
+export const mapResultToProps = (path) => () => {
+  const loading = getLoading(path);
+  const results = getResults(path);
   const props = { loading };
   if (Array.isArray(path)) {
     path.forEach((key, index) => {
