@@ -36,13 +36,19 @@ async function promiseCall(dispatch, key, Promise, props, snapshot) {
   return result;
 }
 
-export default async function (dispatch, getState, key, Promise, snapshot, props) {
-  const { forceUpdate = 'need' } = props;
-
-  if (forceUpdate === 'never' && snapshot) {
-    return snapshot;
+const getForceUpdate = (props) => {
+  const { forceUpdate } = props;
+  if (typeof forceUpdate === 'string') {
+    console.warn('migrate forceUpdate to boolean, forceUpdate === \'never\' is deprecated, use large expireTime if you need \'never\'');
+    return forceUpdate === 'always';
   }
-  if (forceUpdate === 'need' && !isExpired(getState, key) && snapshot) {
+  return forceUpdate;
+};
+
+export default async function (dispatch, getState, key, Promise, snapshot, props) {
+  const forceUpdate = getForceUpdate(props);
+
+  if (!forceUpdate && !isExpired(getState, key) && snapshot) {
     return snapshot;
   }
   if (typeof Promise === 'object' && typeof Promise.then === 'function') {
