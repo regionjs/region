@@ -27,39 +27,44 @@ setConfig({
 ### load
 
 ```javascript
+import { load } from 'redux-loadings';
 load(key, Promise, props);
 
 // inside load
-const { params, forceUpdate, format, willSetResult, didSetResult } = props;
+const { params, forceUpdate, format } = props;
 ```
 
 `Promise` is a function returns a promise.
 
 `param` is what `Promise` may need. Throttle is important, so Promise is not called at once.
 
-`forceUpdate: 'always' | 'need' | 'never'`, default as `need`, throttles if the last load call is in the past 5 minutes.
+`forceUpdate: true | false`, default as `false`, throttles if the last load call is in the past 5 minutes.
 
-`forceUpdate: 'always'` calls Promise at once and `forceUpdate: 'never'` calls Promise only if there is no result.
+`forceUpdate: true` calls Promise at once.
 
-`format` effects after Promise resolved and before result is stored, you may do some heavy-calculating task. It may be something like `(result, snapshot) => result.map(...)`.
+`format` effects after Promise resolved and before result is stored, you may do some heavy-calculating task and side effects. It may be something like `(result, snapshot) => result.map(...)`.
 
 `snapshot` is the preview result, it is useful when you try to merge the result of `POST/PUT/DELETE` method.
 
 > `redux-saga` has its `throttle` effect, it throttles saga calls. While `redux-loadings` throttles before Promise calls.
 
-`willSetResult` and `didSetResult` calls as `didSetResult({ dispatch, getState, result, snapshot })`. Notice that if `didSetResult` dispatch nothing, the change will not be rendered immediately. 
+### connect
 
-### mapResultToProps
+An enhance connect of  `react-redux`;
 
 ```javascript
-const mapStateToProps = mapResultToProps(['user', 'follower']);
+import { connect } from 'redux-loadings';
+const EnhancedComponent = connect('user')(Component);
+// gets
+const { loading, user } = this.props;
+
+// or
+const EnhancedComponent = connect(['user', 'follower'], ...)(Component);
 // gets
 const { loading, user, follower } = this.props;
 
-
-const mapStateToProps = mapResultToProps('user');
-// gets
-const { loading, user } = this.props;
+// or use as connect from react-redux
+const EnhancedComponent = connect(mapStateToProps, ...)(Component);
 ```
 
 `loading === true` if `user.loading === true || follower.loading === true`, `loading === false` if `user.loading === (false | undefined) && follower.loading === (false | undefined)`
@@ -70,26 +75,30 @@ If `fetchUser` is called, while `fetchFollower` not, `loading` will still turns 
 
 This is useful if you have two different panel renders two parts of data. The `undefined` part is not used at first and it toggles loading when user switch the panel.
 
+### mapResultToProps
+
+```javascript
+const mapStateToProps = mapResultToProps('user');
+// or
+const mapStateToProps = mapResultToProps(['user', 'follower']);
+```
+
 ### getLoading & getResults & getFetchTimes
 
 ```javascript
-const mapStateToProps = (state) => {
-  const loading = getLoading(state, ['user', 'follower']);
-  const [user, follower] = getResults(state, ['user', 'follower']);
-  const [userFetchTime, followerFetchTime] = getFetchTimes(state, ['user', 'follower']);
-  // ...other
-  return { loading, user, follower, ... };
+const loading = getLoading(['user', 'follower']);
+const user = getResults('user');
+const [user, follower] = getResults(['user', 'follower']);
+const [userFetchTime, followerFetchTime] = getFetchTimes(['user', 'follower']);
 }
 ```
-
-You may need to map other things to props.
 
 `getFetchTimes` returns `date.getTime()` the moment result is resolved and stored.
 
 ```javascript
-const mapStateToProps = (state) => {
-  const loading = getLoading(state, 'user');
-  const [user, follower] = getResults(state, ['user', 'follower']);
+const mapStateToProps = () => {
+  const loading = getLoading('user');
+  const [user, follower] = getResults(['user', 'follower']);
   return { loading, user, follower };
 }
 ```
