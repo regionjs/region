@@ -16,7 +16,7 @@ export const getLoading = (path) => {
   }
   if (Array.isArray(path)) {
     for (let i = 0; i < path.length; i++) {
-      if (loadings[path[i]]) { // exclude undefined
+      if (loadings[path[i]] || loadings[path[i]] === undefined) { // include undefined
         return true;
       }
     }

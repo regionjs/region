@@ -51,7 +51,7 @@ describe('getThingsFromState', () => {
     expect(getLoading('a')).toEqual(false);
     expect(getResults('a')).toEqual({ name: '66', type: 'cat' });
     expect(getFetchTimes('a')).toEqual(0);
-    expect(getLoading(['a', 'b'])).toEqual(false);
+    expect(getLoading(['a', 'b'])).toEqual(true);
     expect(getResults(['a', 'b'])).toEqual([{ name: '66', type: 'cat' }, undefined]);
     expect(getFetchTimes(['a', 'b'])).toEqual([0, undefined]);
   });
