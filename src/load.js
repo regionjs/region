@@ -1,7 +1,6 @@
 import { getResults as getSnapshot } from './util/getThingsFromState';
 import preCommit from './preCommit';
-import commit from './commit';
-import { store } from './util/config';
+import { setResult, store } from './util/config';
 
 /**
  * @param props.params Promise may need
@@ -16,6 +15,6 @@ export async function load(key, Promise, props = {}) {
 
   const snapshot = getSnapshot(getState(), key);
   const result = await preCommit(dispatch, getState, key, Promise, snapshot, props);
-  commit(dispatch, getState, key, result, snapshot, props);
+  dispatch({ type: setResult, payload: { key, result } });
   return result;
 }
