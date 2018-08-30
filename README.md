@@ -15,7 +15,7 @@ Try to get out of `actions`, `middlewares`, `reducers`, `redux-thunk`, `redux-pr
 
 [Document](https://github.com/dancerphil/redux-loadings/blob/develop/Document.md)
 
-[Migrate from 0.2 to 0.3](https://github.com/dancerphil/redux-loadings/blob/develop/MigrateTo0.3.md)
+[Migrate Guide](https://github.com/dancerphil/redux-loadings/blob/develop/Migrate.md)
 
 ## Example
 

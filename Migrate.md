@@ -1,6 +1,16 @@
-# Migrate From 0.2 to 0.3
+# Migrate Guide
 
-First, ensure no warning.
+## Migrate From 0.3 to 0.4
+
+Ensure no warning.
+
+In 0.3, if load is not called, loading returns undefined. Now loading is true.
+
+You should be more careful about the loading.
+
+## Migrate From 0.2 to 0.3
+
+Ensure no warning.
 
 ### redux-thunk is not peered anymore
 

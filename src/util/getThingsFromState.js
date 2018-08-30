@@ -22,7 +22,7 @@ export const getLoading = (path) => {
     }
     return false;
   }
-  return loadings[path];
+  return loadings[path] || loadings[path] === undefined; // include undefined
 };
 
 export const getResults = (path) => {
