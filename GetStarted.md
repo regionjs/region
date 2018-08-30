@@ -15,47 +15,37 @@ export default () => {
 
 ```jsx harmony
 import React, { PureComponent } from 'react';
-import { connect } from 'react-redux';
-import { mapResultToProps } from 'redux-loadings';
+import { connect } from 'redux-loadings';
 import loadUser from './loadUser';
 
-class ControlComponent extends PureComponent {
-  componentDidMount() {
-    loadUser();
-  }
+loadUser();
 
+class ControlComponent extends PureComponent {
   render() {
     const { loading, user } = this.props;
     // return a component with loading, user
   }
 }
 
-const mapStateToProps = mapResultToProps('user');
-
-export default connect(mapStateToProps)(ControlComponent);
+export default connect('user')(ControlComponent);
 ```
 
 or
 
 ```jsx harmony
 import React, { PureComponent } from 'react';
-import { connect } from 'react-redux';
-import { mapResultToProps } from 'redux-loadings';
+import { connect } from 'redux-loadings';
 import { loadUser, loadFollower } from './load';
 
-class ControlComponent extends PureComponent {
-  componentDidMount() {
-    loadUser();
-    loadFollower();
-  }
+loadUser();
+loadFollower();
 
+class ControlComponent extends PureComponent {
   render() {
     const { loading, user, follower } = this.props;
     // return a component with loading, user, follower
   }
 }
 
-const mapStateToProps = mapResultToProps(['user', 'follower']);
-
-export default connect(mapStateToProps)(ControlComponent);
+export default connect(['user', 'follower'])(ControlComponent);
 ```

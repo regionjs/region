@@ -1,5 +1,7 @@
 # Migrate From 0.2 to 0.3
 
+First, ensure no warning.
+
 ### redux-thunk is not peered anymore
 
 ```javascript

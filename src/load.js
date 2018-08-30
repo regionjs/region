@@ -6,7 +6,7 @@ import { store } from './util/config';
 /**
  * @param props.params Promise may need
  * @param props.format A pure function format result to other data structure
- * @param props.forceUpdate 'always' | 'need' | 'never'
+ * @param props.forceUpdate true | false
  */
 export async function load(key, Promise, props = {}) {
   if (!store || typeof store.dispatch !== 'function' || typeof store.getState !== 'function') {
