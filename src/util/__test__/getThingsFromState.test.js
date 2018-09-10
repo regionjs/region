@@ -1,5 +1,5 @@
 import { setConfig } from '../config';
-import { getLoading, getResults, getFetchTimes } from '../getThingsFromState';
+import { getLoading, getResults, getFetchTimes, mapResultToProps } from '../getThingsFromState';
 
 const setState = (state) => {
   setConfig({
@@ -21,6 +21,15 @@ describe('getThingsFromState', () => {
     expect(getLoading(['a', 'b'])).toEqual(true);
     expect(getResults(['a', 'b'])).toEqual([undefined, undefined]);
     expect(getFetchTimes(['a', 'b'])).toEqual([undefined, undefined]);
+    expect(mapResultToProps('a')()).toEqual({
+      loading: true,
+      a: undefined
+    });
+    expect(mapResultToProps(['a', 'b'])()).toEqual({
+      loading: true,
+      a: undefined,
+      b: undefined
+    });
   });
   test('get things from initial state', () => {
     setState({});
@@ -30,6 +39,15 @@ describe('getThingsFromState', () => {
     expect(getLoading(['a', 'b'])).toEqual(true);
     expect(getResults(['a', 'b'])).toEqual([undefined, undefined]);
     expect(getFetchTimes(['a', 'b'])).toEqual([undefined, undefined]);
+    expect(mapResultToProps('a')()).toEqual({
+      loading: true,
+      a: undefined
+    });
+    expect(mapResultToProps(['a', 'b'])()).toEqual({
+      loading: true,
+      a: undefined,
+      b: undefined
+    });
   });
   test('get things from start loading', () => {
     setState({
@@ -41,6 +59,15 @@ describe('getThingsFromState', () => {
     expect(getLoading(['a', 'b'])).toEqual(true);
     expect(getResults(['a', 'b'])).toEqual([undefined, undefined]);
     expect(getFetchTimes(['a', 'b'])).toEqual([undefined, undefined]);
+    expect(mapResultToProps('a')()).toEqual({
+      loading: true,
+      a: undefined
+    });
+    expect(mapResultToProps(['a', 'b'])()).toEqual({
+      loading: true,
+      a: undefined,
+      b: undefined
+    });
   });
   test('get things from stop loading', () => {
     setState({
@@ -54,5 +81,14 @@ describe('getThingsFromState', () => {
     expect(getLoading(['a', 'b'])).toEqual(true);
     expect(getResults(['a', 'b'])).toEqual([{ name: '66', type: 'cat' }, undefined]);
     expect(getFetchTimes(['a', 'b'])).toEqual([0, undefined]);
+    expect(mapResultToProps('a')()).toEqual({
+      loading: false,
+      a: { name: '66', type: 'cat' }
+    });
+    expect(mapResultToProps(['a', 'b'])()).toEqual({
+      loading: true,
+      a: { name: '66', type: 'cat' },
+      b: undefined
+    });
   });
 });
