@@ -4,19 +4,22 @@
 npm i redux-loadings
 ```
 
+create a file named `load.js`
+
 ```javascript
-// loadUser.js
 import { load } from 'redux-loadings';
 import { fetchUser } from './api'; // somewhere with axios
-export default () => {
-  load('user', fetchUser);
+export const loadUser = (params) => {
+  load('user', fetchUser, { params });
 }
 ```
+
+Then create your Component
 
 ```jsx harmony
 import React, { PureComponent } from 'react';
 import { connect } from 'redux-loadings';
-import loadUser from './loadUser';
+import { loadUser } from './load';
 
 loadUser();
 
