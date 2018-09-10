@@ -32,8 +32,6 @@ npm start
 
 ## TODO
 
-- [x] 0.3.0 make dispatch & getState inline & you don't need to surround dispatch: dispatch(load(...)) ==> load(...)
-- [x] 0.3.0 build own middleware, deprecate redux-thunk or make it an inline dependency
 - [ ] more examples
 - [ ] release es version
-- [ ] release 1.0
+- [ ] release 1.0 when everything is ready
