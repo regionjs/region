@@ -4,6 +4,7 @@ export let store = null;
 export let reducerPath = null;
 export let enableLog = true;
 export let expiredTime = 5 * 60 * 1000;
+export let strictLoading = true;
 export let setLoading = 'SET_LOADING';
 export let setResult = 'SET_RESULT';
 
@@ -13,6 +14,7 @@ export const setConfig = (config = {}) => {
     reducerPath: _reducerPath,
     expiredTime: _expiredTime,
     enableLog: _enableLog,
+    strictLoading: _strictLoading,
     setLoading: _setLoading,
     setResult: _setResult
   } = config;
@@ -28,6 +30,9 @@ export const setConfig = (config = {}) => {
   }
   if (_enableLog !== undefined) {
     enableLog = _enableLog;
+  }
+  if (_strictLoading !== undefined) {
+    strictLoading = _strictLoading;
   }
   if (_setLoading !== undefined) {
     setLoading = _setLoading;

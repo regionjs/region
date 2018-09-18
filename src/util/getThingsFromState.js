@@ -1,4 +1,4 @@
-import { reducerPath, store } from './config';
+import { reducerPath, store, strictLoading } from './config';
 
 const getReducerState = () => {
   // TODO complex path
@@ -9,6 +9,19 @@ const getReducerState = () => {
   return state[reducerPath] || {};
 };
 
+const formatLoading = (loading) => {
+  if (loading) {
+    return true;
+  }
+  if (loading === undefined) {
+    if (strictLoading) { // treat undefined as true or as undefined
+      return true;
+    }
+    return undefined;
+  }
+  return false;
+};
+
 export const getLoading = (path) => {
   const { loadings } = getReducerState();
   if (!loadings) {
@@ -16,13 +29,13 @@ export const getLoading = (path) => {
   }
   if (Array.isArray(path)) {
     for (let i = 0; i < path.length; i++) {
-      if (loadings[path[i]] || loadings[path[i]] === undefined) { // include undefined
+      if (formatLoading(loadings[path[i]])) {
         return true;
       }
     }
     return false;
   }
-  return loadings[path] || loadings[path] === undefined; // include undefined
+  return formatLoading(loadings[path]);
 };
 
 export const getResults = (path) => {
