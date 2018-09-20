@@ -32,6 +32,6 @@ npm start
 
 ## TODO
 
-- [ ] more examples
+- [x] more examples
 - [ ] release es version
 - [ ] release 1.0 when everything is ready

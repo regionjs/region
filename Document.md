@@ -13,14 +13,21 @@ const store = compose(middleware)(createStore)(reducer);
 setConfig({ store, reducerPath: 'result' });
 ```
 
-`expiredTime` and `enableLog` are optional. The default `expiredTime` is `300,000` ms. The default `enableLog` is `env !== 'production''`.
+`expiredTime`, `enableLog` and `strictLoading` are optional.
+
+The default `expiredTime` is `300,000` ms.
+
+The default `enableLog` is `true`, which logs when `env !== 'production'`.
+
+The default `strictLoading` is `true`, which treat `loading === undefined` as `true`. If you set it to false, `loading === undefined` will be treated as `undefined`
 
 ```javascript
 setConfig({
   store,
   reducerPath: 'result',
   expiredTime: 300000,
-  enableLog: false
+  enableLog: true,
+  strictLoading: true
 });
 ```
 
@@ -103,4 +110,4 @@ const mapStateToProps = () => {
 }
 ```
 
-This is useful when some results are optional. In this case, Component needs `user` to render, but `follower` can be displayed later. 
+This is useful when some results are optional. In this case, Component needs `user` to render, but `follower` can be displayed later.

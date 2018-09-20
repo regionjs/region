@@ -69,6 +69,16 @@ describe('getThingsFromState', () => {
       b: undefined
     });
   });
+  test('treat undefined', () => {
+    setState({
+      loadings: { a: true }
+    });
+    expect(getLoading('b')).toEqual(true);
+    setConfig({ strictLoading: false });
+    expect(getLoading('b')).toEqual(undefined);
+    setConfig({ strictLoading: true });
+    expect(getLoading('b')).toEqual(true);
+  });
   test('get things from stop loading', () => {
     setState({
       loadings: { a: false },
