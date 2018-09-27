@@ -13,7 +13,7 @@ export async function load(key, Promise, props = {}) {
   }
   const { dispatch, getState } = store;
 
-  const snapshot = getSnapshot(getState(), key);
+  const snapshot = getSnapshot(key);
   const result = await preCommit(dispatch, getState, key, Promise, snapshot, props);
   dispatch({ type: setResult, payload: { key, result } });
   return result;
