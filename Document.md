@@ -21,6 +21,8 @@ The default `enableLog` is `true`, which logs when `env !== 'production'`.
 
 The default `strictLoading` is `true`, which treat `loading === undefined` as `true`. If you set it to false, `loading === undefined` will be treated as `undefined`
 
+This is useful if you have two different panel renders two parts of data. The `undefined` part is not used at first and it toggles loading when user switch the panel.
+
 ```javascript
 setConfig({
   store,
@@ -55,32 +57,26 @@ const { params, forceUpdate, format } = props;
 
 > `redux-saga` has its `throttle` effect, it throttles saga calls. While `redux-loadings` throttles before Promise calls.
 
-### connect
-
-An enhance connect of  `react-redux`;
+### connectWith
 
 ```javascript
-import { connect } from 'redux-loadings';
-const EnhancedComponent = connect('user')(Component);
-// gets
-const { loading, user } = this.props;
+import { connectWith } from 'redux-loadings';
+
+const DisplayComponent = ({ user }) => {...};
+const LoadingComponent = ({ user }) => {...}; // or just import one
+const EnhancedComponent = connectWith('user', DisplayComponent, LoadingComponent);
 
 // or
-const EnhancedComponent = connect(['user', 'follower'], ...)(Component);
-// gets
-const { loading, user, follower } = this.props;
+const DisplayComponent = ({ user, follower }) => {...};
+const EnhancedComponent = connectWith(['user', 'follower'], DisplayComponent, LoadingComponent);
 
-// or use as connect from react-redux
-const EnhancedComponent = connect(mapStateToProps, ...)(Component);
+// or
+const EnhancedComponent = connectWith({ loading: 'user', result: ['user', 'follower'] }, DisplayComponent, Loading);
 ```
 
-`loading === true` if `user.loading === true || follower.loading === true`, `loading === false` if `user.loading === (false | undefined) && follower.loading === (false | undefined)`
+`loading === true` if `user.loading === true || follower.loading === true`.
 
-If you have a transparent loading layer, dom will render part of the data while loading.
-
-If `fetchUser` is called, while `fetchFollower` not, `loading` will still turns `false`, and requires the handle of `follower === undefined`.
-
-This is useful if you have two different panel renders two parts of data. The `undefined` part is not used at first and it toggles loading when user switch the panel.
+You can provide the loading component renders part of the data.
 
 ### mapResultToProps
 
