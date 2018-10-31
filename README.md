@@ -7,11 +7,54 @@
 
 A tool to handle network IO with redux.
 
-Try to get out of `actions`, `middlewares`, `reducers`, `redux-thunk`, `redux-promise`, `redux-saga`, maybe even `dva` with `dva-loading`.
+Get out of `actions`, `middlewares`, `reducers`, `redux-thunk`, `redux-saga`.
+
+Extremely simple API!
+
+## Get Started
+
+```bash
+npm i redux-loadings
+```
+
+create a file named `load.js`
+
+```javascript
+import { load } from 'redux-loadings';
+import { fetchUser } from './fetch'; // somewhere with axios
+
+export const loadUser = () => load('user', fetchUser);
+```
+
+Then create your Component
+
+```jsx harmony
+import { connectWith } from 'redux-loadings';
+import { loadUser } from './load';
+
+loadUser();
+
+const DisplayComponent = ({ user }) => {...}
+
+export default connectWith('user', DisplayComponent, Loading);
+```
+
+or
+
+```jsx harmony
+import { connectWith } from 'redux-loadings';
+import { loadUser, loadFollower } from './load';
+
+loadUser();
+loadFollower();
+// <Button onClick={loadFollower} />
+
+const DisplayComponent = ({ user, follower }) => {...}
+
+export default connectWith(['user', 'follower'], DisplayComponent, Loading);
+```
 
 ## Docs
-
-[Get Started](https://github.com/dancerphil/redux-loadings/blob/develop/GetStarted.md)
 
 [Document](https://github.com/dancerphil/redux-loadings/blob/develop/Document.md)
 
@@ -32,6 +75,5 @@ npm start
 
 ## TODO
 
-- [x] more examples
 - [ ] release es version
 - [ ] release 1.0 when everything is ready
