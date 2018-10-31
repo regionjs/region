@@ -84,6 +84,8 @@ You can provide the loading component renders part of the data.
 const mapStateToProps = mapResultToProps('user');
 // or
 const mapStateToProps = mapResultToProps(['user', 'follower']);
+// or 
+const mapStateToProps = mapResultToProps({ loading: 'user', result: ['user', 'follower'] });
 ```
 
 ### getLoading & getResults & getFetchTimes
@@ -97,13 +99,3 @@ const [userFetchTime, followerFetchTime] = getFetchTimes(['user', 'follower']);
 ```
 
 `getFetchTimes` returns `date.getTime()` the moment result is resolved and stored.
-
-```javascript
-const mapStateToProps = () => {
-  const loading = getLoading('user');
-  const [user, follower] = getResults(['user', 'follower']);
-  return { loading, user, follower };
-}
-```
-
-This is useful when some results are optional. In this case, Component needs `user` to render, but `follower` can be displayed later.
