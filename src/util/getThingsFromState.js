@@ -64,16 +64,29 @@ export const getFetchTimes = (path) => {
   return fetchTimes[path];
 };
 
-export const mapResultToProps = (path) => () => {
-  const loading = getLoading(path);
-  const results = getResults(path);
+const getProps = (keys, loading, results) => {
   const props = { loading };
-  if (Array.isArray(path)) {
-    path.forEach((key, index) => {
-      props[key] = results[index];
-    });
-    return props;
-  }
-  props[path] = results;
+  keys.forEach((key, index) => {
+    props[key] = results[index];
+  });
   return props;
+};
+
+export const mapResultToProps = (key) => () => {
+  if (typeof key === 'string') {
+    const loading = getLoading(key);
+    const result = getResults(key);
+    return { loading, [key]: result };
+  }
+  if (Array.isArray(key)) {
+    const loading = getLoading(key);
+    const results = getResults(key);
+    return getProps(key, loading, results);
+  }
+  const loading = getLoading(key.loading);
+  const results = getResults(key.result);
+  if (typeof key.result === 'string') {
+    return { loading, [key.result]: results };
+  }
+  return getProps(key.result, loading, results);
 };
