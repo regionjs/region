@@ -10,8 +10,14 @@ export const connect = (mapStateToProps, mapDispatchToProps, mergeProps, options
   return rawConnect(mapStateToProps, mapDispatchToProps, mergeProps, options);
 };
 
-export const connectWith = (key, DisplayComponent, LoadingComponent) => { // eslint-disable-line
-  if (typeof key === 'string' || Array.isArray(key)) {
+const isValidKeyObject = (key) => {
+  if (key === null) return false;
+  if (typeof key === 'function' || typeof key === 'object') return 'loading' in key && 'result' in key;
+  return false;
+};
+
+export const connectWith = (key, DisplayComponent, LoadingComponent) => {
+  if (typeof key === 'string' || Array.isArray(key) || isValidKeyObject(key)) {
     const WrapperComponent = hoc(DisplayComponent, LoadingComponent);
     return rawConnect(mapResultToProps(key))(WrapperComponent);
   }

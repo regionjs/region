@@ -101,4 +101,29 @@ describe('getThingsFromState', () => {
       b: undefined
     });
   });
+  test('mapResultToProps', () => {
+    setState({
+      loadings: { a: true, b: false },
+      fetchTimes: { a: 0, b: 0 },
+      results: { a: { name: '66', type: 'cat' }, b: { name: '77', type: 'dog' } }
+    });
+    expect(mapResultToProps('a')()).toEqual({
+      loading: true,
+      a: { name: '66', type: 'cat' }
+    });
+    expect(mapResultToProps(['a', 'b'])()).toEqual({
+      loading: true,
+      a: { name: '66', type: 'cat' },
+      b: { name: '77', type: 'dog' }
+    });
+    expect(mapResultToProps({ loading: 'b', result: 'a' })()).toEqual({
+      loading: false,
+      a: { name: '66', type: 'cat' }
+    });
+    expect(mapResultToProps({ loading: 'a', result: ['a', 'b'] })()).toEqual({
+      loading: true,
+      a: { name: '66', type: 'cat' },
+      b: { name: '77', type: 'dog' }
+    });
+  });
 });
