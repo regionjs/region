@@ -18,3 +18,7 @@ export async function load(key, Promise, props = {}) {
   dispatch({ type: setResult, payload: { key, result } });
   return result;
 }
+
+export async function set(key, result) {
+  await load(key, result, { forceUpdate: true });
+}

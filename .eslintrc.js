@@ -12,6 +12,7 @@ module.exports = {
     "no-console": 0,
     "no-plusplus": 0,
     "object-curly-newline": 0,
-    "import/prefer-default-export": 0
+    "import/prefer-default-export": 0,
+    "react/prop-types": 0
   }
 };
