@@ -14,10 +14,11 @@ import { Provider } from 'redux-loadings';
 
 ```javascript
 import { load } from 'redux-loadings';
-load(key, Promise, props);
 
-// inside load
-const { params, forceUpdate, format } = props;
+load(key, Promise, { params, forceUpdate, format });
+
+// or
+const result = await load(key, Promise, { params, forceUpdate, format });
 ```
 
 `Promise` is a function returns a promise.
@@ -36,6 +37,7 @@ const { params, forceUpdate, format } = props;
 
 ```javascript
 import { set } from 'redux-loadings';
+
 set(key, result);
 ```
 

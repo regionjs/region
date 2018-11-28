@@ -5,7 +5,7 @@
 [![codecov](https://codecov.io/gh/dancerphil/redux-loadings/branch/develop/graph/badge.svg)](https://codecov.io/gh/dancerphil/redux-loadings)
 [![MIT License](https://img.shields.io/npm/l/redux-loadings.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 
-一个代替 redux 处理同步与异步流程的 react 配套库。极其简单的 API！.
+一个代替 redux 处理同步与异步流程的 react 配套库。极其简单的 API！
 
 ## Get Started
 

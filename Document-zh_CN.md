@@ -14,10 +14,11 @@ import { Provider } from 'redux-loadings';
 
 ```javascript
 import { load } from 'redux-loadings';
-load(key, Promise, props);
 
-// inside load
-const { params, forceUpdate, format } = props;
+load(key, Promise, { params, forceUpdate, format });
+
+// or
+const result = await load(key, Promise, { params, forceUpdate, format });
 ```
 
 `Promise` 是一个返回 promise 的函数
@@ -36,6 +37,7 @@ const { params, forceUpdate, format } = props;
 
 ```javascript
 import { set } from 'redux-loadings';
+
 set(key, result);
 ```
 
@@ -56,7 +58,7 @@ const EnhancedComponent = connectWith(['user', 'follower'], DisplayComponent, Lo
 const EnhancedComponent = connectWith({ loading: 'user', result: ['user', 'follower'] }, DisplayComponent, Loading);
 ```
 
-`loading === true` 当 `user.loading === true || follower.loading === true`.
+`loading === true` 当 `user.loading === true || follower.loading === true`。
 
 LoadingComponent 也会得到数据。你可以使用这些数据部分的进行渲染。
 

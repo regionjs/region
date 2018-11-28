@@ -78,3 +78,4 @@ npm start
 - [ ] config to switch base between redux and react.Context
 - [ ] new ScreenShots
 - [ ] loading => pendingMutex
+- [ ] change package name to react-name since redux is not related anymore
