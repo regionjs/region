@@ -5,9 +5,7 @@
 [![codecov](https://codecov.io/gh/dancerphil/redux-loadings/branch/develop/graph/badge.svg)](https://codecov.io/gh/dancerphil/redux-loadings)
 [![MIT License](https://img.shields.io/npm/l/redux-loadings.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 
-A replacement tool of `redux` to handle sync & async action flow. Extremely simple API!
-
-[中文版](https://github.com/dancerphil/redux-loadings/blob/master/README-zh_CN.md)
+一个代替 redux 处理同步与异步流程的 react 配套库。极其简单的 API！.
 
 ## Get Started
 
@@ -15,7 +13,7 @@ A replacement tool of `redux` to handle sync & async action flow. Extremely simp
 npm i redux-loadings
 ```
 
-create a file named `load.js`
+创建一个文件 `load.js`
 
 ```javascript
 import { load } from 'redux-loadings';
@@ -24,7 +22,7 @@ import { fetchUser } from './fetch'; // somewhere with axios
 export const loadUser = () => load('user', fetchUser);
 ```
 
-Then create your Component
+然后创建你的组件
 
 ```jsx harmony
 import { connectWith } from 'redux-loadings';
@@ -37,7 +35,7 @@ const DisplayComponent = ({ user }) => {...}
 export default connectWith('user', DisplayComponent, Loading);
 ```
 
-or
+或者
 
 ```jsx harmony
 import { connectWith } from 'redux-loadings';
@@ -52,13 +50,13 @@ const DisplayComponent = ({ user, follower }) => {...}
 export default connectWith(['user', 'follower'], DisplayComponent, Loading);
 ```
 
-## Docs
+## 文档
 
-[Document](https://github.com/dancerphil/redux-loadings/blob/master/Document.md)
+[中文文档](https://github.com/dancerphil/redux-loadings/blob/master/Document-zh_CN.md)
 
-[Migrate Guide](https://github.com/dancerphil/redux-loadings/blob/master/Migrate.md)
+[迁移指南](https://github.com/dancerphil/redux-loadings/blob/master/Migrate-zh_CN.md)
 
-## Example
+## 示例
 
 ```bash
 git clone https://github.com/dancerphil/redux-loadings.git
@@ -67,14 +65,6 @@ npm i
 npm start
 ```
 
-## ScreenShots
+## 截图
 
 ![](https://github.com/dancerphil/redux-loadings/blob/master/screenshot.gif)
-
-## TODO
-
-- [ ] release es version
-- [ ] release 1.0 when everything is ready
-- [ ] config to switch base between redux and react.Context
-- [ ] new ScreenShots
-- [ ] loading => pendingMutex
