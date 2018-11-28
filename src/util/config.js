@@ -5,8 +5,9 @@ export let reducerPath = null;
 export let enableLog = true;
 export let expiredTime = 5 * 60 * 1000;
 export let strictLoading = true;
-export let setLoading = 'SET_LOADING';
-export let setResult = 'SET_RESULT';
+export let silentConnect = false;
+export const setLoading = '@redux-loadings/SET_LOADING';
+export const setResult = '@redux-loadings/SET_RESULT';
 
 export const setConfig = (config = {}) => {
   const {
@@ -15,8 +16,7 @@ export const setConfig = (config = {}) => {
     expiredTime: _expiredTime,
     enableLog: _enableLog,
     strictLoading: _strictLoading,
-    setLoading: _setLoading,
-    setResult: _setResult
+    silentConnect: _silentConnect
   } = config;
 
   if (_store !== undefined) {
@@ -34,10 +34,7 @@ export const setConfig = (config = {}) => {
   if (_strictLoading !== undefined) {
     strictLoading = _strictLoading;
   }
-  if (_setLoading !== undefined) {
-    setLoading = _setLoading;
-  }
-  if (_setResult !== undefined) {
-    setResult = _setResult;
+  if (_silentConnect !== undefined) {
+    silentConnect = _silentConnect;
   }
 };

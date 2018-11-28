@@ -30,9 +30,9 @@ import { loadUser } from './load';
 
 loadUser();
 
-const DisplayComponent = ({ user }) => {...}
+const Display = ({ user }) => {...}
 
-export default connectWith('user', DisplayComponent, Loading);
+export default connectWith('user', Display, Loading);
 ```
 
 或者
@@ -45,9 +45,9 @@ loadUser();
 loadFollower();
 // <Button onClick={loadFollower} />
 
-const DisplayComponent = ({ user, follower }) => {...}
+const Display = ({ user, follower }) => {...}
 
-export default connectWith(['user', 'follower'], DisplayComponent, Loading);
+export default connectWith(['user', 'follower'], Display, Loading);
 ```
 
 ## 文档
