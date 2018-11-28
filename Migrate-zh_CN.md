@@ -1,14 +1,12 @@
-# Migrate Guide
+# 迁移文档
 
-[中文版](https://github.com/dancerphil/redux-loadings/blob/master/Migrate-zh_CN.md)
+## 0.4 升级至 0.5
 
-## Migrate From 0.4 to 0.5
+确保处理所有的警告.
 
-Ensure no warning.
+你可以用 `Provider` 代替 `reducer`，因为 store 已经内置了。使用 `set` 可以直接设置一个值。
 
-You may use `Provider` to replace `reducer` as store is inside `redux-loadings`. use `set` to set your key directly.
-
-It is not a must-do.
+这一步不是必须的。
 
 ```javascript
 import { Provider } from 'react-redux';
@@ -22,30 +20,28 @@ import store from './store';
 ==>
 
 ```javascript
-import { Provider } from 'redux-loading';
+import { Provider } from 'redux-loadings';
 
 <Provider>
   <App />
 </Provider>
 ```
 
-## Migrate From 0.3 to 0.4
+## 0.3 升级至 0.4
 
-Ensure no warning.
+确保处理所有的警告。
 
-In 0.3, if load is not called, loading returns undefined. Now loading is true. You can set `strictLoading` as false to forward.
-
-You should be more careful about the loading.
+在 0.3，如果没有 `load`，`loading` 是 `undefined`。 现在它是 `true`。 你可以通过设置 `strictLoading` 为 `false` 来使用之前的逻辑。
 
 ```javascript
 setConfig({ store, reducerPath: 'result', strictLoading: false });
 ```
 
-## Migrate From 0.2 to 0.3
+## 0.2 升级至 0.3
 
-Ensure no warning.
+确保处理所有的警告。
 
-### redux-thunk is not peered anymore
+### 不再需要 redux-thunk
 
 ```javascript
 import thunk from 'redux-thunk';
@@ -58,7 +54,7 @@ const middleware = applyMiddleware(thunk);
 const middleware = applyMiddleware();
 ```
 
-### store is needed
+### 需要传入 store
 
 ```javascript
 import { reducer as result, setConfig } from 'redux-loadings';
@@ -78,7 +74,7 @@ const store = compose(middleware)(createStore)(reducer);
 setConfig({ store, reducerPath: 'result' });
 ```
 
-### load not in surround
+### 不需要用 dispatch 包裹 load
 
 ```javascript
 dispatch(load(key, Promise, props));
