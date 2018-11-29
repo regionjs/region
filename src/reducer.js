@@ -4,13 +4,13 @@ import { enableLog, setLoading, setResult } from './util/config';
 
 function log(key) {
   if (process.env.NODE_ENV !== 'production' && enableLog) {
-    debug('redux-loadings', `${setLoading} ${key}`);
+    debug(setLoading, key);
   }
 }
 
 function groupLog(key, result, nextState) {
   if (process.env.NODE_ENV !== 'production' && enableLog) {
-    group('redux-loadings', `${setResult} ${key}`, result, nextState);
+    group(setResult, key, result, nextState);
   }
 }
 

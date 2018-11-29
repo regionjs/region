@@ -1,7 +1,7 @@
 import React from 'react';
 import { silentConnect } from './util/config';
 
-const empty = () => '';
+const empty = () => null;
 
 export default (DisplayComponent = empty, LoadingComponent = silentConnect ? empty : DisplayComponent) => {
   const ConnectWith = (props) => {

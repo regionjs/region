@@ -1,6 +1,7 @@
 import { getResults as getSnapshot } from './util/getThingsFromState';
 import preCommit from './preCommit';
 import { setResult, store } from './util/config';
+import { groupWarn } from './util/logger';
 
 const getStore = () => {
   if (!store || typeof store.dispatch !== 'function' || typeof store.getState !== 'function') {
@@ -16,18 +17,37 @@ const isAsync = (Promise) => {
   return typeof Promise === 'function';
 };
 
-export function set(key, result) {
-  const { dispatch } = getStore();
-  dispatch({ type: setResult, payload: { key, result } });
-  return result;
-}
+const formatResult = (result, snapshot, key, format) => {
+  if (typeof format !== 'function') {
+    return result;
+  }
+  try {
+    const formattedResult = format(result, snapshot);
+    return formattedResult;
+  } catch (e) {
+    groupWarn(`Catch an error when format ${key}, return null instead.`, e);
+    return null;
+  }
+};
 
 /**
- * @param props.params Promise may need
- * @param props.format A pure function format result to other data structure
- * @param props.forceUpdate true | false
+ * @param format A function format result to other data structure
  */
-export async function load(key, Promise, props = {}) {
+export const set = (key, result, { format } = {}) => {
+  const { dispatch } = getStore();
+  const snapshot = getSnapshot(key);
+
+  const formattedResult = formatResult(result, snapshot, key, format);
+  dispatch({ type: setResult, payload: { key, result: formattedResult } });
+  return formattedResult;
+};
+
+/**
+ * @param params Promise may need
+ * @param format A function format result to other data structure
+ * @param forceUpdate true | false
+ */
+export const load = async (key, Promise, { forceUpdate, params, format } = {}) => {
   if (!isAsync(Promise)) {
     console.warn('set result directly');
     return set(key, Promise);
@@ -35,7 +55,9 @@ export async function load(key, Promise, props = {}) {
 
   const { dispatch, getState } = getStore();
   const snapshot = getSnapshot(key);
-  const result = await preCommit({ dispatch, getState, key, Promise, snapshot, ...props });
-  dispatch({ type: setResult, payload: { key, result } });
-  return result;
-}
+  const result = await preCommit({ dispatch, getState, key, Promise, snapshot, forceUpdate, params });
+
+  const formattedResult = formatResult(result, snapshot, key, format);
+  dispatch({ type: setResult, payload: { key, result: formattedResult } });
+  return formattedResult;
+};

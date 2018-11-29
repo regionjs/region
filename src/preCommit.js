@@ -7,25 +7,7 @@ const isExpired = (getState, key) => {
   return now - fetchTime > expiredTime;
 };
 
-const groupLog = (title, e) => {
-  if (process.env.NODE_ENV !== 'production') {
-    console.groupCollapsed(title);
-    console.debug(e);
-    console.groupEnd();
-  }
-};
-
-function formatResult(result, snapshot, key, format) {
-  try {
-    const formattedResult = format(result, snapshot);
-    return formattedResult;
-  } catch (e) {
-    groupLog(`Catch an error when format ${key}, return null instead.`, e);
-    return null;
-  }
-}
-
-export default async function ({ dispatch, getState, key, Promise, snapshot, forceUpdate, params = {}, format }) {
+export default async ({ dispatch, getState, key, Promise, snapshot, forceUpdate, params }) => {
   dispatch({ type: setLoading, payload: { key } });
   let result;
   if (typeof Promise === 'function') {
@@ -36,9 +18,5 @@ export default async function ({ dispatch, getState, key, Promise, snapshot, for
   } else { // promise
     result = await Promise;
   }
-
-  if (typeof format === 'function') {
-    result = formatResult(result, snapshot, key, format);
-  }
   return result;
-}
+};
