@@ -46,21 +46,21 @@ set(key, result);
 ```javascript
 import { connectWith } from 'redux-loadings';
 
-const DisplayComponent = ({ user }) => {...};
-const LoadingComponent = ({ user }) => {...}; // or just import one
-const EnhancedComponent = connectWith('user', DisplayComponent, LoadingComponent);
+const Display = ({ user }) => {...};
+const Loading = ({ user }) => {...}; // or just import one
+const Enhanced = connectWith('user', Display, Loading);
 
 // or
-const DisplayComponent = ({ user, follower }) => {...};
-const EnhancedComponent = connectWith(['user', 'follower'], DisplayComponent, LoadingComponent);
+const Display = ({ user, follower }) => {...};
+const Enhanced = connectWith(['user', 'follower'], Display, Loading);
 
 // or
-const EnhancedComponent = connectWith({ loading: 'user', result: ['user', 'follower'] }, DisplayComponent, Loading);
+const Enhanced = connectWith({ loading: 'user', result: ['user', 'follower'] }, Display, Loading);
 ```
 
 `loading === true` if `user.loading === true || follower.loading === true`.
 
-LoadingComponent receives data as well. You can provide the loading component renders part of the data.
+Component Loading receives data as well. You can provide the loading component renders part of the data.
 
 ### setConfig
 

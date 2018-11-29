@@ -2,6 +2,12 @@
 
 [中文版](https://github.com/dancerphil/redux-loadings/blob/master/Migrate-zh_CN.md)
 
+## Migrate From 0.5.0 to 0.5.1
+
+set & load is refactored. You may meet some tiny difference.
+
+If your usage is recommend, there should be no effect on you.
+
 ## Migrate From 0.4 to 0.5
 
 Ensure no warning.

@@ -1,7 +1,6 @@
 import { reducerPath, store, strictLoading } from './config';
 
 const getReducerState = () => {
-  // TODO complex path
   const state = store.getState();
   if (reducerPath === null) {
     return state || {};
