@@ -25,31 +25,20 @@ function formatResult(result, snapshot, key, format) {
   }
 }
 
-async function promiseCall(dispatch, key, Promise, props, snapshot) {
-  let result;
-  const { params = {}, format } = props;
+export default async function ({ dispatch, getState, key, Promise, snapshot, forceUpdate, params = {}, format }) {
   dispatch({ type: setLoading, payload: { key } });
-  result = await Promise(params);
+  let result;
+  if (typeof Promise === 'function') {
+    if (!forceUpdate && !isExpired(getState, key) && snapshot) {
+      return snapshot;
+    }
+    result = await Promise(params);
+  } else { // promise
+    result = await Promise;
+  }
+
   if (typeof format === 'function') {
     result = formatResult(result, snapshot, key, format);
   }
-  return result;
-}
-
-export default async function (dispatch, getState, key, Promise, snapshot, props) {
-  const { forceUpdate } = props;
-
-  if (!forceUpdate && !isExpired(getState, key) && snapshot) {
-    return snapshot;
-  }
-  if (typeof Promise === 'object' && typeof Promise.then === 'function') {
-    console.warn('redux-loadings: You are passing promise, it may cause performance problem and bugs. Pass a function returns a promise instead');
-    const result = await Promise;
-    return result;
-  }
-  if (typeof Promise !== 'function') {
-    return Promise;
-  }
-  const result = await promiseCall(dispatch, key, Promise, props, snapshot);
   return result;
 }
