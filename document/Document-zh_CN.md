@@ -56,6 +56,17 @@ const Enhanced = connectWith(['user', 'follower'], Display, Loading);
 
 // or
 const Enhanced = connectWith({ loading: 'user', result: ['user', 'follower'] }, Display, Loading);
+
+// or
+const Enhanced = connectWith({
+  entity: ['userList', 'follower'],
+  selector: ({ loading, userList, follower }, ownProps) => {
+    // NOTE selector 会在检查 loading 之前就运行，此时 userList 可能为 undefined
+    const { id, type } = ownProps;
+    const currentUser = userList.find(user => user.id === id && user.type === type);
+    return { loading, user: currentUser, follower };
+  }
+}, Display, Loading);
 ```
 
 `loading === true` 当 `user.loading === true || follower.loading === true`。

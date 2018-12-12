@@ -7,7 +7,7 @@
 
 A replacement tool of `redux` to handle sync & async action flow. Extremely simple API!
 
-[中文版](https://github.com/dancerphil/redux-loadings/blob/master/README-zh_CN.md)
+[中文版](https://github.com/dancerphil/redux-loadings/blob/master/document/README-zh_CN.md)
 
 ## Get Started
 
@@ -54,9 +54,9 @@ export default connectWith(['user', 'follower'], Display, Loading);
 
 ## Docs
 
-[Document](https://github.com/dancerphil/redux-loadings/blob/master/Document.md)
+[Document](https://github.com/dancerphil/redux-loadings/blob/master/document/Document.md)
 
-[Migrate Guide](https://github.com/dancerphil/redux-loadings/blob/master/Migrate.md)
+[Migrate Guide](https://github.com/dancerphil/redux-loadings/blob/master/document/Migrate.md)
 
 ## Example
 
@@ -67,15 +67,11 @@ npm i
 npm start
 ```
 
-## ScreenShots
-
-![](https://github.com/dancerphil/redux-loadings/blob/master/screenshot.gif)
-
 ## TODO
 
 - [ ] release es version
 - [ ] release 1.0 when everything is ready
 - [ ] config to switch base between redux and react.Context
-- [ ] new ScreenShots
+- [ ] new site
 - [ ] loading => pendingMutex
 - [ ] change package name to react-name since redux is not related anymore
