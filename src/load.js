@@ -1,9 +1,11 @@
 import { getResults as getSnapshot } from './util/getThingsFromState';
 import preCommit from './preCommit';
-import { setResult, store } from './util/config';
+import { region } from './util/config';
+import { setResult } from './util/constant';
 import { groupWarn } from './util/logger';
 
 const getStore = () => {
+  const { store } = region;
   if (!store || typeof store.dispatch !== 'function' || typeof store.getState !== 'function') {
     throw Error('setConfig({ store }) must be called');
   }

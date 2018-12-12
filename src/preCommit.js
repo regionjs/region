@@ -1,7 +1,9 @@
 import { getFetchTimes } from './util/getThingsFromState';
-import { expiredTime, setLoading } from './util/config';
+import { setLoading } from './util/constant';
+import { region } from './util/config';
 
 const isExpired = (getState, key) => {
+  const { expiredTime } = region;
   const fetchTime = getFetchTimes(getState(), key);
   const now = new Date().getTime();
   return now - fetchTime > expiredTime;

@@ -1,40 +1,38 @@
-/* eslint-disable import/no-mutable-exports */
-// NOTE mutable-exports is need
-export let store = null;
-export let reducerPath = null;
-export let enableLog = true;
-export let expiredTime = 5 * 60 * 1000;
-export let strictLoading = true;
-export let silentConnect = false;
-export const setLoading = '@redux-loadings/SET_LOADING';
-export const setResult = '@redux-loadings/SET_RESULT';
+export const region = {
+  store: null,
+  reducerPath: null,
+  enableLog: true,
+  expiredTime: 5 * 60 * 1000,
+  strictLoading: true,
+  silentConnect: false
+};
 
 export const setConfig = (config = {}) => {
   const {
-    store: _store,
-    reducerPath: _reducerPath,
-    expiredTime: _expiredTime,
-    enableLog: _enableLog,
-    strictLoading: _strictLoading,
-    silentConnect: _silentConnect
+    store,
+    reducerPath,
+    expiredTime,
+    enableLog,
+    strictLoading,
+    silentConnect
   } = config;
 
-  if (_store !== undefined) {
-    store = _store;
+  if (store !== undefined) {
+    region.store = store;
   }
-  if (_reducerPath !== undefined) {
-    reducerPath = _reducerPath;
+  if (reducerPath !== undefined) {
+    region.reducerPath = reducerPath;
   }
-  if (_expiredTime !== undefined) {
-    expiredTime = _expiredTime;
+  if (expiredTime !== undefined) {
+    region.expiredTime = expiredTime;
   }
-  if (_enableLog !== undefined) {
-    enableLog = _enableLog;
+  if (enableLog !== undefined) {
+    region.enableLog = enableLog;
   }
-  if (_strictLoading !== undefined) {
-    strictLoading = _strictLoading;
+  if (strictLoading !== undefined) {
+    region.strictLoading = strictLoading;
   }
-  if (_silentConnect !== undefined) {
-    silentConnect = _silentConnect;
+  if (silentConnect !== undefined) {
+    region.silentConnect = silentConnect;
   }
 };

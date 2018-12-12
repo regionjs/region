@@ -1,6 +1,7 @@
-import { reducerPath, store, strictLoading } from './config';
+import { region } from './config';
 
 const getReducerState = () => {
+  const { store, reducerPath } = region;
   const state = store.getState();
   if (reducerPath === null) {
     return state || {};
@@ -9,6 +10,7 @@ const getReducerState = () => {
 };
 
 const formatLoading = (loading) => {
+  const { strictLoading } = region;
   if (loading) {
     return true;
   }
