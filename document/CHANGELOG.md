@@ -1,18 +1,20 @@
 # CHANGELOG
 
-### 0.5.1
+### latest
 
-- setConfig(silentConnect) and remove setConfig(actionType)
+- selector
 
-- gh-pages
-
-### 0.5.0
+### 0.5.x
 
 - remove connect
 
 - set
 
 - Provider
+
+- setConfig(silentConnect) and remove setConfig(actionType)
+
+- gh-pages
 
 ### 0.4.x
 
@@ -42,9 +44,11 @@
 
 ### 0.2.x
 
-- getReducer
+- remove setReducerPath
 
-- setReducerPath => setConfig(reducerPath, expiredTime, enableLog, actionType)
+- setConfig(reducerPath, expiredTime, enableLog, actionType)
+
+- getReducer
 
 - willSetResult, didSetResult
 
