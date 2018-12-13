@@ -1,6 +1,6 @@
 # Document
 
-[中文版](https://github.com/dancerphil/redux-loadings/blob/master/document/Document-zh_CN.md)
+[中文版](https://github.com/dancerphil/redux-loadings/blob/master/docs/Document-zh_CN.md)
 
 ### Provider
 

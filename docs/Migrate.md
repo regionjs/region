@@ -1,6 +1,6 @@
 # Migrate Guide
 
-[中文版](https://github.com/dancerphil/redux-loadings/blob/master/document/Migrate-zh_CN.md)
+[中文版](https://github.com/dancerphil/redux-loadings/blob/master/docs/Migrate-zh_CN.md)
 
 ## Migrate From 0.5.0 to 0.5.1
 
