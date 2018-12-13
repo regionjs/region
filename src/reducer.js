@@ -1,14 +1,17 @@
 import { assignValueDeep, setValueDeep } from './util/reducerPrototype';
 import { debug, group } from './util/logger';
-import { enableLog, setLoading, setResult } from './util/config';
+import { setLoading, setResult } from './util/constant';
+import { region } from './util/config';
 
 function log(key) {
+  const { enableLog } = region;
   if (process.env.NODE_ENV !== 'production' && enableLog) {
     debug(setLoading, key);
   }
 }
 
 function groupLog(key, result, nextState) {
+  const { enableLog } = region;
   if (process.env.NODE_ENV !== 'production' && enableLog) {
     group(setResult, key, result, nextState);
   }

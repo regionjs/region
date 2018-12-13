@@ -1,7 +1,9 @@
-import { reducerPath, enableLog, expiredTime, strictLoading, silentConnect, setLoading, setResult, setConfig } from '../config';
+import { setLoading, setResult } from '../constant';
+import { region, setConfig } from '../config';
 
 describe('config', () => {
   test('default', () => {
+    const { reducerPath, enableLog, expiredTime, strictLoading, silentConnect } = region;
     expect(reducerPath).toBe(null);
     expect(expiredTime).toBe(300000);
     expect(enableLog).toBe(true);
@@ -12,6 +14,7 @@ describe('config', () => {
   });
   test('set nothing', () => {
     setConfig();
+    const { reducerPath, enableLog, expiredTime, strictLoading, silentConnect } = region;
     expect(reducerPath).toBe(null);
     expect(expiredTime).toBe(300000);
     expect(enableLog).toBe(true);
@@ -22,6 +25,7 @@ describe('config', () => {
   });
   test('set enableLog as false', () => {
     setConfig({ enableLog: false });
+    const { reducerPath, enableLog, expiredTime } = region;
     expect(reducerPath).toBe(null);
     expect(expiredTime).toBe(300000);
     expect(enableLog).toBe(false);
@@ -34,6 +38,7 @@ describe('config', () => {
       strictLoading: false,
       silentConnect: true
     });
+    const { reducerPath, enableLog, expiredTime, strictLoading, silentConnect } = region;
     expect(reducerPath).toBe('result');
     expect(expiredTime).toBe(30000);
     expect(enableLog).toBe(false);

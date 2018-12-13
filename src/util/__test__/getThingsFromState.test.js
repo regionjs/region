@@ -101,6 +101,12 @@ describe('getThingsFromState', () => {
       b: undefined
     });
   });
+  test('getLoading from all resolved', () => {
+    setState({
+      loadings: { a: false, b: false }
+    });
+    expect(getLoading(['a', 'b'])).toBe(false);
+  });
   test('mapResultToProps', () => {
     setState({
       loadings: { a: true, b: false },
@@ -125,5 +131,24 @@ describe('getThingsFromState', () => {
       a: { name: '66', type: 'cat' },
       b: { name: '77', type: 'dog' }
     });
+  });
+  test('config reducePath', () => {
+    setConfig({ reducerPath: 'result' });
+    expect(getResults('a')).toBe(undefined);
+    setState({ result: { results: { a: 'config reducePath' } } });
+    expect(getResults('a')).toBe('config reducePath');
+    setConfig({ reducerPath: null });
+    expect(getResults('a')).toBe(undefined);
+  });
+  test('selector', () => {
+    setState({
+      loadings: { a: false },
+      fetchTimes: { a: 0 },
+      results: { a: [{ id: 0, name: '66', type: 'cat' }, { id: 1, name: '77', type: 'dog' }] }
+    });
+    expect(mapResultToProps({
+      entity: 'a',
+      selector: ({ a }, { id }) => a.find(item => item.id === id)
+    })(null, { id: 1 })).toEqual({ id: 1, name: '77', type: 'dog' });
   });
 });

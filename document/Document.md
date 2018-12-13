@@ -1,5 +1,7 @@
 # Document
 
+[中文版](https://github.com/dancerphil/redux-loadings/blob/master/document/Document-zh_CN.md)
+
 ### Provider
 
 You are recommended not to use redux. Use Provider to surround your App.
@@ -56,6 +58,17 @@ const Enhanced = connectWith(['user', 'follower'], Display, Loading);
 
 // or
 const Enhanced = connectWith({ loading: 'user', result: ['user', 'follower'] }, Display, Loading);
+
+// or
+const Enhanced = connectWith({
+  entity: ['userList', 'follower'],
+  selector: ({ loading, userList, follower }, ownProps) => {
+    // NOTE selector runs before loading check, userList may be undefined
+    const { id, type } = ownProps;
+    const currentUser = userList.find(user => user.id === id && user.type === type);
+    return { loading, user: currentUser, follower };
+  }
+}, Display, Loading);
 ```
 
 `loading === true` if `user.loading === true || follower.loading === true`.

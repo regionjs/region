@@ -1,6 +1,7 @@
-import { reducerPath, store, strictLoading } from './config';
+import { region } from './config';
 
 const getReducerState = () => {
+  const { store, reducerPath } = region;
   const state = store.getState();
   if (reducerPath === null) {
     return state || {};
@@ -9,6 +10,7 @@ const getReducerState = () => {
 };
 
 const formatLoading = (loading) => {
+  const { strictLoading } = region;
   if (loading) {
     return true;
   }
@@ -63,7 +65,7 @@ export const getFetchTimes = (path) => {
   return fetchTimes[path];
 };
 
-const getProps = (keys, loading, results) => {
+const getPropsFromKeys = (keys, loading, results) => {
   const props = { loading };
   keys.forEach((key, index) => {
     props[key] = results[index];
@@ -71,21 +73,20 @@ const getProps = (keys, loading, results) => {
   return props;
 };
 
-export const mapResultToProps = (key) => () => {
+const getProps = (key, loading, results) => {
   if (typeof key === 'string') {
-    const loading = getLoading(key);
-    const result = getResults(key);
-    return { loading, [key]: result };
+    return { loading, [key]: results };
   }
-  if (Array.isArray(key)) {
-    const loading = getLoading(key);
-    const results = getResults(key);
-    return getProps(key, loading, results);
+  return getPropsFromKeys(key, loading, results);
+};
+
+export const mapResultToProps = (key) => (state, ownProps) => {
+  if (typeof key === 'string' || Array.isArray(key)) {
+    return getProps(key, getLoading(key), getResults(key));
   }
-  const loading = getLoading(key.loading);
-  const results = getResults(key.result);
-  if (typeof key.result === 'string') {
-    return { loading, [key.result]: results };
+  const props = getProps(key.result || key.entity, getLoading(key.loading || key.entity), getResults(key.result || key.entity));
+  if (key.selector && typeof key.selector === 'function') {
+    return key.selector(props, ownProps);
   }
-  return getProps(key.result, loading, results);
+  return props;
 };
