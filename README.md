@@ -58,7 +58,11 @@ export default connectWith(['user', 'follower'], Display, Loading);
 
 [Migrate Guide](https://github.com/dancerphil/redux-loadings/blob/master/document/Migrate.md)
 
+[ChangeLog](https://github.com/dancerphil/redux-loadings/blob/master/document/CHANGELOG.md)
+
 ## Example
+
+[Online Example](https://dancerphil.github.io/redux-loadings/index.html)
 
 ```bash
 git clone https://github.com/dancerphil/redux-loadings.git
