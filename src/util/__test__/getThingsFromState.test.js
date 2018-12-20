@@ -1,5 +1,6 @@
 import { setConfig } from '../config';
-import { getLoading, getResults, getFetchTimes, mapResultToProps } from '../getThingsFromState';
+import { getLoading, getResults, getFetchTimes } from '../getThingsFromState';
+import { mapResultToProps } from '../mapResultToProps';
 
 const setState = (state) => {
   setConfig({

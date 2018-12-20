@@ -1,5 +1,5 @@
 import { connect as rawConnect } from 'react-redux';
-import { mapResultToProps } from './util/getThingsFromState';
+import { mapResultToProps } from './util/mapResultToProps';
 import hoc from './hoc';
 
 const isValidKeyObject = (key) => {

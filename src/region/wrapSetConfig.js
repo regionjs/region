@@ -1,4 +1,4 @@
-const wrapSetConfig = (RegionIn) => {
+export default (RegionIn) => {
   class Region extends RegionIn {
     constructor() {
       super();
@@ -37,5 +37,3 @@ const wrapSetConfig = (RegionIn) => {
   }
   return Region;
 };
-
-export default wrapSetConfig;
