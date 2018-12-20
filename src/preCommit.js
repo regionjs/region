@@ -1,18 +1,11 @@
 import { setLoading } from './util/constant';
-import { region, getFetchTimes } from './util/region';
+import { shouldThrottle } from './util/shouldThrottle';
 
-const isExpired = (getState, key) => {
-  const { expiredTime } = region;
-  const fetchTime = getFetchTimes(getState(), key);
-  const now = new Date().getTime();
-  return now - fetchTime > expiredTime;
-};
-
-export default async ({ dispatch, getState, key, Promise, snapshot, forceUpdate, params }) => {
+export default async ({ dispatch, key, Promise, snapshot, forceUpdate, params }) => {
   dispatch({ type: setLoading, payload: { key } });
   let result;
   if (typeof Promise === 'function') {
-    if (!forceUpdate && !isExpired(getState, key) && snapshot) {
+    if (shouldThrottle({ forceUpdate, key, snapshot })) {
       return snapshot;
     }
     result = await Promise(params);

@@ -2,6 +2,7 @@ import preCommit from './preCommit';
 import { region, getResults as getSnapshot } from './util/region';
 import { setResult } from './util/constant';
 import { groupWarn } from './util/logger';
+import { isAsync } from './util/isAsync';
 
 const getStore = () => {
   const { store } = region;
@@ -9,13 +10,6 @@ const getStore = () => {
     throw Error('setConfig({ store }) must be called');
   }
   return store;
-};
-
-const isAsync = (Promise) => {
-  if (Promise && typeof Promise === 'object' && typeof Promise.then === 'function') {
-    return true;
-  }
-  return typeof Promise === 'function';
 };
 
 const formatResult = (result, snapshot, key, format) => {
@@ -54,9 +48,9 @@ export const load = async (key, Promise, { forceUpdate, params, format } = {}) =
     return set(key, Promise);
   }
 
-  const { dispatch, getState } = getStore();
+  const { dispatch } = getStore();
   const snapshot = getSnapshot(key);
-  const result = await preCommit({ dispatch, getState, key, Promise, snapshot, forceUpdate, params });
+  const result = await preCommit({ dispatch, key, Promise, snapshot, forceUpdate, params });
 
   const formattedResult = formatResult(result, snapshot, key, format);
   dispatch({ type: setResult, payload: { key, result: formattedResult } });
