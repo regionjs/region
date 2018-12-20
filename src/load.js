@@ -1,7 +1,7 @@
 import preCommit from './preCommit';
 import { region, getResults as getSnapshot } from './util/region';
 import { setResult } from './util/constant';
-import { groupWarn } from './util/logger';
+import { groupError } from './util/logger';
 import { isAsync } from './util/isAsync';
 
 const getStore = () => {
@@ -20,7 +20,7 @@ const formatResult = (result, snapshot, key, format) => {
     const formattedResult = format(result, snapshot);
     return formattedResult;
   } catch (e) {
-    groupWarn(`Catch an error when format ${key}, return null instead.`, e);
+    groupError(`Catch an error when format ${key}, return null instead.`, e);
     return null;
   }
 };

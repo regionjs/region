@@ -1,17 +1,10 @@
 import { connect as rawConnect } from 'react-redux';
 import { mapResultToProps } from './util/region';
 import hoc from './hoc';
-
-const isValidKeyObject = (key) => {
-  if (key === null) return false;
-  if (typeof key === 'function' || typeof key === 'object') {
-    return 'loading' in key || 'result' in key || 'entity' in key || 'selector' in key;
-  }
-  return false;
-};
+import { isValidConnectKey } from './util/isValidConnectKey';
 
 export const connectWith = (key, DisplayComponent, LoadingComponent) => {
-  if (typeof key === 'string' || Array.isArray(key) || isValidKeyObject(key)) {
+  if (isValidConnectKey(key)) {
     const WrapperComponent = hoc(DisplayComponent, LoadingComponent);
     return rawConnect(mapResultToProps(key))(WrapperComponent);
   }
