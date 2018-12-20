@@ -1,6 +1,6 @@
-import { setConfig } from '../config';
-import { getLoading, getResults, getFetchTimes } from '../getThingsFromState';
-import { mapResultToProps } from '../mapResultToProps';
+import { region } from '../region';
+
+const { setConfig, getLoading, getResults, getFetchTimes, mapResultToProps } = region;
 
 const setState = (state) => {
   setConfig({

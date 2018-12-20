@@ -1,5 +1,5 @@
 import React from 'react';
-import { region } from './util/config';
+import { region } from './util/region';
 
 const empty = () => null;
 

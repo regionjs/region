@@ -1,6 +1,6 @@
 import { createStore, combineReducers } from 'redux';
 import { reducer as results } from './reducer';
-import { setConfig } from './util/config';
+import { setConfig } from './util/region';
 
 const reducer = combineReducers({ results });
 const store = createStore(reducer);

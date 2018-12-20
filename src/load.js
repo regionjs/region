@@ -1,6 +1,5 @@
-import { getResults as getSnapshot } from './util/getThingsFromState';
 import preCommit from './preCommit';
-import { region } from './util/config';
+import { region, getResults as getSnapshot } from './util/region';
 import { setResult } from './util/constant';
 import { groupWarn } from './util/logger';
 

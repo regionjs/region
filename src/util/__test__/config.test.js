@@ -1,5 +1,7 @@
 import { setLoading, setResult } from '../constant';
-import { region, setConfig } from '../config';
+import { region } from '../region';
+
+const { setConfig } = region;
 
 describe('config', () => {
   test('default', () => {

@@ -1,6 +1,5 @@
-import { getFetchTimes } from './util/getThingsFromState';
 import { setLoading } from './util/constant';
-import { region } from './util/config';
+import { region, getFetchTimes } from './util/region';
 
 const isExpired = (getState, key) => {
   const { expiredTime } = region;
