@@ -1,8 +1,8 @@
-import preCommit from './preCommit';
 import { region, getResults as getSnapshot } from './util/region';
-import { setResult } from './util/constant';
+import { setLoading, setResult } from './util/constant';
 import { groupError } from './util/logger';
 import { isAsync } from './util/isAsync';
+import { shouldThrottle } from './util/shouldThrottle';
 
 const getStore = () => {
   const { store } = region;
@@ -37,6 +37,14 @@ export const set = (key, result, { format } = {}) => {
   return formattedResult;
 };
 
+const toPromise = async ({ Promise, params }) => {
+  if (typeof Promise === 'function') {
+    return Promise(params);
+  }
+  // promise
+  return Promise;
+};
+
 /**
  * @param params Promise may need
  * @param format A function format result to other data structure
@@ -50,7 +58,11 @@ export const load = async (key, Promise, { forceUpdate, params, format } = {}) =
 
   const { dispatch } = getStore();
   const snapshot = getSnapshot(key);
-  const result = await preCommit({ dispatch, key, Promise, snapshot, forceUpdate, params });
+  if (shouldThrottle({ Promise, forceUpdate, key, snapshot })) {
+    return snapshot;
+  }
+  dispatch({ type: setLoading, payload: { key } });
+  const result = await toPromise({ Promise, params });
 
   const formattedResult = formatResult(result, snapshot, key, format);
   dispatch({ type: setResult, payload: { key, result: formattedResult } });

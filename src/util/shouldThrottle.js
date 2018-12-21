@@ -7,4 +7,4 @@ const isExpired = (key) => {
   return now - fetchTime > expiredTime;
 };
 
-export const shouldThrottle = ({ forceUpdate, key, snapshot }) => Boolean(!forceUpdate && !isExpired(key) && snapshot);
+export const shouldThrottle = ({ Promise, forceUpdate, key, snapshot }) => Boolean(typeof Promise === 'function' && !forceUpdate && !isExpired(key) && snapshot);

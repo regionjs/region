@@ -14,9 +14,21 @@ const setState = (state) => {
 };
 
 describe('shouldThrottle', () => {
+  setState();
   test('empty', () => {
-    setState(undefined);
     expect(shouldThrottle({})).toEqual(false);
+  });
+
+  test('promise', () => {
+    expect(shouldThrottle({ Promise: Promise.resolve() })).toEqual(false);
+  });
+
+  test('func', () => {
+    expect(shouldThrottle({ Promise: () => null })).toEqual(false);
+  });
+
+  test('Promise', () => {
+    expect(shouldThrottle({ Promise: () => Promise.resolve() })).toEqual(false);
   });
   // TODO test more
 });
