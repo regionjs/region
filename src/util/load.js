@@ -1,9 +1,9 @@
-import { getResults as getSnapshot } from './util/region';
-import { setLoading, setResult } from './util/constant';
-import { isAsync } from './util/isAsync';
-import { shouldThrottle } from './util/shouldThrottle';
-import { set } from './util/set';
-import { getStore, formatResult } from './util/formatResult';
+import { getResults as getSnapshot } from './region';
+import { setLoading, setResult } from './constant';
+import { isAsync } from './isAsync';
+import { shouldThrottle } from './shouldThrottle';
+import { set } from './set';
+import { getStore, formatResult } from './formatResult';
 
 const toPromise = async ({ Promise, params }) => {
   if (typeof Promise === 'function') {
