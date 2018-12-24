@@ -1,7 +1,6 @@
-import { set } from '../set';
 import { region } from '../region';
 
-const { setConfig } = region;
+const { setConfig, set } = region;
 
 let journey = [];
 setConfig({

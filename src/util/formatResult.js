@@ -1,13 +1,7 @@
-import { region } from './region';
+// import { region } from './region';
 import { groupError } from './logger';
 
-export const getStore = () => {
-  const { store } = region;
-  if (!store || typeof store.dispatch !== 'function' || typeof store.getState !== 'function') {
-    throw Error('setConfig({ store }) must be called');
-  }
-  return store;
-};
+// export const { getStore } = region;
 
 export const formatResult = ({ result, snapshot, key, format }) => {
   if (typeof format !== 'function') {

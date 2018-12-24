@@ -6,6 +6,7 @@ const { setConfig } = region;
 const setState = (state) => {
   setConfig({
     store: {
+      dispatch() {},
       getState() {
         return state;
       }

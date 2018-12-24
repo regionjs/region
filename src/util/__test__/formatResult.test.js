@@ -1,22 +1,4 @@
-import { getStore, formatResult } from '../formatResult';
-import { region } from '../region';
-
-const { setConfig } = region;
-
-describe('getStore', () => {
-  test('throw', () => {
-    expect(() => getStore()).toThrow();
-  });
-
-  test('getStore', () => {
-    const dispatch = () => {};
-    const getState = () => {};
-    setConfig({
-      store: { dispatch, getState }
-    });
-    expect(getStore()).toEqual({ dispatch, getState });
-  });
-});
+import { formatResult } from '../formatResult';
 
 describe('formatResult', () => {
   test('throw', () => {

@@ -1,10 +1,26 @@
 import { region } from '../region';
 
-const { setConfig, getLoading, getResults, getFetchTimes, mapResultToProps } = region;
+const { setConfig, getStore, getLoading, getResults, getFetchTimes, mapResultToProps } = region;
+
+describe('getStore', () => {
+  test('throw', () => {
+    expect(() => getStore()).toThrow();
+  });
+
+  test('getStore', () => {
+    const dispatch = () => {};
+    const getState = () => {};
+    setConfig({
+      store: { dispatch, getState }
+    });
+    expect(getStore()).toEqual({ dispatch, getState });
+  });
+});
 
 const setState = (state) => {
   setConfig({
     store: {
+      dispatch() {},
       getState() {
         return state;
       }
