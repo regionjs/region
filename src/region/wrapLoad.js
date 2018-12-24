@@ -1,8 +1,8 @@
-import { getResults as getSnapshot } from '../util/region';
 import { formatResult } from '../util/formatResult';
 import { setLoading, setResult } from '../util/constant';
 import { isAsync } from '../util/isAsync';
 import { shouldThrottle } from '../util/shouldThrottle';
+import { getStore } from '../global/store';
 
 const toPromise = async ({ Promise, params }) => {
   if (typeof Promise === 'function') {
@@ -31,10 +31,10 @@ export default (RegionIn) => {
         return set(key, Promise);
       }
 
-      const { getStore } = this;
+      const { getResults: getSnapshot } = this;
       const { dispatch } = getStore();
       const snapshot = getSnapshot(key);
-      if (shouldThrottle({ Promise, forceUpdate, key, snapshot })) {
+      if (shouldThrottle({ Promise, forceUpdate, key, snapshot, region: this })) {
         return snapshot;
       }
       dispatch({ type: setLoading, payload: { key } });

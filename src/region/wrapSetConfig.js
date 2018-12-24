@@ -1,3 +1,5 @@
+import { setStore } from '../global/store';
+
 export default (RegionIn) => {
   class Region extends RegionIn {
     constructor() {
@@ -16,7 +18,7 @@ export default (RegionIn) => {
       } = config;
 
       if (store !== undefined) {
-        this.store = store;
+        setStore(store);
       }
       if (reducerPath !== undefined) {
         this.reducerPath = reducerPath;

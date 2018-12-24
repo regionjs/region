@@ -1,7 +1,4 @@
-// import { region } from './region';
 import { groupError } from './logger';
-
-// export const { getStore } = region;
 
 export const formatResult = ({ result, snapshot, key, format }) => {
   if (typeof format !== 'function') {

@@ -1,5 +1,5 @@
+import { region } from '../../global/region';
 import { setLoading, setResult } from '../constant';
-import { region } from '../region';
 
 const { setConfig } = region;
 

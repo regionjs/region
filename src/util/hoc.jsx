@@ -1,9 +1,6 @@
 import React from 'react';
-import { region } from './util/region';
 
-const empty = () => null;
-
-export default (DisplayComponent = empty, LoadingComponent = region.silentConnect ? empty : DisplayComponent) => {
+export default (DisplayComponent, LoadingComponent) => {
   const ConnectWith = (props) => {
     const { loading } = props;
     return (loading ? <LoadingComponent {...props} /> : <DisplayComponent {...props} />);

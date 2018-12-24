@@ -1,4 +1,4 @@
-import { region } from '../region';
+import { region } from '../../global/region';
 
 const { setConfig, set } = region;
 

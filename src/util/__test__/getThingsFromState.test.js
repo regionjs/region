@@ -1,6 +1,7 @@
-import { region } from '../region';
+import { region } from '../../global/region';
+import { getStore } from '../../global/store';
 
-const { setConfig, getStore, getLoading, getResults, getFetchTimes, mapResultToProps } = region;
+const { setConfig, getLoading, getResults, getFetchTimes, mapResultToProps } = region;
 
 describe('getStore', () => {
   test('throw', () => {
