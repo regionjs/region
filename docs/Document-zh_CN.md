@@ -5,10 +5,25 @@
 建议不用 redux，直接用 Provider 包裹你的 App。
 
 ```javascript
+import 'redux-loadings/lib/sideEffect';
 import { Provider } from 'redux-loadings';
+import App from './App';
 
 <Provider><App /></Provider>
 ```
+
+如果你在使用自己的 store，创建一个文件名为 `Provider.js`，然后写：
+
+```javascript
+import { getProvider } from 'redux-loadings';
+import store, { reducers } from './store';
+
+const Provider = getProvider({ store, reducers });
+
+export default Provider;
+```
+
+> 此时不用 import sideEffect
 
 ### load
 
@@ -72,6 +87,18 @@ const Enhanced = connectWith({
 `loading === true` 当 `user.loading === true || follower.loading === true`。
 
 Loading 组件也会得到数据。你可以使用这些数据部分的进行渲染。
+
+### Region
+
+你能创建多个 region 并且它们是分离的。
+
+```javascript
+import { Region } from 'redux-loadings';
+
+const region = new Region();
+
+const { set, load, connectWith } = region;
+```
 
 ### setConfig
 

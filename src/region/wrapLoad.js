@@ -40,7 +40,7 @@ export default (RegionIn) => {
       dispatch({ type: setLoading, payload: { key } });
       const result = await toPromise({ Promise, params });
 
-      const formattedResult = formatResult(result, snapshot, key, format);
+      const formattedResult = formatResult({ result, snapshot, key, format });
       dispatch({ type: setResult, payload: { key, result: formattedResult } });
       return formattedResult;
     }

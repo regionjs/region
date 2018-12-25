@@ -2,6 +2,30 @@
 
 [中文版](https://github.com/dancerphil/redux-loadings/blob/master/docs/Migrate-zh_CN.md)
 
+## Migrate From 0.5 to 0.6
+
+expireTime is set to 0, you can remove your forceUpdate.
+
+Or if you want expireTime back, use setConfig.
+
+If you are using Provider, import 'redux-loadings/lib/sideEffect' before
+
+```javascript
+import 'redux-loadings/lib/sideEffect';
+import { Provider } from 'redux-loadings';
+```
+
+If you are using your own store, create a file named `Provider.js`, then write:
+
+```javascript
+import { getProvider } from 'redux-loadings';
+import store, { reducers } from './store';
+
+const Provider = getProvider({ store, reducers });
+
+export default Provider;
+```
+
 ## Migrate From 0.5.0 to 0.5.1
 
 set & load is refactored. You may meet some tiny difference.

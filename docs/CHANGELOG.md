@@ -1,10 +1,16 @@
 # CHANGELOG
 
-### latest
+### 0.6.0
 
-- selector
+- Region
+
+- sideEffect
+
+- getProvider
 
 ### 0.5.x
+
+- selector
 
 - remove connect
 
