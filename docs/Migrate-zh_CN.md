@@ -1,5 +1,29 @@
 # 迁移文档
 
+## 0.5 升级至 0.6
+
+expireTime 现在默认为 0，你可以移除所有的 forceUpdate 了。
+
+或者如果你需要 expireTime ，你可以用 setConfig 来设置。
+
+如果你正在使用 Provider, 在它前面 import 'redux-loadings/lib/sideEffect'
+
+```javascript
+import 'redux-loadings/lib/sideEffect';
+import { Provider } from 'redux-loadings';
+```
+
+如果你在使用自己的 store，创建一个文件名为 `Provider.js`，然后写：
+
+```javascript
+import { getProvider } from 'redux-loadings';
+import store, { reducers } from './store';
+
+const Provider = getProvider({ store, reducers });
+
+export default Provider;
+```
+
 ## 0.5.0 升级至 0.5.1
 
 set 与 load 重构了，处理某些值如 null 和 promise 时会有细微的差别，且某些不被推荐的情况下 forceUpdate 的处理有有区别。

@@ -52,11 +52,11 @@ export default connectWith(['user', 'follower'], Display, Loading);
 
 ## 文档
 
-[中文文档](https://github.com/dancerphil/redux-loadings/blob/master/document/Document-zh_CN.md)
+[中文文档](https://github.com/dancerphil/redux-loadings/blob/master/docs/Document-zh_CN.md)
 
-[迁移指南](https://github.com/dancerphil/redux-loadings/blob/master/document/Migrate-zh_CN.md)
+[迁移指南](https://github.com/dancerphil/redux-loadings/blob/master/docs/Migrate-zh_CN.md)
 
-[更新日志](https://github.com/dancerphil/redux-loadings/blob/master/document/CHANGELOG.md)
+[更新日志](https://github.com/dancerphil/redux-loadings/blob/master/docs/CHANGELOG.md)
 
 ## 示例
 

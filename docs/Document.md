@@ -1,16 +1,31 @@
 # Document
 
-[中文版](https://github.com/dancerphil/redux-loadings/blob/master/document/Document-zh_CN.md)
+[中文版](https://github.com/dancerphil/redux-loadings/blob/master/docs/Document-zh_CN.md)
 
 ### Provider
 
 You are recommended not to use redux. Use Provider to surround your App.
 
 ```javascript
+import 'redux-loadings/lib/sideEffect';
 import { Provider } from 'redux-loadings';
+import App from './App';
 
-<Provider>...</Provider>
+<Provider><App /></Provider>
 ```
+
+If you are using your own store, create a file named `Provider.js`, then write:
+
+```javascript
+import { getProvider } from 'redux-loadings';
+import store, { reducers } from './store';
+
+const Provider = getProvider({ store, reducers });
+
+export default Provider;
+```
+
+> No need to import sideEffect if you do so
 
 ### load
 
@@ -74,6 +89,18 @@ const Enhanced = connectWith({
 `loading === true` if `user.loading === true || follower.loading === true`.
 
 Component Loading receives data as well. You can provide the loading component renders part of the data.
+
+### Region
+
+You can create several region and they are separated.
+
+```javascript
+import { Region } from 'redux-loadings';
+
+const region = new Region();
+
+const { set, load, connectWith } = region;
+```
 
 ### setConfig
 

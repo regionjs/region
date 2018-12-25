@@ -1,6 +1,6 @@
 {
   "name": "redux-loadings",
-  "version": "0.5.2",
+  "version": "0.6.0-alpha",
   "description": "redux-loadings",
   "repository": "github:dancerphil/redux-loadings",
   "keywords": [
@@ -15,7 +15,7 @@
     "lint": "eslint --ignore-path .gitignore --ext .js,jsx ./src",
     "test": "jest --colors --coverage",
     "codecov": "jest --colors --coverage && codecov",
-    "build": "babel src --out-dir lib --ignore **/*.test.js",
+    "build": "rm -rf lib/ && babel src --out-dir lib --ignore **/*.test.js",
     "check": "npm run build && npm run lint && npm run test",
     "prepublish": "npm run check"
   },

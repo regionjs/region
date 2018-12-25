@@ -7,7 +7,7 @@
 
 A replacement tool of `redux` to handle sync & async action flow. Extremely simple API!
 
-[中文版](https://github.com/dancerphil/redux-loadings/blob/master/document/README-zh_CN.md)
+[中文版](https://github.com/dancerphil/redux-loadings/blob/master/docs/README-zh_CN.md)
 
 ## Get Started
 
@@ -54,11 +54,11 @@ export default connectWith(['user', 'follower'], Display, Loading);
 
 ## Docs
 
-[Document](https://github.com/dancerphil/redux-loadings/blob/master/document/Document.md)
+[Document](https://github.com/dancerphil/redux-loadings/blob/master/docs/Document.md)
 
-[Migrate Guide](https://github.com/dancerphil/redux-loadings/blob/master/document/Migrate.md)
+[Migrate Guide](https://github.com/dancerphil/redux-loadings/blob/master/docs/Migrate.md)
 
-[ChangeLog](https://github.com/dancerphil/redux-loadings/blob/master/document/CHANGELOG.md)
+[ChangeLog](https://github.com/dancerphil/redux-loadings/blob/master/docs/CHANGELOG.md)
 
 ## Example
 

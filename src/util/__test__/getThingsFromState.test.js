@@ -1,9 +1,27 @@
-import { setConfig } from '../config';
-import { getLoading, getResults, getFetchTimes, mapResultToProps } from '../getThingsFromState';
+import { region } from '../../global/region';
+import { getStore } from '../../global/store';
+
+const { setConfig, getLoading, getResults, getFetchTimes, mapResultToProps } = region;
+
+describe('getStore', () => {
+  test('throw', () => {
+    expect(() => getStore()).toThrow();
+  });
+
+  test('getStore', () => {
+    const dispatch = () => {};
+    const getState = () => {};
+    setConfig({
+      store: { dispatch, getState }
+    });
+    expect(getStore()).toEqual({ dispatch, getState });
+  });
+});
 
 const setState = (state) => {
   setConfig({
     store: {
+      dispatch() {},
       getState() {
         return state;
       }

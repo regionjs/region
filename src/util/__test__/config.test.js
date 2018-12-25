@@ -1,11 +1,13 @@
+import { region } from '../../global/region';
 import { setLoading, setResult } from '../constant';
-import { region, setConfig } from '../config';
+
+const { setConfig } = region;
 
 describe('config', () => {
   test('default', () => {
     const { reducerPath, enableLog, expiredTime, strictLoading, silentConnect } = region;
     expect(reducerPath).toBe(null);
-    expect(expiredTime).toBe(300000);
+    expect(expiredTime).toBe(0);
     expect(enableLog).toBe(true);
     expect(strictLoading).toBe(true);
     expect(silentConnect).toBe(false);
@@ -16,7 +18,7 @@ describe('config', () => {
     setConfig();
     const { reducerPath, enableLog, expiredTime, strictLoading, silentConnect } = region;
     expect(reducerPath).toBe(null);
-    expect(expiredTime).toBe(300000);
+    expect(expiredTime).toBe(0);
     expect(enableLog).toBe(true);
     expect(strictLoading).toBe(true);
     expect(silentConnect).toBe(false);
@@ -27,7 +29,7 @@ describe('config', () => {
     setConfig({ enableLog: false });
     const { reducerPath, enableLog, expiredTime } = region;
     expect(reducerPath).toBe(null);
-    expect(expiredTime).toBe(300000);
+    expect(expiredTime).toBe(0);
     expect(enableLog).toBe(false);
   });
   test('set config', () => {

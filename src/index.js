@@ -1,9 +1,8 @@
 import '@babel/polyfill';
-import { load, set } from './load';
-import { mapResultToProps, getLoading, getResults, getFetchTimes } from './util/getThingsFromState';
-import { reducer } from './reducer';
-import { Provider } from './Provider';
-import { connectWith } from './connect';
-import { setConfig } from './util/config';
+import { Provider, getProvider } from './global/Provider';
+import { region } from './global/region';
+import Region from './region';
 
-export { load, set, mapResultToProps, getLoading, getResults, getFetchTimes, reducer, Provider, connectWith, setConfig };
+export const { setConfig, getLoading, getResults, getFetchTimes, mapResultToProps, set, load, connectWith, reducer } = region;
+
+export { Region, Provider, getProvider };
