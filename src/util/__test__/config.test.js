@@ -1,4 +1,4 @@
-import { region } from '../../global/region';
+import { region } from './region';
 
 const { setConfig } = region;
 
@@ -10,8 +10,8 @@ describe('config', () => {
     expect(enableLog).toBe(true);
     expect(strictLoading).toBe(true);
     expect(silentConnect).toBe(false);
-    expect(SET_LOADING).toBe('@redux-loadings/SET_LOADING');
-    expect(SET_RESULT).toBe('@redux-loadings/SET_RESULT');
+    expect(SET_LOADING).toBe('@region/SET_LOADING');
+    expect(SET_RESULT).toBe('@region/SET_RESULT');
   });
   test('set nothing', () => {
     setConfig();
@@ -21,8 +21,8 @@ describe('config', () => {
     expect(enableLog).toBe(true);
     expect(strictLoading).toBe(true);
     expect(silentConnect).toBe(false);
-    expect(SET_LOADING).toBe('@redux-loadings/SET_LOADING');
-    expect(SET_RESULT).toBe('@redux-loadings/SET_RESULT');
+    expect(SET_LOADING).toBe('@region/SET_LOADING');
+    expect(SET_RESULT).toBe('@region/SET_RESULT');
   });
   test('set enableLog as false', () => {
     setConfig({ enableLog: false });

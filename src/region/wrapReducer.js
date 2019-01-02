@@ -4,12 +4,12 @@ import { assignValueDeep, setValueDeep } from '../util/reducerPrototype';
 export default (RegionIn) => {
   class Region extends RegionIn {
     reducer = (state = {}, action) => {
-      const { enableLog, reducerPath, SET_LOADING, SET_RESULT } = this;
+      const { enableLog, SET_LOADING, SET_RESULT } = this;
       const enableLogInDev = process.env.NODE_ENV !== 'production' && enableLog;
       if (action.type === SET_LOADING) {
         const { key } = action.payload;
         if (enableLogInDev) {
-          debug(`@${reducerPath}`, key);
+          debug(SET_LOADING, key);
         }
         return assignValueDeep(state, ['loadings', key], true);
       }
@@ -19,7 +19,7 @@ export default (RegionIn) => {
         setValueDeep(state, ['fetchTimes', key], new Date().getTime());
         const nextState = assignValueDeep(state, ['loadings', key], false);
         if (enableLogInDev) {
-          group(`@${reducerPath}`, key, result, nextState);
+          group(SET_RESULT, key, result, nextState);
         }
         return nextState;
       }

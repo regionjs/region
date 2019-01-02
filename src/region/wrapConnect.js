@@ -13,7 +13,7 @@ export default (RegionIn) => {
         const WrapperComponent = hoc(DisplayComponent || empty, LoadingComponent || defaultLoading);
         return rawConnect(mapResultToProps(key))(WrapperComponent);
       }
-      console.warn('key should be string or array of string');
+      console.error('invalid key, provide valid key or use connect from \'react-redux\' directly');
       return rawConnect(key)(DisplayComponent);
     }
   }
