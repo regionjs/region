@@ -50,7 +50,7 @@ export default connectWith(['user', 'follower'], Display);
 
 ## Docs
 
-[Document](https://github.com/dancerphil/redux-loadings/blob/master/docs/Document.md)
+[Document And Best Practices](https://github.com/dancerphil/redux-loadings/blob/master/docs/Document.md)
 
 [Migrate Guide](https://github.com/dancerphil/redux-loadings/blob/master/docs/Migrate.md)
 
@@ -69,9 +69,7 @@ npm start
 
 ## TODO
 
-- [ ] release es version
 - [ ] release 1.0 when everything is ready
-- [ ] config to switch base between redux and react.Context
 - [ ] new site
 - [ ] loading => pendingMutex
 - [ ] change package name to react-name since redux is not related anymore

@@ -48,7 +48,7 @@ export default connectWith(['user', 'follower'], Display);
 
 ## 文档
 
-[中文文档](https://github.com/dancerphil/redux-loadings/blob/master/docs/Document-zh_CN.md)
+[中文文档和最佳实践](https://github.com/dancerphil/redux-loadings/blob/master/docs/Document-zh_CN.md)
 
 [迁移指南](https://github.com/dancerphil/redux-loadings/blob/master/docs/Migrate-zh_CN.md)
 
