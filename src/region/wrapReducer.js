@@ -10,12 +10,12 @@ export default (RegionIn) => {
     }
 
     reducer(state = {}, action) {
-      const { enableLog } = this;
+      const { enableLog, reducerPath } = this;
       const enableLogInDev = process.env.NODE_ENV !== 'production' && enableLog;
       if (action.type === setLoading) {
         const { key } = action.payload;
         if (enableLogInDev) {
-          debug(setLoading, key);
+          debug(`@${reducerPath}`, key);
         }
         return assignValueDeep(state, ['loadings', key], true);
       }
@@ -25,7 +25,7 @@ export default (RegionIn) => {
         setValueDeep(state, ['fetchTimes', key], new Date().getTime());
         const nextState = assignValueDeep(state, ['loadings', key], false);
         if (enableLogInDev) {
-          group(setResult, key, result, nextState);
+          group(`@${reducerPath}`, key, result, nextState);
         }
         return nextState;
       }
