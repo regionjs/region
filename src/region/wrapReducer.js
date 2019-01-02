@@ -3,12 +3,7 @@ import { assignValueDeep, setValueDeep } from '../util/reducerPrototype';
 
 export default (RegionIn) => {
   class Region extends RegionIn {
-    constructor() {
-      super();
-      this.reducer = this.reducer.bind(this);
-    }
-
-    reducer(state = {}, action) {
+    reducer = (state = {}, action) => {
       const { enableLog, reducerPath, SET_LOADING, SET_RESULT } = this;
       const enableLogInDev = process.env.NODE_ENV !== 'production' && enableLog;
       if (action.type === SET_LOADING) {

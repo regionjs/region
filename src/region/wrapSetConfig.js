@@ -2,12 +2,8 @@ import { setStore } from '../global/store';
 
 export default (RegionIn) => {
   class Region extends RegionIn {
-    constructor() {
-      super();
-      this.setConfig = this.setConfig.bind(this);
-    }
-
-    setConfig(config = {}) {
+    setConfig = (config = {}) => {
+      console.warn('setConfig is dangerous');
       const {
         store,
         reducerPath,
@@ -18,6 +14,7 @@ export default (RegionIn) => {
       } = config;
 
       if (store !== undefined) {
+        console.warn('setStore in setConfig is dangerous');
         setStore(store);
       }
       if (reducerPath !== undefined) {

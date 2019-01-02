@@ -15,15 +15,7 @@ const formatLoading = (loading, { strictLoading }) => {
 
 export default (RegionIn) => {
   class Region extends RegionIn {
-    constructor() {
-      super();
-      this.getState = this.getState.bind(this);
-      this.getLoading = this.getLoading.bind(this);
-      this.getResults = this.getResults.bind(this);
-      this.getFetchTimes = this.getFetchTimes.bind(this);
-    }
-
-    getState() {
+    getState = () => {
       const { reducerPath } = this;
       const { getState } = getStore();
       const state = getState();
@@ -33,7 +25,7 @@ export default (RegionIn) => {
       return state[reducerPath] || {};
     }
 
-    getLoading(path) {
+    getLoading = (path) => {
       const { getState, strictLoading } = this;
       const { loadings } = getState();
       if (!loadings) {
@@ -50,7 +42,7 @@ export default (RegionIn) => {
       return formatLoading(loadings[path], { strictLoading });
     }
 
-    getResults(path) {
+    getResults = (path) => {
       const { getState } = this;
       const { results = {} } = getState();
       if (Array.isArray(path)) {
@@ -64,7 +56,7 @@ export default (RegionIn) => {
       return results[path];
     }
 
-    getFetchTimes(path) {
+    getFetchTimes = (path) => {
       const { getState } = this;
       const { fetchTimes = {} } = getState();
       if (Array.isArray(path)) {

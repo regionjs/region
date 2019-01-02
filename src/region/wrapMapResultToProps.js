@@ -15,12 +15,7 @@ const getProps = (key, loading, results) => {
 
 export default (RegionIn) => {
   class Region extends RegionIn {
-    constructor() {
-      super();
-      this.mapResultToProps = this.mapResultToProps.bind(this);
-    }
-
-    mapResultToProps(key) {
+    mapResultToProps = (key) => {
       const { getLoading, getResults } = this;
       return (state, ownProps) => {
         if (typeof key === 'string' || Array.isArray(key)) {

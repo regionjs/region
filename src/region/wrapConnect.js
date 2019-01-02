@@ -6,12 +6,7 @@ const empty = () => null;
 
 export default (RegionIn) => {
   class Region extends RegionIn {
-    constructor() {
-      super();
-      this.connectWith = this.connectWith.bind(this);
-    }
-
-    connectWith(key, DisplayComponent, LoadingComponent) {
+    connectWith = (key, DisplayComponent, LoadingComponent) => {
       if (isValidConnectKey(key)) {
         const { mapResultToProps, silentConnect } = this;
         const defaultLoading = silentConnect ? empty : DisplayComponent;

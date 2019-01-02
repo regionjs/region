@@ -13,17 +13,12 @@ const toPromise = async ({ Promise, params }) => {
 
 export default (RegionIn) => {
   class Region extends RegionIn {
-    constructor() {
-      super();
-      this.load = this.load.bind(this);
-    }
-
     /**
      * @param params Promise may need
      * @param format A function format result to other data structure
      * @param forceUpdate true | false
      */
-    async load(key, Promise, { forceUpdate, params, format } = {}) {
+    load = async (key, Promise, { forceUpdate, params, format } = {}) => {
       if (!isAsync(Promise)) {
         console.warn('set result directly');
         const { set } = this;
