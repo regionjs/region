@@ -22,6 +22,8 @@ export default (RegionIn) => {
       }
       if (reducerPath !== undefined) {
         this.reducerPath = reducerPath;
+        this.SET_LOADING = `@${reducerPath}/SET_LOADING`;
+        this.SET_RESULT = `@${reducerPath}/SET_RESULT`;
       }
       if (expiredTime !== undefined) {
         this.expiredTime = expiredTime;

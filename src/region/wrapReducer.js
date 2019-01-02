@@ -1,5 +1,4 @@
 import { debug, group } from '../util/logger';
-import { setLoading, setResult } from '../util/constant';
 import { assignValueDeep, setValueDeep } from '../util/reducerPrototype';
 
 export default (RegionIn) => {
@@ -10,16 +9,16 @@ export default (RegionIn) => {
     }
 
     reducer(state = {}, action) {
-      const { enableLog, reducerPath } = this;
+      const { enableLog, reducerPath, SET_LOADING, SET_RESULT } = this;
       const enableLogInDev = process.env.NODE_ENV !== 'production' && enableLog;
-      if (action.type === setLoading) {
+      if (action.type === SET_LOADING) {
         const { key } = action.payload;
         if (enableLogInDev) {
           debug(`@${reducerPath}`, key);
         }
         return assignValueDeep(state, ['loadings', key], true);
       }
-      if (action.type === setResult) {
+      if (action.type === SET_RESULT) {
         const { key, result } = action.payload;
         setValueDeep(state, ['results', key], result);
         setValueDeep(state, ['fetchTimes', key], new Date().getTime());
