@@ -42,9 +42,7 @@ const result = await load(key, Promise, { params, forceUpdate, format });
 
 `param` is what `Promise` may need. Promise is called when needed and pass the `param`.
 
-`forceUpdate: true | false`, default as `false`, throttles if the last load call is in the past 5 minutes.
-
-`forceUpdate: true` calls Promise at once.
+`forceUpdate: true | false`, default as `false`, throttles if the last load call is in the past time that is set. If you don't config expireTime, you may not use forceUpdate. And `forceUpdate: true` calls Promise at once.
 
 `format` effects after promise resolved and before result is stored, you may do some heavy-calculating task and side effects. It may be something like `(result, snapshot) => result.map(...)`.
 

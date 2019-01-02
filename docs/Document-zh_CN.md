@@ -40,7 +40,7 @@ const result = await load(key, Promise, { params, forceUpdate, format });
 
 `param` 是 `Promise` 需要的参数，当函数发起时会传入 param。
 
-`forceUpdate: true | false` 默认为 `false`，如果5分钟内有发起异步就会使用上一次结果。
+`forceUpdate: true | false` 默认为 `false`，在设定的时间内有发起异步就会使用上一次结果。如果你没有设定时间就不需要这个参数。
 
 `forceUpdate: true` 会立刻调用 Promise。
 
