@@ -1,8 +1,38 @@
 # Private API
 
+### getProvider
+
+如果你在使用自己的 store，创建一个文件名为 `Provider.js`，然后写：
+
+```javascript
+import { getProvider } from 'redux-loadings';
+import store, { reducers } from './store';
+
+const Provider = getProvider({ store, reducers });
+
+export default Provider;
+```
+
+> 此时不用 import sideEffect
+
+### load#forceUpdate
+
+```javascript
+import { load } from 'redux-loadings';
+
+load(key, Promise, { params, forceUpdate, format });
+
+// or
+const result = await load(key, Promise, { params, forceUpdate, format });
+```
+
+`forceUpdate: true | false` 默认为 `false`，在设定的时间内有发起异步就会使用上一次结果。如果你没有设定 expireTime 就不需要这个参数。
+
+`forceUpdate: true` 会立刻调用 Promise。
+
 ### setConfig
 
-这是可选的。
+可以用 new Region 代替。
 
 ```javascript
 setConfig({

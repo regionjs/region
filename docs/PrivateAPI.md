@@ -2,9 +2,39 @@
 
 [中文版](https://github.com/dancerphil/redux-loadings/blob/master/docs/PrivateAPI-zh_CN.md)
 
+### getProvider
+
+If you are using your own store, create a file named `Provider.js`, then write:
+
+```javascript
+import { getProvider } from 'redux-loadings';
+import store, { reducers } from './store';
+
+const Provider = getProvider({ store, reducers });
+
+export default Provider;
+```
+
+> No need to import sideEffect if you do so
+
+### load#forceUpdate
+
+```javascript
+import { load } from 'redux-loadings';
+
+load(key, asyncFunction, { params, forceUpdate, format });
+
+// or
+const result = await load(key, Promise, { params, forceUpdate, format });
+```
+
+`forceUpdate: true | false`, default as `false`, throttles if the last load call is in the past time that is set. If you don't config expireTime, you may not use forceUpdate.
+
+`forceUpdate: true` calls Promise at once.
+
 ### setConfig
 
-It is optional.
+Use new Region instead of setConfig.
 
 ```javascript
 setConfig({

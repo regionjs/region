@@ -1,5 +1,12 @@
 # Document
 
+[Provider](#Provider)
+[load](#load)
+[set](#set)
+[connectWith](#connectWith)
+[Region](#Region)
+[Other Private API](https://github.com/dancerphil/redux-loadings/blob/master/docs/PrivateAPI-zh_CN.md)
+
 ### Provider
 
 建议不用 redux，直接用 Provider 包裹你的 App。
@@ -12,37 +19,22 @@ import App from './App';
 <Provider><App /></Provider>
 ```
 
-如果你在使用自己的 store，创建一个文件名为 `Provider.js`，然后写：
-
-```javascript
-import { getProvider } from 'redux-loadings';
-import store, { reducers } from './store';
-
-const Provider = getProvider({ store, reducers });
-
-export default Provider;
-```
-
-> 此时不用 import sideEffect
+如果你在使用自己的 store，参见 [`getProvider`](https://github.com/dancerphil/redux-loadings/blob/master/docs/PrivateAPI-zh_CN.md#getProvider)
 
 ### load
 
 ```javascript
 import { load } from 'redux-loadings';
 
-load(key, Promise, { params, forceUpdate, format });
+load(key, Promise, { params, format });
 
 // or
-const result = await load(key, Promise, { params, forceUpdate, format });
+const result = await load(key, Promise, { params, format });
 ```
 
 `Promise` 是一个返回 promise 的函数
 
 `param` 是 `Promise` 需要的参数，当函数发起时会传入 param。
-
-`forceUpdate: true | false` 默认为 `false`，在设定的时间内有发起异步就会使用上一次结果。如果你没有设定时间就不需要这个参数。
-
-`forceUpdate: true` 会立刻调用 Promise。
 
 `format` 在 promise resolved 并在存入 store 之前被调用。你可以在这里做一些计算和副作用。函数的形式可能为 `(result, snapshot) => result.map(...)`.
 
@@ -53,7 +45,7 @@ const result = await load(key, Promise, { params, forceUpdate, format });
 ```javascript
 import { set } from 'redux-loadings';
 
-set(key, result);
+set(key, result, { format });
 ```
 
 ### connectWith
@@ -95,9 +87,11 @@ Loading 组件也会得到数据。你可以使用这些数据部分的进行渲
 ```javascript
 import { Region } from 'redux-loadings';
 
-const region = new Region();
+// TODO new feature in 0.6.0
+const region = new Region(config);
 
 const { set, load, connectWith } = region;
 ```
+### Other Private API
 
 [Private API](https://github.com/dancerphil/redux-loadings/blob/master/docs/PrivateAPI-zh_CN.md)
