@@ -3,10 +3,15 @@
 [中文版](https://github.com/dancerphil/redux-loadings/blob/master/docs/Document-zh_CN.md)
 
 [Provider](#Provider)
+
 [load](#load)
+
 [set](#set)
+
 [connectWith](#connectWith)
+
 [Region](#Region)
+
 [Other Private API](https://github.com/dancerphil/redux-loadings/blob/master/docs/PrivateAPI.md)
 
 ### Provider
@@ -94,5 +99,7 @@ const region = new Region(config);
 
 const { set, load, connectWith } = region;
 ```
+
+### Other Private API
 
 [Private API](https://github.com/dancerphil/redux-loadings/blob/master/docs/PrivateAPI.md)

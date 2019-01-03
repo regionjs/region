@@ -1,10 +1,15 @@
 # Document
 
 [Provider](#Provider)
+
 [load](#load)
+
 [set](#set)
+
 [connectWith](#connectWith)
+
 [Region](#Region)
+
 [Other Private API](https://github.com/dancerphil/redux-loadings/blob/master/docs/PrivateAPI-zh_CN.md)
 
 ### Provider
