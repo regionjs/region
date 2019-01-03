@@ -1,3 +1,3 @@
-import Region from '../region/index';
+import Region from '../region';
 
-export const region = new Region();
+export const region = new Region({ reducerPath: 'region' });

@@ -1,4 +1,4 @@
-import { region } from '../../global/region';
+import { region } from './region';
 import { getStore } from '../../global/store';
 
 const { setConfig, getLoading, getResults, getFetchTimes, mapResultToProps } = region;

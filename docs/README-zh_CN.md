@@ -13,46 +13,42 @@
 npm i redux-loadings
 ```
 
-创建一个文件 `load.js`
-
-```javascript
-import { load } from 'redux-loadings';
-import { fetchUser } from './fetch'; // somewhere with axios
-
-export const loadUser = () => load('user', fetchUser);
-```
-
 然后创建你的组件
 
 ```jsx harmony
 import { connectWith } from 'redux-loadings';
-import { loadUser } from './load';
+import { fetchUser } from './fetch'; // somewhere with axios
 
-loadUser();
+load('user', fetchUser);
 
-const Display = ({ user }) => {...}
+const Display = ({ user }) => <div>{user}</div>
 
-export default connectWith('user', Display, Loading);
+export default connectWith('user', Display);
 ```
 
 或者
 
 ```jsx harmony
 import { connectWith } from 'redux-loadings';
-import { loadUser, loadFollower } from './load';
+import { fetchUser, fetchFollower } from './fetch'; // somewhere with axios
 
-loadUser();
-loadFollower();
-// <Button onClick={loadFollower} />
+load('user', fetchUser);
+const handleClick = () => load('follower', fetchFollower);
 
-const Display = ({ user, follower }) => {...}
+const Display = ({ loading, user, follower }) => (
+  <div>
+    {user}
+    {follower}
+    <Button loading={loading} onClick={handleClick} />
+  </div>
+);
 
-export default connectWith(['user', 'follower'], Display, Loading);
+export default connectWith(['user', 'follower'], Display);
 ```
 
 ## 文档
 
-[中文文档](https://github.com/dancerphil/redux-loadings/blob/master/docs/Document-zh_CN.md)
+[中文文档和最佳实践](https://github.com/dancerphil/redux-loadings/blob/master/docs/Document-zh_CN.md)
 
 [迁移指南](https://github.com/dancerphil/redux-loadings/blob/master/docs/Migrate-zh_CN.md)
 

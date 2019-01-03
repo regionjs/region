@@ -2,6 +2,7 @@ const isExpired = ({ key, region }) => {
   if (!region) {
     return true;
   }
+  // TODO lift up
   const { expiredTime, getFetchTimes } = region;
   const fetchTime = getFetchTimes(key);
   const now = new Date().getTime();

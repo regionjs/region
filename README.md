@@ -15,46 +15,42 @@ A replacement tool of `redux` to handle sync & async action flow. Extremely simp
 npm i redux-loadings
 ```
 
-create a file named `load.js`
-
-```javascript
-import { load } from 'redux-loadings';
-import { fetchUser } from './fetch'; // somewhere with axios
-
-export const loadUser = () => load('user', fetchUser);
-```
-
 Then create your Component
 
 ```jsx harmony
 import { connectWith } from 'redux-loadings';
-import { loadUser } from './load';
+import { fetchUser } from './fetch'; // somewhere with axios
 
-loadUser();
+load('user', fetchUser);
 
-const Display = ({ user }) => {...}
+const Display = ({ user }) => <div>{user}</div>
 
-export default connectWith('user', Display, Loading);
+export default connectWith('user', Display);
 ```
 
 or
 
 ```jsx harmony
 import { connectWith } from 'redux-loadings';
-import { loadUser, loadFollower } from './load';
+import { fetchUser, fetchFollower } from './fetch'; // somewhere with axios
 
-loadUser();
-loadFollower();
-// <Button onClick={loadFollower} />
+load('user', fetchUser);
+const handleClick = () => load('follower', fetchFollower);
 
-const Display = ({ user, follower }) => {...}
+const Display = ({ loading, user, follower }) => (
+  <div>
+    {user}
+    {follower}
+    <Button loading={loading} onClick={handleClick} />
+  </div>
+);
 
-export default connectWith(['user', 'follower'], Display, Loading);
+export default connectWith(['user', 'follower'], Display);
 ```
 
 ## Docs
 
-[Document](https://github.com/dancerphil/redux-loadings/blob/master/docs/Document.md)
+[Document And Best Practices](https://github.com/dancerphil/redux-loadings/blob/master/docs/Document.md)
 
 [Migrate Guide](https://github.com/dancerphil/redux-loadings/blob/master/docs/Migrate.md)
 
@@ -73,9 +69,7 @@ npm start
 
 ## TODO
 
-- [ ] release es version
 - [ ] release 1.0 when everything is ready
-- [ ] config to switch base between redux and react.Context
 - [ ] new site
 - [ ] loading => pendingMutex
 - [ ] change package name to react-name since redux is not related anymore

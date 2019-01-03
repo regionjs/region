@@ -1,6 +1,6 @@
 {
   "name": "redux-loadings",
-  "version": "0.6.0-alpha",
+  "version": "0.6.0-alpha.1",
   "description": "redux-loadings",
   "repository": "github:dancerphil/redux-loadings",
   "keywords": [
@@ -32,6 +32,7 @@
   "devDependencies": {
     "@babel/cli": "^7.1.2",
     "@babel/core": "^7.1.2",
+    "@babel/plugin-proposal-class-properties": "^7.2.3",
     "@babel/preset-env": "^7.1.0",
     "@babel/preset-react": "^7.0.0",
     "babel-core": "^7.0.0-bridge.0",

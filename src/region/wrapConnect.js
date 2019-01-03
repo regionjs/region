@@ -6,19 +6,14 @@ const empty = () => null;
 
 export default (RegionIn) => {
   class Region extends RegionIn {
-    constructor() {
-      super();
-      this.connectWith = this.connectWith.bind(this);
-    }
-
-    connectWith(key, DisplayComponent, LoadingComponent) {
+    connectWith = (key, DisplayComponent, LoadingComponent) => {
       if (isValidConnectKey(key)) {
         const { mapResultToProps, silentConnect } = this;
         const defaultLoading = silentConnect ? empty : DisplayComponent;
         const WrapperComponent = hoc(DisplayComponent || empty, LoadingComponent || defaultLoading);
         return rawConnect(mapResultToProps(key))(WrapperComponent);
       }
-      console.warn('key should be string or array of string');
+      console.error('invalid key, provide valid key or use connect from \'react-redux\' directly');
       return rawConnect(key)(DisplayComponent);
     }
   }

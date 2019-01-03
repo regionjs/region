@@ -2,14 +2,13 @@ import { setStore } from '../global/store';
 
 export default (RegionIn) => {
   class Region extends RegionIn {
-    constructor() {
-      super();
-      this.setConfig = this.setConfig.bind(this);
+    constructor(config) {
+      super(config);
+      this.private_setConfig(config);
     }
 
-    setConfig(config = {}) {
+    private_setConfig = (config = {}) => {
       const {
-        store,
         reducerPath,
         expiredTime,
         enableLog,
@@ -17,11 +16,10 @@ export default (RegionIn) => {
         silentConnect
       } = config;
 
-      if (store !== undefined) {
-        setStore(store);
-      }
       if (reducerPath !== undefined) {
         this.reducerPath = reducerPath;
+        this.SET_LOADING = reducerPath ? `@${reducerPath}/SET_LOADING` : '@region/SET_LOADING';
+        this.SET_RESULT = reducerPath ? `@${reducerPath}/SET_RESULT` : '@region/SET_RESULT';
       }
       if (expiredTime !== undefined) {
         this.expiredTime = expiredTime;
@@ -35,6 +33,18 @@ export default (RegionIn) => {
       if (silentConnect !== undefined) {
         this.silentConnect = silentConnect;
       }
+    }
+
+    setConfig = (config = {}) => {
+      console.warn('setConfig is deprecated, use private_setConfig instead');
+      const { private_setConfig } = this;
+      const { store } = config;
+
+      if (store !== undefined) {
+        console.warn('setStore in setConfig is deprecated, use getProvider or setStore instead');
+        setStore(store);
+      }
+      private_setConfig(config);
     }
   }
   return Region;
