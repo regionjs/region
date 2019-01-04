@@ -1,28 +1,35 @@
 {
-  "name": "redux-loadings",
-  "version": "0.6.0-alpha.1",
-  "description": "redux-loadings",
-  "repository": "github:dancerphil/redux-loadings",
+  "name": "region-core",
+  "version": "0.6.0-alpha.2",
+  "description": "region-core",
   "keywords": [
-    "redux",
-    "redux-loadings"
+    "react",
+    "region",
+    "region-core"
   ],
+  "repository": "github:regionjs/region-core",
+  "license": "MIT",
+  "author": "Cong Zhang <dancerphil1994@gmail.com>",
   "main": "./lib/index.js",
   "directories": {
     "example": "example"
   },
   "scripts": {
-    "lint": "eslint --ignore-path .gitignore --ext .js,jsx ./src",
-    "test": "jest --colors --coverage",
-    "codecov": "jest --colors --coverage && codecov",
     "build": "rm -rf lib/ && babel src --out-dir lib --ignore **/*.test.js",
     "check": "npm run build && npm run lint && npm run test",
-    "prepublish": "npm run check"
+    "codecov": "jest --colors --coverage && codecov",
+    "lint": "eslint --ignore-path .gitignore --ext .js,jsx ./src",
+    "prepublish": "npm run check",
+    "test": "jest --colors --coverage"
   },
-  "author": "Cong Zhang",
-  "license": "MIT",
-  "peerDependencies": {
-    "react": "^16.6.0"
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run check"
+    }
+  },
+  "jest": {
+    "testURL": "http://localhost/",
+    "verbose": true
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
@@ -49,13 +56,7 @@
     "jest-cli": "^23.6.0",
     "react": "^16.6.3"
   },
-  "jest": {
-    "verbose": true,
-    "testURL": "http://localhost/"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run check"
-    }
+  "peerDependencies": {
+    "react": "^16.6.0"
   }
 }
