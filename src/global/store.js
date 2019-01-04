@@ -1,6 +1,3 @@
-import { combineReducers } from 'redux';
-
-// eslint-disable-next-line import/no-mutable-exports
 let store = null;
 
 export const setStore = (_store) => {
@@ -21,9 +18,3 @@ export const setReducerObject = (_reducerObject) => {
 };
 
 export const getReducerObject = () => reducerObject;
-
-export const replace = () => {
-  const reducer = combineReducers(reducerObject);
-  store.replaceReducer(reducer);
-  setStore(store);
-};

@@ -1,6 +1,7 @@
+import { combineReducers } from 'redux';
 import { debug, group } from '../util/logger';
 import { assignValueDeep, setValueDeep } from '../util/reducerPrototype';
-import { setReducerObject, getReducerObject, replace } from '../global/store';
+import { setReducerObject, getReducerObject, getStore } from '../global/store';
 
 export default (RegionIn) => {
   class Region extends RegionIn {
@@ -8,8 +9,11 @@ export default (RegionIn) => {
       super(...args);
       const reducerObject = getReducerObject();
       const { reducerPath, reducer } = this;
-      setReducerObject({ ...reducerObject, [reducerPath]: reducer });
-      replace();
+      const nextReducerObject = { ...reducerObject, [reducerPath]: reducer };
+      setReducerObject(nextReducerObject);
+      const store = getStore();
+      const nextReducer = combineReducers(nextReducerObject);
+      store.replaceReducer(nextReducer);
     }
 
     reducer = (state = {}, action) => {
