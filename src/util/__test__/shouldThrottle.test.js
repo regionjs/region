@@ -1,4 +1,4 @@
-import { region } from '../../global/region';
+import { region } from './region';
 import { shouldThrottle } from '../shouldThrottle';
 
 const { setConfig } = region;

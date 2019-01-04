@@ -1,4 +1,6 @@
-import { region } from '../../global/region';
+import { createStore } from 'redux';
+import Region from '../../region';
+import { setStore } from '../../global/store';
 
-region.private_setConfig({ reducerPath: null });
-export { region };
+setStore(createStore(() => {}));
+export const region = new Region({ reducerPath: null });

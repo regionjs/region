@@ -1,4 +1,3 @@
-import RegionInitial from './RegionInitial';
 import wrapSetConfig from './wrapSetConfig';
 import wrapGet from './wrapGet';
 import wrapMapResultToProps from './wrapMapResultToProps';
@@ -17,4 +16,4 @@ export default compose(
   wrapMapResultToProps,
   wrapGet,
   wrapSetConfig
-)(RegionInitial);
+)();
