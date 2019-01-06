@@ -1,9 +1,15 @@
 import { setStore } from '../global/store';
 
-export default (RegionIn) => {
-  class Region extends RegionIn {
+export default () => {
+  class Region {
     constructor(config) {
-      super(config);
+      this.private_setConfig({
+        reducerPath: null,
+        expiredTime: 0,
+        enableLog: true,
+        strictLoading: true,
+        silentConnect: false
+      });
       this.private_setConfig(config);
     }
 

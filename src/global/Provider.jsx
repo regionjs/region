@@ -1,20 +1,15 @@
 import React from 'react';
 import { Provider as RawProvider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
-import { region } from './region';
-import { setStore, store as globalStore } from './store';
+import { setReducerObject, setStore } from './store';
+import Region from '../region';
 
-// TODO move to region-simple
-export const Provider = ({ children }) => <RawProvider store={globalStore}>{children}</RawProvider>;
-
-export const getProvider = ({ store = globalStore, reducers } = {}) => {
-  const reducer = combineReducers({ ...reducers, region: region.reducer });
-  if (store) {
-    store.replaceReducer(reducer);
-    setStore(store);
-  } else {
-    const nextStore = createStore(reducer);
-    setStore(nextStore);
-  }
-  return Provider;
+export const getProvider = ({ store = createStore(() => {}), reducers } = {}) => {
+  setStore(store);
+  const region = new Region({ reducerPath: 'region' });
+  const reducerObject = { ...reducers, region: region.reducer };
+  setReducerObject(reducerObject);
+  const reducer = combineReducers(reducerObject);
+  store.replaceReducer(reducer);
+  return ({ children }) => <RawProvider store={store}>{children}</RawProvider>;
 };
