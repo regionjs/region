@@ -10,26 +10,25 @@
 
 [Region](#Region)
 
-[Other Private API](https://github.com/dancerphil/redux-loadings/blob/master/docs/PrivateAPI-zh_CN.md)
+[Other Private API](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI-zh_CN.md)
 
 ### Provider
 
 建议不用 redux，直接用 Provider 包裹你的 App。
 
 ```javascript
-import 'redux-loadings/lib/sideEffect';
-import { Provider } from 'redux-loadings';
+import { Provider } from 'region-shortcut';
 import App from './App';
 
 <Provider><App /></Provider>
 ```
 
-如果你在使用自己的 store，参见 [`getProvider`](https://github.com/dancerphil/redux-loadings/blob/master/docs/PrivateAPI-zh_CN.md#getProvider)
+如果你在使用自己的 store，参见 [`getProvider`](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI-zh_CN.md#getProvider)
 
 ### load
 
 ```javascript
-import { load } from 'redux-loadings';
+import { load } from 'region-shortcut';
 
 load(key, Promise, { params, format });
 
@@ -48,7 +47,7 @@ const result = await load(key, Promise, { params, format });
 ### set
 
 ```javascript
-import { set } from 'redux-loadings';
+import { set } from 'region-shortcut';
 
 set(key, result, { format });
 ```
@@ -56,7 +55,7 @@ set(key, result, { format });
 ### connectWith
 
 ```javascript
-import { connectWith } from 'redux-loadings';
+import { connectWith } from 'region-shortcut';
 
 const Display = ({ user }) => {...};
 const Loading = ({ user }) => {...}; // or just import one
@@ -90,13 +89,24 @@ Loading 组件也会得到数据。你可以使用这些数据部分的进行渲
 你能创建多个 region 并且它们是分离的。
 
 ```javascript
-import { Region } from 'redux-loadings';
+import { Region } from 'region-shortcut';
 
-// TODO new feature in 0.6.0
-const region = new Region(config);
+const region = new Region({ reducerPath: 'result' });
+
+// or
+const region = new Region({
+  reducerPath: 'result', // default as 'region'
+  expiredTime: 300000, // default as 0
+  enableLog: true, // default as true
+  strictLoading: true, // default as true
+  silentConnect: false, // default as false
+});
 
 const { set, load, connectWith } = region;
 ```
+
+reducerPath 是必须的，其他的参数可以[参考](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI-zh_CN.md#private_setConfig)
+
 ### Other Private API
 
-[Private API](https://github.com/dancerphil/redux-loadings/blob/master/docs/PrivateAPI-zh_CN.md)
+[Private API](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI-zh_CN.md)

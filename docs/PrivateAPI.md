@@ -1,13 +1,13 @@
 # Private API
 
-[中文版](https://github.com/dancerphil/redux-loadings/blob/master/docs/PrivateAPI-zh_CN.md)
+[中文版](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI-zh_CN.md)
 
 ### getProvider
 
 If you are using your own store, create a file named `Provider.js`, then write:
 
 ```javascript
-import { getProvider } from 'redux-loadings';
+import { getProvider } from 'region-shortcut';
 import store, { reducers } from './store';
 
 const Provider = getProvider({ store, reducers });
@@ -15,12 +15,10 @@ const Provider = getProvider({ store, reducers });
 export default Provider;
 ```
 
-> No need to import sideEffect if you do so
-
 ### load#forceUpdate
 
 ```javascript
-import { load } from 'redux-loadings';
+import { load } from 'region-shortcut';
 
 load(key, asyncFunction, { params, forceUpdate, format });
 
@@ -32,38 +30,27 @@ const result = await load(key, Promise, { params, forceUpdate, format });
 
 `forceUpdate: true` calls Promise at once.
 
-### setConfig
+### private_setConfig
 
 Use new Region instead of setConfig.
 
 ```javascript
-setConfig({
-  store,
-  reducerPath: 'result',
-  expiredTime: 300000,
-  enableLog: true,
-  strictLoading: true
+private_setConfig({
+  reducerPath: 'result', // default as 'region'
+  expiredTime: 300000, // default as 0
+  enableLog: true, // default as true
+  strictLoading: true, // default as true
+  silentConnect: false, // default as false
 });
 ```
 
-The default `expiredTime` is `300,000` ms. You can set it to 0 if you don't want throttle.
+You can set `expiredTime` to enable throttle.
 
-The default `enableLog` is `true`, which logs when `env !== 'production'`.
+You can set `enableLog` to enable logs when `env !== 'production'`.
 
-The default `strictLoading` is `true`, which treat `loading === undefined` as `true`. If you set it to false, `loading === undefined` will be treated as `undefined` and not computed with others.
+You can set `strictLoading` to `false` to enable a different treat of `loading === undefined`, it  will be treated as `undefined` instead of `false` and not computed with others.
 
-This is useful if you have two different panel renders two parts of data. The `undefined` part is not used at first and it toggles loading when user switch the panel.
-
-If you use reducer from `redux-loadings`, store and reducerPath is needed.
-
-```javascript
-import { reducer as result, setConfig } from 'redux-loadings';
-
-const reducer = combineReducers({ result });
-// ...
-const store = compose(middleware)(createStore)(reducer);
-setConfig({ store, reducerPath: 'result' });
-```
+You can set `silentConnect` to `true` to enable a default noop Loading Component.
 
 ### mapResultToProps
 

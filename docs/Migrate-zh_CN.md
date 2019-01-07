@@ -2,21 +2,16 @@
 
 ## 0.5 升级至 0.6
 
+包已经重命名为 'region-core' 和 'region-shortcut'，当然 'redux-loadings' 依旧会持续一段时间。
+
 expireTime 现在默认为 0，你可以移除所有的 forceUpdate 了。
 
-或者如果你需要 expireTime ，你可以用 setConfig 来设置。
-
-如果你正在使用 Provider, 在它前面 import 'redux-loadings/lib/sideEffect'
-
-```javascript
-import 'redux-loadings/lib/sideEffect';
-import { Provider } from 'redux-loadings';
-```
+或者如果你需要 expireTime ，你可以用 [Region](https://github.com/regionjs/region-core/blob/master/docs/Document-zh_CN.md#Region) 来设置。
 
 如果你在使用自己的 store，创建一个文件名为 `Provider.js`，然后写：
 
 ```javascript
-import { getProvider } from 'redux-loadings';
+import { getProvider } from 'region-shortcut';
 import store, { reducers } from './store';
 
 const Provider = getProvider({ store, reducers });

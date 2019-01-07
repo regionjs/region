@@ -1,6 +1,6 @@
 # Document
 
-[中文版](https://github.com/dancerphil/redux-loadings/blob/master/docs/Document-zh_CN.md)
+[中文版](https://github.com/regionjs/region-core/blob/master/docs/Document-zh_CN.md)
 
 [Provider](#Provider)
 
@@ -12,26 +12,25 @@
 
 [Region](#Region)
 
-[Other Private API](https://github.com/dancerphil/redux-loadings/blob/master/docs/PrivateAPI.md)
+[Other Private API](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI.md)
 
 ### Provider
 
 You are recommended not to use redux. Use Provider to surround your App.
 
 ```javascript
-import 'redux-loadings/lib/sideEffect';
-import { Provider } from 'redux-loadings';
+import { Provider } from 'region-shortcut';
 import App from './App';
 
 <Provider><App /></Provider>
 ```
 
-If you are using your own store, see [`getProvider`](https://github.com/dancerphil/redux-loadings/blob/master/docs/PrivateAPI.md#getProvider)
+If you are using your own store, see [`getProvider`](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI.md#getProvider)
 
 ### load
 
 ```javascript
-import { load } from 'redux-loadings';
+import { load } from 'region-shortcut';
 
 load(key, Promise, { params, format });
 
@@ -50,7 +49,7 @@ const result = await load(key, Promise, { params, format });
 ### set
 
 ```javascript
-import { set } from 'redux-loadings';
+import { set } from 'region-shortcut';
 
 set(key, result, { format });
 ```
@@ -58,7 +57,7 @@ set(key, result, { format });
 ### connectWith
 
 ```javascript
-import { connectWith } from 'redux-loadings';
+import { connectWith } from 'region-shortcut';
 
 const Display = ({ user }) => {...};
 const Loading = ({ user }) => {...}; // or just import one
@@ -92,14 +91,24 @@ Component Loading receives data as well. You can provide the loading component r
 You can create several region and they are separated.
 
 ```javascript
-import { Region } from 'redux-loadings';
+import { Region } from 'region-shortcut';
 
-// TODO new feature in 0.6.0
-const region = new Region(config);
+const region = new Region({ reducerPath: 'result' });
+
+// or
+const region = new Region({
+  reducerPath: 'result', // default as 'region'
+  expiredTime: 300000, // default as 0
+  enableLog: true, // default as true
+  strictLoading: true, // default as true
+  silentConnect: false, // default as false
+});
 
 const { set, load, connectWith } = region;
 ```
 
+reducerPath is need, [see config details](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI.md#private_setConfig)
+
 ### Other Private API
 
-[Private API](https://github.com/dancerphil/redux-loadings/blob/master/docs/PrivateAPI.md)
+[Private API](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI.md)
