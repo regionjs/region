@@ -24,13 +24,13 @@ export default (RegionIn) => {
         if (enableLogInDev) {
           debug(SET_LOADING, key);
         }
-        return assignValueDeep(state, ['loadings', key], true);
+        return assignValueDeep(state, ['loadings', key], (v = 0) => v + 1);
       }
       if (action.type === SET_RESULT) {
         const { key, result } = action.payload;
         setValueDeep(state, ['results', key], result);
         setValueDeep(state, ['fetchTimes', key], new Date().getTime());
-        const nextState = assignValueDeep(state, ['loadings', key], false);
+        const nextState = assignValueDeep(state, ['loadings', key], (v = 0) => v - 1);
         if (enableLogInDev) {
           group(SET_RESULT, key, result, nextState);
         }

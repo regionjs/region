@@ -2,9 +2,9 @@
 
 ### 0.6.0
 
-- Region
+- rename to region-core and region-shortcut
 
-- sideEffect
+- Region
 
 - getProvider
 

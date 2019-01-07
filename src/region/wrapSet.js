@@ -7,11 +7,12 @@ export default (RegionIn) => {
      * @param format A function format result to other data structure
      */
     set = (key, result, { format } = {}) => {
-      const { getResults: getSnapshot, SET_RESULT } = this;
+      const { getResults: getSnapshot, SET_LOADING, SET_RESULT } = this;
       const { dispatch } = getStore();
       const snapshot = getSnapshot(key);
 
       const formattedResult = formatResult({ result, snapshot, key, format });
+      dispatch({ type: SET_LOADING, payload: { key } }); // TODO 暂时维护 pendingMutex
       dispatch({ type: SET_RESULT, payload: { key, result: formattedResult } });
       return formattedResult;
     }

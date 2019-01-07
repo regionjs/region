@@ -20,6 +20,8 @@ describe('set', () => {
   test('string', () => {
     set('user', 'a user');
     expect(getJourney()).toEqual([{
+      key: 'user'
+    }, {
       key: 'user',
       result: 'a user'
     }]);
@@ -29,6 +31,8 @@ describe('set', () => {
     const result = [{ id: 1, name: 'zhangcong' }, { id: 2, name: 'milly' }];
     set('user', result);
     expect(getJourney()).toEqual([{
+      key: 'user'
+    }, {
       key: 'user',
       result
     }]);

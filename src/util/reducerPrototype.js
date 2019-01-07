@@ -1,8 +1,7 @@
 /* eslint-disable no-param-reassign */
 
 function assignValue(state, key, value) {
-  const obj = { [key]: value };
-  return Object.assign({}, state, obj);
+  return Object.assign({}, state, { [key]: value });
 }
 
 const isPathInvalid = (path) => {
@@ -28,6 +27,9 @@ export function assignValueDeep(state = {}, path, value) {
     return assignValue(state, path, value);
   }
   if (path.length === 1) {
+    if (typeof value === 'function') {
+      value = value(state[path[0]]);
+    }
     return assignValue(state, path[0], value);
   }
   const pathCopied = path.slice();
@@ -56,6 +58,9 @@ export function setValueDeep(state = {}, path, value) {
     return null;
   }
   if (path.length === 1) {
+    if (typeof value === 'function') {
+      value = value(state[path]);
+    }
     state[path] = value;
     return null;
   }
@@ -67,6 +72,9 @@ export function setValueDeep(state = {}, path, value) {
       obj[path[i]] = {};
     }
     obj = obj[path[i]];
+  }
+  if (typeof value === 'function') {
+    value = value(obj[path[i]]);
   }
   obj[path[i]] = value;
   return null;

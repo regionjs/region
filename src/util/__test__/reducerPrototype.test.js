@@ -21,6 +21,23 @@ describe('reducerPrototype', () => {
     setValueDeep(state, ['a', 'b'], 1);
     expect(state).toEqual({ a: { b: 1 } });
   });
+  test('assignValueDeep deep path func', () => {
+    const state = assignValueDeep({}, ['a', 'b'], () => 1);
+    expect(state).toEqual({ a: { b: 1 } });
+    expect(assignValueDeep(state, ['a', 'b'], v => v + 1)).toEqual({ a: { b: 2 } });
+  });
+  test('setValueDeep deep path func', () => {
+    const state = {};
+    setValueDeep(state, ['a', 'b'], () => 1);
+    expect(state).toEqual({ a: { b: 1 } });
+    setValueDeep(state, ['a', 'b'], v => v + 1);
+    expect(state).toEqual({ a: { b: 2 } });
+    const state2 = {};
+    setValueDeep(state2, ['a'], () => 1);
+    expect(state2).toEqual({ a: 1 });
+    setValueDeep(state2, ['a'], v => v + 1);
+    expect(state2).toEqual({ a: 2 });
+  });
   test('assignValueDeep single path', () => {
     expect(assignValueDeep({}, ['a'], 1)).toEqual({ a: 1 });
   });
@@ -28,6 +45,14 @@ describe('reducerPrototype', () => {
     const state = {};
     setValueDeep(state, ['a'], 1);
     expect(state).toEqual({ a: 1 });
+  });
+  test('assignValueDeep empty state', () => {
+    expect(assignValueDeep(undefined, ['a'], 1)).toEqual({ a: 1 });
+  });
+  test('setValueDeep empty state', () => {
+    const state = undefined;
+    setValueDeep(state, ['a'], 1);
+    expect(state).toEqual(undefined);
   });
 
   let count = 0;
