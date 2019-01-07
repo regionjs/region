@@ -10,13 +10,15 @@
 ## Get Started
 
 ```bash
-npm i redux-loadings
+npm i region-shortcut
+// or
+npm i region-core
 ```
 
 然后创建你的组件
 
 ```jsx harmony
-import { connectWith } from 'redux-loadings';
+import { connectWith } from 'region-shortcut';
 import { fetchUser } from './fetch'; // somewhere with axios
 
 load('user', fetchUser);
@@ -29,7 +31,7 @@ export default connectWith('user', Display);
 或者
 
 ```jsx harmony
-import { connectWith } from 'redux-loadings';
+import { connectWith } from 'region-shortcut';
 import { fetchUser, fetchFollower } from './fetch'; // somewhere with axios
 
 load('user', fetchUser);

@@ -12,13 +12,15 @@ A replacement tool of `redux` to handle sync & async action flow. Extremely simp
 ## Get Started
 
 ```bash
-npm i redux-loadings
+npm i region-shortcut
+// or
+npm i region-core
 ```
 
 Then create your Component
 
 ```jsx harmony
-import { connectWith } from 'redux-loadings';
+import { connectWith } from 'region-shortcut';
 import { fetchUser } from './fetch'; // somewhere with axios
 
 load('user', fetchUser);
@@ -31,7 +33,7 @@ export default connectWith('user', Display);
 or
 
 ```jsx harmony
-import { connectWith } from 'redux-loadings';
+import { connectWith } from 'region-shortcut';
 import { fetchUser, fetchFollower } from './fetch'; // somewhere with axios
 
 load('user', fetchUser);

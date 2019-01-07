@@ -5,7 +5,7 @@
 如果你在使用自己的 store，创建一个文件名为 `Provider.js`，然后写：
 
 ```javascript
-import { getProvider } from 'redux-loadings';
+import { getProvider } from 'region-shortcut';
 import store, { reducers } from './store';
 
 const Provider = getProvider({ store, reducers });
@@ -13,12 +13,10 @@ const Provider = getProvider({ store, reducers });
 export default Provider;
 ```
 
-> 此时不用 import sideEffect
-
 ### load#forceUpdate
 
 ```javascript
-import { load } from 'redux-loadings';
+import { load } from 'region-shortcut';
 
 load(key, Promise, { params, forceUpdate, format });
 
@@ -30,38 +28,27 @@ const result = await load(key, Promise, { params, forceUpdate, format });
 
 `forceUpdate: true` 会立刻调用 Promise。
 
-### setConfig
+### private_setConfig
 
 可以用 new Region 代替。
 
 ```javascript
-setConfig({
-  store,
-  reducerPath: 'result',
-  expiredTime: 300000,
-  enableLog: true,
-  strictLoading: true
+private_setConfig({
+  reducerPath: 'result', // default as 'region'
+  expiredTime: 300000, // default as 0
+  enableLog: true, // default as true
+  strictLoading: true, // default as true
+  silentConnect: false, // default as false
 });
 ```
 
-默认的 `expiredTime` 为 `300,000` 毫秒。如果你不希望节流，可以设为 0。
+你可以通过设置 `expiredTime` 以开启节流。
 
-默认的 `enableLog` 为 `true`，当 `env !== 'production'` 时打印日志。
+你可以通过设置 `enableLog` 以开启日志，日志在 `env !== 'production'` 下打出。
 
-默认的 `strictLoading` 为 `true`，会把 `loading === undefined` 视为 `true`。如果你把它设为 false， `loading === undefined` 不做处理，并且不影响多个 key 之间的 loading 计算。
+你可以通过设置 `strictLoading` 为 `false` 以关闭对 `loading === undefined` 的处理（不会视为 false 而是 undefined），并且不影响多个 key 之间的 loading 计算。
 
-当一个数据一开始没有使用，后续调起时又影响 loading。这个设置可能有用。
-
-如果你从 `redux-loadings` 使用了 reducer，你需要传入 store 和 reducerPath。
-
-```javascript
-import { reducer as result, setConfig } from 'redux-loadings';
-
-const reducer = combineReducers({ result });
-// ...
-const store = compose(middleware)(createStore)(reducer);
-setConfig({ store, reducerPath: 'result' });
-```
+你可以通过设置 `silentConnect` 为 `true` 以得使用一个默认的 noop Loading Component。
 
 ### mapResultToProps
 

@@ -4,21 +4,16 @@
 
 ## Migrate From 0.5 to 0.6
 
+package is renamed to 'region-core' & 'region-shortcut', 'redux-loadings' will be maintained for a while.
+
 expireTime is set to 0, you can remove your forceUpdate.
 
-Or if you want expireTime back, use setConfig.
-
-If you are using Provider, import 'redux-loadings/lib/sideEffect' before
-
-```javascript
-import 'redux-loadings/lib/sideEffect';
-import { Provider } from 'redux-loadings';
-```
+You can get expireTime back, using [Region](https://github.com/regionjs/region-core/blob/master/docs/Document.md#Region).
 
 If you are using your own store, create a file named `Provider.js`, then write:
 
 ```javascript
-import { getProvider } from 'redux-loadings';
+import { getProvider } from 'region-shortcut';
 import store, { reducers } from './store';
 
 const Provider = getProvider({ store, reducers });
