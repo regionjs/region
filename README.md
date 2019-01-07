@@ -73,5 +73,4 @@ npm start
 
 - [ ] release 1.0 when everything is ready, push package-lock.json then
 - [ ] new site
-- [ ] loading => pendingMutex
 - [ ] build ci and replace badge
