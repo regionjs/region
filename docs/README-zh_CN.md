@@ -48,23 +48,19 @@ export default connectWith(['user', 'follower'], Display);
 
 ## 文档
 
-[中文文档和最佳实践](https://github.com/dancerphil/redux-loadings/blob/master/docs/Document-zh_CN.md)
+[中文文档和最佳实践](https://github.com/regionjs/region-core/blob/master/docs/Document-zh_CN.md)
 
-[迁移指南](https://github.com/dancerphil/redux-loadings/blob/master/docs/Migrate-zh_CN.md)
+[迁移指南](https://github.com/regionjs/region-core/blob/master/docs/Migrate-zh_CN.md)
 
-[更新日志](https://github.com/dancerphil/redux-loadings/blob/master/docs/CHANGELOG.md)
+[更新日志](https://github.com/regionjs/region-core/blob/master/docs/CHANGELOG.md)
 
 ## 示例
 
 [在线示例](https://dancerphil.github.io/redux-loadings/index.html)
 
 ```bash
-git clone https://github.com/dancerphil/redux-loadings.git
+git clone https://github.com/regionjs/region-core.git
 cd example
 npm i
 npm start
 ```
-
-## 截图
-
-![](https://github.com/dancerphil/redux-loadings/blob/master/screenshot.gif)

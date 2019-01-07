@@ -1,4 +1,4 @@
-# redux-loadings
+# region-core
 
 [![version](https://img.shields.io/npm/v/redux-loadings.svg?style=flat-square)](http://npm.im/redux-loadings)
 [![npm downloads](https://img.shields.io/npm/dm/redux-loadings.svg?style=flat-square)](https://www.npmjs.com/package/redux-loadings)
@@ -7,7 +7,7 @@
 
 A replacement tool of `redux` to handle sync & async action flow. Extremely simple API!
 
-[中文版](https://github.com/dancerphil/redux-loadings/blob/master/docs/README-zh_CN.md)
+[中文版](https://github.com/regionjs/region-core/blob/master/docs/README-zh_CN.md)
 
 ## Get Started
 
@@ -50,18 +50,18 @@ export default connectWith(['user', 'follower'], Display);
 
 ## Docs
 
-[Document And Best Practices](https://github.com/dancerphil/redux-loadings/blob/master/docs/Document.md)
+[Document And Best Practices](https://github.com/regionjs/region-core/blob/master/docs/Document.md)
 
-[Migrate Guide](https://github.com/dancerphil/redux-loadings/blob/master/docs/Migrate.md)
+[Migrate Guide](https://github.com/regionjs/region-core/blob/master/docs/Migrate.md)
 
-[ChangeLog](https://github.com/dancerphil/redux-loadings/blob/master/docs/CHANGELOG.md)
+[ChangeLog](https://github.com/regionjs/region-core/blob/master/docs/CHANGELOG.md)
 
 ## Example
 
 [Online Example](https://dancerphil.github.io/redux-loadings/index.html)
 
 ```bash
-git clone https://github.com/dancerphil/redux-loadings.git
+git clone https://github.com/regionjs/region-core.git
 cd example
 npm i
 npm start
@@ -72,4 +72,4 @@ npm start
 - [ ] release 1.0 when everything is ready, push package-lock.json then
 - [ ] new site
 - [ ] loading => pendingMutex
-- [ ] change package name to react-name since redux is not related anymore
+- [ ] build ci and replace badge

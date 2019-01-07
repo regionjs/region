@@ -1,6 +1,6 @@
 # Private API
 
-[中文版](https://github.com/dancerphil/redux-loadings/blob/master/docs/PrivateAPI-zh_CN.md)
+[中文版](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI-zh_CN.md)
 
 ### getProvider
 

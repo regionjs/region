@@ -1,6 +1,6 @@
 # Document
 
-[中文版](https://github.com/dancerphil/redux-loadings/blob/master/docs/Document-zh_CN.md)
+[中文版](https://github.com/regionjs/region-core/blob/master/docs/Document-zh_CN.md)
 
 [Provider](#Provider)
 
@@ -12,7 +12,7 @@
 
 [Region](#Region)
 
-[Other Private API](https://github.com/dancerphil/redux-loadings/blob/master/docs/PrivateAPI.md)
+[Other Private API](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI.md)
 
 ### Provider
 
@@ -26,7 +26,7 @@ import App from './App';
 <Provider><App /></Provider>
 ```
 
-If you are using your own store, see [`getProvider`](https://github.com/dancerphil/redux-loadings/blob/master/docs/PrivateAPI.md#getProvider)
+If you are using your own store, see [`getProvider`](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI.md#getProvider)
 
 ### load
 
@@ -102,4 +102,4 @@ const { set, load, connectWith } = region;
 
 ### Other Private API
 
-[Private API](https://github.com/dancerphil/redux-loadings/blob/master/docs/PrivateAPI.md)
+[Private API](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI.md)
