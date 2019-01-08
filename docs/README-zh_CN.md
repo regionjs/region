@@ -37,7 +37,7 @@ import { fetchUser, fetchFollower } from './fetch'; // somewhere with axios
 load('user', fetchUser);
 const handleClick = () => load('follower', fetchFollower);
 
-const Display = ({ loading, user, follower }) => (
+const Display = ({ loading, error, user, follower }) => (
   <div>
     {user}
     {follower}

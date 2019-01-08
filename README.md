@@ -39,7 +39,7 @@ import { fetchUser, fetchFollower } from './fetch'; // somewhere with axios
 load('user', fetchUser);
 const handleClick = () => load('follower', fetchFollower);
 
-const Display = ({ loading, user, follower }) => (
+const Display = ({ loading, error, user, follower }) => (
   <div>
     {user}
     {follower}
@@ -73,4 +73,4 @@ npm start
 
 - [ ] release 1.0 when everything is ready, push package-lock.json then
 - [ ] new site
-- [ ] build ci and replace badge
+- [ ] replace badge

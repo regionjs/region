@@ -80,6 +80,10 @@ const Enhanced = connectWith({
     return { loading, user: currentUser, follower };
   }
 }, Display, Loading);
+
+// or
+const Display = ({ loading, error, user }) => {...};
+const Enhanced = connectWith('user', Display);
 ```
 
 `loading === true` if `user.loading === true || follower.loading === true`.
@@ -93,11 +97,11 @@ You can create several region and they are separated.
 ```javascript
 import { Region } from 'region-shortcut';
 
-const region = new Region({ reducerPath: 'result' });
+const region = new Region('result');
 
 // or
 const region = new Region({
-  reducerPath: 'result', // default as 'region'
+  name: 'result',
   expiredTime: 300000, // default as 0
   enableLog: true, // default as true
   strictLoading: true, // default as true
@@ -107,7 +111,7 @@ const region = new Region({
 const { set, load, connectWith } = region;
 ```
 
-reducerPath is need, [see config details](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI.md#private_setConfig)
+[see config details](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI.md#private_setConfig)
 
 ### Other Private API
 

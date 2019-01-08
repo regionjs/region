@@ -1,5 +1,13 @@
 # CHANGELOG
 
+### 0.6.1
+
+- fix loading when several load is called
+
+- new Region('name') & new Region({ name })
+
+- error support
+
 ### 0.6.0
 
 - rename to region-core and region-shortcut
