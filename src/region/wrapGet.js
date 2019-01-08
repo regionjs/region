@@ -16,13 +16,13 @@ const formatLoading = (loading, { strictLoading }) => {
 export default (RegionIn) => {
   class Region extends RegionIn {
     getState = () => {
-      const { reducerPath } = this;
+      const { name } = this;
       const { getState } = getStore();
       const state = getState();
-      if (reducerPath === null) {
+      if (name === null) {
         return state || {};
       }
-      return state[reducerPath] || {};
+      return state[name] || {};
     }
 
     getLoading = (path) => {

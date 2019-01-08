@@ -8,8 +8,8 @@ export default (RegionIn) => {
     constructor(...args) {
       super(...args);
       const reducerObject = getReducerObject();
-      const { reducerPath, reducer } = this;
-      const nextReducerObject = { ...reducerObject, [reducerPath]: reducer };
+      const { name, reducer } = this;
+      const nextReducerObject = { ...reducerObject, [name]: reducer };
       setReducerObject(nextReducerObject);
       const store = getStore();
       const nextReducer = combineReducers(nextReducerObject);

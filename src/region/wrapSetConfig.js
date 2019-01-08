@@ -4,17 +4,22 @@ export default () => {
   class Region {
     constructor(config) {
       this.private_setConfig({
-        reducerPath: null,
+        name: null,
         expiredTime: 0,
         enableLog: true,
         strictLoading: true,
         silentConnect: false
       });
-      this.private_setConfig(config);
+      if (config !== null && typeof config === 'object') {
+        this.private_setConfig(config);
+      } else {
+        this.private_setConfig({ name: config });
+      }
     }
 
     private_setConfig = (config = {}) => {
       const {
+        name,
         reducerPath,
         expiredTime,
         enableLog,
@@ -22,8 +27,14 @@ export default () => {
         silentConnect
       } = config;
 
+      if (name !== undefined) {
+        this.name = name;
+        this.SET_LOADING = name ? `@${name}/SET_LOADING` : '@region/SET_LOADING';
+        this.SET_RESULT = name ? `@${name}/SET_RESULT` : '@region/SET_RESULT';
+      }
       if (reducerPath !== undefined) {
-        this.reducerPath = reducerPath;
+        console.warn('reducerPath is deprecated, use name instead');
+        this.name = reducerPath;
         this.SET_LOADING = reducerPath ? `@${reducerPath}/SET_LOADING` : '@region/SET_LOADING';
         this.SET_RESULT = reducerPath ? `@${reducerPath}/SET_RESULT` : '@region/SET_RESULT';
       }

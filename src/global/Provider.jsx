@@ -6,7 +6,7 @@ import Region from '../region';
 
 export const getProvider = ({ store = createStore(() => {}), reducers } = {}) => {
   setStore(store);
-  const region = new Region({ reducerPath: 'region' });
+  const region = new Region('region');
   const reducerObject = { ...reducers, region: region.reducer };
   setReducerObject(reducerObject);
   const reducer = combineReducers(reducerObject);
