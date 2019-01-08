@@ -2,7 +2,7 @@ import { formatResult } from '../util/formatResult';
 import { isAsync } from '../util/isAsync';
 import { shouldThrottle } from '../util/shouldThrottle';
 import { getStore } from '../global/store';
-import { groupError } from "../util/logger";
+import { groupError } from '../util/logger';
 
 const toPromise = async ({ Promise, params }) => {
   if (typeof Promise === 'function') {
@@ -38,12 +38,14 @@ export default (RegionIn) => {
         const result = await toPromise({ Promise, params });
 
         const formattedResult = formatResult({ result, snapshot, key, format });
-        dispatch({ type: SET, payload: { key, result: formattedResult } });
         dispatch({ type: LOAD_END, payload: { key } });
+        dispatch({ type: SET, payload: { key, result: formattedResult } });
         return formattedResult;
       } catch (error) {
         groupError(`Catch an error when load ${key}, return null instead.`, error);
+        dispatch({ type: LOAD_END, payload: { key } });
         dispatch({ type: ERROR, payload: { key, error } });
+        return null;
       }
     }
   }

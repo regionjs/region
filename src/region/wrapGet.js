@@ -42,6 +42,20 @@ export default (RegionIn) => {
       return formatLoading(loadings[path], { strictLoading });
     }
 
+    getFetchTimes = (path) => {
+      const { getState } = this;
+      const { fetchTimes = {} } = getState();
+      if (Array.isArray(path)) {
+        const ans = [];
+        for (let i = 0; i < path.length; i++) {
+          const key = path[i];
+          ans.push(fetchTimes[key]);
+        }
+        return ans;
+      }
+      return fetchTimes[path];
+    }
+
     getResults = (path) => {
       const { getState } = this;
       const { results = {} } = getState();
@@ -56,18 +70,21 @@ export default (RegionIn) => {
       return results[path];
     }
 
-    getFetchTimes = (path) => {
+    getError = (path) => {
       const { getState } = this;
-      const { fetchTimes = {} } = getState();
+      const { errors = {} } = getState();
       if (Array.isArray(path)) {
-        const ans = [];
+        let ans = '';
         for (let i = 0; i < path.length; i++) {
           const key = path[i];
-          ans.push(fetchTimes[key]);
+          const error = errors[key];
+          if (error) {
+            ans += error.message;
+          }
         }
         return ans;
       }
-      return fetchTimes[path];
+      return errors[path];
     }
   }
   return Region;

@@ -29,9 +29,7 @@ export default (RegionIn) => {
       }
       if (action.type === LOAD_END) {
         const { key } = action.payload;
-        if (enableLogInDev) {
-          debug(LOAD_START, key);
-        }
+        // no log for LOAD_END
         return assignValueDeep(state, ['loadings', key], (v = 0) => v - 1);
       }
       if (action.type === SET) {
