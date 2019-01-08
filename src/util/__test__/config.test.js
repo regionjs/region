@@ -11,10 +11,8 @@ describe('config', () => {
     expect(strictLoading).toBe(true);
     expect(silentConnect).toBe(false);
     expect(private_actionTypes).toEqual({
-      LOAD_START: '@region/LOAD_START',
-      LOAD_END: '@region/LOAD_END',
+      LOAD_START: '@region/LOAD',
       SET: '@region/SET',
-      ERROR: '@region/ERROR',
     });
   });
   test('set nothing', () => {
@@ -26,10 +24,8 @@ describe('config', () => {
     expect(strictLoading).toBe(true);
     expect(silentConnect).toBe(false);
     expect(private_actionTypes).toEqual({
-      LOAD_START: '@region/LOAD_START',
-      LOAD_END: '@region/LOAD_END',
+      LOAD_START: '@region/LOAD',
       SET: '@region/SET',
-      ERROR: '@region/ERROR',
     });
   });
   test('set enableLog as false', () => {
@@ -54,10 +50,8 @@ describe('config', () => {
     expect(strictLoading).toBe(false);
     expect(silentConnect).toBe(true);
     expect(private_actionTypes).toEqual({
-      LOAD_START: '@result/LOAD_START',
-      LOAD_END: '@result/LOAD_END',
+      LOAD_START: '@result/LOAD',
       SET: '@result/SET',
-      ERROR: '@result/ERROR',
     });
   });
   test('deprecated', () => {
@@ -67,10 +61,8 @@ describe('config', () => {
     const { name, private_actionTypes } = region;
     expect(name).toBe('deprecated');
     expect(private_actionTypes).toEqual({
-      LOAD_START: '@deprecated/LOAD_START',
-      LOAD_END: '@deprecated/LOAD_END',
+      LOAD_START: '@deprecated/LOAD',
       SET: '@deprecated/SET',
-      ERROR: '@deprecated/ERROR',
     });
   });
 });

@@ -18,7 +18,7 @@ export default (RegionIn) => {
 
     reducer = (state = {}, action) => {
       const { enableLog, private_actionTypes } = this;
-      const { LOAD_START, LOAD_END, SET, ERROR } = private_actionTypes;
+      const { LOAD_START, SET } = private_actionTypes;
       const enableLogInDev = process.env.NODE_ENV !== 'production' && enableLog;
       if (action.type === LOAD_START) {
         const { key } = action.payload;
@@ -27,27 +27,19 @@ export default (RegionIn) => {
         }
         return assignValueDeep(state, ['loadings', key], (v = 0) => v + 1);
       }
-      if (action.type === LOAD_END) {
-        const { key } = action.payload;
-        // no log for LOAD_END
-        return assignValueDeep(state, ['loadings', key], (v = 0) => v - 1);
-      }
       if (action.type === SET) {
-        const { key, result } = action.payload;
+        const { key, result, error, withLoadEnd } = action.payload;
         setValueDeep(state, ['fetchTimes', key], new Date().getTime());
-        const nextState = assignValueDeep(state, ['results', key], result);
-        if (enableLogInDev) {
-          group(SET, key, result, nextState);
+        setValueDeep(state, ['results', key], result);
+        if (error) {
+          setValueDeep(state, ['errors', key], error);
         }
-        return nextState;
-      }
-      if (action.type === ERROR) {
-        const { key, result, error } = action.payload;
-        setValueDeep(state, ['fetchTimes', key], new Date().getTime());
-        setValueDeep(state, ['errors', key], error);
-        const nextState = assignValueDeep(state, ['results', key], result);
+        const nextState = assignValueDeep(state, ['loadings', key], withLoadEnd ? (v = 0) => v - 1 : (v = 0) => v);
         if (enableLogInDev) {
-          group(SET, key, error, nextState);
+          if (error) {
+            console.error(error.message);
+          }
+          group(SET, key, result, nextState);
         }
         return nextState;
       }

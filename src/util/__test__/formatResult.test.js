@@ -23,10 +23,6 @@ describe('formatResult', () => {
   test('format fail', () => {
     const result = null;
     const format = (res) => res.user;
-    let consoleCalled = false;
-    console.error = () => { consoleCalled = true; };
-    const user = formatResult({ result, format });
-    expect(user).toBe(null);
-    expect(consoleCalled).toBe(true);
+    expect(() => formatResult({ result, format })).toThrow();
   });
 });
