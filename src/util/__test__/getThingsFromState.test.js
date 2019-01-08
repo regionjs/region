@@ -113,44 +113,44 @@ describe('getThingsFromState', () => {
     setState({
       loadings: { a: true, b: false },
       fetchTimes: { a: 0, b: 0 },
-      results: { a: { name: '66', type: 'cat' }, b: { name: '77', type: 'dog' } }
+      results: { a: { type: 'cat' }, b: { type: 'dog' } }
     });
     expect(mapResultToProps('a')()).toEqual({
       loading: true,
-      a: { name: '66', type: 'cat' }
+      a: { type: 'cat' }
     });
     expect(mapResultToProps(['a', 'b'])()).toEqual({
       loading: true,
-      a: { name: '66', type: 'cat' },
-      b: { name: '77', type: 'dog' }
+      a: { type: 'cat' },
+      b: { type: 'dog' }
     });
     expect(mapResultToProps({ loading: 'b', result: 'a' })()).toEqual({
       loading: false,
-      a: { name: '66', type: 'cat' }
+      a: { type: 'cat' }
     });
     expect(mapResultToProps({ loading: 'a', result: ['a', 'b'] })()).toEqual({
       loading: true,
-      a: { name: '66', type: 'cat' },
-      b: { name: '77', type: 'dog' }
+      a: { type: 'cat' },
+      b: { type: 'dog' }
     });
   });
   test('config reducePath', () => {
-    setConfig({ reducerPath: 'result' });
+    setConfig({ name: 'result' });
     expect(getResults('a')).toBe(undefined);
     setState({ result: { results: { a: 'config reducePath' } } });
     expect(getResults('a')).toBe('config reducePath');
-    setConfig({ reducerPath: null });
+    setConfig({ name: null });
     expect(getResults('a')).toBe(undefined);
   });
   test('selector', () => {
     setState({
       loadings: { a: false },
       fetchTimes: { a: 0 },
-      results: { a: [{ id: 0, name: '66', type: 'cat' }, { id: 1, name: '77', type: 'dog' }] }
+      results: { a: [{ id: 0, type: 'cat' }, { id: 1, type: 'dog' }] }
     });
     expect(mapResultToProps({
       entity: 'a',
       selector: ({ a }, { id }) => a.find(item => item.id === id)
-    })(null, { id: 1 })).toEqual({ id: 1, name: '77', type: 'dog' });
+    })(null, { id: 1 })).toEqual({ id: 1, type: 'dog' });
   });
 });

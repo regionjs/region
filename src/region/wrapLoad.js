@@ -25,18 +25,24 @@ export default (RegionIn) => {
         return set(key, Promise);
       }
 
-      const { getResults: getSnapshot, SET_LOADING, SET_RESULT } = this;
+      const { getResults: getSnapshot, private_actionTypes } = this;
+      const { LOAD_START, SET } = private_actionTypes;
       const { dispatch } = getStore();
       const snapshot = getSnapshot(key);
       if (shouldThrottle({ Promise, forceUpdate, key, snapshot, region: this })) {
         return snapshot;
       }
-      dispatch({ type: SET_LOADING, payload: { key } });
-      const result = await toPromise({ Promise, params });
 
-      const formattedResult = formatResult({ result, snapshot, key, format });
-      dispatch({ type: SET_RESULT, payload: { key, result: formattedResult } });
-      return formattedResult;
+      dispatch({ type: LOAD_START, payload: { key } });
+      try {
+        const result = await toPromise({ Promise, params });
+        const formattedResult = formatResult({ result, snapshot, format });
+        dispatch({ type: SET, payload: { key, result: formattedResult, withLoadEnd: true } });
+        return formattedResult;
+      } catch (error) {
+        dispatch({ type: SET, payload: { key, result: null, error, withLoadEnd: true } });
+        return null;
+      }
     }
   }
   return Region;

@@ -34,7 +34,7 @@ const result = await load(key, Promise, { params, forceUpdate, format });
 
 ```javascript
 private_setConfig({
-  reducerPath: 'result', // default as 'region'
+  name: 'result',
   expiredTime: 300000, // default as 0
   enableLog: true, // default as true
   strictLoading: true, // default as true
@@ -60,13 +60,14 @@ const mapStateToProps = mapResultToProps(['user', 'follower']);
 const mapStateToProps = mapResultToProps({ loading: 'user', result: ['user', 'follower'] });
 ```
 
-### getLoading & getResults & getFetchTimes
+### getLoading & getResults & getFetchTimes & getError
 
 ```javascript
 const loading = getLoading(['user', 'follower']);
 const user = getResults('user');
 const [user, follower] = getResults(['user', 'follower']);
 const [userFetchTime, followerFetchTime] = getFetchTimes(['user', 'follower']);
+const error = getError(['user', 'follower']);
 }
 ```
 

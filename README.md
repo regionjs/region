@@ -39,7 +39,7 @@ import { fetchUser, fetchFollower } from './fetch'; // somewhere with axios
 load('user', fetchUser);
 const handleClick = () => load('follower', fetchFollower);
 
-const Display = ({ loading, user, follower }) => (
+const Display = ({ loading, error, user, follower }) => (
   <div>
     {user}
     {follower}
@@ -69,9 +69,27 @@ npm i
 npm start
 ```
 
+## Contribute
+
+Region is Extremely easy to extend, fire a issue if you have some great idea.
+
+```javascript
+import { Region } from 'region-core';
+
+class MyRegion extends Region {
+  constructor(...args) {
+    super(...args);
+    this.someFunc = this.someFunc.bind(this); // in case you are not using class field
+  }
+
+  someFunc() {}
+}
+```
+
+As for pull request, make sure to add test for your code.
+
 ## TODO
 
 - [ ] release 1.0 when everything is ready, push package-lock.json then
 - [ ] new site
-- [ ] loading => pendingMutex
-- [ ] build ci and replace badge
+- [ ] replace badge

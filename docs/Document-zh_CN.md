@@ -78,6 +78,10 @@ const Enhanced = connectWith({
     return { loading, user: currentUser, follower };
   }
 }, Display, Loading);
+
+// or
+const Display = ({ loading, error, user }) => {...};
+const Enhanced = connectWith('user', Display);
 ```
 
 `loading === true` 当 `user.loading === true || follower.loading === true`。
@@ -91,11 +95,11 @@ Loading 组件也会得到数据。你可以使用这些数据部分的进行渲
 ```javascript
 import { Region } from 'region-shortcut';
 
-const region = new Region({ reducerPath: 'result' });
+const region = new Region('result');
 
 // or
 const region = new Region({
-  reducerPath: 'result', // default as 'region'
+  name: 'result',
   expiredTime: 300000, // default as 0
   enableLog: true, // default as true
   strictLoading: true, // default as true
@@ -105,7 +109,7 @@ const region = new Region({
 const { set, load, connectWith } = region;
 ```
 
-reducerPath 是必须的，其他的参数可以[参考](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI-zh_CN.md#private_setConfig)
+参数详情可以[参考](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI-zh_CN.md#private_setConfig)
 
 ### Other Private API
 

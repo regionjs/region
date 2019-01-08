@@ -8,8 +8,8 @@ export default (RegionIn) => {
     constructor(...args) {
       super(...args);
       const reducerObject = getReducerObject();
-      const { reducerPath, reducer } = this;
-      const nextReducerObject = { ...reducerObject, [reducerPath]: reducer };
+      const { name, reducer } = this;
+      const nextReducerObject = { ...reducerObject, [name]: reducer };
       setReducerObject(nextReducerObject);
       const store = getStore();
       const nextReducer = combineReducers(nextReducerObject);
@@ -17,22 +17,27 @@ export default (RegionIn) => {
     }
 
     reducer = (state = {}, action) => {
-      const { enableLog, SET_LOADING, SET_RESULT } = this;
+      const { enableLog, private_actionTypes } = this;
+      const { LOAD_START, SET } = private_actionTypes;
       const enableLogInDev = process.env.NODE_ENV !== 'production' && enableLog;
-      if (action.type === SET_LOADING) {
+      if (action.type === LOAD_START) {
         const { key } = action.payload;
         if (enableLogInDev) {
-          debug(SET_LOADING, key);
+          debug(LOAD_START, key);
         }
-        return assignValueDeep(state, ['loadings', key], true);
+        return assignValueDeep(state, ['loadings', key], (v = 0) => v + 1);
       }
-      if (action.type === SET_RESULT) {
-        const { key, result } = action.payload;
-        setValueDeep(state, ['results', key], result);
+      if (action.type === SET) {
+        const { key, result, error, withLoadEnd } = action.payload;
         setValueDeep(state, ['fetchTimes', key], new Date().getTime());
-        const nextState = assignValueDeep(state, ['loadings', key], false);
+        setValueDeep(state, ['results', key], result);
+        setValueDeep(state, ['errors', key], error); // as well error ===  undefined
+        const nextState = assignValueDeep(state, ['loadings', key], withLoadEnd ? (v = 0) => v - 1 : (v = 0) => v);
         if (enableLogInDev) {
-          group(SET_RESULT, key, result, nextState);
+          if (error) {
+            console.error(error.message);
+          }
+          group(SET, key, result, nextState);
         }
         return nextState;
       }

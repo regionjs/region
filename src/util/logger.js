@@ -16,11 +16,3 @@ export const group = (prefix, str, result, nextState) => {
   console.debug('%cnext state', 'color: #4CAF50; font-weight: bold', nextState);
   console.groupEnd();
 };
-
-export const groupError = (title, e) => {
-  if (process.env.NODE_ENV !== 'production') {
-    console.groupCollapsed(title);
-    console.error(e);
-    console.groupEnd();
-  }
-};
