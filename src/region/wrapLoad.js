@@ -2,6 +2,7 @@ import { formatResult } from '../util/formatResult';
 import { isAsync } from '../util/isAsync';
 import { shouldThrottle } from '../util/shouldThrottle';
 import { getStore } from '../global/store';
+import { groupError } from "../util/logger";
 
 const toPromise = async ({ Promise, params }) => {
   if (typeof Promise === 'function') {
@@ -25,18 +26,25 @@ export default (RegionIn) => {
         return set(key, Promise);
       }
 
-      const { getResults: getSnapshot, SET_LOADING, SET_RESULT } = this;
+      const { getResults: getSnapshot, private_actionTypes } = this;
+      const { LOAD_START, LOAD_END, SET, ERROR } = private_actionTypes;
       const { dispatch } = getStore();
       const snapshot = getSnapshot(key);
       if (shouldThrottle({ Promise, forceUpdate, key, snapshot, region: this })) {
         return snapshot;
       }
-      dispatch({ type: SET_LOADING, payload: { key } });
-      const result = await toPromise({ Promise, params });
+      dispatch({ type: LOAD_START, payload: { key } });
+      try {
+        const result = await toPromise({ Promise, params });
 
-      const formattedResult = formatResult({ result, snapshot, key, format });
-      dispatch({ type: SET_RESULT, payload: { key, result: formattedResult } });
-      return formattedResult;
+        const formattedResult = formatResult({ result, snapshot, key, format });
+        dispatch({ type: SET, payload: { key, result: formattedResult } });
+        dispatch({ type: LOAD_END, payload: { key } });
+        return formattedResult;
+      } catch (error) {
+        groupError(`Catch an error when load ${key}, return null instead.`, error);
+        dispatch({ type: ERROR, payload: { key, error } });
+      }
     }
   }
   return Region;
