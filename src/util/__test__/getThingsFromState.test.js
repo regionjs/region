@@ -1,16 +1,18 @@
 import { region } from './region';
+import { setStore } from '../../global/store';
 
-const { setConfig, getLoading, getResults, getFetchTimes, mapResultToProps } = region;
+const { private_setConfig, getLoading, getResults, getFetchTimes, mapResultToProps } = region;
 
-const setState = (state) => {
-  setConfig({
-    store: {
-      dispatch() {},
-      getState() {
-        return state;
-      }
-    }
-  });
+let state = null;
+setStore({
+  dispatch() {},
+  getState() {
+    return state;
+  }
+});
+
+const setState = (_state) => {
+  state = _state;
 };
 
 describe('getThingsFromState', () => {
@@ -76,9 +78,9 @@ describe('getThingsFromState', () => {
       loadings: { a: true }
     });
     expect(getLoading('b')).toEqual(true);
-    setConfig({ strictLoading: false });
+    private_setConfig({ strictLoading: false });
     expect(getLoading('b')).toEqual(undefined);
-    setConfig({ strictLoading: true });
+    private_setConfig({ strictLoading: true });
     expect(getLoading('b')).toEqual(true);
   });
   test('get things from stop loading', () => {
@@ -135,11 +137,11 @@ describe('getThingsFromState', () => {
     });
   });
   test('config reducePath', () => {
-    setConfig({ name: 'result' });
+    private_setConfig({ name: 'result' });
     expect(getResults('a')).toBe(undefined);
     setState({ result: { results: { a: 'config reducePath' } } });
     expect(getResults('a')).toBe('config reducePath');
-    setConfig({ name: null });
+    private_setConfig({ name: null });
     expect(getResults('a')).toBe(undefined);
   });
   test('selector', () => {

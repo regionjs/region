@@ -1,13 +1,12 @@
 import { region } from './region';
+import { setStore } from '../../global/store';
 
-const { setConfig, set } = region;
+const { set, load } = region;
 
 let journey = [];
-setConfig({
-  store: {
-    dispatch: ({ payload }) => journey.push(payload),
-    getState: () => {}
-  }
+setStore({
+  dispatch: ({ payload }) => journey.push(payload),
+  getState: () => {}
 });
 
 const getJourney = () => {
@@ -32,5 +31,18 @@ describe('set', () => {
       key: 'user',
       result
     }]);
+  });
+});
+
+
+describe('load', () => {
+  test('promise', async () => {
+    const result = await load('user', Promise.resolve('a user'));
+    expect(result).toBe('a user');
+  });
+
+  test('asyncFunction', async () => {
+    const result = await load('user', () => Promise.resolve('another user'));
+    expect(result).toBe('another user');
   });
 });

@@ -1,17 +1,16 @@
-import { region } from './region';
+import { setStore } from '../../global/store';
 import { shouldThrottle } from '../shouldThrottle';
 
-const { setConfig } = region;
+let state = null;
+setStore({
+  dispatch() {},
+  getState() {
+    return state;
+  }
+});
 
-const setState = (state) => {
-  setConfig({
-    store: {
-      dispatch() {},
-      getState() {
-        return state;
-      }
-    }
-  });
+const setState = (_state) => {
+  state = _state;
 };
 
 describe('shouldThrottle', () => {
