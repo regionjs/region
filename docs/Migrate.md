@@ -106,11 +106,11 @@ setConfig({ store, reducerPath: 'result' });
 ### load not in surround
 
 ```javascript
-dispatch(load(key, Promise, props));
+dispatch(load(key, asyncFunction, props));
 ```
 
 ==>
 
 ```javascript
-load(key, Promise, props);
+load(key, asyncFunction, props);
 ```
