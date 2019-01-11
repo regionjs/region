@@ -3,12 +3,12 @@ import { isAsync } from '../util/isAsync';
 import { shouldThrottle } from '../util/shouldThrottle';
 import { getStore } from '../global/store';
 
-const toPromise = async ({ Promise, params }) => {
-  if (typeof Promise === 'function') {
-    return Promise(params);
+const toPromise = async ({ asyncFunction, params }) => {
+  if (typeof asyncFunction === 'function') {
+    return asyncFunction(params);
   }
   // promise
-  return Promise;
+  return asyncFunction;
 };
 
 export default (Region) => {
@@ -33,28 +33,28 @@ export default (Region) => {
     }
 
     /**
-     * @param params Promise may need
+     * @param params asyncFunction may need
      * @param format A function format result to other data structure
      * @param forceUpdate true | false
      */
-    load = async (key, Promise, { forceUpdate, params, format } = {}) => {
-      if (!isAsync(Promise)) {
+    load = async (key, asyncFunction, { forceUpdate, params, format } = {}) => {
+      if (!isAsync(asyncFunction)) {
         console.warn('set result directly');
         const { set } = this;
-        return set(key, Promise);
+        return set(key, asyncFunction);
       }
 
-      const { getResults: getSnapshot, private_actionTypes } = this;
+      const { getResults: getSnapshot, private_actionTypes, expiredTime, getFetchTimes } = this;
       const { LOAD_START, SET } = private_actionTypes;
       const { dispatch } = getStore();
       const snapshot = getSnapshot(key);
-      if (shouldThrottle({ Promise, forceUpdate, key, snapshot, region: this })) {
+      if (shouldThrottle({ asyncFunction, forceUpdate, key, snapshot, expiredTime, getFetchTimes })) {
         return snapshot;
       }
 
       dispatch({ type: LOAD_START, payload: { key } });
       try {
-        const result = await toPromise({ Promise, params });
+        const result = await toPromise({ asyncFunction, params });
         const formattedResult = formatResult({ result, snapshot, format });
         dispatch({ type: SET, payload: { key, result: formattedResult, withLoadEnd: true } });
         return formattedResult;
