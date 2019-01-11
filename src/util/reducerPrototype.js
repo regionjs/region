@@ -8,7 +8,7 @@ export function assignValueDeep(state = {}, path, format) {
   const pathCopied = path.slice();
   const key = pathCopied.shift();
   const formatObj = {
-    [key]: assignValue(state[key], pathCopied[0], format)
+    [key]: assignValue(state[key], pathCopied[0], format),
   };
   return Object.assign({}, state, formatObj);
 }

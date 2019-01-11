@@ -8,7 +8,7 @@ setStore({
   dispatch() {},
   getState() {
     return state;
-  }
+  },
 });
 
 const setState = (_state) => {
@@ -27,12 +27,12 @@ describe('getThingsFromState', () => {
     expect(getFetchTimes(['a', 'b'])).toEqual([undefined, undefined]);
     expect(private_selectorFactory('a')()).toEqual({
       loading: true,
-      a: undefined
+      a: undefined,
     });
     expect(private_selectorFactory(['a', 'b'])()).toEqual({
       loading: true,
       a: undefined,
-      b: undefined
+      b: undefined,
     });
   });
   test('get things from initial state', () => {
@@ -45,17 +45,17 @@ describe('getThingsFromState', () => {
     expect(getFetchTimes(['a', 'b'])).toEqual([undefined, undefined]);
     expect(private_selectorFactory('a')()).toEqual({
       loading: true,
-      a: undefined
+      a: undefined,
     });
     expect(private_selectorFactory(['a', 'b'])()).toEqual({
       loading: true,
       a: undefined,
-      b: undefined
+      b: undefined,
     });
   });
   test('get things from start loading', () => {
     setState({
-      loadings: { a: true }
+      loadings: { a: true },
     });
     expect(getLoading('a')).toEqual(true);
     expect(getResults('a')).toEqual(undefined);
@@ -65,17 +65,17 @@ describe('getThingsFromState', () => {
     expect(getFetchTimes(['a', 'b'])).toEqual([undefined, undefined]);
     expect(private_selectorFactory('a')()).toEqual({
       loading: true,
-      a: undefined
+      a: undefined,
     });
     expect(private_selectorFactory(['a', 'b'])()).toEqual({
       loading: true,
       a: undefined,
-      b: undefined
+      b: undefined,
     });
   });
   test('treat undefined', () => {
     setState({
-      loadings: { a: true }
+      loadings: { a: true },
     });
     expect(getLoading('b')).toEqual(true);
     private_setConfig({ strictLoading: false });
@@ -87,7 +87,7 @@ describe('getThingsFromState', () => {
     setState({
       loadings: { a: false },
       fetchTimes: { a: 0 },
-      results: { a: { name: '66', type: 'cat' } }
+      results: { a: { name: '66', type: 'cat' } },
     });
     expect(getLoading('a')).toEqual(false);
     expect(getResults('a')).toEqual({ name: '66', type: 'cat' });
@@ -97,17 +97,17 @@ describe('getThingsFromState', () => {
     expect(getFetchTimes(['a', 'b'])).toEqual([0, undefined]);
     expect(private_selectorFactory('a')()).toEqual({
       loading: false,
-      a: { name: '66', type: 'cat' }
+      a: { name: '66', type: 'cat' },
     });
     expect(private_selectorFactory(['a', 'b'])()).toEqual({
       loading: true,
       a: { name: '66', type: 'cat' },
-      b: undefined
+      b: undefined,
     });
   });
   test('getLoading from all resolved', () => {
     setState({
-      loadings: { a: false, b: false }
+      loadings: { a: false, b: false },
     });
     expect(getLoading(['a', 'b'])).toBe(false);
   });
@@ -115,25 +115,25 @@ describe('getThingsFromState', () => {
     setState({
       loadings: { a: true, b: false },
       fetchTimes: { a: 0, b: 0 },
-      results: { a: { type: 'cat' }, b: { type: 'dog' } }
+      results: { a: { type: 'cat' }, b: { type: 'dog' } },
     });
     expect(private_selectorFactory('a')()).toEqual({
       loading: true,
-      a: { type: 'cat' }
+      a: { type: 'cat' },
     });
     expect(private_selectorFactory(['a', 'b'])()).toEqual({
       loading: true,
       a: { type: 'cat' },
-      b: { type: 'dog' }
+      b: { type: 'dog' },
     });
     expect(private_selectorFactory({ loading: 'b', result: 'a' })()).toEqual({
       loading: false,
-      a: { type: 'cat' }
+      a: { type: 'cat' },
     });
     expect(private_selectorFactory({ loading: 'a', result: ['a', 'b'] })()).toEqual({
       loading: true,
       a: { type: 'cat' },
-      b: { type: 'dog' }
+      b: { type: 'dog' },
     });
   });
   test('config reducePath', () => {
@@ -148,11 +148,11 @@ describe('getThingsFromState', () => {
     setState({
       loadings: { a: false },
       fetchTimes: { a: 0 },
-      results: { a: [{ id: 0, type: 'cat' }, { id: 1, type: 'dog' }] }
+      results: { a: [{ id: 0, type: 'cat' }, { id: 1, type: 'dog' }] },
     });
     expect(private_selectorFactory({
       key: 'a',
-      selector: ({ a }, { id }) => a.find(item => item.id === id)
+      selector: ({ a }, { id }) => a.find(item => item.id === id),
     })(null, { id: 1 })).toEqual({ id: 1, type: 'dog' });
   });
 });

@@ -6,7 +6,7 @@ setStore({
   dispatch() {},
   getState() {
     return state;
-  }
+  },
 });
 
 const setState = (_state) => {

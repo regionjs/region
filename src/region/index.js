@@ -13,5 +13,5 @@ export default compose(
   wrapPrivate,
   wrapGet,
   wrapReducer,
-  wrapSetConfig
+  wrapSetConfig,
 )();

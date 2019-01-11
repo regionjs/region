@@ -41,7 +41,7 @@ describe('config', () => {
       expiredTime: 30000,
       name: 'result',
       strictLoading: false,
-      silentConnect: true
+      silentConnect: true,
     });
     const { name, enableLog, expiredTime, strictLoading, silentConnect, private_actionTypes } = region;
     expect(name).toBe('result');

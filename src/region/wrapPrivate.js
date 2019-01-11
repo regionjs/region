@@ -10,7 +10,7 @@ export default (Region) => {
             key,
             getLoading(key),
             getResults(key),
-            getError(key)
+            getError(key),
           );
         }
         if (key.entity) {
@@ -20,7 +20,7 @@ export default (Region) => {
           key.result || key.key || key.entity,
           getLoading(key.loading || key.key || key.entity),
           getResults(key.result || key.key || key.entity),
-          getError(key.error || key.key || key.entity)
+          getError(key.error || key.key || key.entity),
         );
         if (key.selector && typeof key.selector === 'function') {
           return key.selector(props, ownProps);

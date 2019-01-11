@@ -16,13 +16,13 @@ describe('formatResult', () => {
 
   test('format', () => {
     const result = { user: 'user' };
-    const format = (res) => res.user;
+    const format = res => res.user;
     expect(formatResult({ result, format })).toBe('user');
   });
 
   test('format fail', () => {
     const result = null;
-    const format = (res) => res.user;
+    const format = res => res.user;
     expect(() => formatResult({ result, format })).toThrow();
   });
 });

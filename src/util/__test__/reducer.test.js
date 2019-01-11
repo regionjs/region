@@ -40,7 +40,7 @@ describe('reducer', () => {
       errors: { user: undefined },
       fetchTimes: { user: 0 },
       loadings: { user: 0 },
-      results: { user: 'a user' }
+      results: { user: 'a user' },
     });
   });
 
@@ -51,7 +51,7 @@ describe('reducer', () => {
       errors: { user: undefined },
       fetchTimes: { user: 0 },
       loadings: { user: 0 },
-      results: { user: [{ id: 1, name: 'zhangcong' }, { id: 2, name: 'milly' }] }
+      results: { user: [{ id: 1, name: 'zhangcong' }, { id: 2, name: 'milly' }] },
     });
   });
 
@@ -62,7 +62,7 @@ describe('reducer', () => {
       errors: { user: undefined },
       fetchTimes: { user: 0 },
       loadings: { user: 0 },
-      results: { user: result }
+      results: { user: result },
     });
   });
 });

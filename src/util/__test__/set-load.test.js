@@ -6,7 +6,7 @@ const { set, load } = region;
 let journey = [];
 setStore({
   dispatch: ({ payload }) => journey.push(payload),
-  getState: () => {}
+  getState: () => {},
 });
 
 const getJourney = () => {
@@ -20,7 +20,7 @@ describe('set', () => {
     set('user', 'a user');
     expect(getJourney()).toEqual([{
       key: 'user',
-      result: 'a user'
+      result: 'a user',
     }]);
   });
 
@@ -29,7 +29,7 @@ describe('set', () => {
     set('user', result);
     expect(getJourney()).toEqual([{
       key: 'user',
-      result
+      result,
     }]);
   });
 
@@ -38,7 +38,7 @@ describe('set', () => {
     set('user', result);
     expect(getJourney()).toEqual([{
       key: 'user',
-      result
+      result,
     }]);
   });
 });

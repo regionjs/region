@@ -9,4 +9,4 @@ const isValidConnectKeyObject = (key) => {
   return false;
 };
 
-export const isValidConnectKey = (key) => typeof key === 'string' || Array.isArray(key) || isValidConnectKeyObject(key);
+export const isValidConnectKey = key => typeof key === 'string' || Array.isArray(key) || isValidConnectKeyObject(key);

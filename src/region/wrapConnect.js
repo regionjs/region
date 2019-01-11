@@ -15,7 +15,7 @@ export default (Region) => {
       return connect(key, { Loading: option })(Display);
     }
 
-    connect = (key, { Loading }) => Display => {
+    connect = (key, { Loading }) => (Display) => {
       if (isValidConnectKey(key)) {
         const { private_selectorFactory, silentConnect } = this;
         const defaultLoading = silentConnect ? empty : Display;
