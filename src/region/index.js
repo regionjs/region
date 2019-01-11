@@ -1,19 +1,17 @@
 import wrapSetConfig from './wrapSetConfig';
-import wrapGet from './wrapGet';
-import wrapMapResultToProps from './wrapMapResultToProps';
-import wrapSet from './wrapSet';
-import wrapLoad from './wrapLoad';
-import wrapConnect from './wrapConnect';
 import wrapReducer from './wrapReducer';
+import wrapGet from './wrapGet';
+import wrapPrivate from './wrapPrivate';
+import wrapPublic from './wrapPublic';
+import wrapConnect from './wrapConnect';
 
 const compose = (...funcs) => funcs.reduce((a, b) => (...args) => a(b(...args)), arg => arg);
 
 export default compose(
-  wrapReducer,
   wrapConnect,
-  wrapLoad,
-  wrapSet,
-  wrapMapResultToProps,
+  wrapPublic,
+  wrapPrivate,
   wrapGet,
+  wrapReducer,
   wrapSetConfig
 )();

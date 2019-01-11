@@ -4,8 +4,8 @@ import { isValidConnectKey } from '../util/isValidConnectKey';
 
 const empty = () => null;
 
-export default (RegionIn) => {
-  class Region extends RegionIn {
+export default (Region) => {
+  class RegionConnect extends Region {
     connectWith = (key, Display, option) => {
       const { connect } = this;
       if (typeof option === 'object' && option.Loading) {
@@ -26,5 +26,5 @@ export default (RegionIn) => {
       return rawConnect(key)(Display);
     }
   }
-  return Region;
+  return RegionConnect;
 };

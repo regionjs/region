@@ -1,24 +1,7 @@
-const getProps = (keys, loading, results, error) => {
-  // TODO 是否要把 error: '' 给用户
-  if (typeof keys === 'string') {
-    const props = { loading, [keys]: results };
-    if (error !== '') {
-      props.error = error;
-    }
-    return props;
-  }
-  const props = { loading };
-  if (error !== '') {
-    props.error = error;
-  }
-  keys.forEach((key, index) => {
-    props[key] = results[index];
-  });
-  return props;
-};
+import getProps from '../util/getProps';
 
-export default (RegionIn) => {
-  class Region extends RegionIn {
+export default (Region) => {
+  class RegionPrivate extends Region {
     private_selectorFactory = (key) => {
       const { getLoading, getResults, getError } = this;
       return (state, ownProps) => {
@@ -46,5 +29,5 @@ export default (RegionIn) => {
       };
     }
   }
-  return Region;
+  return RegionPrivate;
 };
