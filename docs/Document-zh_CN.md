@@ -30,15 +30,15 @@ import App from './App';
 ```javascript
 import { load } from 'region-shortcut';
 
-load(key, Promise, { params, format });
+load(key, asyncFunction, { params, format });
 
 // or
-const result = await load(key, Promise, { params, format });
+const result = await load(key, asyncFunction, { params, format });
 ```
 
-`Promise` 是一个返回 promise 的函数
+`asyncFunction` 是一个返回 promise 的函数
 
-`param` 是 `Promise` 需要的参数，当函数发起时会传入 param。
+`param` 是 `asyncFunction` 需要的参数，当函数发起时会传入 param。
 
 `format` 在 promise resolved 并在存入 store 之前被调用。你可以在这里做一些计算和副作用。函数的形式可能为 `(result, snapshot) => result.map(...)`.
 
@@ -52,32 +52,36 @@ import { set } from 'region-shortcut';
 set(key, result, { format });
 ```
 
-### connectWith
+### connect & connectWith
 
 ```javascript
-import { connectWith } from 'region-shortcut';
+import { connect, connectWith } from 'region-shortcut';
+
+// these two are equal, in which option is optional
+const Enhanced = connect(key, option)(Component);
+const Enhanced = connectWith(key, Component, option);
 
 const Display = ({ user }) => {...};
 const Loading = ({ user }) => {...}; // or just import one
-const Enhanced = connectWith('user', Display, Loading);
+const Enhanced = connectWith('user', Display, { Loading });
 
 // or
 const Display = ({ user, follower }) => {...};
-const Enhanced = connectWith(['user', 'follower'], Display, Loading);
+const Enhanced = connectWith(['user', 'follower'], Display, { Loading });
 
 // or
-const Enhanced = connectWith({ loading: 'user', result: ['user', 'follower'] }, Display, Loading);
+const Enhanced = connectWith({ loading: 'user', result: ['user', 'follower'] }, Display, { Loading });
 
 // or
 const Enhanced = connectWith({
-  entity: ['userList', 'follower'],
+  key: ['userList', 'follower'],
   selector: ({ loading, userList, follower }, ownProps) => {
     // NOTE selector 会在检查 loading 之前就运行，此时 userList 可能为 undefined
     const { id, type } = ownProps;
     const currentUser = userList.find(user => user.id === id && user.type === type);
     return { loading, user: currentUser, follower };
   }
-}, Display, Loading);
+}, Display, { Loading });
 
 // or
 const Display = ({ loading, error, user }) => {...};

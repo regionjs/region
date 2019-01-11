@@ -102,11 +102,11 @@ setConfig({ store, reducerPath: 'result' });
 ### 不需要用 dispatch 包裹 load
 
 ```javascript
-dispatch(load(key, Promise, props));
+dispatch(load(key, asyncFunction, props));
 ```
 
 ==>
 
 ```javascript
-load(key, Promise, props);
+load(key, asyncFunction, props);
 ```

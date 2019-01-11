@@ -18,15 +18,15 @@ export default Provider;
 ```javascript
 import { load } from 'region-shortcut';
 
-load(key, Promise, { params, forceUpdate, format });
+load(key, asyncFunction, { params, forceUpdate, format });
 
 // or
-const result = await load(key, Promise, { params, forceUpdate, format });
+const result = await load(key, asyncFunction, { params, forceUpdate, format });
 ```
 
 `forceUpdate: true | false` 默认为 `false`，在设定的时间内有发起异步就会使用上一次结果。如果你没有设定 expireTime 就不需要这个参数。
 
-`forceUpdate: true` 会立刻调用 Promise。
+`forceUpdate: true` 会立刻调用 asyncFunction。
 
 ### private_setConfig
 
@@ -50,15 +50,13 @@ private_setConfig({
 
 你可以通过设置 `silentConnect` 为 `true` 以得使用一个默认的 noop Loading Component。
 
-### mapResultToProps
+### private_selectorFactory
 
 ```javascript
-const mapStateToProps = mapResultToProps('user');
-// or
-const mapStateToProps = mapResultToProps(['user', 'follower']);
-// or
-const mapStateToProps = mapResultToProps({ loading: 'user', result: ['user', 'follower'] });
+const mapStateToProps = private_selectorFactory('user');
 ```
+
+可以参考 connect & connectWith
 
 ### getLoading & getResults & getFetchTimes & getError
 

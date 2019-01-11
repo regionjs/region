@@ -1,6 +1,6 @@
 import { region } from './region';
 
-const { setConfig } = region;
+const { private_setConfig } = region;
 
 describe('config', () => {
   test('default', () => {
@@ -16,7 +16,7 @@ describe('config', () => {
     });
   });
   test('set nothing', () => {
-    setConfig();
+    private_setConfig();
     const { name, enableLog, expiredTime, strictLoading, silentConnect, private_actionTypes } = region;
     expect(name).toBe(null);
     expect(expiredTime).toBe(0);
@@ -29,19 +29,19 @@ describe('config', () => {
     });
   });
   test('set enableLog as false', () => {
-    setConfig({ enableLog: false });
+    private_setConfig({ enableLog: false });
     const { name, enableLog, expiredTime } = region;
     expect(name).toBe(null);
     expect(expiredTime).toBe(0);
     expect(enableLog).toBe(false);
   });
   test('set config', () => {
-    setConfig({
+    private_setConfig({
       enableLog: false,
       expiredTime: 30000,
       name: 'result',
       strictLoading: false,
-      silentConnect: true
+      silentConnect: true,
     });
     const { name, enableLog, expiredTime, strictLoading, silentConnect, private_actionTypes } = region;
     expect(name).toBe('result');
@@ -55,7 +55,7 @@ describe('config', () => {
     });
   });
   test('deprecated', () => {
-    setConfig({
+    private_setConfig({
       reducerPath: 'deprecated',
     });
     const { name, private_actionTypes } = region;

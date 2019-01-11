@@ -1,12 +1,20 @@
 # CHANGELOG
 
-### 0.6.1
+### 0.6.x
+
+- connect & connectWith({ key }, ...)
+
+- rename mapResultToProps => private_selectorFactory
+
+- fix set function
 
 - fix loading when several load is called
 
 - new Region('name') & new Region({ name })
 
 - error support
+
+- deprecate reducerPath, connectWith Loading, entity
 
 ### 0.6.0
 

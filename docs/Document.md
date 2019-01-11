@@ -32,15 +32,15 @@ If you are using your own store, see [`getProvider`](https://github.com/regionjs
 ```javascript
 import { load } from 'region-shortcut';
 
-load(key, Promise, { params, format });
+load(key, asyncFunction, { params, format });
 
 // or
-const result = await load(key, Promise, { params, format });
+const result = await load(key, asyncFunction, { params, format });
 ```
 
-`Promise` is a function returns a promise.
+`asyncFunction` is a function returns a promise.
 
-`param` is what `Promise` may need. Promise is called when needed and pass the `param`.
+`param` is what `asyncFunction` may need. asyncFunction is called when needed and pass the `param`.
 
 `format` effects after promise resolved and before result is stored, you may do some heavy-calculating task and side effects. It may be something like `(result, snapshot) => result.map(...)`.
 
@@ -54,32 +54,36 @@ import { set } from 'region-shortcut';
 set(key, result, { format });
 ```
 
-### connectWith
+### connect & connectWith
 
 ```javascript
-import { connectWith } from 'region-shortcut';
+import { connect, connectWith } from 'region-shortcut';
+
+// these two are equal, in which option is optional
+const Enhanced = connect(key, option)(Component);
+const Enhanced = connectWith(key, Component, option);
 
 const Display = ({ user }) => {...};
 const Loading = ({ user }) => {...}; // or just import one
-const Enhanced = connectWith('user', Display, Loading);
+const Enhanced = connectWith('user', Display, { Loading });
 
 // or
 const Display = ({ user, follower }) => {...};
-const Enhanced = connectWith(['user', 'follower'], Display, Loading);
+const Enhanced = connectWith(['user', 'follower'], Display, { Loading });
 
 // or
-const Enhanced = connectWith({ loading: 'user', result: ['user', 'follower'] }, Display, Loading);
+const Enhanced = connectWith({ loading: 'user', result: ['user', 'follower'] }, Display, { Loading });
 
 // or
 const Enhanced = connectWith({
-  entity: ['userList', 'follower'],
+  key: ['userList', 'follower'],
   selector: ({ loading, userList, follower }, ownProps) => {
     // NOTE selector runs before loading check, userList may be undefined
     const { id, type } = ownProps;
     const currentUser = userList.find(user => user.id === id && user.type === type);
     return { loading, user: currentUser, follower };
   }
-}, Display, Loading);
+}, Display, { Loading });
 
 // or
 const Display = ({ loading, error, user }) => {...};

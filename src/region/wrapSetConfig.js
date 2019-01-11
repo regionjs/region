@@ -9,7 +9,7 @@ export default () => {
         expiredTime: 0,
         enableLog: true,
         strictLoading: true,
-        silentConnect: false
+        silentConnect: false,
       });
       if (config !== null && typeof config === 'object') {
         this.private_setConfig(config);
@@ -25,7 +25,7 @@ export default () => {
         expiredTime,
         enableLog,
         strictLoading,
-        silentConnect
+        silentConnect,
       } = config;
 
       if (name !== undefined) {

@@ -23,12 +23,12 @@ import { load } from 'region-shortcut';
 load(key, asyncFunction, { params, forceUpdate, format });
 
 // or
-const result = await load(key, Promise, { params, forceUpdate, format });
+const result = await load(key, asyncFunction, { params, forceUpdate, format });
 ```
 
 `forceUpdate: true | false`, default as `false`, throttles if the last load call is in the past time that is set. If you don't config expireTime, you may not use forceUpdate.
 
-`forceUpdate: true` calls Promise at once.
+`forceUpdate: true` calls asyncFunction at once.
 
 ### private_setConfig
 
@@ -52,15 +52,13 @@ You can set `strictLoading` to `false` to enable a different treat of `loading =
 
 You can set `silentConnect` to `true` to enable a default noop Loading Component.
 
-### mapResultToProps
+### private_selectorFactory
 
 ```javascript
-const mapStateToProps = mapResultToProps('user');
-// or
-const mapStateToProps = mapResultToProps(['user', 'follower']);
-// or
-const mapStateToProps = mapResultToProps({ loading: 'user', result: ['user', 'follower'] });
+const mapStateToProps = private_selectorFactory('user');
 ```
+
+see connect & connectWith
 
 ### getLoading & getResults & getFetchTimes & getError
 
