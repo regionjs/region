@@ -19,7 +19,7 @@ const getProps = (keys, loading, results, error) => {
 
 export default (RegionIn) => {
   class Region extends RegionIn {
-    mapResultToProps = (key) => {
+    private_selectorFactory = (key) => {
       const { getLoading, getResults, getError } = this;
       return (state, ownProps) => {
         if (typeof key === 'string' || Array.isArray(key)) {
@@ -30,11 +30,14 @@ export default (RegionIn) => {
             getError(key)
           );
         }
+        if (key.entity) {
+          console.warn('entity is deprecated, use key instead');
+        }
         const props = getProps(
-          key.result || key.entity,
-          getLoading(key.loading || key.entity),
-          getResults(key.result || key.entity),
-          getError(key.error || key.entity)
+          key.result || key.key || key.entity,
+          getLoading(key.loading || key.key || key.entity),
+          getResults(key.result || key.key || key.entity),
+          getError(key.error || key.key || key.entity)
         );
         if (key.selector && typeof key.selector === 'function') {
           return key.selector(props, ownProps);

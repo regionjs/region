@@ -1,7 +1,7 @@
 import { region } from './region';
 import { setStore } from '../../global/store';
 
-const { private_setConfig, getLoading, getResults, getFetchTimes, mapResultToProps } = region;
+const { private_setConfig, getLoading, getResults, getFetchTimes, private_selectorFactory } = region;
 
 let state = null;
 setStore({
@@ -25,11 +25,11 @@ describe('getThingsFromState', () => {
     expect(getLoading(['a', 'b'])).toEqual(true);
     expect(getResults(['a', 'b'])).toEqual([undefined, undefined]);
     expect(getFetchTimes(['a', 'b'])).toEqual([undefined, undefined]);
-    expect(mapResultToProps('a')()).toEqual({
+    expect(private_selectorFactory('a')()).toEqual({
       loading: true,
       a: undefined
     });
-    expect(mapResultToProps(['a', 'b'])()).toEqual({
+    expect(private_selectorFactory(['a', 'b'])()).toEqual({
       loading: true,
       a: undefined,
       b: undefined
@@ -43,11 +43,11 @@ describe('getThingsFromState', () => {
     expect(getLoading(['a', 'b'])).toEqual(true);
     expect(getResults(['a', 'b'])).toEqual([undefined, undefined]);
     expect(getFetchTimes(['a', 'b'])).toEqual([undefined, undefined]);
-    expect(mapResultToProps('a')()).toEqual({
+    expect(private_selectorFactory('a')()).toEqual({
       loading: true,
       a: undefined
     });
-    expect(mapResultToProps(['a', 'b'])()).toEqual({
+    expect(private_selectorFactory(['a', 'b'])()).toEqual({
       loading: true,
       a: undefined,
       b: undefined
@@ -63,11 +63,11 @@ describe('getThingsFromState', () => {
     expect(getLoading(['a', 'b'])).toEqual(true);
     expect(getResults(['a', 'b'])).toEqual([undefined, undefined]);
     expect(getFetchTimes(['a', 'b'])).toEqual([undefined, undefined]);
-    expect(mapResultToProps('a')()).toEqual({
+    expect(private_selectorFactory('a')()).toEqual({
       loading: true,
       a: undefined
     });
-    expect(mapResultToProps(['a', 'b'])()).toEqual({
+    expect(private_selectorFactory(['a', 'b'])()).toEqual({
       loading: true,
       a: undefined,
       b: undefined
@@ -95,11 +95,11 @@ describe('getThingsFromState', () => {
     expect(getLoading(['a', 'b'])).toEqual(true);
     expect(getResults(['a', 'b'])).toEqual([{ name: '66', type: 'cat' }, undefined]);
     expect(getFetchTimes(['a', 'b'])).toEqual([0, undefined]);
-    expect(mapResultToProps('a')()).toEqual({
+    expect(private_selectorFactory('a')()).toEqual({
       loading: false,
       a: { name: '66', type: 'cat' }
     });
-    expect(mapResultToProps(['a', 'b'])()).toEqual({
+    expect(private_selectorFactory(['a', 'b'])()).toEqual({
       loading: true,
       a: { name: '66', type: 'cat' },
       b: undefined
@@ -111,26 +111,26 @@ describe('getThingsFromState', () => {
     });
     expect(getLoading(['a', 'b'])).toBe(false);
   });
-  test('mapResultToProps', () => {
+  test('private_selectorFactory', () => {
     setState({
       loadings: { a: true, b: false },
       fetchTimes: { a: 0, b: 0 },
       results: { a: { type: 'cat' }, b: { type: 'dog' } }
     });
-    expect(mapResultToProps('a')()).toEqual({
+    expect(private_selectorFactory('a')()).toEqual({
       loading: true,
       a: { type: 'cat' }
     });
-    expect(mapResultToProps(['a', 'b'])()).toEqual({
+    expect(private_selectorFactory(['a', 'b'])()).toEqual({
       loading: true,
       a: { type: 'cat' },
       b: { type: 'dog' }
     });
-    expect(mapResultToProps({ loading: 'b', result: 'a' })()).toEqual({
+    expect(private_selectorFactory({ loading: 'b', result: 'a' })()).toEqual({
       loading: false,
       a: { type: 'cat' }
     });
-    expect(mapResultToProps({ loading: 'a', result: ['a', 'b'] })()).toEqual({
+    expect(private_selectorFactory({ loading: 'a', result: ['a', 'b'] })()).toEqual({
       loading: true,
       a: { type: 'cat' },
       b: { type: 'dog' }
@@ -150,8 +150,8 @@ describe('getThingsFromState', () => {
       fetchTimes: { a: 0 },
       results: { a: [{ id: 0, type: 'cat' }, { id: 1, type: 'dog' }] }
     });
-    expect(mapResultToProps({
-      entity: 'a',
+    expect(private_selectorFactory({
+      key: 'a',
       selector: ({ a }, { id }) => a.find(item => item.id === id)
     })(null, { id: 1 })).toEqual({ id: 1, type: 'dog' });
   });
