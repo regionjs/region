@@ -32,6 +32,15 @@ describe('set', () => {
       result
     }]);
   });
+
+  test('function', () => {
+    const result = () => 'should not be string';
+    set('user', result);
+    expect(getJourney()).toEqual([{
+      key: 'user',
+      result
+    }]);
+  });
 });
 
 
