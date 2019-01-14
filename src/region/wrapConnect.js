@@ -6,7 +6,7 @@ const empty = () => null;
 
 export default (Region) => {
   class RegionConnect extends Region {
-    connectWith = (key, Display, option) => {
+    connectWith = (key, Display, option = {}) => {
       const { connect } = this;
       if (typeof option === 'object' && option.Loading) {
         return connect(key, option)(Display);
@@ -15,7 +15,7 @@ export default (Region) => {
       return connect(key, { Loading: option })(Display);
     }
 
-    connect = (key, { Loading }) => (Display) => {
+    connect = (key, { Loading } = {}) => (Display) => {
       if (isValidConnectKey(key)) {
         const { private_selectorFactory, silentConnect } = this;
         const defaultLoading = silentConnect ? empty : Display;
