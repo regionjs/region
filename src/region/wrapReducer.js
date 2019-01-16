@@ -18,12 +18,12 @@ export default (RegionIn) => {
 
     reducer = (state = {}, action) => {
       const { enableLog, private_actionTypes } = this;
-      const { LOAD_START, SET } = private_actionTypes;
+      const { LOAD, SET } = private_actionTypes;
       const enableLogInDev = process.env.NODE_ENV !== 'production' && enableLog;
-      if (action.type === LOAD_START) {
+      if (action.type === LOAD) {
         const { key } = action.payload;
         if (enableLogInDev) {
-          debug(LOAD_START, key);
+          debug(LOAD, key);
         }
         return assignValueDeep(state, ['loadings', key], (v = 0) => v + 1);
       }
