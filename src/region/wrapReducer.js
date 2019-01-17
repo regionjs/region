@@ -8,15 +8,15 @@ export default (RegionIn) => {
     constructor(...args) {
       super(...args);
       const reducerObject = getReducerObject();
-      const { name, reducer } = this;
-      const nextReducerObject = { ...reducerObject, [name]: reducer };
+      const { name, private_reducer } = this;
+      const nextReducerObject = { ...reducerObject, [name]: private_reducer };
       setReducerObject(nextReducerObject);
       const store = getStore();
-      const nextReducer = combineReducers(nextReducerObject);
-      store.replaceReducer(nextReducer);
+      const reducer = combineReducers(nextReducerObject);
+      store.replaceReducer(reducer);
     }
 
-    reducer = (state = {}, action) => {
+    private_reducer = (state = {}, action) => {
       const { enableLog, private_actionTypes } = this;
       const { LOAD, SET } = private_actionTypes;
       const enableLogInDev = process.env.NODE_ENV !== 'production' && enableLog;

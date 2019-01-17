@@ -1,6 +1,6 @@
 import { region } from './region';
 
-const { reducer, private_actionTypes } = region;
+const { private_reducer, private_actionTypes } = region;
 
 const { SET } = private_actionTypes;
 
@@ -35,7 +35,7 @@ mockDate();
 describe('reducer', () => {
   test('set string', () => {
     const result = 'a user';
-    const state = reducer({}, { type: SET, payload: { key: 'user', result } });
+    const state = private_reducer({}, { type: SET, payload: { key: 'user', result } });
     expect(state).toEqual({
       errors: { user: undefined },
       fetchTimes: { user: 0 },
@@ -46,7 +46,7 @@ describe('reducer', () => {
 
   test('set array', () => {
     const result = [{ id: 1, name: 'zhangcong' }, { id: 2, name: 'milly' }];
-    const state = reducer({}, { type: SET, payload: { key: 'user', result } });
+    const state = private_reducer({}, { type: SET, payload: { key: 'user', result } });
     expect(state).toEqual({
       errors: { user: undefined },
       fetchTimes: { user: 0 },
@@ -57,7 +57,7 @@ describe('reducer', () => {
 
   test('function', () => {
     const result = () => 'should not be string';
-    const state = reducer({}, { type: SET, payload: { key: 'user', result } });
+    const state = private_reducer({}, { type: SET, payload: { key: 'user', result } });
     expect(state).toEqual({
       errors: { user: undefined },
       fetchTimes: { user: 0 },

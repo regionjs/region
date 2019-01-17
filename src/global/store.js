@@ -6,7 +6,7 @@ export const setStore = (_store) => {
 
 export const getStore = () => {
   if (!store || typeof store.dispatch !== 'function' || typeof store.getState !== 'function') {
-    throw Error('setConfig({ store }) must be called');
+    throw Error('getProvider must be called before new Region()');
   }
   return store;
 };
