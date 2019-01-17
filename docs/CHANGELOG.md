@@ -2,6 +2,8 @@
 
 ### 0.6.x
 
+- DefaultLoading, DefaultError, Error
+
 - connect & connectWith({ key }, ...)
 
 - rename mapResultToProps => private_selectorFactory

@@ -1,5 +1,13 @@
 # 迁移文档
 
+[English](https://github.com/regionjs/region-core/blob/master/docs/Migrate.md) | 中文
+
+## 0.6.0 升级至 0.6.x
+
+有一些方法被修改为 private_ 前缀，如果你没有使用，此次改动对你没有影响。
+
+它们是 `private_setState`, `private_reducer`, `private_selectorFactory` (从 `mapResultsToProps` 重命名)。
+
 ## 0.5 升级至 0.6
 
 包已经重命名为 'region-core' 和 'region-shortcut'，当然 'redux-loadings' 依旧会持续一段时间。

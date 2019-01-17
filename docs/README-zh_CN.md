@@ -7,6 +7,8 @@
 
 一个代替 redux 处理同步与异步流程的 react 配套库。极其简单的 API！
 
+[English](https://github.com/regionjs/region-core/blob/master/docs/README.md) | 中文
+
 ## Get Started
 
 ```bash

@@ -1,12 +1,14 @@
 # Document
 
+[English](https://github.com/regionjs/region-core/blob/master/docs/Document.md) | 中文
+
 [Provider](#Provider)
 
 [load](#load)
 
 [set](#set)
 
-[connectWith](#connectWith)
+[connect & connectWith](#connect--connectWith)
 
 [Region](#Region)
 
@@ -107,13 +109,22 @@ const region = new Region({
   expiredTime: 300000, // default as 0
   enableLog: true, // default as true
   strictLoading: true, // default as true
-  silentConnect: false, // default as false
+  DefaultLoading: Loading, // default as undefined
+  DefaultError: Error, // default as undefined
 });
 
-const { set, load, connectWith } = region;
+const { set, load, connect, connectWith } = region;
 ```
 
-参数详情可以[参考](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI-zh_CN.md#private_setConfig)
+你可以通过设置 `expiredTime` 以开启节流。
+
+你可以通过设置 `enableLog` 以开启日志，日志在 `env !== 'production'` 下打出。
+
+你可以通过设置 `strictLoading` 为 `false` 以关闭对 `loading === undefined` 的处理（不会视为 false 而是 undefined），并且不影响多个 key 之间的 loading 计算。
+
+你可以通过设置 `DefaultLoading` 使用一个默认的 Loading Component。
+
+你可以通过设置 `DefaultError` 使用一个默认的 Error Component。
 
 ### Other Private API
 

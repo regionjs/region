@@ -1,6 +1,6 @@
 # Private API
 
-[中文版](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI-zh_CN.md)
+English | [中文](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI-zh_CN.md)
 
 ### getProvider
 
@@ -40,17 +40,12 @@ private_setConfig({
   expiredTime: 300000, // default as 0
   enableLog: true, // default as true
   strictLoading: true, // default as true
-  silentConnect: false, // default as false
+  DefaultLoading: Loading, // default as undefined
+  DefaultError: Error, // default as undefined
 });
 ```
 
-You can set `expiredTime` to enable throttle.
-
-You can set `enableLog` to enable logs when `env !== 'production'`.
-
-You can set `strictLoading` to `false` to enable a different treat of `loading === undefined`, it  will be treated as `undefined` instead of `false` and not computed with others.
-
-You can set `silentConnect` to `true` to enable a default noop Loading Component.
+see [Region](https://github.com/regionjs/region-core/blob/master/docs/Document.md#Region)
 
 ### private_selectorFactory
 
@@ -58,7 +53,7 @@ You can set `silentConnect` to `true` to enable a default noop Loading Component
 const mapStateToProps = private_selectorFactory('user');
 ```
 
-see connect & connectWith
+see [connect & connectWith](https://github.com/regionjs/region-core/blob/master/docs/Document.md#connect--connectWith)
 
 ### getLoading & getResults & getFetchTimes & getError
 

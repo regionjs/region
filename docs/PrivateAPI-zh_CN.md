@@ -1,5 +1,7 @@
 # Private API
 
+[English](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI-zh_CN.md) | 中文
+
 ### getProvider
 
 如果你在使用自己的 store，创建一个文件名为 `Provider.js`，然后写：
@@ -38,17 +40,12 @@ private_setConfig({
   expiredTime: 300000, // default as 0
   enableLog: true, // default as true
   strictLoading: true, // default as true
-  silentConnect: false, // default as false
+  DefaultLoading: Loading, // default as undefined
+  DefaultError: Error, // default as undefined
 });
 ```
 
-你可以通过设置 `expiredTime` 以开启节流。
-
-你可以通过设置 `enableLog` 以开启日志，日志在 `env !== 'production'` 下打出。
-
-你可以通过设置 `strictLoading` 为 `false` 以关闭对 `loading === undefined` 的处理（不会视为 false 而是 undefined），并且不影响多个 key 之间的 loading 计算。
-
-你可以通过设置 `silentConnect` 为 `true` 以得使用一个默认的 noop Loading Component。
+参见 [Region](https://github.com/regionjs/region-core/blob/master/docs/Document-zh_CN.md#Region)
 
 ### private_selectorFactory
 
@@ -56,7 +53,7 @@ private_setConfig({
 const mapStateToProps = private_selectorFactory('user');
 ```
 
-可以参考 connect & connectWith
+参见 [connect & connectWith](https://github.com/regionjs/region-core/blob/master/docs/Document-zh_CN.md#connect--connectWith)
 
 ### getLoading & getResults & getFetchTimes & getError
 

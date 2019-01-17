@@ -1,6 +1,6 @@
 # Document
 
-[中文版](https://github.com/regionjs/region-core/blob/master/docs/Document-zh_CN.md)
+English | [中文](https://github.com/regionjs/region-core/blob/master/docs/Document-zh_CN.md)
 
 [Provider](#Provider)
 
@@ -8,7 +8,7 @@
 
 [set](#set)
 
-[connectWith](#connectWith)
+[connect & connectWith](#connect--connectWith)
 
 [Region](#Region)
 
@@ -109,13 +109,22 @@ const region = new Region({
   expiredTime: 300000, // default as 0
   enableLog: true, // default as true
   strictLoading: true, // default as true
-  silentConnect: false, // default as false
+  DefaultLoading: Loading, // default as undefined
+  DefaultError: Error, // default as undefined
 });
 
-const { set, load, connectWith } = region;
+const { set, load, connect, connectWith } = region;
 ```
 
-[see config details](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI.md#private_setConfig)
+You can set `expiredTime` to enable throttle.
+
+You can set `enableLog` to enable logs when `env !== 'production'`.
+
+You can set `strictLoading` to `false` to enable a different treat of `loading === undefined`, it  will be treated as `undefined` instead of `false` and not computed with others.
+
+You can set `DefaultLoading` to use a default Loading Component.
+
+You can set `DefaultError` to use a default Error Component.
 
 ### Other Private API
 
