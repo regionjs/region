@@ -30,7 +30,9 @@ export default (RegionIn) => {
       if (action.type === SET) {
         const { key, result, error, withLoadEnd } = action.payload;
         setValueDeep(state, ['fetchTimes', key], new Date().getTime());
-        setValueDeep(state, ['results', key], result);
+        if (result !== undefined) {
+          setValueDeep(state, ['results', key], result);
+        }
         setValueDeep(state, ['errors', key], error); // as well error ===  undefined
         const nextState = assignValueDeep(state, ['loadings', key], withLoadEnd ? (v = 0) => v - 1 : (v = 0) => v);
         if (enableLogInDev) {

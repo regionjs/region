@@ -65,4 +65,27 @@ describe('reducer', () => {
       results: { user: result },
     });
   });
+
+  test('error', () => {
+    const error = new Error('error');
+    const state = private_reducer({}, { type: SET, payload: { key: 'user', error } });
+    expect(state).toEqual({
+      errors: { user: error },
+      fetchTimes: { user: 0 },
+      loadings: { user: 0 },
+    });
+  });
+
+  test('error not cover snapshot', () => {
+    const result = 'a user';
+    const error = new Error('error');
+    const state = private_reducer({}, { type: SET, payload: { key: 'user', result } });
+    const stateWithError = private_reducer(state, { type: SET, payload: { key: 'user', error } });
+    expect(stateWithError).toEqual({
+      errors: { user: error },
+      fetchTimes: { user: 0 },
+      loadings: { user: 0 },
+      results: { user: 'a user' },
+    });
+  });
 });

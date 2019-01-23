@@ -27,7 +27,7 @@ export default (Region) => {
         dispatch({ type: SET, payload: { key, result: formattedResult } });
         return formattedResult;
       } catch (error) {
-        dispatch({ type: SET, payload: { key, result: null, error } });
+        dispatch({ type: SET, payload: { key, error } });
         return null;
       }
     }
@@ -59,7 +59,7 @@ export default (Region) => {
         dispatch({ type: SET, payload: { key, result: formattedResult, withLoadEnd: true } });
         return formattedResult;
       } catch (error) {
-        dispatch({ type: SET, payload: { key, result: null, error, withLoadEnd: true } });
+        dispatch({ type: SET, payload: { key, error, withLoadEnd: true } });
         return null;
       }
     }
