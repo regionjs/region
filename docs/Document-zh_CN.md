@@ -42,7 +42,9 @@ const result = await load(key, asyncFunction, { params, format });
 
 `param` 是 `asyncFunction` 需要的参数，当函数发起时会传入 param。
 
-`format` 在 promise resolved 并在存入 store 之前被调用。你可以在这里做一些计算和副作用。函数的形式可能为 `(result, snapshot) => result.map(...)`.
+`format` 在 promise resolved 并在存入 store 之前被调用。你可以在这里做一些计算和副作用。函数的形式可能为 `(result, snapshot, error) => result.map(...)`。
+
+它在 promise 被 resolve 或被 reject 时触发。
 
 `snapshot` 是上一次的 result，在你尝试处理 `POST/PUT/DELETE` 方法时会很有用。
 

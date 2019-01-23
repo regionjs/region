@@ -22,14 +22,9 @@ export default (Region) => {
       const { dispatch } = getStore();
       const snapshot = getSnapshot(key);
 
-      try {
-        const formattedResult = formatResult({ result, snapshot, key, format });
-        dispatch({ type: SET, payload: { key, result: formattedResult } });
-        return formattedResult;
-      } catch (error) {
-        dispatch({ type: SET, payload: { key, error } });
-        return null;
-      }
+      const formattedResult = formatResult({ result, snapshot, key, format });
+      dispatch({ type: SET, payload: { key, result: formattedResult } });
+      return formattedResult;
     }
 
     /**
@@ -59,8 +54,9 @@ export default (Region) => {
         dispatch({ type: SET, payload: { key, result: formattedResult, withLoadEnd: true } });
         return formattedResult;
       } catch (error) {
-        dispatch({ type: SET, payload: { key, error, withLoadEnd: true } });
-        return null;
+        const formattedResult = formatResult({ error, snapshot, format });
+        dispatch({ type: SET, payload: { key, result: formattedResult, error, withLoadEnd: true } });
+        return formattedResult;
       }
     }
   }
