@@ -1,12 +1,14 @@
 # Document
 
+[English](https://github.com/regionjs/region-core/blob/master/docs/Document.md) | 中文
+
 [Provider](#Provider)
 
 [load](#load)
 
 [set](#set)
 
-[connectWith](#connectWith)
+[connect & connectWith](#connect--connectWith)
 
 [Region](#Region)
 
@@ -40,7 +42,9 @@ const result = await load(key, asyncFunction, { params, format });
 
 `param` 是 `asyncFunction` 需要的参数，当函数发起时会传入 param。
 
-`format` 在 promise resolved 并在存入 store 之前被调用。你可以在这里做一些计算和副作用。函数的形式可能为 `(result, snapshot) => result.map(...)`.
+`format` 在 promise resolved 并在存入 store 之前被调用。你可以在这里做一些计算和副作用。函数的形式可能为 `(result, snapshot, error) => result.map(...)`。
+
+它在 promise 被 resolve 或被 reject 时触发。
 
 `snapshot` 是上一次的 result，在你尝试处理 `POST/PUT/DELETE` 方法时会很有用。
 
@@ -107,13 +111,22 @@ const region = new Region({
   expiredTime: 300000, // default as 0
   enableLog: true, // default as true
   strictLoading: true, // default as true
-  silentConnect: false, // default as false
+  DefaultLoading: Loading, // default as undefined
+  DefaultError: Error, // default as undefined
 });
 
-const { set, load, connectWith } = region;
+const { set, load, connect, connectWith } = region;
 ```
 
-参数详情可以[参考](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI-zh_CN.md#private_setConfig)
+你可以通过设置 `expiredTime` 以开启节流。
+
+你可以通过设置 `enableLog` 以开启日志，日志在 `env !== 'production'` 下打出。
+
+你可以通过设置 `strictLoading` 为 `false` 以关闭对 `loading === undefined` 的处理（不会视为 false 而是 undefined），并且不影响多个 key 之间的 loading 计算。
+
+你可以通过设置 `DefaultLoading` 使用一个默认的 Loading Component。
+
+你可以通过设置 `DefaultError` 使用一个默认的 Error Component。
 
 ### Other Private API
 

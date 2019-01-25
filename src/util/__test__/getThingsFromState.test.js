@@ -1,7 +1,7 @@
 import { region } from './region';
 import { setStore } from '../../global/store';
 
-const { private_setConfig, getLoading, getResults, getFetchTimes, private_selectorFactory } = region;
+const { private_setConfig, getLoading, getResults, getFetchTimes, getError, private_selectorFactory } = region;
 
 let state = null;
 setStore({
@@ -110,6 +110,20 @@ describe('getThingsFromState', () => {
       loadings: { a: false, b: false },
     });
     expect(getLoading(['a', 'b'])).toBe(false);
+  });
+  test('getError', () => {
+    setState({
+      loadings: { a: false, b: false },
+      errors: { a: new Error('error a'), b: undefined },
+    });
+    expect(getError(['a', 'b'])).toBe('error a');
+    expect(getError('a')).toBe('error a');
+    expect(getError('b')).toBe(undefined);
+    setState({
+      loadings: { a: false, b: false },
+      errors: { a: new Error('error a'), b: new Error('error b') },
+    });
+    expect(getError(['a', 'b'])).toBe('error a, error b');
   });
   test('private_selectorFactory', () => {
     setState({

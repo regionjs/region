@@ -7,7 +7,7 @@
 
 A replacement tool of `redux` to handle sync & async action flow. Extremely simple API!
 
-[中文版](https://github.com/regionjs/region-core/blob/master/docs/README-zh_CN.md)
+English | [中文](https://github.com/regionjs/region-core/blob/master/docs/README-zh_CN.md)
 
 ## Get Started
 

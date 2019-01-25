@@ -22,14 +22,9 @@ export default (Region) => {
       const { dispatch } = getStore();
       const snapshot = getSnapshot(key);
 
-      try {
-        const formattedResult = formatResult({ result, snapshot, key, format });
-        dispatch({ type: SET, payload: { key, result: formattedResult } });
-        return formattedResult;
-      } catch (error) {
-        dispatch({ type: SET, payload: { key, result: null, error } });
-        return null;
-      }
+      const formattedResult = formatResult({ result, snapshot, key, format });
+      dispatch({ type: SET, payload: { key, result: formattedResult } });
+      return formattedResult;
     }
 
     /**
@@ -45,22 +40,23 @@ export default (Region) => {
       }
 
       const { getResults: getSnapshot, private_actionTypes, expiredTime, getFetchTimes } = this;
-      const { LOAD_START, SET } = private_actionTypes;
+      const { LOAD, SET } = private_actionTypes;
       const { dispatch } = getStore();
       const snapshot = getSnapshot(key);
       if (shouldThrottle({ asyncFunction, forceUpdate, key, snapshot, expiredTime, getFetchTimes })) {
         return snapshot;
       }
 
-      dispatch({ type: LOAD_START, payload: { key } });
+      dispatch({ type: LOAD, payload: { key } });
       try {
         const result = await toPromise({ asyncFunction, params });
         const formattedResult = formatResult({ result, snapshot, format });
         dispatch({ type: SET, payload: { key, result: formattedResult, withLoadEnd: true } });
         return formattedResult;
       } catch (error) {
-        dispatch({ type: SET, payload: { key, result: null, error, withLoadEnd: true } });
-        return null;
+        const formattedResult = formatResult({ error, snapshot, format });
+        dispatch({ type: SET, payload: { key, result: formattedResult, error, withLoadEnd: true } });
+        return formattedResult;
       }
     }
   }

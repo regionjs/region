@@ -13,9 +13,16 @@ const formatLoading = (loading, { strictLoading }) => {
   return false;
 };
 
+const mapValues = (values, path) => {
+  if (Array.isArray(path)) {
+    return path.map(i => values[i]);
+  }
+  return values[path];
+};
+
 export default (RegionIn) => {
   class Region extends RegionIn {
-    getState = () => {
+    private_getState = () => {
       const { name } = this;
       const { getState } = getStore();
       const state = getState();
@@ -26,65 +33,38 @@ export default (RegionIn) => {
     }
 
     getLoading = (path) => {
-      const { getState, strictLoading } = this;
-      const { loadings } = getState();
+      const { private_getState, strictLoading } = this;
+      const { loadings } = private_getState();
       if (!loadings) {
         return true;
       }
-      if (Array.isArray(path)) {
-        for (let i = 0; i < path.length; i++) {
-          if (formatLoading(loadings[path[i]], { strictLoading })) {
-            return true;
-          }
-        }
-        return false;
+      const mapLoadings = mapValues(loadings, path);
+      if (Array.isArray(mapLoadings)) {
+        return mapLoadings.map(i => formatLoading(i, { strictLoading })).reduce((a, b) => a || b, false);
       }
-      return formatLoading(loadings[path], { strictLoading });
+      return formatLoading(mapLoadings, { strictLoading });
     }
 
     getFetchTimes = (path) => {
-      const { getState } = this;
-      const { fetchTimes = {} } = getState();
-      if (Array.isArray(path)) {
-        const ans = [];
-        for (let i = 0; i < path.length; i++) {
-          const key = path[i];
-          ans.push(fetchTimes[key]);
-        }
-        return ans;
-      }
-      return fetchTimes[path];
+      const { private_getState } = this;
+      const { fetchTimes = {} } = private_getState();
+      return mapValues(fetchTimes, path);
     }
 
     getResults = (path) => {
-      const { getState } = this;
-      const { results = {} } = getState();
-      if (Array.isArray(path)) {
-        const ans = [];
-        for (let i = 0; i < path.length; i++) {
-          const key = path[i];
-          ans.push(results[key]);
-        }
-        return ans;
-      }
-      return results[path];
+      const { private_getState } = this;
+      const { results = {} } = private_getState();
+      return mapValues(results, path);
     }
 
     getError = (path) => {
-      const { getState } = this;
-      const { errors = {} } = getState();
-      if (Array.isArray(path)) {
-        let ans = '';
-        for (let i = 0; i < path.length; i++) {
-          const key = path[i];
-          const error = errors[key];
-          if (error) {
-            ans += error.message;
-          }
-        }
-        return ans;
+      const { private_getState } = this;
+      const { errors = {} } = private_getState();
+      const mapErrors = mapValues(errors, path);
+      if (Array.isArray(mapErrors)) {
+        return mapErrors.filter(e => e).map(e => e.message).join(', ');
       }
-      return errors[path];
+      return mapErrors && mapErrors.message;
     }
   }
   return Region;

@@ -1,6 +1,12 @@
 # Migrate Guide
 
-[中文版](https://github.com/regionjs/region-core/blob/master/docs/Migrate-zh_CN.md)
+English | [中文](https://github.com/regionjs/region-core/blob/master/docs/Migrate-zh_CN.md)
+
+## Migrate From 0.6.0 to 0.6.x
+
+Some functions are added private_ prefix. If your are not using them, there should be no effect on you.
+
+They are `private_setState`, `private_reducer`, `private_selectorFactory` (from `mapResultsToProps`).
 
 ## Migrate From 0.5 to 0.6
 

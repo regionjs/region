@@ -2,11 +2,15 @@
 
 ### 0.6.x
 
+- format: `(result, snapshot) => ...` to `(result, snapshot, error) => ...`
+
+- DefaultLoading, DefaultError, Error
+
 - connect & connectWith({ key }, ...)
 
 - rename mapResultToProps => private_selectorFactory
 
-- fix set function
+- fix set a function
 
 - fix loading when several load is called
 

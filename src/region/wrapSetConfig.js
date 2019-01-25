@@ -9,7 +9,6 @@ export default () => {
         expiredTime: 0,
         enableLog: true,
         strictLoading: true,
-        silentConnect: false,
       });
       if (config !== null && typeof config === 'object') {
         this.private_setConfig(config);
@@ -26,6 +25,8 @@ export default () => {
         enableLog,
         strictLoading,
         silentConnect,
+        DefaultLoading,
+        DefaultError,
       } = config;
 
       if (name !== undefined) {
@@ -47,7 +48,15 @@ export default () => {
         this.strictLoading = strictLoading;
       }
       if (silentConnect !== undefined) {
+        console.warn('silentConnect is deprecated, set {DefaultLoading: () => null} instead');
         this.silentConnect = silentConnect;
+        this.DefaultLoading = silentConnect ? () => null : undefined;
+      }
+      if (DefaultLoading !== undefined) {
+        this.DefaultLoading = DefaultLoading;
+      }
+      if (DefaultError !== undefined) {
+        this.DefaultError = DefaultError;
       }
     }
 

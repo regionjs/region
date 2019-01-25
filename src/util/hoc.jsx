@@ -1,9 +1,15 @@
 import React from 'react';
 
-export default (DisplayComponent, LoadingComponent) => {
+export default (Display, Loading, Error) => {
   const ConnectWith = (props) => {
-    const { loading } = props;
-    return (loading ? <LoadingComponent {...props} /> : <DisplayComponent {...props} />);
+    const { loading, error } = props;
+    if (loading) {
+      return <Loading {...props} />;
+    }
+    if (error) {
+      return <Error {...props} />;
+    }
+    return <Display {...props} />;
   };
   return ConnectWith;
 };

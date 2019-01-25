@@ -8,29 +8,31 @@ export default (RegionIn) => {
     constructor(...args) {
       super(...args);
       const reducerObject = getReducerObject();
-      const { name, reducer } = this;
-      const nextReducerObject = { ...reducerObject, [name]: reducer };
+      const { name, private_reducer } = this;
+      const nextReducerObject = { ...reducerObject, [name]: private_reducer };
       setReducerObject(nextReducerObject);
       const store = getStore();
-      const nextReducer = combineReducers(nextReducerObject);
-      store.replaceReducer(nextReducer);
+      const reducer = combineReducers(nextReducerObject);
+      store.replaceReducer(reducer);
     }
 
-    reducer = (state = {}, action) => {
+    private_reducer = (state = {}, action) => {
       const { enableLog, private_actionTypes } = this;
-      const { LOAD_START, SET } = private_actionTypes;
+      const { LOAD, SET } = private_actionTypes;
       const enableLogInDev = process.env.NODE_ENV !== 'production' && enableLog;
-      if (action.type === LOAD_START) {
+      if (action.type === LOAD) {
         const { key } = action.payload;
         if (enableLogInDev) {
-          debug(LOAD_START, key);
+          debug(LOAD, key);
         }
         return assignValueDeep(state, ['loadings', key], (v = 0) => v + 1);
       }
       if (action.type === SET) {
         const { key, result, error, withLoadEnd } = action.payload;
         setValueDeep(state, ['fetchTimes', key], new Date().getTime());
-        setValueDeep(state, ['results', key], result);
+        if (result !== undefined) {
+          setValueDeep(state, ['results', key], result);
+        }
         setValueDeep(state, ['errors', key], error); // as well error ===  undefined
         const nextState = assignValueDeep(state, ['loadings', key], withLoadEnd ? (v = 0) => v - 1 : (v = 0) => v);
         if (enableLogInDev) {
