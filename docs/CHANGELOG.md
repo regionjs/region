@@ -10,9 +10,7 @@
 
 - rename mapResultToProps => private_selectorFactory
 
-- fix set a function
-
-- fix loading when several load is called
+- fix loading when several load is called, using pendingMutex
 
 - new Region('name') & new Region({ name })
 
