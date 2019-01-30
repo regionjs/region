@@ -62,7 +62,11 @@ export default (RegionIn) => {
       const { errors = {} } = private_getState();
       const mapErrors = mapValues(errors, path);
       if (Array.isArray(mapErrors)) {
-        return mapErrors.filter(e => e).map(e => e.message).join(', ');
+        const filteredErrors = mapErrors.filter(e => e);
+        if (filteredErrors.length > 0) {
+          return filteredErrors.map(e => e.message).join(', ');
+        }
+        return undefined;
       }
       return mapErrors && mapErrors.message;
     }

@@ -11,4 +11,9 @@ describe('reducerPrototype', () => {
     expect(state).toEqual({ a: { b: 1 } });
     expect(assignValueDeep(state, ['a', 'b'], v => v + 1)).toEqual({ a: { b: 2 } });
   });
+  test('assignValueDeep with undefined', () => {
+    const state = assignValueDeep(undefined, ['a', 'b'], () => 1);
+    expect(state).toEqual({ a: { b: 1 } });
+    expect(assignValueDeep(state, ['a', 'b'], v => v + 1)).toEqual({ a: { b: 2 } });
+  });
 });

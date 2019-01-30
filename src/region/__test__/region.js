@@ -1,6 +1,8 @@
 import { createStore } from 'redux';
-import Region from '../../region';
+import Region from '../index';
 import { setStore } from '../../global/store';
 
 setStore(createStore(() => {}));
-export const region = new Region(null);
+const region = new Region({ name: null });
+
+export { region };

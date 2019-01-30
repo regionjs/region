@@ -15,7 +15,7 @@
     "example": "example"
   },
   "scripts": {
-    "build": "rm -rf lib/ && babel src --out-dir lib --ignore **/*.test.js",
+    "build": "rm -rf lib/ && babel src --out-dir lib --ignore **/__test__/*.js,**/__test__/*.test.jsx",
     "check": "npm run build && npm run lint && npm run test",
     "codecov": "jest --colors --coverage && codecov",
     "lint": "eslint --ignore-path .gitignore --ext .js,jsx ./src",
