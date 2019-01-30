@@ -15,12 +15,12 @@
     "example": "example"
   },
   "scripts": {
-    "build": "rm -rf lib/ && babel src --out-dir lib --ignore **/__test__/*.js,**/__test__/*.test.jsx",
-    "check": "npm run build && npm run lint && npm run test",
-    "codecov": "jest --colors --coverage && codecov",
+    "build": "rm -rf lib/ && babel src --out-dir lib",
+    "check": "npm run build && npm run lint && jest --colors",
+    "codecov": "npm test && codecov",
     "lint": "eslint --ignore-path .gitignore --ext .js,jsx ./src",
     "prepublish": "npm run check",
-    "test": "jest --colors --coverage"
+    "test": "jest src --colors --coverage"
   },
   "husky": {
     "hooks": {
