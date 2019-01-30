@@ -2,7 +2,7 @@ import { region } from './region';
 
 const { private_setConfig } = region;
 
-describe('config', () => {
+describe('private_config', () => {
   test('default', () => {
     const { name, enableLog, expiredTime, strictLoading, silentConnect, private_actionTypes, DefaultLoading, DefaultError } = region;
     expect(name).toBe(null);

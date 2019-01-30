@@ -32,7 +32,7 @@ const mockDate = () => {
 
 mockDate();
 
-describe('reducer', () => {
+describe('private_reducer', () => {
   test('set string', () => {
     const result = 'a user';
     const state = private_reducer({}, { type: SET, payload: { key: 'user', result } });

@@ -39,7 +39,7 @@ export default (RegionIn) => {
           if (error) {
             console.error(error.message);
           }
-          group(SET, key, result, nextState);
+          group({ actionType: SET, key, result, error, nextState });
         }
         return nextState;
       }

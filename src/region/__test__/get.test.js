@@ -15,7 +15,7 @@ const setState = (_state) => {
   state = _state;
 };
 
-describe('getThingsFromState', () => {
+describe('get', () => {
   test('get things from nothing', () => {
     // NOTE loading is true because we want to display loading ui when state is undefined.
     setState(undefined);

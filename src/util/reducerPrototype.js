@@ -14,7 +14,7 @@ export function assignValueDeep(state = {}, path, format) {
 }
 
 // NOTE 只支持 path.length === 2 和 value
-export function setValueDeep(state = {}, path, value) {
+export function setValueDeep(state, path, value) {
   let obj = state;
   let i;
   for (i = 0; i < path.length - 1; i++) {

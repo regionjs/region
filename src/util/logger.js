@@ -10,9 +10,10 @@ const getFormat = (prefix, str) => {
 };
 
 export const debug = (prefix, str) => console.debug(...getFormat(prefix, str));
-export const group = (prefix, str, result, nextState) => {
-  console.groupCollapsed(...getFormat(prefix, str));
+export const group = ({ actionType, key, result, error, nextState }) => {
+  console.groupCollapsed(...getFormat(actionType, key));
   console.debug('%cresult    ', 'color: #03A9F4; font-weight: bold', result);
+  console.debug('%cerror     ', 'color: #f5222d; font-weight: bold', error);
   console.debug('%cnext state', 'color: #4CAF50; font-weight: bold', nextState);
   console.groupEnd();
 };

@@ -16,10 +16,19 @@ describe('shouldThrottle', () => {
     })).toEqual(false);
   });
 
-  test('func', () => {
+  test('expiredTime 0', () => {
     expect(shouldThrottle({
       asyncFunction: () => null,
       expiredTime: 0,
+      snapshot: 'snapshot',
+      getFetchTimes: () => 10000000000000,
+    })).toEqual(false);
+  });
+
+  test('func', () => {
+    expect(shouldThrottle({
+      asyncFunction: () => null,
+      expiredTime: 1,
       snapshot: 'snapshot',
       getFetchTimes,
     })).toEqual(false);
@@ -28,7 +37,7 @@ describe('shouldThrottle', () => {
   test('asyncFunction', () => {
     expect(shouldThrottle({
       asyncFunction: () => Promise.resolve(),
-      expiredTime: 0,
+      expiredTime: 1,
       snapshot: 'snapshot',
       getFetchTimes,
     })).toEqual(false);
@@ -37,7 +46,7 @@ describe('shouldThrottle', () => {
   test('func expired', () => {
     expect(shouldThrottle({
       asyncFunction: () => null,
-      expiredTime: 0,
+      expiredTime: 1,
       snapshot: 'snapshot',
       getFetchTimes: () => 10000000000000,
     })).toEqual(true);
@@ -46,7 +55,7 @@ describe('shouldThrottle', () => {
   test('asyncFunction expired', () => {
     expect(shouldThrottle({
       asyncFunction: () => Promise.resolve(),
-      expiredTime: 0,
+      expiredTime: 1,
       snapshot: 'snapshot',
       getFetchTimes: () => 10000000000000,
     })).toEqual(true);
