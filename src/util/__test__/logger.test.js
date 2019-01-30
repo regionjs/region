@@ -18,6 +18,6 @@ describe('logger', () => {
   test('group trip', () => {
     const trip = useTrip();
     group('a', 'b', 'c', 'd');
-    expect(trip).toEqual(['groupCollapsed', 'debug', 'debug', 'groupEnd']);
+    expect(trip).toEqual(['groupCollapsed', 'debug', 'debug', 'debug', 'groupEnd']);
   });
 });
