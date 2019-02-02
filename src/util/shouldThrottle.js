@@ -4,6 +4,11 @@ const isExpired = ({ key, expiredTime, getFetchTimes }) => {
   return now - fetchTime > expiredTime;
 };
 
-export const shouldThrottle = ({ asyncFunction, forceUpdate, key, snapshot, expiredTime, getFetchTimes }) => Boolean(
-  expiredTime > 0 && typeof asyncFunction === 'function' && !forceUpdate && !isExpired({ key, expiredTime, getFetchTimes }) && snapshot,
-);
+export const shouldThrottle = ({ asyncFunction, forceUpdate, key, snapshot, id, expiredTime, getFetchTimes }) => {
+  if (id !== undefined) {
+    return Boolean(snapshot && snapshot[id] !== undefined);
+  }
+  return Boolean(
+    expiredTime > 0 && typeof asyncFunction === 'function' && !forceUpdate && snapshot && !isExpired({ key, expiredTime, getFetchTimes }),
+  );
+};

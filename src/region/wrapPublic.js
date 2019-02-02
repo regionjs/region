@@ -17,10 +17,10 @@ export default (Region) => {
      * @param format A function format result to other data structure
      */
     set = (key, result, { format } = {}) => {
-      const { getResults: getSnapshot, private_actionTypes } = this;
+      const { getResults, private_actionTypes } = this;
       const { SET } = private_actionTypes;
       const { dispatch } = getStore();
-      const snapshot = getSnapshot(key);
+      const snapshot = getResults(key);
 
       const formattedResult = formatResult({ result, snapshot, key, format });
       dispatch({ type: SET, payload: { key, result: formattedResult } });
@@ -32,29 +32,29 @@ export default (Region) => {
      * @param format A function format result to other data structure
      * @param forceUpdate true | false
      */
-    load = async (key, asyncFunction, { forceUpdate, params, format } = {}) => {
+    load = async (key, asyncFunction, { forceUpdate, params, format, id } = {}) => {
       if (!isAsync(asyncFunction)) {
         console.warn('set result directly');
         const { set } = this;
         return set(key, asyncFunction);
       }
 
-      const { getResults: getSnapshot, private_actionTypes, expiredTime, getFetchTimes } = this;
+      const { getResults, private_actionTypes, expiredTime, getFetchTimes } = this;
       const { LOAD, SET } = private_actionTypes;
       const { dispatch } = getStore();
-      const snapshot = getSnapshot(key);
-      if (shouldThrottle({ asyncFunction, forceUpdate, key, snapshot, expiredTime, getFetchTimes })) {
+      const snapshot = getResults(key);
+      if (shouldThrottle({ asyncFunction, forceUpdate, key, snapshot, id, expiredTime, getFetchTimes })) {
         return snapshot;
       }
 
       dispatch({ type: LOAD, payload: { key } });
       try {
         const result = await toPromise({ asyncFunction, params });
-        const formattedResult = formatResult({ result, snapshot, format });
+        const formattedResult = formatResult({ result, snapshot, format, id });
         dispatch({ type: SET, payload: { key, result: formattedResult, withLoadEnd: true } });
         return formattedResult;
       } catch (error) {
-        const formattedResult = formatResult({ error, snapshot, format });
+        const formattedResult = formatResult({ error, snapshot, format, id });
         dispatch({ type: SET, payload: { key, result: formattedResult, error, withLoadEnd: true } });
         return formattedResult;
       }

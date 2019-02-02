@@ -20,6 +20,12 @@ describe('formatResult', () => {
     expect(formatResult({ result, format })).toBe('user');
   });
 
+  test('format id', () => {
+    const result = { user: 'user' };
+    const format = res => res.user;
+    expect(formatResult({ result, format, id: 0 })).toEqual({ 0: 'user' });
+  });
+
   test('format fail', () => {
     const result = null;
     const format = res => res.user;
