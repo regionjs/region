@@ -164,9 +164,12 @@ describe('get', () => {
       fetchTimes: { a: 0 },
       results: { a: [{ id: 0, type: 'cat' }, { id: 1, type: 'dog' }] },
     });
-    expect(private_selectorFactory({
+    const selected = private_selectorFactory({
       key: 'a',
       selector: ({ a }, { id }) => a.find(item => item.id === id),
-    })(null, { id: 1 })).toEqual({ id: 1, type: 'dog' });
+    })(null, { id: 1 });
+    expect(selected.id).toBe(1);
+    expect(selected.type).toBe('dog');
+    expect(selected).toEqual({ loading: false, a: [{ id: 0, type: 'cat' }, { id: 1, type: 'dog' }], id: 1, type: 'dog' });
   });
 });
