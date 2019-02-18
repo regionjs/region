@@ -4,12 +4,11 @@ const { private_setConfig } = region;
 
 describe('private_config', () => {
   test('default', () => {
-    const { name, enableLog, expiredTime, strictLoading, silentConnect, private_actionTypes, DefaultLoading, DefaultError } = region;
+    const { name, enableLog, expiredTime, strictLoading, private_actionTypes, DefaultLoading, DefaultError } = region;
     expect(name).toBe(null);
     expect(expiredTime).toBe(0);
     expect(enableLog).toBe(true);
     expect(strictLoading).toBe(true);
-    expect(silentConnect).toBe(undefined);
     expect(DefaultLoading).toBe(undefined);
     expect(DefaultError).toBe(undefined);
     expect(private_actionTypes).toEqual({
@@ -19,12 +18,11 @@ describe('private_config', () => {
   });
   test('set nothing', () => {
     private_setConfig();
-    const { name, enableLog, expiredTime, strictLoading, silentConnect, private_actionTypes, DefaultLoading, DefaultError } = region;
+    const { name, enableLog, expiredTime, strictLoading, private_actionTypes, DefaultLoading, DefaultError } = region;
     expect(name).toBe(null);
     expect(expiredTime).toBe(0);
     expect(enableLog).toBe(true);
     expect(strictLoading).toBe(true);
-    expect(silentConnect).toBe(undefined);
     expect(DefaultLoading).toBe(undefined);
     expect(DefaultError).toBe(undefined);
     expect(private_actionTypes).toEqual({
@@ -47,15 +45,13 @@ describe('private_config', () => {
       expiredTime: 30000,
       name: 'result',
       strictLoading: false,
-      silentConnect: true,
     });
-    const { name, enableLog, expiredTime, strictLoading, silentConnect, private_actionTypes, DefaultLoading, DefaultError } = region;
+    const { name, enableLog, expiredTime, strictLoading, private_actionTypes, DefaultLoading, DefaultError } = region;
     expect(name).toBe('result');
     expect(expiredTime).toBe(30000);
     expect(enableLog).toBe(false);
     expect(strictLoading).toBe(false);
-    expect(silentConnect).toBe(true);
-    expect(DefaultLoading()).toBe(null);
+    expect(DefaultLoading).toBe(undefined);
     expect(DefaultError).toBe(undefined);
     expect(private_actionTypes).toEqual({
       LOAD: '@result/LOAD',
@@ -70,16 +66,5 @@ describe('private_config', () => {
     const { DefaultLoading, DefaultError } = region;
     expect(DefaultLoading()).toBe('loading');
     expect(DefaultError()).toBe('error');
-  });
-  test('deprecated', () => {
-    private_setConfig({
-      reducerPath: 'deprecated',
-    });
-    const { name, private_actionTypes } = region;
-    expect(name).toBe('deprecated');
-    expect(private_actionTypes).toEqual({
-      LOAD: '@deprecated/LOAD',
-      SET: '@deprecated/SET',
-    });
   });
 });

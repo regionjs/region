@@ -20,14 +20,11 @@ export default (Region) => {
             getError(key),
           );
         }
-        if (key.entity) {
-          console.warn('entity is deprecated, use key instead');
-        }
         const props = getProps(
-          key.result || key.key || key.entity,
-          getLoading(key.loading || key.key || key.entity),
-          getResults(key.result || key.key || key.entity),
-          getError(key.error || key.key || key.entity),
+          key.result || key.key,
+          getLoading(key.loading || key.key),
+          getResults(key.result || key.key),
+          getError(key.error || key.key),
         );
         const selectedProps = select({ selector: key.selector, props: { ...props, ...ownProps } });
         return { ...props, ...selectedProps };

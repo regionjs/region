@@ -35,7 +35,7 @@ describe('export api', () => {
     expect(typeof enableLog).toBe('boolean');
     expect(typeof expiredTime).toBe('number');
     expect(typeof strictLoading).toBe('boolean');
-    expect(typeof setConfig).toBe('function');
+    expect(typeof setConfig).toBe('undefined');
     expect(rest).toEqual({});
   });
 });

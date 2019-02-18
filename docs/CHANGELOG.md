@@ -1,5 +1,13 @@
 # CHANGELOG
 
+### 0.7.0
+
+- useProps hooks
+
+- require react@16.8 & react-redux@6, in order to develop useProps hooks
+
+- remove setConfig, silentConnect(in config), reducerPath(in config), entity(in connect)
+
 ### 0.6.x
 
 - format: `(result, snapshot) => ...` to `(result, snapshot, error) => ...`
