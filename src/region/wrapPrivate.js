@@ -1,5 +1,12 @@
 import getProps from '../util/getProps';
 
+const select = ({ selector, props }) => {
+  if (selector && typeof selector === 'function') {
+    return selector(props, props);
+  }
+  return {};
+};
+
 export default (Region) => {
   class RegionPrivate extends Region {
     private_selectorFactory = (key) => {
@@ -22,10 +29,8 @@ export default (Region) => {
           getResults(key.result || key.key || key.entity),
           getError(key.error || key.key || key.entity),
         );
-        if (key.selector && typeof key.selector === 'function') {
-          return key.selector(props, ownProps);
-        }
-        return props;
+        const selectedProps = select({ selector: key.selector, props: { ...props, ...ownProps } });
+        return { ...props, ...selectedProps };
       };
     }
   }

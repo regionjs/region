@@ -16,6 +16,26 @@ describe('shouldThrottle', () => {
     })).toEqual(false);
   });
 
+  test('id', () => {
+    expect(shouldThrottle({
+      id: 0,
+    })).toEqual(false);
+  });
+
+  test('id not hit', () => {
+    expect(shouldThrottle({
+      id: 0,
+      snapshot: { 1: 'user' },
+    })).toEqual(false);
+  });
+
+  test('id hit', () => {
+    expect(shouldThrottle({
+      id: 0,
+      snapshot: { 0: 'user' },
+    })).toEqual(true);
+  });
+
   test('expiredTime 0', () => {
     expect(shouldThrottle({
       asyncFunction: () => null,
