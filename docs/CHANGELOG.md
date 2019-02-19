@@ -2,9 +2,9 @@
 
 ### 0.7.0
 
-- useProps hooks
+- useProps
 
-- require react@16.8 & react-redux@6, in order to develop useProps hooks
+- require react@16.8 & react-redux@6, in order to develop useProps hook
 
 - remove setConfig, silentConnect(in config), reducerPath(in config), entity(in connect)
 

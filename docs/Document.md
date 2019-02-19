@@ -8,6 +8,8 @@ English | [中文](https://github.com/regionjs/region-core/blob/master/docs/Docu
 
 [set](#set)
 
+[useProps](#useProps)
+
 [connect & connectWith](#connect--connectWith)
 
 [Region](#Region)
@@ -55,6 +57,21 @@ import { set } from 'region-shortcut';
 
 set(key, result, { format });
 ```
+
+### useProps
+
+```javascript
+import { useProps } from 'region-shortcut';
+
+// in Functional Component
+const { user } = useProps('user');
+
+// or
+const { loading, error, user } = useProps('user');
+const { loading, error, user, follower } = useProps(['user', 'follower']);
+```
+
+Some usage in connect works, but it is not recommend.
 
 ### connect & connectWith
 

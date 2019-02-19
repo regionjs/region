@@ -8,6 +8,8 @@
 
 [set](#set)
 
+[useProps](#useProps)
+
 [connect & connectWith](#connect--connectWith)
 
 [Region](#Region)
@@ -55,6 +57,21 @@ import { set } from 'region-shortcut';
 
 set(key, result, { format });
 ```
+
+### useProps
+
+```javascript
+import { useProps } from 'region-shortcut';
+
+// in Functional Component
+const { user } = useProps('user');
+
+// or
+const { loading, error, user } = useProps('user');
+const { loading, error, user, follower } = useProps(['user', 'follower']);
+```
+
+有一些 connect 的用法在 useProps 中同样可行，但是并不推荐。
 
 ### connect & connectWith
 

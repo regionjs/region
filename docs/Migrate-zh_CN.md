@@ -2,6 +2,12 @@
 
 [English](https://github.com/regionjs/region-core/blob/master/docs/Migrate.md) | 中文
 
+## 0.6 升级至 0.7
+
+确保处理所有的警告.
+
+由于支持新的 useProps hook，你需要升级 react@16.8 以及 react-redux@6 （如果你用了 react-redux 的话）。
+
 ## 0.6.0 升级至 0.6.x
 
 有一些方法被修改为 private_ 前缀，如果你没有使用，此次改动对你没有影响。

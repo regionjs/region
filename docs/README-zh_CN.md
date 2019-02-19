@@ -1,9 +1,9 @@
 # region-core
 
-[![version](https://img.shields.io/npm/v/redux-loadings.svg?style=flat-square)](http://npm.im/redux-loadings)
-[![npm downloads](https://img.shields.io/npm/dm/redux-loadings.svg?style=flat-square)](https://www.npmjs.com/package/redux-loadings)
-[![codecov](https://codecov.io/gh/dancerphil/redux-loadings/branch/develop/graph/badge.svg)](https://codecov.io/gh/dancerphil/redux-loadings)
-[![MIT License](https://img.shields.io/npm/l/redux-loadings.svg?style=flat-square)](http://opensource.org/licenses/MIT)
+[![version](https://img.shields.io/npm/v/region-core.svg?style=flat-square)](http://npm.im/region-core)
+[![npm downloads](https://img.shields.io/npm/dm/region-core.svg?style=flat-square)](https://www.npmjs.com/package/region-core)
+[![codecov](https://codecov.io/gh/regionjs/region-core/branch/develop/graph/badge.svg)](https://codecov.io/gh/regionjs/region-core)
+[![MIT License](https://img.shields.io/npm/l/region-core.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 
 一个代替 redux 处理同步与异步流程的 react 配套库。极其简单的 API！
 
@@ -17,33 +17,73 @@
 
 ## Get Started
 
+- 安装
+
 ```bash
 npm i region-shortcut
 // or
 npm i region-core
 ```
 
-然后创建你的组件
+- 创建你的组件
 
 ```jsx harmony
-import { connectWith } from 'region-shortcut';
+import { useProps } from 'region-shortcut';
 import { fetchUser } from './fetch'; // somewhere with axios
 
 load('user', fetchUser);
 
-const Display = ({ user }) => <div>{user}</div>
+const Display = () => {
+  const { user } = useProps('user');
+  return <div>{user}</div>;
+}
 
-export default connectWith('user', Display);
+export default Display;
 ```
 
-或者
+- 或者
 
 ```jsx harmony
-import { connectWith } from 'region-shortcut';
+import { connect } from 'region-shortcut';
 import { fetchUser, fetchFollower } from './fetch'; // somewhere with axios
 
 load('user', fetchUser);
 const handleClick = () => load('follower', fetchFollower);
+
+const Display = () => {
+  const { loading, error, user, follower } = useProps(['user', 'follower']);
+  return (
+    <div>
+      {user}
+      {follower}
+      <Button loading={loading} onClick={handleClick} />
+    </div>
+  );
+}
+
+export default Display;
+```
+
+<details>
+  <summary>
+    建议你使用 useProps，然而传统的 connect 方式也被支持。
+    点击查看更多。
+  </summary>
+
+- 创建你的组件
+
+```jsx harmony
+import { connect } from 'region-shortcut';
+
+const Display = ({ user }) => <div>{user}</div>
+
+export default connect('user')(Display);
+```
+
+- 或者
+
+```jsx harmony
+import { connect } from 'region-shortcut';
 
 const Display = ({ loading, error, user, follower }) => (
   <div>
@@ -53,8 +93,9 @@ const Display = ({ loading, error, user, follower }) => (
   </div>
 );
 
-export default connectWith(['user', 'follower'], Display);
+export default connect(['user', 'follower'])(Display);
 ```
+</details>
 
 ## 文档
 
@@ -66,7 +107,7 @@ export default connectWith(['user', 'follower'], Display);
 
 ## 示例
 
-[在线示例](https://dancerphil.github.io/redux-loadings/index.html)
+[在线示例](https://regionjs.github.io/region-core/)
 
 ```bash
 git clone https://github.com/regionjs/region-core.git
