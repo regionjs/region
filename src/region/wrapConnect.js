@@ -1,4 +1,6 @@
+import { useState, useEffect } from 'react';
 import { connect as rawConnect } from 'react-redux';
+import { getStore } from '../global/store';
 import hoc from '../util/hoc';
 import { isValidConnectKey } from '../util/isValidConnectKey';
 
@@ -6,13 +8,9 @@ const Empty = () => null;
 
 export default (Region) => {
   class RegionConnect extends Region {
-    connectWith = (key, Display, option = {}) => {
+    connectWith = (key, Display, option) => {
       const { connect } = this;
-      if (typeof option === 'object') {
-        return connect(key, option)(Display);
-      }
-      console.warn('connectWith receives a wide option, the original param is deprecated, replace with connectWith(key, Display { Loading: LoadingComponent })');
-      return connect(key, { Loading: option })(Display);
+      return connect(key, option)(Display);
     }
 
     connect = (key, { Loading, Error } = {}) => (Display = Empty) => {
@@ -23,6 +21,17 @@ export default (Region) => {
       }
       console.error('invalid key, provide valid key or use connect from \'react-redux\' directly');
       return rawConnect(key)(Display);
+    }
+
+    useProps = (key) => {
+      const { private_selectorFactory } = this;
+      const store = getStore();
+      const [state, setState] = useState(store.getState());
+      useEffect(() => {
+        const unsubscribe = store.subscribe(() => setState(store.getState()));
+        return () => unsubscribe();
+      });
+      return private_selectorFactory(key)(state);
     }
   }
   return RegionConnect;

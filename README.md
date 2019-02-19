@@ -1,9 +1,9 @@
 # region-core
 
-[![version](https://img.shields.io/npm/v/redux-loadings.svg?style=flat-square)](http://npm.im/redux-loadings)
-[![npm downloads](https://img.shields.io/npm/dm/redux-loadings.svg?style=flat-square)](https://www.npmjs.com/package/redux-loadings)
-[![codecov](https://codecov.io/gh/dancerphil/redux-loadings/branch/develop/graph/badge.svg)](https://codecov.io/gh/dancerphil/redux-loadings)
-[![MIT License](https://img.shields.io/npm/l/redux-loadings.svg?style=flat-square)](http://opensource.org/licenses/MIT)
+[![version](https://img.shields.io/npm/v/region-core.svg?style=flat-square)](http://npm.im/region-core)
+[![npm downloads](https://img.shields.io/npm/dm/region-core.svg?style=flat-square)](https://www.npmjs.com/package/region-core)
+[![codecov](https://codecov.io/gh/regionjs/region-core/branch/develop/graph/badge.svg)](https://codecov.io/gh/regionjs/region-core)
+[![MIT License](https://img.shields.io/npm/l/region-core.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 
 A replacement tool of `redux` to handle sync & async action flow. Extremely simple API!
 
@@ -17,33 +17,73 @@ English | [中文](https://github.com/regionjs/region-core/blob/master/docs/READ
 
 ## Get Started
 
+- install
+
 ```bash
 npm i region-shortcut
 // or
 npm i region-core
 ```
 
-Then create your Component
+- Create your Component
 
 ```jsx harmony
-import { connectWith } from 'region-shortcut';
+import { useProps } from 'region-shortcut';
 import { fetchUser } from './fetch'; // somewhere with axios
 
 load('user', fetchUser);
 
-const Display = ({ user }) => <div>{user}</div>
+const Display = () => {
+  const { user } = useProps('user');
+  return <div>{user}</div>;
+}
 
-export default connectWith('user', Display);
+export default Display;
 ```
 
-or
+- or
 
 ```jsx harmony
-import { connectWith } from 'region-shortcut';
+import { connect } from 'region-shortcut';
 import { fetchUser, fetchFollower } from './fetch'; // somewhere with axios
 
 load('user', fetchUser);
 const handleClick = () => load('follower', fetchFollower);
+
+const Display = () => {
+  const { loading, error, user, follower } = useProps(['user', 'follower']);
+  return (
+    <div>
+      {user}
+      {follower}
+      <Button loading={loading} onClick={handleClick} />
+    </div>
+  );
+}
+
+export default Display;
+```
+
+<details>
+  <summary>
+    We recommend to use useProps, but the old connect way is also provided.
+    Click to see more.
+  </summary>
+
+- Create your Component
+
+```jsx harmony
+import { connect } from 'region-shortcut';
+
+const Display = ({ user }) => <div>{user}</div>
+
+export default connect('user')(Display);
+```
+
+- or
+
+```jsx harmony
+import { connect } from 'region-shortcut';
 
 const Display = ({ loading, error, user, follower }) => (
   <div>
@@ -53,8 +93,9 @@ const Display = ({ loading, error, user, follower }) => (
   </div>
 );
 
-export default connectWith(['user', 'follower'], Display);
+export default connect(['user', 'follower'])(Display);
 ```
+</details>
 
 ## Docs
 
@@ -66,7 +107,7 @@ export default connectWith(['user', 'follower'], Display);
 
 ## Example
 
-[Online Example](https://dancerphil.github.io/redux-loadings/index.html)
+[Online Example](https://regionjs.github.io/region-core/)
 
 ```bash
 git clone https://github.com/regionjs/region-core.git
@@ -93,9 +134,3 @@ class MyRegion extends Region {
 ```
 
 As for pull request, make sure to add test for your code.
-
-## TODO
-
-- [ ] release 1.0 when everything is ready, push package-lock.json then
-- [ ] new site
-- [ ] replace badge

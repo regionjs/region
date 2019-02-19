@@ -2,6 +2,12 @@
 
 English | [中文](https://github.com/regionjs/region-core/blob/master/docs/Migrate-zh_CN.md)
 
+## Migrate From 0.6 to 0.7
+
+Ensure no warning.
+
+update react@16.8 and react-redux@6 if you use it, because of the new hook useProps.
+
 ## Migrate From 0.6.0 to 0.6.x
 
 Some functions are added private_ prefix. If your are not using them, there should be no effect on you.
