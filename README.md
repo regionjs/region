@@ -97,6 +97,8 @@ export default connect(['user', 'follower'])(Display);
 ```
 </details>
 
+If you are using your own store, see [`provide`](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI.md#provide)
+
 ## Docs
 
 [Document And Best Practices](https://github.com/regionjs/region-core/blob/master/docs/Document.md)
@@ -104,6 +106,8 @@ export default connect(['user', 'follower'])(Display);
 [Migrate Guide](https://github.com/regionjs/region-core/blob/master/docs/Migrate.md)
 
 [ChangeLog](https://github.com/regionjs/region-core/blob/master/docs/CHANGELOG.md)
+
+[Request for Comments](https://github.com/regionjs/rfcs/issues)
 
 ## Example
 

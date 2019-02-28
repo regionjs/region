@@ -97,6 +97,8 @@ export default connect(['user', 'follower'])(Display);
 ```
 </details>
 
+如果你在使用自己的 store，参见 [`provide`](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI-zh_CN.md#provide)
+
 ## 文档
 
 [中文文档和最佳实践](https://github.com/regionjs/region-core/blob/master/docs/Document-zh_CN.md)
@@ -104,6 +106,8 @@ export default connect(['user', 'follower'])(Display);
 [迁移指南](https://github.com/regionjs/region-core/blob/master/docs/Migrate-zh_CN.md)
 
 [更新日志](https://github.com/regionjs/region-core/blob/master/docs/CHANGELOG.md)
+
+[征求意见(rfcs)](https://github.com/regionjs/rfcs/issues)
 
 ## 示例
 
