@@ -14,7 +14,7 @@ describe('export api', () => {
     expect(typeof Provider).toBe('function');
     provide();
     const {
-      set, load, connect, connectWith, useProps,
+      set, load, connect, unstable_connect, connectWith, useProps,
       getLoading, getResults, getProps, getFetchTimes, getError,
       private_actionTypes, private_getState, private_reducer, private_selectorFactory, private_setConfig,
       name, enableLog, expiredTime, strictLoading, setConfig,
@@ -23,6 +23,7 @@ describe('export api', () => {
     expect(typeof set).toBe('function');
     expect(typeof load).toBe('function');
     expect(typeof connect).toBe('function');
+    expect(typeof unstable_connect).toBe('function');
     expect(typeof connectWith).toBe('function');
     expect(typeof useProps).toBe('function');
     expect(typeof getLoading).toBe('function');

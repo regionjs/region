@@ -2,6 +2,7 @@ import selectProps from '../util/selectProps';
 
 const select = ({ selector, props }) => {
   if (selector && typeof selector === 'function') {
+    console.warn('selector is deprecated, use useProps and hooks into it, see examples on https://github.com/regionjs/region-core/blob/master/example/src/Selector/index.jsx');
     return selector(props, props);
   }
   return {};
