@@ -1,15 +1,11 @@
 import { region } from './region';
-import { setStore } from '../../global/store';
+import { getStore } from '../../global/store';
 
 const { private_setConfig, getLoading, getResults, getFetchTimes, getError, private_selectorFactory } = region;
 
 let state = null;
-setStore({
-  dispatch() {},
-  getState() {
-    return state;
-  },
-});
+const store = getStore();
+store.getState = () => state;
 
 const setState = (_state) => {
   state = _state;

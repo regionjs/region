@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { connect as rawConnect } from 'react-redux';
 import { getStore } from '../global/store';
 import hoc from '../util/hoc';
 import { isValidConnectKey } from '../util/isValidConnectKey';
@@ -14,13 +13,20 @@ export default (Region) => {
     }
 
     connect = (key, { Loading, Error } = {}) => (Display = Empty) => {
-      if (isValidConnectKey(key)) {
-        const { private_selectorFactory, DefaultLoading, DefaultError } = this;
-        const WrapperComponent = hoc(Display, Loading || DefaultLoading || Display, Error || DefaultError || Display);
-        return rawConnect(private_selectorFactory(key))(WrapperComponent);
+      const { useProps, DefaultLoading, DefaultError } = this;
+      if (!isValidConnectKey(key)) {
+        console.error('invalid key, provide valid key or use connect from \'react-redux\' directly');
+        return null;
       }
-      console.error('invalid key, provide valid key or use connect from \'react-redux\' directly');
-      return rawConnect(key)(Display);
+      const WrapperComponent = hoc({
+        Display,
+        Loading: Loading || DefaultLoading || Display,
+        Error: Error || DefaultError || Display,
+        useProps,
+        key,
+      });
+
+      return WrapperComponent;
     }
 
     useProps = (key) => {
