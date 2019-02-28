@@ -1,4 +1,4 @@
-import getProps from '../util/getProps';
+import selectProps from '../util/selectProps';
 
 const select = ({ selector, props }) => {
   if (selector && typeof selector === 'function') {
@@ -13,14 +13,14 @@ export default (Region) => {
       const { getLoading, getResults, getError } = this;
       return (state, ownProps) => {
         if (typeof key === 'string' || Array.isArray(key)) {
-          return getProps(
+          return selectProps(
             key,
             getLoading(key),
             getResults(key),
             getError(key),
           );
         }
-        const props = getProps(
+        const props = selectProps(
           key.result || key.key,
           getLoading(key.loading || key.key),
           getResults(key.result || key.key),

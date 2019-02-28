@@ -1,7 +1,7 @@
 import Region from '../index';
-import { getProvider } from '../..';
+import { provide } from '../..';
 
-getProvider();
+provide();
 const region = new Region({ name: null });
 
 export { region };

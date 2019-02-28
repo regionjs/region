@@ -1,18 +1,17 @@
 import { combineReducers } from 'redux';
 import { debug, group } from '../util/logger';
 import { assignValueDeep, setValueDeep } from '../util/reducerPrototype';
-import { setReducerObject, getReducerObject, getStore } from '../global/store';
+import { getStore } from '../global/store';
 
 export default (RegionIn) => {
   class Region extends RegionIn {
     constructor(...args) {
       super(...args);
-      const reducerObject = getReducerObject();
-      const { name, private_reducer } = this;
-      const nextReducerObject = { ...reducerObject, [name]: private_reducer };
-      setReducerObject(nextReducerObject);
       const store = getStore();
-      const reducer = combineReducers(nextReducerObject);
+      const { reducers } = store;
+      const { name, private_reducer } = this;
+      store.reducers = { ...reducers, [name]: private_reducer };
+      const reducer = combineReducers(store.reducers);
       store.replaceReducer(reducer);
     }
 
