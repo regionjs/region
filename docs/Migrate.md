@@ -2,6 +2,12 @@
 
 English | [中文](https://github.com/regionjs/region-core/blob/master/docs/Migrate-zh_CN.md)
 
+## Migrate From 0.7.0 to 0.7.1
+
+connect is rewrite with hooks instead of hoc, and selector is not supported any more.
+
+If you are affected, use unstable_connect or see [example](https://github.com/regionjs/region-core/blob/master/example/src/Selector/index.jsx)
+
 ## Migrate From 0.6 to 0.7
 
 Ensure no warning.

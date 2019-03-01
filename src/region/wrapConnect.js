@@ -13,7 +13,7 @@ export default (Region) => {
       return connect(key, option)(Display);
     }
 
-    unstable_connect = (key, { Loading, Error } = {}) => (Display = Empty) => {
+    connect = (key, { Loading, Error } = {}) => (Display = Empty) => {
       const { useProps, DefaultLoading, DefaultError } = this;
       if (!isValidConnectKey(key)) {
         console.error('invalid key, provide valid key or use connect from \'react-redux\' directly');
@@ -30,7 +30,7 @@ export default (Region) => {
       return WrapperComponent;
     }
 
-    connect = (key, { Loading, Error } = {}) => (Display = Empty) => {
+    unstable_connect = (key, { Loading, Error } = {}) => (Display = Empty) => {
       if (isValidConnectKey(key)) {
         const { private_selectorFactory, DefaultLoading, DefaultError } = this;
         const WrapperComponent = prehoc(Display, Loading || DefaultLoading || Display, Error || DefaultError || Display);

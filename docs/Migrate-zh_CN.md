@@ -2,6 +2,12 @@
 
 [English](https://github.com/regionjs/region-core/blob/master/docs/Migrate.md) | 中文
 
+## 0.7.0 升级至 0.7.1
+
+connect 用 hooks 重写了，selector 不再支持。
+
+如果你被影响了，使用 unstable_connect 或者参考[示例](https://github.com/regionjs/region-core/blob/master/example/src/Selector/index.jsx)
+
 ## 0.6 升级至 0.7
 
 确保处理所有的警告.
@@ -24,7 +30,7 @@ expireTime 现在默认为 0，你可以移除所有的 forceUpdate 了。
 
 <details>
   <summary>
-    不再有参考意义
+    不再有参考价值
   </summary>
 
 如果你在使用自己的 store，创建一个文件名为 `Provider.js`，然后写：
@@ -49,7 +55,7 @@ set 与 load 重构了，处理某些值如 null 和 promise 时会有细微的�
 
 <details>
   <summary>
-    不再有参考意义
+    不再有参考价值
   </summary>
 
 确保处理所有的警告.
