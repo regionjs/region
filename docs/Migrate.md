@@ -2,6 +2,12 @@
 
 English | [中文](https://github.com/regionjs/region-core/blob/master/docs/Migrate-zh_CN.md)
 
+## Migrate From 0.7.0 to 0.7.1
+
+connect is rewrite with hooks instead of hoc, and selector is not supported any more.
+
+If you are affected, use unstable_connect or see [example](https://github.com/regionjs/region-core/blob/master/example/src/Selector/index.jsx)
+
 ## Migrate From 0.6 to 0.7
 
 Ensure no warning.
@@ -22,6 +28,11 @@ expireTime is set to 0, you can remove your forceUpdate.
 
 You can get expireTime back, using [Region](https://github.com/regionjs/region-core/blob/master/docs/Document.md#Region).
 
+<details>
+  <summary>
+    No longer meaningful
+  </summary>
+
 If you are using your own store, create a file named `Provider.js`, then write:
 
 ```javascript
@@ -32,6 +43,7 @@ const Provider = getProvider({ store, reducers });
 
 export default Provider;
 ```
+</details>
 
 ## Migrate From 0.5.0 to 0.5.1
 
@@ -41,9 +53,14 @@ If your usage is recommend, there should be no effect on you.
 
 ## Migrate From 0.4 to 0.5
 
+<details>
+  <summary>
+    No longer meaningful
+  </summary>
+
 Ensure no warning.
 
-You may use `Provider` to replace `reducer` as store is inside `redux-loadings`. use `set` to set your key directly.
+You may use `Provider` to replace `reducer` as store is inside `redux-loadings`.
 
 It is not a must-do.
 
@@ -65,6 +82,7 @@ import { Provider } from 'redux-loading';
   <App />
 </Provider>
 ```
+</details>
 
 ## Migrate From 0.3 to 0.4
 
@@ -79,6 +97,11 @@ setConfig({ store, reducerPath: 'result', strictLoading: false });
 ```
 
 ## Migrate From 0.2 to 0.3
+
+<details>
+  <summary>
+    Only meaningful when you are using 2.0 with redux-thunk
+  </summary>
 
 Ensure no warning.
 
@@ -126,3 +149,4 @@ dispatch(load(key, asyncFunction, props));
 ```javascript
 load(key, asyncFunction, props);
 ```
+</details>

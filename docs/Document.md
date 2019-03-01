@@ -2,8 +2,6 @@
 
 English | [中文](https://github.com/regionjs/region-core/blob/master/docs/Document-zh_CN.md)
 
-[Provider](#Provider)
-
 [load](#load)
 
 [set](#set)
@@ -15,19 +13,6 @@ English | [中文](https://github.com/regionjs/region-core/blob/master/docs/Docu
 [Region](#Region)
 
 [Other Private API](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI.md)
-
-### Provider
-
-You are recommended not to use redux. Use Provider to surround your App.
-
-```javascript
-import { Provider } from 'region-shortcut';
-import App from './App';
-
-<Provider><App /></Provider>
-```
-
-If you are using your own store, see [`getProvider`](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI.md#getProvider)
 
 ### load
 
@@ -71,7 +56,7 @@ const { loading, error, user } = useProps('user');
 const { loading, error, user, follower } = useProps(['user', 'follower']);
 ```
 
-Some usage in connect works, but it is not recommend.
+Some usage in connect also works, but it is not recommend.
 
 ### connect & connectWith
 
@@ -94,17 +79,6 @@ const Enhanced = connectWith(['user', 'follower'], Display, { Loading });
 const Enhanced = connectWith({ loading: 'user', result: ['user', 'follower'] }, Display, { Loading });
 
 // or
-const Enhanced = connectWith({
-  key: ['userList', 'follower'],
-  selector: ({ loading, userList, follower }, ownProps) => {
-    // NOTE selector runs before loading check, userList may be undefined
-    const { id, type } = ownProps;
-    const currentUser = userList.find(user => user.id === id && user.type === type);
-    return { loading, user: currentUser, follower };
-  }
-}, Display, { Loading });
-
-// or
 const Display = ({ loading, error, user }) => {...};
 const Enhanced = connectWith('user', Display);
 ```
@@ -112,6 +86,8 @@ const Enhanced = connectWith('user', Display);
 `loading === true` if `user.loading === true || follower.loading === true`.
 
 Component Loading receives data as well. You can provide the loading component renders part of the data.
+
+If you want some feature like react-redux ownProps, see [example](https://github.com/regionjs/region-core/blob/master/example/src/Selector/index.jsx)
 
 ### Region
 

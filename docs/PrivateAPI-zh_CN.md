@@ -2,17 +2,17 @@
 
 [English](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI-zh_CN.md) | 中文
 
-### getProvider
+### provide
 
-如果你在使用自己的 store，创建一个文件名为 `Provider.js`，然后写：
+如果你在使用自己的 store，你需要在你 new Region 之前提供 store 和 reducers：
 
 ```javascript
-import { getProvider } from 'region-shortcut';
-import store, { reducers } from './store';
+import { provide } from 'region-shortcut';
 
-const Provider = getProvider({ store, reducers });
+const reducer = combineReducers(reducers); // reducers should be provided, or it will be covered
+const store = createStore(...);
 
-export default Provider;
+provide({ store, reducers });
 ```
 
 ### load#forceUpdate
@@ -30,6 +30,27 @@ const result = await load(key, asyncFunction, { params, forceUpdate, format });
 
 `forceUpdate: true` 会立刻调用 asyncFunction。
 
+### getLoading & getResults & getFetchTimes & getError
+
+```javascript
+const loading = getLoading(['user', 'follower']);
+const user = getResults('user');
+const [user, follower] = getResults(['user', 'follower']);
+const [userFetchTime, followerFetchTime] = getFetchTimes(['user', 'follower']);
+const error = getError(['user', 'follower']);
+}
+```
+
+`getFetchTimes` 返回 result resolved 时的 `date.getTime()`。
+
+### private_selectorFactory
+
+```javascript
+const { loading, error, user } = private_selectorFactory('user')(store.getState());
+```
+
+参见 [connect & connectWith](https://github.com/regionjs/region-core/blob/master/docs/Document-zh_CN.md#connect--connectWith)
+
 ### private_setConfig
 
 可以用 new Region 代替。
@@ -46,24 +67,3 @@ private_setConfig({
 ```
 
 参见 [Region](https://github.com/regionjs/region-core/blob/master/docs/Document-zh_CN.md#Region)
-
-### private_selectorFactory
-
-```javascript
-const mapStateToProps = private_selectorFactory('user');
-```
-
-参见 [connect & connectWith](https://github.com/regionjs/region-core/blob/master/docs/Document-zh_CN.md#connect--connectWith)
-
-### getLoading & getResults & getFetchTimes & getError
-
-```javascript
-const loading = getLoading(['user', 'follower']);
-const user = getResults('user');
-const [user, follower] = getResults(['user', 'follower']);
-const [userFetchTime, followerFetchTime] = getFetchTimes(['user', 'follower']);
-const error = getError(['user', 'follower']);
-}
-```
-
-`getFetchTimes` 返回 result resolved 时的 `date.getTime()`。

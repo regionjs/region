@@ -10,11 +10,3 @@ export const getStore = () => {
   }
   return store;
 };
-
-let reducerObject = null;
-
-export const setReducerObject = (_reducerObject) => {
-  reducerObject = _reducerObject;
-};
-
-export const getReducerObject = () => reducerObject;

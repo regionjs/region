@@ -2,6 +2,12 @@
 
 [English](https://github.com/regionjs/region-core/blob/master/docs/Migrate.md) | 中文
 
+## 0.7.0 升级至 0.7.1
+
+connect 用 hooks 重写了，selector 不再支持。
+
+如果你被影响了，使用 unstable_connect 或者参考[示例](https://github.com/regionjs/region-core/blob/master/example/src/Selector/index.jsx)
+
 ## 0.6 升级至 0.7
 
 确保处理所有的警告.
@@ -22,6 +28,11 @@ expireTime 现在默认为 0，你可以移除所有的 forceUpdate 了。
 
 或者如果你需要 expireTime ，你可以用 [Region](https://github.com/regionjs/region-core/blob/master/docs/Document-zh_CN.md#Region) 来设置。
 
+<details>
+  <summary>
+    不再有参考价值
+  </summary>
+
 如果你在使用自己的 store，创建一个文件名为 `Provider.js`，然后写：
 
 ```javascript
@@ -32,6 +43,7 @@ const Provider = getProvider({ store, reducers });
 
 export default Provider;
 ```
+</details>
 
 ## 0.5.0 升级至 0.5.1
 
@@ -41,9 +53,14 @@ set 与 load 重构了，处理某些值如 null 和 promise 时会有细微的�
 
 ## 0.4 升级至 0.5
 
+<details>
+  <summary>
+    不再有参考价值
+  </summary>
+
 确保处理所有的警告.
 
-你可以用 `Provider` 代替 `reducer`，因为 store 已经内置了。使用 `set` 可以直接设置一个值。
+你可以用 `Provider` 代替 `reducer`，因为 store 已经内置了。
 
 这一步不是必须的。
 
@@ -65,6 +82,7 @@ import { Provider } from 'redux-loadings';
   <App />
 </Provider>
 ```
+</details>
 
 ## 0.3 升级至 0.4
 
@@ -77,6 +95,11 @@ setConfig({ store, reducerPath: 'result', strictLoading: false });
 ```
 
 ## 0.2 升级至 0.3
+
+<details>
+  <summary>
+    只在你使用了 2.0 并使用了 redux-thunk 时，才有参考价值
+  </summary>
 
 确保处理所有的警告。
 
@@ -124,3 +147,5 @@ dispatch(load(key, asyncFunction, props));
 ```javascript
 load(key, asyncFunction, props);
 ```
+
+</details>

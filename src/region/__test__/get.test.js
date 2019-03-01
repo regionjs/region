@@ -1,15 +1,11 @@
 import { region } from './region';
-import { setStore } from '../../global/store';
+import { getStore } from '../../global/store';
 
-const { private_setConfig, getLoading, getResults, getFetchTimes, getError, private_selectorFactory } = region;
+const { private_setConfig, getLoading, getResults, getProps, getFetchTimes, getError, private_selectorFactory } = region;
 
 let state = null;
-setStore({
-  dispatch() {},
-  getState() {
-    return state;
-  },
-});
+const store = getStore();
+store.getState = () => state;
 
 const setState = (_state) => {
   state = _state;
@@ -91,6 +87,7 @@ describe('get', () => {
     });
     expect(getLoading('a')).toEqual(false);
     expect(getResults('a')).toEqual({ name: '66', type: 'cat' });
+    expect(getProps('a')).toEqual({ name: '66', type: 'cat' });
     expect(getFetchTimes('a')).toEqual(0);
     expect(getLoading(['a', 'b'])).toEqual(true);
     expect(getResults(['a', 'b'])).toEqual([{ name: '66', type: 'cat' }, undefined]);

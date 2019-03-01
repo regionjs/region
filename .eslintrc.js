@@ -6,7 +6,7 @@ module.exports = {
     "jest/globals": true,
   },
   "rules": {
-    "camelcase": [2, { allow: ["^private_"] }],
+    "camelcase": [2, { allow: ["^private_", "^unstable_"] }],
     "max-len": 0,
     "no-console": [2, { allow: ["debug", "warn", "error", "groupCollapsed", "groupEnd"] }],
     "no-plusplus": 0,

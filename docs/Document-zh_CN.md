@@ -2,8 +2,6 @@
 
 [English](https://github.com/regionjs/region-core/blob/master/docs/Document.md) | 中文
 
-[Provider](#Provider)
-
 [load](#load)
 
 [set](#set)
@@ -15,19 +13,6 @@
 [Region](#Region)
 
 [Other Private API](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI-zh_CN.md)
-
-### Provider
-
-建议不用 redux，直接用 Provider 包裹你的 App。
-
-```javascript
-import { Provider } from 'region-shortcut';
-import App from './App';
-
-<Provider><App /></Provider>
-```
-
-如果你在使用自己的 store，参见 [`getProvider`](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI-zh_CN.md#getProvider)
 
 ### load
 
@@ -94,17 +79,6 @@ const Enhanced = connectWith(['user', 'follower'], Display, { Loading });
 const Enhanced = connectWith({ loading: 'user', result: ['user', 'follower'] }, Display, { Loading });
 
 // or
-const Enhanced = connectWith({
-  key: ['userList', 'follower'],
-  selector: ({ loading, userList, follower }, ownProps) => {
-    // NOTE selector 会在检查 loading 之前就运行，此时 userList 可能为 undefined
-    const { id, type } = ownProps;
-    const currentUser = userList.find(user => user.id === id && user.type === type);
-    return { loading, user: currentUser, follower };
-  }
-}, Display, { Loading });
-
-// or
 const Display = ({ loading, error, user }) => {...};
 const Enhanced = connectWith('user', Display);
 ```
@@ -112,6 +86,8 @@ const Enhanced = connectWith('user', Display);
 `loading === true` 当 `user.loading === true || follower.loading === true`。
 
 Loading 组件也会得到数据。你可以使用这些数据部分的进行渲染。
+
+如果你想要类似 react-redux ownProps 的功能，参见[示例](https://github.com/regionjs/region-core/blob/master/example/src/Selector/index.jsx)
 
 ### Region
 

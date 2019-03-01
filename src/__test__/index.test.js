@@ -2,18 +2,20 @@ import * as api from '..';
 
 describe('export api', () => {
   test('api contains Region and getProvider', () => {
-    const { Region, getProvider, ...rest } = api;
+    const { Region, getProvider, provide, ...rest } = api;
     expect(typeof Region).toBe('function');
     expect(typeof getProvider).toBe('function');
+    expect(typeof provide).toBe('function');
     expect(rest).toEqual({});
   });
   test('region contains many api', () => {
-    const { Region, getProvider } = api;
+    const { Region, getProvider, provide } = api;
     const Provider = getProvider();
     expect(typeof Provider).toBe('function');
+    provide();
     const {
-      set, load, connect, connectWith, useProps,
-      getLoading, getResults, getFetchTimes, getError,
+      set, load, connect, unstable_connect, connectWith, useProps,
+      getLoading, getResults, getProps, getFetchTimes, getError,
       private_actionTypes, private_getState, private_reducer, private_selectorFactory, private_setConfig,
       name, enableLog, expiredTime, strictLoading, setConfig,
       ...rest
@@ -21,10 +23,12 @@ describe('export api', () => {
     expect(typeof set).toBe('function');
     expect(typeof load).toBe('function');
     expect(typeof connect).toBe('function');
+    expect(typeof unstable_connect).toBe('function');
     expect(typeof connectWith).toBe('function');
     expect(typeof useProps).toBe('function');
     expect(typeof getLoading).toBe('function');
     expect(typeof getResults).toBe('function');
+    expect(typeof getProps).toBe('function');
     expect(typeof getFetchTimes).toBe('function');
     expect(typeof getError).toBe('function');
     expect(typeof private_actionTypes).toBe('object');
