@@ -27,6 +27,13 @@ export default (Region) => {
       return formattedResult;
     }
 
+    reset = () => {
+      const { private_actionTypes } = this;
+      const { RESET } = private_actionTypes;
+      const { dispatch } = getStore();
+      dispatch({ type: RESET });
+    }
+
     /**
      * @param params asyncFunction may need
      * @param format A function format result to other data structure

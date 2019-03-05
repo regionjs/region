@@ -38,9 +38,10 @@ const result = await load(key, asyncFunction, { params, format });
 ### set
 
 ```javascript
-import { set } from 'region-shortcut';
+import { set, reset } from 'region-shortcut';
 
 set(key, result, { format });
+reset()
 ```
 
 ### useProps

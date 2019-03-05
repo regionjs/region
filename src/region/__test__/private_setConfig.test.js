@@ -14,6 +14,7 @@ describe('private_config', () => {
     expect(private_actionTypes).toEqual({
       LOAD: '@region/LOAD',
       SET: '@region/SET',
+      RESET: '@region/RESET',
     });
   });
   test('set nothing', () => {
@@ -28,6 +29,7 @@ describe('private_config', () => {
     expect(private_actionTypes).toEqual({
       LOAD: '@region/LOAD',
       SET: '@region/SET',
+      RESET: '@region/RESET',
     });
   });
   test('set enableLog as false', () => {
@@ -56,6 +58,7 @@ describe('private_config', () => {
     expect(private_actionTypes).toEqual({
       LOAD: '@result/LOAD',
       SET: '@result/SET',
+      RESET: '@result/RESET',
     });
   });
   test('set config Default Loading & Error', () => {

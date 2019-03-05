@@ -3,12 +3,12 @@ import wrapReducer from './wrapReducer';
 import wrapGet from './wrapGet';
 import wrapPrivate from './wrapPrivate';
 import wrapPublic from './wrapPublic';
-import wrapConnect from './wrapConnect';
+import wrapReact from './wrapReact';
 
 const compose = (...funcs) => funcs.reduce((a, b) => (...args) => a(b(...args)), arg => arg);
 
 export default compose(
-  wrapConnect,
+  wrapReact,
   wrapPublic,
   wrapPrivate,
   wrapGet,

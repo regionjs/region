@@ -38,9 +38,10 @@ It is called after promise is resolved or rejected.
 ### set
 
 ```javascript
-import { set } from 'region-shortcut';
+import { set, reset } from 'region-shortcut';
 
 set(key, result, { format });
+reset()
 ```
 
 ### useProps

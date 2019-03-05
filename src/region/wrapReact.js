@@ -7,7 +7,7 @@ import { isValidConnectKey } from '../util/isValidConnectKey';
 const Empty = () => null;
 
 export default (Region) => {
-  class RegionConnect extends Region {
+  class RegionReact extends Region {
     connectWith = (key, Display, option) => {
       const { connect } = this;
       return connect(key, option)(Display);
@@ -52,5 +52,5 @@ export default (Region) => {
       return private_selectorFactory(key)(state);
     }
   }
-  return RegionConnect;
+  return RegionReact;
 };
