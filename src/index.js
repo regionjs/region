@@ -3,4 +3,6 @@ import provide from './global/provide';
 import { getProvider } from './global/Provider';
 import Region from './region';
 
+provide();
+
 export { Region, getProvider, provide };
