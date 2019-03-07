@@ -57,8 +57,6 @@ export default (RegionIn) => {
       return mapValues(results, path);
     }
 
-    getProps = this.getResults
-
     getError = (path) => {
       const { private_getState } = this;
       const { errors = {} } = private_getState();

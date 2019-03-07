@@ -16,25 +16,30 @@ const select = ({ selector, props, ownProps }) => {
 export default (Region) => {
   class RegionPrivate extends Region {
     private_selectorFactory = (key) => {
-      const { getLoading, getResults, getError } = this;
+      const { getProps } = this;
       return (state, ownProps) => {
-        if (typeof key === 'string' || Array.isArray(key)) {
-          return selectProps(
-            key,
-            getLoading(key),
-            getResults(key),
-            getError(key),
-          );
-        }
-        const props = selectProps(
-          key.result || key.key,
-          getLoading(key.loading || key.key),
-          getResults(key.result || key.key),
-          getError(key.error || key.key),
-        );
+        const props = getProps(key);
         const selectedProps = select({ selector: key.selector, props, ownProps });
         return { ...props, ...selectedProps };
       };
+    }
+
+    getProps = (key) => {
+      const { getLoading, getResults, getError } = this;
+      if (typeof key === 'string' || Array.isArray(key)) {
+        return selectProps(
+          key,
+          getLoading(key),
+          getResults(key),
+          getError(key),
+        );
+      }
+      return selectProps(
+        key.result || key.key,
+        getLoading(key.loading || key.key),
+        getResults(key.result || key.key),
+        getError(key.error || key.key),
+      );
     }
   }
   return RegionPrivate;

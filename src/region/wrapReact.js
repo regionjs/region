@@ -48,7 +48,7 @@ export default (Region) => {
       useEffect(() => {
         const unsubscribe = store.subscribe(() => setState(store.getState()));
         return () => unsubscribe();
-      });
+      }, []);
       return private_selectorFactory(key)(state);
     }
   }
