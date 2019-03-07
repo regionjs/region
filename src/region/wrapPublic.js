@@ -17,7 +17,7 @@ export default (Region) => {
      * @param format A function format result to other data structure
      */
     set = (key, result, { format } = {}) => {
-      const { getResults, private_actionTypes } = this;
+      const { private_getResults: getResults, private_actionTypes } = this;
       const { SET } = private_actionTypes;
       const { dispatch } = getStore();
       const snapshot = getResults(key);
@@ -46,7 +46,7 @@ export default (Region) => {
         return set(key, asyncFunction);
       }
 
-      const { getResults, private_actionTypes, expiredTime, getFetchTimes } = this;
+      const { private_getResults: getResults, private_actionTypes, expiredTime, private_getFetchTimes: getFetchTimes } = this;
       const { LOAD, SET } = private_actionTypes;
       const { dispatch } = getStore();
       const snapshot = getResults(key);
