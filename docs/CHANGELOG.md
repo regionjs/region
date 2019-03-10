@@ -2,6 +2,8 @@
 
 ### 0.7.2
 
+- setFp/loadFp
+
 - reset
 
 - getProps

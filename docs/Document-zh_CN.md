@@ -59,6 +59,21 @@ const { loading, error, user, follower } = useProps(['user', 'follower']);
 
 有一些 connect 的用法在 useProps 中同样可行，但是并不推荐。
 
+### getProps
+
+```javascript
+import { getProps } from 'region-shortcut';
+
+// out of Component
+const { user } = getProps('user');
+
+// or
+const { loading, error, user } = getProps('user');
+const { loading, error, user, follower } = getProps(['user', 'follower']);
+```
+
+不要在组件内使用，组件无法被正确的更新。有一些 connect 的用法在 getProps 中同样可行，但是并不推荐。
+
 ### connect & connectWith
 
 ```javascript
