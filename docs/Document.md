@@ -8,6 +8,8 @@ English | [中文](https://github.com/regionjs/region-core/blob/master/docs/Docu
 
 [useProps](#useProps)
 
+[getProps](#getProps)
+
 [connect & connectWith](#connect--connectWith)
 
 [Region](#Region)
@@ -38,9 +40,10 @@ It is called after promise is resolved or rejected.
 ### set
 
 ```javascript
-import { set } from 'region-shortcut';
+import { set, reset } from 'region-shortcut';
 
 set(key, result, { format });
+reset()
 ```
 
 ### useProps
@@ -57,6 +60,21 @@ const { loading, error, user, follower } = useProps(['user', 'follower']);
 ```
 
 Some usage in connect also works, but it is not recommend.
+
+### getProps
+
+```javascript
+import { getProps } from 'region-shortcut';
+
+// out of Component
+const { user } = getProps('user');
+
+// or
+const { loading, error, user } = getProps('user');
+const { loading, error, user, follower } = getProps(['user', 'follower']);
+```
+
+Do not use it inside components, the component will not update. Some usage in connect also works, but it is not recommend.
 
 ### connect & connectWith
 

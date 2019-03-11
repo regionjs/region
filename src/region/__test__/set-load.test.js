@@ -1,6 +1,6 @@
 import { region } from './region';
 
-const { set, load } = region;
+const { set, reset, load } = region;
 
 describe('set', () => {
   test('string', () => {
@@ -18,6 +18,11 @@ describe('set', () => {
     const target = () => 'should not be string';
     const result = set('user', target);
     expect(result).toBe(target);
+  });
+
+  test('reset', () => {
+    const result = reset();
+    expect(result).toBe(undefined);
   });
 });
 

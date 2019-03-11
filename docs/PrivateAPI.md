@@ -30,30 +30,25 @@ const result = await load(key, asyncFunction, { params, forceUpdate, format });
 
 `forceUpdate: true` calls asyncFunction at once.
 
-### getLoading & getResults & getFetchTimes & getError
+### private_getLoading & private_getResults & private_getFetchTimes & private_getError & private_selectorFactory
 
 ```javascript
-const loading = getLoading(['user', 'follower']);
-const user = getResults('user');
-const [user, follower] = getResults(['user', 'follower']);
-const [userFetchTime, followerFetchTime] = getFetchTimes(['user', 'follower']);
-const error = getError(['user', 'follower']);
+const loading = private_getLoading(['user', 'follower']);
+const user = private_getResults('user');
+const [user, follower] = private_getResults(['user', 'follower']);
+const [userFetchTime, followerFetchTime] = private_getFetchTimes(['user', 'follower']);
+const error = private_getError(['user', 'follower']);
+const { loading, error, user } = private_selectorFactory('user')(store.getState());
 }
 ```
 
 `getFetchTimes` returns `date.getTime()` the moment result is resolved and stored.
 
-### private_selectorFactory
-
-```javascript
-const { loading, error, user } = private_selectorFactory('user')(store.getState());
-```
-
-see [connect & connectWith](https://github.com/regionjs/region-core/blob/master/docs/Document.md#connect--connectWith)
+Use [getProps](https://github.com/regionjs/region-core/blob/master/docs/Document.md#getProps) instead in nearly all these usages.
 
 ### private_setConfig
 
-Use new Region instead of setConfig.
+Use new Region instead of setConfig. private_setConfig dynamically is dangerous, make sure you know what you're doing.
 
 ```javascript
 private_setConfig({

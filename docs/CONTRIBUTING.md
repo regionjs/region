@@ -1,3 +1,3 @@
 # CONTRIBUTING
 
-be free
+Be free.

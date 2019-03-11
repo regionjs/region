@@ -1,5 +1,25 @@
 # CHANGELOG
 
+### 0.7.2
+
+- setFp/loadFp
+
+- reset
+
+- getProps
+
+- make getLoading, getResults, getFetchTimes, getError private
+
+- make provide optional
+
+### 0.7.1
+
+- provide
+
+- deprecate getProvider
+
+- rename connect to unstable_connect & deprecate selector in new connect
+
 ### 0.7.0
 
 - useProps

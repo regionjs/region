@@ -1,7 +1,15 @@
 import { region } from './region';
 import { getStore } from '../../global/store';
 
-const { private_setConfig, getLoading, getResults, getProps, getFetchTimes, getError, private_selectorFactory } = region;
+const {
+  private_setConfig,
+  private_getLoading: getLoading,
+  private_getResults: getResults,
+  private_getFetchTimes: getFetchTimes,
+  private_getError: getError,
+  getProps,
+  private_selectorFactory: selectorFactory,
+} = region;
 
 let state = null;
 const store = getStore();
@@ -18,37 +26,62 @@ describe('get', () => {
     expect(getLoading('a')).toEqual(true);
     expect(getResults('a')).toEqual(undefined);
     expect(getFetchTimes('a')).toEqual(undefined);
-    expect(getLoading(['a', 'b'])).toEqual(true);
-    expect(getResults(['a', 'b'])).toEqual([undefined, undefined]);
-    expect(getFetchTimes(['a', 'b'])).toEqual([undefined, undefined]);
-    expect(private_selectorFactory('a')()).toEqual({
+    expect(getProps('a')).toEqual({
+      loading: true,
+      error: undefined,
+      a: undefined,
+    });
+    expect(selectorFactory('a')()).toEqual({
       loading: true,
       a: undefined,
     });
-    expect(private_selectorFactory(['a', 'b'])()).toEqual({
+
+    expect(getLoading(['a', 'b'])).toEqual(true);
+    expect(getResults(['a', 'b'])).toEqual([undefined, undefined]);
+    expect(getFetchTimes(['a', 'b'])).toEqual([undefined, undefined]);
+    expect(getProps(['a', 'b'])).toEqual({
+      loading: true,
+      error: undefined,
+      a: undefined,
+      b: undefined,
+    });
+    expect(selectorFactory(['a', 'b'])()).toEqual({
       loading: true,
       a: undefined,
       b: undefined,
     });
   });
+
   test('get things from initial state', () => {
     setState({});
     expect(getLoading('a')).toEqual(true);
     expect(getResults('a')).toEqual(undefined);
     expect(getFetchTimes('a')).toEqual(undefined);
-    expect(getLoading(['a', 'b'])).toEqual(true);
-    expect(getResults(['a', 'b'])).toEqual([undefined, undefined]);
-    expect(getFetchTimes(['a', 'b'])).toEqual([undefined, undefined]);
-    expect(private_selectorFactory('a')()).toEqual({
+    expect(getProps('a')).toEqual({
       loading: true,
       a: undefined,
     });
-    expect(private_selectorFactory(['a', 'b'])()).toEqual({
+    expect(selectorFactory('a')()).toEqual({
+      loading: true,
+      a: undefined,
+    });
+
+
+    expect(getLoading(['a', 'b'])).toEqual(true);
+    expect(getResults(['a', 'b'])).toEqual([undefined, undefined]);
+    expect(getFetchTimes(['a', 'b'])).toEqual([undefined, undefined]);
+    expect(getProps(['a', 'b'])).toEqual({
+      loading: true,
+      a: undefined,
+      b: undefined,
+    });
+    expect(selectorFactory(['a', 'b'])()).toEqual({
       loading: true,
       a: undefined,
       b: undefined,
     });
   });
+
   test('get things from start loading', () => {
     setState({
       loadings: { a: true },
@@ -56,19 +89,30 @@ describe('get', () => {
     expect(getLoading('a')).toEqual(true);
     expect(getResults('a')).toEqual(undefined);
     expect(getFetchTimes('a')).toEqual(undefined);
-    expect(getLoading(['a', 'b'])).toEqual(true);
-    expect(getResults(['a', 'b'])).toEqual([undefined, undefined]);
-    expect(getFetchTimes(['a', 'b'])).toEqual([undefined, undefined]);
-    expect(private_selectorFactory('a')()).toEqual({
+    expect(getProps('a')).toEqual({
       loading: true,
       a: undefined,
     });
-    expect(private_selectorFactory(['a', 'b'])()).toEqual({
+    expect(selectorFactory('a')()).toEqual({
+      loading: true,
+      a: undefined,
+    });
+
+    expect(getLoading(['a', 'b'])).toEqual(true);
+    expect(getResults(['a', 'b'])).toEqual([undefined, undefined]);
+    expect(getFetchTimes(['a', 'b'])).toEqual([undefined, undefined]);
+    expect(getProps(['a', 'b'])).toEqual({
+      loading: true,
+      a: undefined,
+      b: undefined,
+    });
+    expect(selectorFactory(['a', 'b'])()).toEqual({
       loading: true,
       a: undefined,
       b: undefined,
     });
   });
+
   test('treat undefined', () => {
     setState({
       loadings: { a: true },
@@ -79,6 +123,7 @@ describe('get', () => {
     private_setConfig({ strictLoading: true });
     expect(getLoading('b')).toEqual(true);
   });
+
   test('get things from stop loading', () => {
     setState({
       loadings: { a: false },
@@ -87,27 +132,38 @@ describe('get', () => {
     });
     expect(getLoading('a')).toEqual(false);
     expect(getResults('a')).toEqual({ name: '66', type: 'cat' });
-    expect(getProps('a')).toEqual({ name: '66', type: 'cat' });
     expect(getFetchTimes('a')).toEqual(0);
-    expect(getLoading(['a', 'b'])).toEqual(true);
-    expect(getResults(['a', 'b'])).toEqual([{ name: '66', type: 'cat' }, undefined]);
-    expect(getFetchTimes(['a', 'b'])).toEqual([0, undefined]);
-    expect(private_selectorFactory('a')()).toEqual({
+    expect(getProps('a')).toEqual({
       loading: false,
       a: { name: '66', type: 'cat' },
     });
-    expect(private_selectorFactory(['a', 'b'])()).toEqual({
+    expect(selectorFactory('a')()).toEqual({
+      loading: false,
+      a: { name: '66', type: 'cat' },
+    });
+
+    expect(getLoading(['a', 'b'])).toEqual(true);
+    expect(getResults(['a', 'b'])).toEqual([{ name: '66', type: 'cat' }, undefined]);
+    expect(getFetchTimes(['a', 'b'])).toEqual([0, undefined]);
+    expect(getProps(['a', 'b'])).toEqual({
+      loading: true,
+      a: { name: '66', type: 'cat' },
+      b: undefined,
+    });
+    expect(selectorFactory(['a', 'b'])()).toEqual({
       loading: true,
       a: { name: '66', type: 'cat' },
       b: undefined,
     });
   });
+
   test('getLoading from all resolved', () => {
     setState({
       loadings: { a: false, b: false },
     });
     expect(getLoading(['a', 'b'])).toBe(false);
   });
+
   test('getError', () => {
     setState({
       loadings: { a: false, b: false },
@@ -122,26 +178,27 @@ describe('get', () => {
     });
     expect(getError(['a', 'b'])).toBe('error a, error b');
   });
-  test('private_selectorFactory', () => {
+
+  test('selectorFactory', () => {
     setState({
       loadings: { a: true, b: false },
       fetchTimes: { a: 0, b: 0 },
       results: { a: { type: 'cat' }, b: { type: 'dog' } },
     });
-    expect(private_selectorFactory('a')()).toEqual({
+    expect(selectorFactory('a')()).toEqual({
       loading: true,
       a: { type: 'cat' },
     });
-    expect(private_selectorFactory(['a', 'b'])()).toEqual({
+    expect(selectorFactory(['a', 'b'])()).toEqual({
       loading: true,
       a: { type: 'cat' },
       b: { type: 'dog' },
     });
-    expect(private_selectorFactory({ loading: 'b', result: 'a' })()).toEqual({
+    expect(selectorFactory({ loading: 'b', result: 'a' })()).toEqual({
       loading: false,
       a: { type: 'cat' },
     });
-    expect(private_selectorFactory({ loading: 'a', result: ['a', 'b'] })()).toEqual({
+    expect(selectorFactory({ loading: 'a', result: ['a', 'b'] })()).toEqual({
       loading: true,
       a: { type: 'cat' },
       b: { type: 'dog' },
@@ -161,7 +218,7 @@ describe('get', () => {
       fetchTimes: { a: 0 },
       results: { a: [{ id: 0, type: 'cat' }, { id: 1, type: 'dog' }] },
     });
-    const selected = private_selectorFactory({
+    const selected = selectorFactory({
       key: 'a',
       selector: ({ a }, { id }) => a.find(item => item.id === id),
     })(null, { id: 1 });

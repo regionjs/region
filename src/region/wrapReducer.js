@@ -3,6 +3,16 @@ import { debug, group } from '../util/logger';
 import { assignValueDeep, setValueDeep } from '../util/reducerPrototype';
 import { getStore } from '../global/store';
 
+function setKey({ state, key, fetchTime, result, error, withLoadEnd }) {
+  setValueDeep(state, ['fetchTimes', key], fetchTime);
+  if (result !== undefined) {
+    setValueDeep(state, ['results', key], result);
+  }
+  setValueDeep(state, ['errors', key], error); // as well error ===  undefined
+  const nextState = assignValueDeep(state, ['loadings', key], withLoadEnd ? (v = 0) => v - 1 : (v = 0) => v);
+  return nextState;
+}
+
 export default (RegionIn) => {
   class Region extends RegionIn {
     constructor(...args) {
@@ -17,32 +27,35 @@ export default (RegionIn) => {
 
     private_reducer = (state = {}, action) => {
       const { enableLog, private_actionTypes } = this;
-      const { LOAD, SET } = private_actionTypes;
+      const { LOAD, SET, RESET } = private_actionTypes;
       const enableLogInDev = process.env.NODE_ENV !== 'production' && enableLog;
-      if (action.type === LOAD) {
-        const { key } = action.payload;
-        if (enableLogInDev) {
-          debug(LOAD, key);
-        }
-        return assignValueDeep(state, ['loadings', key], (v = 0) => v + 1);
-      }
-      if (action.type === SET) {
-        const { key, result, error, withLoadEnd } = action.payload;
-        setValueDeep(state, ['fetchTimes', key], new Date().getTime());
-        if (result !== undefined) {
-          setValueDeep(state, ['results', key], result);
-        }
-        setValueDeep(state, ['errors', key], error); // as well error ===  undefined
-        const nextState = assignValueDeep(state, ['loadings', key], withLoadEnd ? (v = 0) => v - 1 : (v = 0) => v);
-        if (enableLogInDev) {
-          if (error) {
-            console.error(error.message);
+      switch (action.type) {
+        case LOAD: {
+          const { key } = action.payload;
+          if (enableLogInDev) {
+            debug(LOAD, key);
           }
-          group({ actionType: SET, key, result, error, nextState });
+          return assignValueDeep(state, ['loadings', key], (v = 0) => v + 1);
         }
-        return nextState;
+        case SET: {
+          const { key, result, error, withLoadEnd } = action.payload;
+          const fetchTime = new Date().getTime();
+          const nextState = setKey({ state, key, fetchTime, result, error, withLoadEnd });
+          if (enableLogInDev) {
+            if (error) {
+              console.error(error.message);
+            }
+            group({ actionType: SET, key, result, error, nextState });
+          }
+          return nextState;
+        }
+        case RESET: {
+          return {};
+        }
+        default: {
+          return state;
+        }
       }
-      return state;
     }
   }
   return Region;

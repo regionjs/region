@@ -1,5 +1,5 @@
 # Contributor Covenant Code of Conduct
 
-I don't agree to talk about political correctness in technical field.
+Be free.
 
-But if any related behavior is considered unacceptable, please contact dancerphil1994@gmail.com.
+If any related behavior is considered unacceptable, please contact dancerphil1994@gmail.com.

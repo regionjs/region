@@ -30,7 +30,7 @@ const result = await load(key, asyncFunction, { params, forceUpdate, format });
 
 `forceUpdate: true` 会立刻调用 asyncFunction。
 
-### getLoading & getResults & getFetchTimes & getError
+### getLoading & getResults & getFetchTimes & getError & private_selectorFactory
 
 ```javascript
 const loading = getLoading(['user', 'follower']);
@@ -38,22 +38,17 @@ const user = getResults('user');
 const [user, follower] = getResults(['user', 'follower']);
 const [userFetchTime, followerFetchTime] = getFetchTimes(['user', 'follower']);
 const error = getError(['user', 'follower']);
+const { loading, error, user } = private_selectorFactory('user')(store.getState());
 }
 ```
 
 `getFetchTimes` 返回 result resolved 时的 `date.getTime()`。
 
-### private_selectorFactory
-
-```javascript
-const { loading, error, user } = private_selectorFactory('user')(store.getState());
-```
-
-参见 [connect & connectWith](https://github.com/regionjs/region-core/blob/master/docs/Document-zh_CN.md#connect--connectWith)
+在大部分情况下都可以使用 [getProps](https://github.com/regionjs/region-core/blob/master/docs/Document-zh_CN.md#getProps) 代替。
 
 ### private_setConfig
 
-可以用 new Region 代替。
+可以用 new Region 代替。动态的 private_setConfig 是危险的，确保你知道自己在做什么。
 
 ```javascript
 private_setConfig({
