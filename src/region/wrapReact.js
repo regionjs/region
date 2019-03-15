@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { connect as rawConnect } from 'react-redux';
+import shallowEqual from 'shallowequal';
 import { getStore } from '../global/store';
 import hoc, { prehoc } from '../util/hoc';
 import { isValidConnectKey } from '../util/isValidConnectKey';
@@ -42,14 +43,19 @@ export default (Region) => {
 
 
     useProps = (key) => {
-      const { private_selectorFactory } = this;
+      const { getProps } = this;
       const store = getStore();
-      const [state, setState] = useState(store.getState());
+      const [props, setProps] = useState(getProps(key));
       useEffect(() => {
-        const unsubscribe = store.subscribe(() => setState(store.getState()));
+        const unsubscribe = store.subscribe(() => {
+          const nextProps = getProps(key);
+          if (!shallowEqual(props, nextProps)) {
+            setProps(nextProps);
+          }
+        });
         return () => unsubscribe();
       }, []);
-      return private_selectorFactory(key)(state);
+      return props;
     }
   }
   return RegionReact;
