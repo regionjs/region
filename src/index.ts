@@ -1,7 +1,7 @@
 import '@babel/polyfill';
 import provide from './global/provide';
 import { getProvider } from './global/Provider';
-import Region from './region';
+import Region from './region/index';
 
 provide();
 

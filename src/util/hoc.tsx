@@ -14,7 +14,15 @@ export const prehoc = (Display, Loading, Error) => {
   return ConnectWith;
 };
 
-export default ({ Display, Loading, Error, useProps, key }) => {
+interface Params {
+    Display?: any,
+    Loading?: any,
+    Error?: any,
+    useProps?: any,
+    key?: any
+}
+
+export default ({ Display, Loading, Error, useProps, key }: Params) => {
   const ConnectWith = (ownProps) => {
     const props = useProps(key);
     const { loading, error } = props;

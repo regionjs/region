@@ -4,6 +4,7 @@ import * as shallowEqual from 'shallowequal';
 import { getStore } from '../global/store';
 import hoc, { prehoc } from '../util/hoc';
 import { isValidConnectKey } from '../util/isValidConnectKey';
+import {ConnectOptions} from '../types'
 
 const Empty = () => null;
 
@@ -14,7 +15,7 @@ export default (Region) => {
       return connect(key, option)(Display);
     }
 
-    connect = (key, { Loading, Error } = {}) => (Display = Empty) => {
+    connect = (key, { Loading, Error }: ConnectOptions = {}) => (Display = Empty) => {
       const { useProps, DefaultLoading, DefaultError } = this;
       if (!isValidConnectKey(key)) {
         console.error('invalid key, provide valid key or use connect from \'react-redux\' directly');
@@ -31,7 +32,7 @@ export default (Region) => {
       return WrapperComponent;
     }
 
-    unstable_connect = (key, { Loading, Error } = {}) => (Display = Empty) => {
+    unstable_connect = (key, { Loading, Error }: ConnectOptions = {}) => (Display = Empty) => {
       if (isValidConnectKey(key)) {
         const { private_selectorFactory, DefaultLoading, DefaultError } = this;
         const WrapperComponent = prehoc(Display, Loading || DefaultLoading || Display, Error || DefaultError || Display);
