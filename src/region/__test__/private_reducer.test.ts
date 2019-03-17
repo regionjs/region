@@ -6,6 +6,7 @@ const { SET } = private_actionTypes;
 
 const mockDate = () => {
   /* eslint-disable no-global-assign, class-methods-use-this */
+  // @ts-ignore
   Date = class {
     getHours() {
       return 0;

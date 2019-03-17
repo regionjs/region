@@ -2,7 +2,9 @@ import * as api from '..';
 
 describe('export api', () => {
   test('api contains Region and getProvider', () => {
-    const { Region, getProvider, provide, ...rest } = api;
+    // @ts-ignore
+    const { __esModule, Region, getProvider, provide, ...rest } = api;
+    expect(__esModule || __esModule === undefined).toBe(true);
     expect(typeof Region).toBe('function');
     expect(typeof getProvider).toBe('function');
     expect(typeof provide).toBe('function');

@@ -1,7 +1,16 @@
 import getActionTypes from '../util/getActionTypes';
+import { Config } from '../types'
 
 export default () => {
   class Region {
+    name?: string
+    private_actionTypes?: any
+    expiredTime?: number
+    enableLog?: boolean
+    strictLoading?: boolean
+    DefaultLoading?: any
+    DefaultError?: any
+
     constructor(config) {
       this.private_setConfig({
         name: null,
@@ -16,7 +25,7 @@ export default () => {
       }
     }
 
-    private_setConfig = (config = {}) => {
+    private_setConfig = (config: Config = {}) => {
       const {
         name,
         expiredTime,

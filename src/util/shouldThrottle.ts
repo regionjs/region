@@ -1,10 +1,20 @@
+interface Params {
+  asyncFunction?: any,
+  forceUpdate?: any,
+  key?: any,
+  snapshot?: any,
+  id?: any,
+  expiredTime?: any,
+  getFetchTimes?: any,
+}
+
 const isExpired = ({ key, expiredTime, getFetchTimes }) => {
   const fetchTime = getFetchTimes(key);
   const now = new Date().getTime();
   return now - fetchTime > expiredTime;
 };
 
-export const shouldThrottle = ({ asyncFunction, forceUpdate, key, snapshot, id, expiredTime, getFetchTimes }) => {
+export const shouldThrottle = ({ asyncFunction, forceUpdate, key, snapshot, id, expiredTime, getFetchTimes }: Params) => {
   if (id !== undefined) {
     return Boolean(snapshot && snapshot[id] !== undefined);
   }

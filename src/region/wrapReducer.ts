@@ -28,6 +28,7 @@ export default (RegionIn) => {
     private_reducer = (state = {}, action) => {
       const { enableLog, private_actionTypes } = this;
       const { LOAD, SET, RESET } = private_actionTypes;
+      // @ts-ignore
       const enableLogInDev = process.env.NODE_ENV !== 'production' && enableLog;
       switch (action.type) {
         case LOAD: {

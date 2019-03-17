@@ -1,3 +1,4 @@
+/* tslint:disable: max-file-line-count */
 import { region } from './region';
 import { getStore } from '../../global/store';
 
@@ -65,7 +66,6 @@ describe('get', () => {
       loading: true,
       a: undefined,
     });
-
 
     expect(getLoading(['a', 'b'])).toEqual(true);
     expect(getResults(['a', 'b'])).toEqual([undefined, undefined]);
