@@ -1,7 +1,7 @@
 import '@babel/polyfill';
 import provide from './global/provide';
 import { getProvider } from './global/Provider';
-import Region from './region/index';
+import Region from './region'; // tslint:disable-line import-name
 
 provide();
 

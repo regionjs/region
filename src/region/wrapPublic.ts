@@ -65,7 +65,7 @@ export default (Region) => {
       const snapshot = getResults(key);
       // TODO optimize loadFp
       return async (params) => {
-        // eslint-disable-next-line no-param-reassign, TODO remove it
+        // tslint:disable-next-line: no-parameter-reassignment TODO remove it
         params = Object.assign({}, defaultParams, params);
         if (shouldThrottle({ asyncFunction, forceUpdate, key, snapshot, id, expiredTime, getFetchTimes })) {
           return snapshot;

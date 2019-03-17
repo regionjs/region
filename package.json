@@ -18,7 +18,7 @@
     "build": "rm -rf lib/ && tsc",
     "check": "npm run build && npm run lint && jest --colors",
     "codecov": "npm test && codecov",
-    "lint": "echo 'lint is ignored for now'",
+    "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "lint-pre": "eslint --ignore-path .gitignore --ext .js,jsx ./src",
     "prepublishOnly": "npm run check",
     "test": "jest src --colors --coverage"
@@ -57,6 +57,8 @@
     "jest": "^24.1.0",
     "react": "^16.8.3",
     "ts-jest": "^24.0.0",
+    "tslint": "^5.14.0",
+    "tslint-config-airbnb": "^5.11.1",
     "typescript": "^3.3.3333"
   },
   "peerDependencies": {

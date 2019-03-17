@@ -1,5 +1,5 @@
 import getActionTypes from '../util/getActionTypes';
-import {Config} from '../types'
+import { Config } from '../types'
 
 export default () => {
   class Region {

@@ -26,7 +26,6 @@ describe('set', () => {
   });
 });
 
-
 describe('load', () => {
   test('fallback to set', async () => {
     const result = await load('user', 'set a user');

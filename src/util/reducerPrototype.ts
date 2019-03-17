@@ -17,7 +17,7 @@ export function assignValueDeep(state = {}, path, format) {
 export function setValueDeep(state, path, value) {
   let obj = state;
   let i;
-  for (i = 0; i < path.length - 1; i++) {
+  for (i = 0; i < path.length - 1; i += 1) {
     if (obj[path[i]] === undefined) {
       obj[path[i]] = {};
     }
