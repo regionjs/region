@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { connect as rawConnect } from 'react-redux';
-import shallowEqual from 'shallowequal';
+import * as shallowEqual from 'shallowequal';
 import { getStore } from '../global/store';
 import hoc, { prehoc } from '../util/hoc';
 import { isValidConnectKey } from '../util/isValidConnectKey';

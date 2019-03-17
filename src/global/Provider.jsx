@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { Provider as RawProvider } from 'react-redux';
 import { createStore } from 'redux';
 import { setStore } from './store';
