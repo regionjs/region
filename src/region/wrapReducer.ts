@@ -2,8 +2,9 @@ import { combineReducers } from 'redux';
 import { debug, group } from '../util/logger';
 import { assignValueDeep, setValueDeep } from '../util/reducerPrototype';
 import { getStore } from '../global/store';
+import { Config, Action } from '../types/interfaces';
 
-function setKey({ state, key, fetchTime, result, error, withLoadEnd }) {
+function setKey({ state, key, fetchTime, result, error, withLoadEnd }: any) {
   setValueDeep(state, ['fetchTimes', key], fetchTime);
   if (result !== undefined) {
     setValueDeep(state, ['results', key], result);
@@ -13,10 +14,10 @@ function setKey({ state, key, fetchTime, result, error, withLoadEnd }) {
   return nextState;
 }
 
-export default (RegionIn) => {
+export default (RegionIn: any) => {
   class Region extends RegionIn {
-    constructor(...args) {
-      super(...args);
+    constructor(config: Config) {
+      super(config);
       const store = getStore();
       const { reducers } = store;
       const { name, private_reducer } = this;
@@ -25,7 +26,7 @@ export default (RegionIn) => {
       store.replaceReducer(reducer);
     }
 
-    private_reducer = (state = {}, action) => {
+    private_reducer = (state = {}, action: Action) => {
       const { enableLog, private_actionTypes } = this;
       const { LOAD, SET, RESET } = private_actionTypes;
       // @ts-ignore

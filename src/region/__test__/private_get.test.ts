@@ -12,11 +12,11 @@ const {
   private_selectorFactory: selectorFactory,
 } = region;
 
-let state = null;
+let state: any = null;
 const store = getStore();
 store.getState = () => state;
 
-const setState = (_state) => {
+const setState = (_state: any) => {
   state = _state;
 };
 
@@ -220,7 +220,7 @@ describe('get', () => {
     });
     const selected = selectorFactory({
       key: 'a',
-      selector: ({ a }, { id }) => a.find(item => item.id === id),
+      selector: ({ a }: any, { id }: any) => a.find((item: any) => item.id === id),
     })(null, { id: 1 });
     expect(selected.id).toBe(1);
     expect(selected.type).toBe('dog');

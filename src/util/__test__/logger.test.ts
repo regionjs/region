@@ -1,7 +1,7 @@
 import { debug, group } from '../logger';
 
 const useTrip = () => {
-  const trip = [];
+  const trip: string[] = [];
   console.groupCollapsed = () => trip.push('groupCollapsed');
   console.groupEnd = () => trip.push('groupEnd');
   console.debug = () => trip.push('debug');
@@ -17,7 +17,7 @@ describe('logger', () => {
   });
   test('group trip', () => {
     const trip = useTrip();
-    group({});
+    group({ actionType: 'LOAD', key: 'user' });
     expect(trip).toEqual(['groupCollapsed', 'debug', 'debug', 'debug', 'groupEnd']);
   });
 });

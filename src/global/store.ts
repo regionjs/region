@@ -1,6 +1,6 @@
-let store = null;
+let store: any = null;
 
-export const setStore = (_store) => {
+export const setStore = (_store: any) => {
   store = _store;
 };
 

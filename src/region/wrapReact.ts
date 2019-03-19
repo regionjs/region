@@ -4,18 +4,19 @@ import * as shallowEqual from 'shallowequal';
 import { getStore } from '../global/store';
 import hoc, { prehoc } from '../util/hoc';
 import { isValidConnectKey } from '../util/isValidConnectKey';
-import { ConnectOptions } from '../types'
+import { Key, DisplayType } from '../types/types'
+import { ConnectOptions } from '../types/interfaces'
 
 const Empty = () => null;
 
-export default (Region) => {
+export default (Region: any) => {
   class RegionReact extends Region {
-    connectWith = (key, Display, option) => {
+    connectWith = (key: Key, Display: DisplayType, option: ConnectOptions) => {
       const { connect } = this;
       return connect(key, option)(Display);
     }
 
-    connect = (key, { Loading, Error }: ConnectOptions = {}) => (Display = Empty) => {
+    connect = (key: Key, { Loading, Error }: ConnectOptions = {}) => (Display = Empty) => {
       const { useProps, DefaultLoading, DefaultError } = this;
       if (!isValidConnectKey(key)) {
         console.error('invalid key, provide valid key or use connect from \'react-redux\' directly');
@@ -32,7 +33,7 @@ export default (Region) => {
       return WrapperComponent;
     }
 
-    unstable_connect = (key, { Loading, Error }: ConnectOptions = {}) => (Display = Empty) => {
+    unstable_connect = (key: Key, { Loading, Error }: ConnectOptions = {}) => (Display = Empty) => {
       if (isValidConnectKey(key)) {
         const { private_selectorFactory, DefaultLoading, DefaultError } = this;
         const WrapperComponent = prehoc(Display, Loading || DefaultLoading || Display, Error || DefaultError || Display);
@@ -52,7 +53,7 @@ export default (Region) => {
      * The link implies that this hook may broke in async mode.
      * Further information needed.
      */
-    useProps = (key) => {
+    useProps = (key: Key) => {
       const { getProps } = this;
       const store = getStore();
       const [props, setProps] = useState(getProps(key));

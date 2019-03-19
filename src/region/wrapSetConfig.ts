@@ -1,17 +1,17 @@
 import getActionTypes from '../util/getActionTypes';
-import { Config } from '../types'
+import { Config } from '../types/interfaces'
 
 export default () => {
   class Region {
-    name?: string
-    private_actionTypes?: any
+    name?: string | null
+    private_actionTypes?: object
     expiredTime?: number
     enableLog?: boolean
     strictLoading?: boolean
     DefaultLoading?: any
     DefaultError?: any
 
-    constructor(config) {
+    constructor(config: Config) {
       this.private_setConfig({
         name: null,
         expiredTime: 0,
@@ -21,11 +21,12 @@ export default () => {
       if (config !== null && typeof config === 'object') {
         this.private_setConfig(config);
       } else {
-        this.private_setConfig({ name: config });
+        // TODO decide to fix it or not
+        this.private_setConfig({ name: config } as Config);
       }
     }
 
-    private_setConfig = (config: Config = {}) => {
+    private_setConfig = (config: Config = {}): void => {
       const {
         name,
         expiredTime,

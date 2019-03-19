@@ -1,19 +1,19 @@
-const repeat = (str, times) => (new Array(times + 1)).join(str); // tslint:disable-line prefer-array-literal
+const repeat = (str: string, times: number) => Array(times + 1).join(str);
 
-const pad = (num, maxLength) => repeat('0', maxLength - num.toString().length) + num;
+const pad = (num: number, maxLength: number) => repeat('0', maxLength - num.toString().length) + num;
 
-const formatTime = time => `${pad(time.getHours(), 2)}:${pad(time.getMinutes(), 2)}:${pad(time.getSeconds(), 2)}.${pad(time.getMilliseconds(), 3)}`;
+const formatTime = (time: Date) => `${pad(time.getHours(), 2)}:${pad(time.getMinutes(), 2)}:${pad(time.getSeconds(), 2)}.${pad(time.getMilliseconds(), 3)}`;
 
-const getFormat = (prefix, str) => {
+const getFormat = (prefix: string, str: string) => {
   const formatString = ` %c${prefix} %c${str} %c@ ${formatTime(new Date())}`;
   return [formatString, 'color: gray; font-weight: lighter;', 'font-weight: bold', 'color: gray; font-weight: lighter;'];
 };
 
-export const debug = (prefix, str) => console.debug(...getFormat(prefix, str));
+export const debug = (prefix: string, str: string) => console.debug(...getFormat(prefix, str));
 
 interface Param {
-  actionType?: any,
-  key?: any,
+  actionType: string,
+  key: string,
   result?: any,
   error?: any,
   nextState?: any

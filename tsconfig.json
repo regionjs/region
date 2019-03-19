@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
         "outDir": "./lib",
+        "strict": true,
         "jsx": "react",
         "target": "es5",
         "lib": ["esnext", "dom"]
