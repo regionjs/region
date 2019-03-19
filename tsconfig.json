@@ -1,9 +1,9 @@
 {
     "compilerOptions": {
         "outDir": "./lib",
-        "allowJs": true,
         "jsx": "react",
-        "lib": ["es6", "es7", "dom"]
+        "target": "es5",
+        "lib": ["esnext", "dom"]
     },
     "include": [
         "./src/**/*/"
