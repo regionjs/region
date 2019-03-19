@@ -42,6 +42,16 @@ export default (Region) => {
       return rawConnect(key)(Display);
     }
 
+    /**
+     * There is only one store bound to all regions. App store is not related unless it is {@code provide()}
+     * So it is unnecessary to check whether store is memoized
+     * @see {
+     *   @link https://gist.github.com/bvaughn/e25397f70e8c65b0ae0d7c90b731b189|
+     *   Advanced example for manually managing subscriptions in an async-safe way using hooks
+     * }
+     * The link implies that this hook may broke in async mode.
+     * Further information needed.
+     */
     useProps = (key) => {
       const { getProps } = this;
       const store = getStore();
