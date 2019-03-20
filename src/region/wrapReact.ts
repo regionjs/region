@@ -66,7 +66,10 @@ export default (Region) => {
           });
           return () => unsubscribe();
         },
-        [],
+        /**
+         * effect should be changed with props, otherwise shallowEqual will never hit
+         */
+        [props],
       );
       return props;
     }
