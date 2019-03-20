@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "outDir": "./lib",
+        "jsx": "react",
+        "target": "es5",
+        "lib": ["esnext", "dom"]
+    },
+    "include": [
+        "./src/**/*/"
+    ]
+}

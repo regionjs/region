@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import hoc from '../hoc';
 
 const Display = ({ withLabel }) => `Display with ${withLabel}`;
@@ -15,13 +15,16 @@ describe('hoc', () => {
   test('loading', () => {
     const ConnectWith = hoc({ Display, Loading, Error, useProps: () => ({ loading: true }) });
     const props = { withLabel: 'label' };
+    // @ts-ignore
     expect(ConnectWith(props)).toEqual(<Loading loading withLabel="label" />);
   });
 
   test('error', () => {
+    // @ts-ignore
     const error = new Error('error');
     const ConnectWith = hoc({ Display, Loading, Error, useProps: () => ({ error }) });
     const props = { withLabel: 'label', error };
+    // @ts-ignore
     expect(ConnectWith(props)).toEqual(<Error error={error} withLabel="label" />);
   });
 });

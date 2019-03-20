@@ -2,6 +2,7 @@ import { formatResult } from '../formatResult';
 
 describe('formatResult', () => {
   test('throw', () => {
+    // @ts-ignore
     expect(() => formatResult()).toThrow();
   });
 

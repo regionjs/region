@@ -2,6 +2,7 @@ import { formatResult } from '../util/formatResult';
 import { isAsync } from '../util/isAsync';
 import { shouldThrottle } from '../util/shouldThrottle';
 import { getStore } from '../global/store';
+import { LoadOptions } from '../types'
 
 const toPromise = async ({ asyncFunction, params }) => {
   if (typeof asyncFunction === 'function') {
@@ -13,7 +14,7 @@ const toPromise = async ({ asyncFunction, params }) => {
 
 export default (Region) => {
   class RegionPublic extends Region {
-    set = (key, result, option) => {
+    set = (key, result, option: LoadOptions) => {
       const { setFp } = this;
       return setFp(key, option)(result);
     }
@@ -21,14 +22,14 @@ export default (Region) => {
     /**
      * @param format A function format result to other data structure
      */
-    setFp = (key, { format } = {}) => {
+    setFp = (key, { format }: LoadOptions = {}) => {
       const { private_getResults: getResults, private_actionTypes } = this;
       const { SET } = private_actionTypes;
       const { dispatch } = getStore();
       const snapshot = getResults(key);
       // TODO optimize setFp
       return (result) => {
-        const formattedResult = formatResult({ result, snapshot, key, format });
+        const formattedResult = formatResult({ result, snapshot, format });
         dispatch({ type: SET, payload: { key, result: formattedResult } });
         return formattedResult;
       };
@@ -41,7 +42,7 @@ export default (Region) => {
       dispatch({ type: RESET });
     }
 
-    load = async (key, asyncFunction, option = {}) => {
+    load = async (key, asyncFunction, option: LoadOptions = {}) => {
       if (!isAsync(asyncFunction)) {
         console.warn('set result directly');
         const { set } = this;
@@ -56,7 +57,7 @@ export default (Region) => {
      * @param format A function format result to other data structure
      * @param forceUpdate true | false
      */
-    loadFp = (key, asyncFunction, option = {}) => {
+    loadFp = (key, asyncFunction, option: LoadOptions = {}) => {
       const { forceUpdate, params: defaultParams, format, id } = option;
       const { private_getResults: getResults, private_actionTypes, expiredTime, private_getFetchTimes: getFetchTimes } = this;
       const { LOAD, SET } = private_actionTypes;
@@ -64,7 +65,7 @@ export default (Region) => {
       const snapshot = getResults(key);
       // TODO optimize loadFp
       return async (params) => {
-        // eslint-disable-next-line no-param-reassign, TODO remove it
+        // tslint:disable-next-line: no-parameter-reassignment TODO remove it
         params = Object.assign({}, defaultParams, params);
         if (shouldThrottle({ asyncFunction, forceUpdate, key, snapshot, id, expiredTime, getFetchTimes })) {
           return snapshot;
