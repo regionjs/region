@@ -41,7 +41,7 @@ const select = ({ selector, props, ownProps }) => {
   return {};
 };
 
-export default (Region: any) => {
+export default (Region: any): any => {
   class RegionPrivate extends Region {
     private_getState = () => {
       const { name } = this;

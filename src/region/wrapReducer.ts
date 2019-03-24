@@ -14,7 +14,7 @@ function setKey({ state, key, fetchTime, result, error, withLoadEnd }: any) {
   return nextState;
 }
 
-export default (RegionIn: any) => {
+export default (RegionIn: any): any => {
   class Region extends RegionIn {
     constructor(config: Config) {
       super(config);

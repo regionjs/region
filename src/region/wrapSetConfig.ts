@@ -1,7 +1,7 @@
 import getActionTypes from '../util/getActionTypes';
 import { Config } from '../types/interfaces'
 
-export default () => {
+export default (): any => {
   class Region {
     name?: string | null
     private_actionTypes?: object

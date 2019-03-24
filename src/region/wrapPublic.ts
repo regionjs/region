@@ -18,7 +18,7 @@ const toPromise = async ({ asyncFunction, params }: ToPromiseParams) => {
   return asyncFunction;
 };
 
-export default (Region: any) => {
+export default (Region: any): any => {
   class RegionPublic extends Region {
     set = (key: EntityName, result: Result, option: LoadOptions) => {
       const { setFp } = this;

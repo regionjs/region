@@ -9,7 +9,7 @@ import { ConnectOptions } from '../types/interfaces'
 
 const Empty = () => null;
 
-export default (Region: any) => {
+export default (Region: any): any => {
   class RegionReact extends Region {
     connectWith = (key: Key, Display: DisplayType, option: ConnectOptions) => {
       const { connect } = this;
