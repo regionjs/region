@@ -53,8 +53,7 @@ describe('load', () => {
     const result = await load('user', () => Promise.resolve('2'), {
       format: (user: string, snapshot?: string) => `${snapshot}${user}3`,
     });
-    // This is extremely weird
-    expect(result).toBe('undefined23');
+    expect(result).toBe('0123');
   });
 
   test('reject', async () => {

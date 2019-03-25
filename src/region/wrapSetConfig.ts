@@ -3,7 +3,7 @@ import { Config } from '../types/interfaces';
 
 export default (): any => {
   class Region {
-    name?: string | null;
+    name: string = '_';
     private_actionTypes?: object;
     expiredTime?: number;
     enableLog?: boolean;
@@ -13,12 +13,11 @@ export default (): any => {
 
     constructor(config: Config) {
       this.private_setConfig({
-        name: null,
         expiredTime: 0,
         enableLog: true,
         strictLoading: true,
       });
-      if (config !== null && typeof config === 'object') {
+      if (typeof config === 'object') {
         this.private_setConfig(config);
       } else {
         // TODO decide to fix it or not
@@ -37,7 +36,11 @@ export default (): any => {
       } = config;
 
       if (name !== undefined) {
-        this.name = name;
+        if (typeof name === 'string') {
+          this.name = name;
+        } else {
+          console.error('Region name should be string');
+        }
         this.private_actionTypes = getActionTypes(name);
       }
       if (expiredTime !== undefined) {

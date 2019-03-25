@@ -5,7 +5,7 @@ const { private_setConfig } = region;
 describe('private_config', () => {
   test('default', () => {
     const { name, enableLog, expiredTime, strictLoading, private_actionTypes, DefaultLoading, DefaultError } = region;
-    expect(name).toBe(null);
+    expect(name).toBe('region');
     expect(expiredTime).toBe(0);
     expect(enableLog).toBe(true);
     expect(strictLoading).toBe(true);
@@ -20,7 +20,7 @@ describe('private_config', () => {
   test('set nothing', () => {
     private_setConfig();
     const { name, enableLog, expiredTime, strictLoading, private_actionTypes, DefaultLoading, DefaultError } = region;
-    expect(name).toBe(null);
+    expect(name).toBe('region');
     expect(expiredTime).toBe(0);
     expect(enableLog).toBe(true);
     expect(strictLoading).toBe(true);
@@ -35,7 +35,7 @@ describe('private_config', () => {
   test('set enableLog as false', () => {
     private_setConfig({ enableLog: false });
     const { name, enableLog, expiredTime, DefaultLoading, DefaultError } = region;
-    expect(name).toBe(null);
+    expect(name).toBe('region');
     expect(expiredTime).toBe(0);
     expect(enableLog).toBe(false);
     expect(DefaultLoading).toBe(undefined);

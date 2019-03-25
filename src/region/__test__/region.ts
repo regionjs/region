@@ -1,5 +1,3 @@
 import { Region } from '../..';
 
-const region = new Region({ name: null });
-
-export { region };
+export const region = new Region({ name: 'region' });

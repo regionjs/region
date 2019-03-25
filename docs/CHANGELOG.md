@@ -1,5 +1,15 @@
 # CHANGELOG
 
+### 0.7.4
+
+- Region demands name to be string
+
+### 0.7.3
+
+- migrate to ts and export es5
+
+- memoized useProps
+
 ### 0.7.2
 
 - setFp/loadFp

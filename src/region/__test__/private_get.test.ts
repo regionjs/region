@@ -14,7 +14,7 @@ const {
 
 let state: any = null;
 const store = getStore();
-store.getState = () => state;
+store.getState = () => ({ region: state });
 
 const setState = (nextState: any) => {
   state = nextState;
@@ -204,14 +204,6 @@ describe('get', () => {
       b: { type: 'dog' },
     });
   });
-  test('config reducePath', () => {
-    private_setConfig({ name: 'result' });
-    expect(getResults('a')).toBe(undefined);
-    setState({ result: { results: { a: 'config reducePath' } } });
-    expect(getResults('a')).toBe('config reducePath');
-    private_setConfig({ name: null });
-    expect(getResults('a')).toBe(undefined);
-  });
   test('selector', () => {
     setState({
       loadings: { a: false },
@@ -225,5 +217,12 @@ describe('get', () => {
     expect(selected.id).toBe(1);
     expect(selected.type).toBe('dog');
     expect(selected).toEqual({ loading: false, a: [{ id: 0, type: 'cat' }, { id: 1, type: 'dog' }], id: 1, type: 'dog' });
+  });
+  test('config reducePath', () => {
+    private_setConfig({ name: 'result' });
+    expect(getResults('a')).toBe(undefined);
+    setState({ results: { a: 'config reducePath' } });
+    store.getState = () => ({ result: state });
+    expect(getResults('a')).toBe('config reducePath');
   });
 });

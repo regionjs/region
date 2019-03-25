@@ -2,7 +2,7 @@ import * as React from 'react';
 import hoc from '../hoc';
 
 interface Props {
-  withLabel: string
+  withLabel: string;
 }
 
 const Display = ({ withLabel }: Props) => `Display with ${withLabel}`;
