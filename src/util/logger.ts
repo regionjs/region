@@ -1,8 +1,10 @@
-const repeat = (str: string, times: number) => Array(times + 1).join(str);
-
-const pad = (num: number, maxLength: number) => repeat('0', maxLength - num.toString().length) + num;
-
-const formatTime = (time: Date) => `${pad(time.getHours(), 2)}:${pad(time.getMinutes(), 2)}:${pad(time.getSeconds(), 2)}.${pad(time.getMilliseconds(), 3)}`;
+const formatTime = (time: Date) => {
+  const hour = time.getHours().toString().padStart(2, '0');
+  const minute = time.getMinutes().toString().padStart(2, '0');
+  const second = time.getSeconds().toString().padStart(2, '0');
+  const millisecond = time.getMilliseconds().toString().padStart(3, '0');
+  return `${hour}:${minute}:${second}.${millisecond}`;
+};
 
 const getFormat = (prefix: string, str: string) => {
   const formatString = ` %c${prefix} %c${str} %c@ ${formatTime(new Date())}`;

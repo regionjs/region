@@ -16,8 +16,8 @@ let state: any = null;
 const store = getStore();
 store.getState = () => state;
 
-const setState = (_state: any) => {
-  state = _state;
+const setState = (nextState: any) => {
+  state = nextState;
 };
 
 describe('get', () => {
