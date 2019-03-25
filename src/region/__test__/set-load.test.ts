@@ -44,14 +44,14 @@ describe('load', () => {
 
   test('format', async () => {
     const result = await load('user', () => Promise.resolve('0'), {
-      format: user => `${user}1`,
+      format: (user: string) => `${user}1`,
     });
     expect(result).toBe('01');
   });
 
   test('format snapshot', async () => {
     const result = await load('user', () => Promise.resolve('2'), {
-      format: (user, snapshot) => `${snapshot}${user}3`,
+      format: (user: string, snapshot?: string) => `${snapshot}${user}3`,
     });
     // This is extremely weird
     expect(result).toBe('undefined23');

@@ -1,7 +1,7 @@
-let store = null;
+let store: any = null;
 
-export const setStore = (_store) => {
-  store = _store;
+export const setStore = (nextStore: any) => {
+  store = nextStore;
 };
 
 export const getStore = () => {

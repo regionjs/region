@@ -1,7 +1,8 @@
 import * as React from 'react';
+import { Props, Component } from '../types/types'
 
-export const prehoc = (Display, Loading, Error) => {
-  const ConnectWith = (props) => {
+export const prehoc = (Display: Component, Loading: Component, Error: Component) => {
+  const ConnectWith = (props: Props) => {
     const { loading, error } = props;
     if (loading) {
       return <Loading {...props} />;
@@ -15,15 +16,15 @@ export const prehoc = (Display, Loading, Error) => {
 };
 
 interface Params {
-    Display?: any,
-    Loading?: any,
-    Error?: any,
-    useProps?: any,
-    key?: any
+  Display?: Component,
+  Loading?: Component,
+  Error?: Component,
+  useProps?: any,
+  key?: any
 }
 
 export default ({ Display, Loading, Error, useProps, key }: Params) => {
-  const ConnectWith = (ownProps) => {
+  const ConnectWith = (ownProps: Props) => {
     const props = useProps(key);
     const { loading, error } = props;
     if (loading) {

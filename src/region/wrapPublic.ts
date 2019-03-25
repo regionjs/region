@@ -2,9 +2,15 @@ import { formatResult } from '../util/formatResult';
 import { isAsync } from '../util/isAsync';
 import { shouldThrottle } from '../util/shouldThrottle';
 import { getStore } from '../global/store';
-import { LoadOptions } from '../types'
+import { EntityName, Result, AsyncFunction, Params } from '../types/types';
+import { LoadOptions } from '../types/interfaces';
 
-const toPromise = async ({ asyncFunction, params }) => {
+interface ToPromiseParams {
+  asyncFunction: AsyncFunction;
+  params: any;
+}
+
+const toPromise = async ({ asyncFunction, params }: ToPromiseParams) => {
   if (typeof asyncFunction === 'function') {
     return asyncFunction(params);
   }
@@ -12,9 +18,9 @@ const toPromise = async ({ asyncFunction, params }) => {
   return asyncFunction;
 };
 
-export default (Region) => {
+export default (Region: any): any => {
   class RegionPublic extends Region {
-    set = (key, result, option: LoadOptions) => {
+    set = (key: EntityName, result: Result, option: LoadOptions) => {
       const { setFp } = this;
       return setFp(key, option)(result);
     }
@@ -22,13 +28,13 @@ export default (Region) => {
     /**
      * @param format A function format result to other data structure
      */
-    setFp = (key, { format }: LoadOptions = {}) => {
+    setFp = (key: EntityName, { format }: LoadOptions = {}) => {
       const { private_getResults: getResults, private_actionTypes } = this;
       const { SET } = private_actionTypes;
       const { dispatch } = getStore();
       const snapshot = getResults(key);
       // TODO optimize setFp
-      return (result) => {
+      return (result: Result) => {
         const formattedResult = formatResult({ result, snapshot, format });
         dispatch({ type: SET, payload: { key, result: formattedResult } });
         return formattedResult;
@@ -42,7 +48,7 @@ export default (Region) => {
       dispatch({ type: RESET });
     }
 
-    load = async (key, asyncFunction, option: LoadOptions = {}) => {
+    load = async (key: EntityName, asyncFunction: AsyncFunction, option: LoadOptions = {}) => {
       if (!isAsync(asyncFunction)) {
         console.warn('set result directly');
         const { set } = this;
@@ -57,14 +63,14 @@ export default (Region) => {
      * @param format A function format result to other data structure
      * @param forceUpdate true | false
      */
-    loadFp = (key, asyncFunction, option: LoadOptions = {}) => {
+    loadFp = (key: EntityName, asyncFunction: AsyncFunction, option: LoadOptions = {}) => {
       const { forceUpdate, params: defaultParams, format, id } = option;
       const { private_getResults: getResults, private_actionTypes, expiredTime, private_getFetchTimes: getFetchTimes } = this;
       const { LOAD, SET } = private_actionTypes;
       const { dispatch } = getStore();
       const snapshot = getResults(key);
       // TODO optimize loadFp
-      return async (params) => {
+      return async (params: Params) => {
         // tslint:disable-next-line: no-parameter-reassignment TODO remove it
         params = Object.assign({}, defaultParams, params);
         if (shouldThrottle({ asyncFunction, forceUpdate, key, snapshot, id, expiredTime, getFetchTimes })) {

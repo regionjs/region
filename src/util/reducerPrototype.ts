@@ -1,10 +1,12 @@
-function assignValue(state = {}, key, format) {
+type State = {[key: string]: any};
+
+function assignValue(state: State = {}, key: string, format: any) {
   const value = format(state[key]);
   return Object.assign({}, state, { [key]: value });
 }
 
 // NOTE 只支持 path.length === 2 和 format
-export function assignValueDeep(state = {}, path, format) {
+export function assignValueDeep(state: State = {}, path: any, format: any) {
   const pathCopied = path.slice();
   const key = pathCopied.shift();
   const formatObj = {
@@ -14,7 +16,7 @@ export function assignValueDeep(state = {}, path, format) {
 }
 
 // NOTE 只支持 path.length === 2 和 value
-export function setValueDeep(state, path, value) {
+export function setValueDeep(state: State, path: any, value: any) {
   let obj = state;
   let i;
   for (i = 0; i < path.length - 1; i += 1) {
