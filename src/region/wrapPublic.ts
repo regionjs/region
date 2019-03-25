@@ -2,12 +2,12 @@ import { formatResult } from '../util/formatResult';
 import { isAsync } from '../util/isAsync';
 import { shouldThrottle } from '../util/shouldThrottle';
 import { getStore } from '../global/store';
-import { EntityName, Result, AsyncFunction, Params } from '../types/types'
-import { LoadOptions } from '../types/interfaces'
+import { EntityName, Result, AsyncFunction, Params } from '../types/types';
+import { LoadOptions } from '../types/interfaces';
 
 interface ToPromiseParams {
-  asyncFunction: AsyncFunction,
-  params: any,
+  asyncFunction: AsyncFunction;
+  params: any;
 }
 
 const toPromise = async ({ asyncFunction, params }: ToPromiseParams) => {

@@ -1,5 +1,5 @@
-import { Name } from '../types/types'
-type Type = 'LOAD' | 'SET' | 'RESET'
+import { Name } from '../types/types';
+type Type = 'LOAD' | 'SET' | 'RESET';
 
 const generator = (name: Name, type: Type) => (name ? `@${name}/${type}` : `@region/${type}`);
 

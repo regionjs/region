@@ -14,16 +14,16 @@ export type Result = any;
 // load
 export type AsyncFunction = any;
 export type Params = any;
-export type Format = (result: any, snapshot: any) => object
+export type Format = (result: any, snapshot: any) => object;
 
 // Region config
-export type Name = string | null
+export type Name = string | null;
 
 // provide
 
 // private
 // get
-export type Path = string | string[]
+export type Path = string | string[];
 
 // reducer
 

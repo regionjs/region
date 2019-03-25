@@ -12,11 +12,11 @@ const getFormat = (prefix: string, str: string) => {
 export const debug = (prefix: string, str: string) => console.debug(...getFormat(prefix, str));
 
 interface Param {
-  actionType: string,
-  key: string,
-  result?: any,
-  error?: any,
-  nextState?: any
+  actionType: string;
+  key: string;
+  result?: any;
+  error?: any;
+  nextState?: any;
 }
 
 export const group = ({ actionType, key, result, error, nextState }: Param) => {

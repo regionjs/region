@@ -4,8 +4,8 @@ import * as shallowEqual from 'shallowequal';
 import { getStore } from '../global/store';
 import hoc, { prehoc } from '../util/hoc';
 import { isValidConnectKey } from '../util/isValidConnectKey';
-import { Key, DisplayType } from '../types/types'
-import { ConnectOptions } from '../types/interfaces'
+import { Key, DisplayType } from '../types/types';
+import { ConnectOptions } from '../types/interfaces';
 
 const Empty = () => null;
 

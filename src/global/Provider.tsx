@@ -5,10 +5,14 @@ import { setStore } from './store';
 import deprecate from '../util/deprecate';
 import { ProvideOptions } from '../types/interfaces'
 
+interface Props {
+  children: JSX.Element
+}
+
 export const getProvider = (options: ProvideOptions = {}) => {
   deprecate('getProvider is deprecated, use provide instead. region is not using react-redux api anymore.');
   const { store = createStore(() => {}), reducers = {} } = options;
   store.reducers = reducers;
   setStore(store);
-  return ({ children }: any) => <RawProvider store={store}>{children}</RawProvider>;
+  return ({ children }: Props) => <RawProvider store={store}>{children}</RawProvider>;
 };

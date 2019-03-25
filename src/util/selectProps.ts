@@ -2,7 +2,7 @@ import { Props } from '../types/types';
 
 type SelectPropsKey = string | string[];
 // loading === undefined occurs when strictLoading === false
-type Loading = boolean | undefined
+type Loading = boolean | undefined;
 
 export default (keys: SelectPropsKey, loading: Loading, results: any, error: any): object => {
   // TODO migrate selectProps

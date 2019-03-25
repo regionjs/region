@@ -1,15 +1,15 @@
 import getActionTypes from '../util/getActionTypes';
-import { Config } from '../types/interfaces'
+import { Config } from '../types/interfaces';
 
 export default (): any => {
   class Region {
-    name?: string | null
-    private_actionTypes?: object
-    expiredTime?: number
-    enableLog?: boolean
-    strictLoading?: boolean
-    DefaultLoading?: any
-    DefaultError?: any
+    name?: string | null;
+    private_actionTypes?: object;
+    expiredTime?: number;
+    enableLog?: boolean;
+    strictLoading?: boolean;
+    DefaultLoading?: any;
+    DefaultError?: any;
 
     constructor(config: Config) {
       this.private_setConfig({

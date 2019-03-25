@@ -48,6 +48,7 @@
     "ts-jest": "^24.0.0",
     "tslint": "^5.14.0",
     "tslint-config-airbnb": "^5.11.1",
+    "tslint-eslint-rules": "^5.4.0",
     "typescript": "^3.3.3333"
   },
   "peerDependencies": {
