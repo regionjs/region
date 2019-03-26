@@ -8,7 +8,7 @@
 
 [useProps](#useProps)
 
-[connect & connectWith](#connect--connectWith)
+[connect](#connect)
 
 [Region](#Region)
 
@@ -74,29 +74,28 @@ const { loading, error, user, follower } = getProps(['user', 'follower']);
 
 不要在组件内使用，组件无法被正确的更新。有一些 connect 的用法在 getProps 中同样可行，但是并不推荐。
 
-### connect & connectWith
+### connect
 
 ```javascript
-import { connect, connectWith } from 'region-shortcut';
+import { connect } from 'region-shortcut';
 
 // these two are equal, in which option is optional
 const Enhanced = connect(key, option)(Component);
-const Enhanced = connectWith(key, Component, option);
 
 const Display = ({ user }) => {...};
 const Loading = ({ user }) => {...}; // or just import one
-const Enhanced = connectWith('user', Display, { Loading });
+const Enhanced = connect('user', { Loading })(Display);
 
 // or
 const Display = ({ user, follower }) => {...};
-const Enhanced = connectWith(['user', 'follower'], Display, { Loading });
+const Enhanced = connect(['user', 'follower'], { Loading })(Display);
 
 // or
-const Enhanced = connectWith({ loading: 'user', result: ['user', 'follower'] }, Display, { Loading });
+const Enhanced = connect({ loading: 'user', result: ['user', 'follower'] }, { Loading })(Display);
 
 // or
 const Display = ({ loading, error, user }) => {...};
-const Enhanced = connectWith('user', Display);
+const Enhanced = connect('user')(Display);
 ```
 
 `loading === true` 当 `user.loading === true || follower.loading === true`。
@@ -124,7 +123,7 @@ const region = new Region({
   DefaultError: Error, // default as undefined
 });
 
-const { set, load, connect, connectWith } = region;
+const { set, load, connect } = region;
 ```
 
 你可以通过设置 `expiredTime` 以开启节流。

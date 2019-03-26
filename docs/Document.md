@@ -10,7 +10,7 @@ English | [中文](https://github.com/regionjs/region-core/blob/master/docs/Docu
 
 [getProps](#getProps)
 
-[connect & connectWith](#connect--connectWith)
+[connect](#connect)
 
 [Region](#Region)
 
@@ -76,29 +76,28 @@ const { loading, error, user, follower } = getProps(['user', 'follower']);
 
 Do not use it inside components, the component will not update. Some usage in connect also works, but it is not recommend.
 
-### connect & connectWith
+### connect
 
 ```javascript
-import { connect, connectWith } from 'region-shortcut';
+import { connect } from 'region-shortcut';
 
 // these two are equal, in which option is optional
 const Enhanced = connect(key, option)(Component);
-const Enhanced = connectWith(key, Component, option);
 
 const Display = ({ user }) => {...};
 const Loading = ({ user }) => {...}; // or just import one
-const Enhanced = connectWith('user', Display, { Loading });
+const Enhanced = connect('user', { Loading })(Display);
 
 // or
 const Display = ({ user, follower }) => {...};
-const Enhanced = connectWith(['user', 'follower'], Display, { Loading });
+const Enhanced = connect(['user', 'follower'], { Loading })(Display);
 
 // or
-const Enhanced = connectWith({ loading: 'user', result: ['user', 'follower'] }, Display, { Loading });
+const Enhanced = connect({ loading: 'user', result: ['user', 'follower'] }, { Loading })(Display);
 
 // or
 const Display = ({ loading, error, user }) => {...};
-const Enhanced = connectWith('user', Display);
+const Enhanced = connect('user')(Display);
 ```
 
 `loading === true` if `user.loading === true || follower.loading === true`.
@@ -126,7 +125,7 @@ const region = new Region({
   DefaultError: Error, // default as undefined
 });
 
-const { set, load, connect, connectWith } = region;
+const { set, load, connect } = region;
 ```
 
 You can set `expiredTime` to enable throttle.
