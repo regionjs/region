@@ -14,7 +14,7 @@ export type Result = any;
 // load
 export type AsyncFunction = any;
 export type Params = any;
-export type Format = (result: any, snapshot: any) => object;
+export type Format = (result: any, snapshot: any, error: any) => any;
 
 // Region config
 export type Name = string | null;

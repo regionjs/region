@@ -19,7 +19,7 @@ export interface LoadOptions {
 }
 
 // Region config
-export interface Config {
+export interface StrictConfig {
   name?: Name;
   expiredTime?: number;
   enableLog?: boolean;
@@ -27,6 +27,8 @@ export interface Config {
   DefaultLoading?: any;
   DefaultError?: any;
 }
+
+export type Config = StrictConfig | Name;
 
 // provide
 export interface ProvideOptions {
@@ -39,9 +41,9 @@ export interface ProvideOptions {
 // reducer
 export interface Payload {
   key: string;
-  result: any;
-  error: Error;
-  withLoadEnd: boolean;
+  result?: any;
+  error?: Error;
+  withLoadEnd?: boolean;
 }
 
 export interface Action {
