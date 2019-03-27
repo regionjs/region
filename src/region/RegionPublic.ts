@@ -81,9 +81,8 @@ class RegionPublic extends RegionPrivate {
         dispatch({ type: SET, payload: { key, result: formattedResult, withLoadEnd: true } });
         return formattedResult;
       } catch (error) {
-        const formattedResult = formatResult({ error, snapshot, format, id });
-        dispatch({ type: SET, payload: { key, result: formattedResult, error, withLoadEnd: true } });
-        return formattedResult;
+        dispatch({ type: SET, payload: { key, result: undefined, error, withLoadEnd: true } });
+        return undefined;
       }
     };
   }

@@ -31,7 +31,7 @@ const result = await load(key, asyncFunction, { params, format });
 
 `param` is what `asyncFunction` may need. asyncFunction is called when needed and pass the `param`.
 
-`format` effects after promise resolved and before result is stored, you may do some heavy-calculating task and side effects. It may be something like `(result, snapshot, error) => result.map(...)`.
+`format` effects after promise resolved and before result is stored, you may do some heavy-calculating task and side effects. It may be something like `(result, snapshot) => ...`.
 
 It is called after promise is resolved or rejected.
 
