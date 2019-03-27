@@ -59,9 +59,9 @@ class RegionPublic extends RegionPrivate {
   }
 
   /**
-   * @param params asyncFunction may need
-   * @param format A function format result to other data structure
-   * @param forceUpdate true | false
+   * @param option.params asyncFunction may need
+   * @param option.format A function format result to other data structure
+   * @param option.forceUpdate true | false
    */
   loadBy = (key: EntityName, asyncFunction: AsyncFunction, option: LoadOptions = {}) => {
     const { forceUpdate, format, id } = option;

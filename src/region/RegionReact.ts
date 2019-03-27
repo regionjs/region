@@ -11,7 +11,7 @@ import RegionPublic from './RegionPublic';
 const Empty = () => null;
 
 class RegionReact extends RegionPublic {
-  connectWith = (key: Key, Display: DisplayType, option: ConnectOptions) => {
+  connectWith = (key: Key, Display: DisplayType, option?: ConnectOptions) => {
     const { connect } = this;
     return connect(key, option)(Display);
   }

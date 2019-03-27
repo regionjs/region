@@ -5,7 +5,7 @@
 [![codecov](https://codecov.io/gh/regionjs/region-core/branch/develop/graph/badge.svg)](https://codecov.io/gh/regionjs/region-core)
 [![MIT License](https://img.shields.io/npm/l/region-core.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 
-A replacement tool of `redux` to handle sync & async action flow. Extremely simple API!
+Progressive View Model Management Framework
 
 English | [中文](https://github.com/regionjs/region-core/blob/master/docs/README-zh_CN.md)
 
