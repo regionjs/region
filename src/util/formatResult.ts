@@ -1,9 +1,9 @@
 interface Params {
-  result?: any,
-  snapshot?: any,
-  format?: any,
-  error?: any,
-  id?: any
+  result?: any;
+  snapshot?: any;
+  format?: any;
+  error?: any;
+  id?: any;
 }
 
 export const formatResult = ({ result, snapshot, format, error, id }: Params) => {

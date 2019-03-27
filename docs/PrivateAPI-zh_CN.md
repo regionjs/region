@@ -30,6 +30,16 @@ const result = await load(key, asyncFunction, { params, forceUpdate, format });
 
 `forceUpdate: true` 会立刻调用 asyncFunction。
 
+### connectWith
+
+```javascript
+import { connect, connectWith } from 'region-shortcut';
+
+// They are the same
+const Enhanced = connect(key, option)(Display);
+const Enhanced = connect(key, Display, option);
+```
+
 ### getLoading & getResults & getFetchTimes & getError & private_selectorFactory
 
 ```javascript

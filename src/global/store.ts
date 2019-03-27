@@ -1,7 +1,9 @@
-let store = null;
+import { combineReducers } from 'redux';
 
-export const setStore = (_store) => {
-  store = _store;
+let store: any = null;
+
+export const setStore = (nextStore: any) => {
+  store = nextStore;
 };
 
 export const getStore = () => {
@@ -9,4 +11,12 @@ export const getStore = () => {
     throw Error('getProvider must be called before new Region()');
   }
   return store;
+};
+
+export const injectStore = (name: string, private_reducer: any) => {
+  const store = getStore();
+  const { reducers } = store;
+  store.reducers = { ...reducers, [name]: private_reducer };
+  const reducer = combineReducers(store.reducers);
+  store.replaceReducer(reducer);
 };

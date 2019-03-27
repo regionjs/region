@@ -1,14 +1,20 @@
-interface Params {
-  asyncFunction?: any,
-  forceUpdate?: any,
-  key?: any,
-  snapshot?: any,
-  id?: any,
-  expiredTime?: any,
-  getFetchTimes?: any,
+interface IsExpiredParams {
+  key?: any;
+  expiredTime?: any;
+  getFetchTimes?: any;
 }
 
-const isExpired = ({ key, expiredTime, getFetchTimes }) => {
+interface Params {
+  asyncFunction?: any;
+  forceUpdate?: any;
+  key?: any;
+  snapshot?: any;
+  id?: any;
+  expiredTime?: any;
+  getFetchTimes?: any;
+}
+
+const isExpired = ({ key, expiredTime, getFetchTimes }: IsExpiredParams) => {
   const fetchTime = getFetchTimes(key);
   const now = new Date().getTime();
   return now - fetchTime > expiredTime;

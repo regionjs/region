@@ -30,6 +30,16 @@ const result = await load(key, asyncFunction, { params, forceUpdate, format });
 
 `forceUpdate: true` calls asyncFunction at once.
 
+### connectWith
+
+```javascript
+import { connect, connectWith } from 'region-shortcut';
+
+// They are the same
+const Enhanced = connect(key, option)(Display);
+const Enhanced = connect(key, Display, option);
+```
+
 ### private_getLoading & private_getResults & private_getFetchTimes & private_getError & private_selectorFactory
 
 ```javascript

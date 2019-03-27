@@ -44,7 +44,7 @@ describe('load', () => {
 
   test('format', async () => {
     const result = await load('user', () => Promise.resolve('0'), {
-      format: user => `${user}1`,
+      format: (user: string) => `${user}1`,
     });
     expect(result).toBe('01');
   });
@@ -53,12 +53,16 @@ describe('load', () => {
     const result = await load('user', () => Promise.resolve('2'), {
       format: (user, snapshot) => `${snapshot}${user}3`,
     });
-    // This is extremely weird
-    expect(result).toBe('undefined23');
+    expect(result).toBe('0123');
   });
 
   test('reject', async () => {
     const result = await load('user', () => Promise.reject(new Error('2')));
     expect(result).toBe(undefined);
+  });
+
+  test('params can be array', async () => {
+    const result = await load('array', (array: any) => Promise.resolve(array.length) , { params: [0, 1] });
+    expect(result).toBe(2);
   });
 });

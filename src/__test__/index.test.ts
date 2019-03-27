@@ -16,18 +16,19 @@ describe('export api', () => {
     expect(typeof Provider).toBe('function');
     provide();
     const {
-      reset, set, setFp, load, loadFp, connect, unstable_connect, connectWith, useProps, getProps,
+      reset, set, setBy, load, loadBy, connect, unstable_connect, connectWith, useProps, getProps,
       name, enableLog, expiredTime, strictLoading,
       private_actionTypes, private_getState, private_reducer, private_selectorFactory,
       private_getLoading, private_getResults, private_getFetchTimes, private_getError, private_setConfig,
+      // @ts-ignore test that they are not exists
       getLoading, getResults, getFetchTimes, getError, setConfig,
       ...rest
     } = new Region('name');
     expect(typeof reset).toBe('function');
     expect(typeof set).toBe('function');
-    expect(typeof setFp).toBe('function');
+    expect(typeof setBy).toBe('function');
     expect(typeof load).toBe('function');
-    expect(typeof loadFp).toBe('function');
+    expect(typeof loadBy).toBe('function');
     expect(typeof connect).toBe('function');
     expect(typeof unstable_connect).toBe('function');
     expect(typeof connectWith).toBe('function');

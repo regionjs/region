@@ -1,14 +1,19 @@
 import * as React from 'react';
 import hoc from '../hoc';
 
-const Display = ({ withLabel }) => `Display with ${withLabel}`;
-const Loading = ({ withLabel }) => `Loading with ${withLabel}`;
-const Error = ({ withLabel }) => `Error with ${withLabel}`;
+interface Props {
+  withLabel: string;
+}
+
+const Display = ({ withLabel }: Props) => `Display with ${withLabel}`;
+const Loading = ({ withLabel }: Props) => `Loading with ${withLabel}`;
+const Error = ({ withLabel }: Props) => `Error with ${withLabel}`;
 
 describe('hoc', () => {
   test('display', () => {
     const ConnectWith = hoc({ Display, Loading, Error, useProps: () => ({}) });
     const props = { withLabel: 'label' };
+    // @ts-ignore
     expect(ConnectWith(props)).toEqual(<Display withLabel="label" />);
   });
 
