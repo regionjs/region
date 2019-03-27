@@ -64,15 +64,13 @@ class RegionPublic extends RegionPrivate {
    * @param forceUpdate true | false
    */
   loadBy = (key: EntityName, asyncFunction: AsyncFunction, option: LoadOptions = {}) => {
-    const { forceUpdate, params: defaultParams, format, id } = option;
+    const { forceUpdate, format, id } = option;
     const { private_getResults: getResults, private_actionTypes, expiredTime, private_getFetchTimes: getFetchTimes } = this;
     const { LOAD, SET } = private_actionTypes;
     const { dispatch } = getStore();
     const snapshot = getResults(key);
     // TODO optimize loadBy
     return async (params: Params) => {
-      // tslint:disable-next-line: no-parameter-reassignment TODO remove it
-      params = Object.assign({}, defaultParams, params);
       if (shouldThrottle({ asyncFunction, forceUpdate, key, snapshot, id, expiredTime, getFetchTimes })) {
         return snapshot;
       }

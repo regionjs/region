@@ -60,4 +60,9 @@ describe('load', () => {
     const result = await load('user', () => Promise.reject(new Error('2')));
     expect(result).toBe(undefined);
   });
+
+  test('params can be array', async () => {
+    const result = await load('array', (array: any) => Promise.resolve(array.length) , { params: [0, 1] });
+    expect(result).toBe(2);
+  });
 });
