@@ -1,11 +1,11 @@
-import { Params, Format, Name } from './types';
+import { Params, Format, Name, ComponentType } from './types';
 
 // public
 // useProps
 // connect
 export interface ConnectOptions {
-  Loading?: any;
-  Error?: any;
+  Loading?: ComponentType;
+  Error?: ComponentType;
 }
 
 // set & load
@@ -24,8 +24,8 @@ export interface StrictConfig {
   expiredTime?: number;
   enableLog?: boolean;
   strictLoading?: boolean;
-  DefaultLoading?: any;
-  DefaultError?: any;
+  DefaultLoading?: ComponentType;
+  DefaultError?: ComponentType;
 }
 
 export type Config = StrictConfig | Name;

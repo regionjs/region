@@ -1,9 +1,21 @@
+import { ComponentType as RawComponentType } from 'react';
+
+export type ComponentType = RawComponentType | any;
+
 // public
 // useProps
-export type Key = any;
+type BaseKey = string | string[];
+interface ComplexKey {
+  key: BaseKey;
+  loading: BaseKey;
+  result: BaseKey;
+  error: BaseKey;
+  selector: any;
+}
+export type Key = BaseKey | ComplexKey | any;
 
 // connect
-export type DisplayType = any;
+export type DisplayType = ComponentType;
 
 // set & load
 export type EntityName = string;
@@ -17,7 +29,7 @@ export type Params = any;
 export type Format = (result: any, snapshot: any, error: any) => any;
 
 // Region config
-export type Name = string | null;
+export type Name = string;
 
 // provide
 
@@ -32,5 +44,3 @@ export type Path = string | string[];
  * @type key: EntityName
  */
 export type Props = {[key: string]: any};
-
-export type Component = any;

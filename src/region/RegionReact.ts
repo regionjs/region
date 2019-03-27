@@ -40,7 +40,7 @@ class RegionReact extends RegionPublic {
       return rawConnect(private_selectorFactory(key))(WrapperComponent);
     }
     console.error('invalid key, provide valid key or use connect from \'react-redux\' directly');
-    return rawConnect(key)(Display);
+    return rawConnect(key as any)(Display);
   }
 
   /**
