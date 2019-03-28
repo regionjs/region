@@ -2,8 +2,11 @@ import { Params, Format, Name, ComponentType } from './types';
 
 // public
 // useProps
+export interface Props {
+  [key: string]: any;
+}
 // connect
-export interface ConnectOptions {
+export interface ConnectOption {
   Loading?: ComponentType;
   Error?: ComponentType;
 }
@@ -11,7 +14,7 @@ export interface ConnectOptions {
 // set & load
 // set
 // load
-export interface LoadOptions {
+export interface LoadOption {
   format?: Format;
   forceUpdate?: boolean;
   params?: Params;
@@ -39,6 +42,10 @@ export interface ProvideOptions {
 // private
 // get
 // reducer
+export interface State {
+  [key: string]: any;
+}
+
 export interface Payload {
   key: string;
   result?: any;

@@ -1,23 +1,18 @@
 import getActionTypes from '../util/getActionTypes';
-import { Action, Config, StrictConfig } from '../types/interfaces';
+import { State, Action, Config, StrictConfig } from '../types/interfaces';
 import { injectStore } from '../global/store';
 import { reducer } from '../util/reducer';
 
 class RegionInitial {
   name = '_';
   private_actionTypes = getActionTypes('_');
-  expiredTime?: number;
-  enableLog?: boolean;
-  strictLoading?: boolean;
+  expiredTime = 0;
+  enableLog = true;
+  strictLoading = true;
   DefaultLoading?: any;
   DefaultError?: any;
 
   constructor(config: Config) {
-    this.private_setConfig({
-      expiredTime: 0,
-      enableLog: true,
-      strictLoading: true,
-    });
     if (typeof config === 'object') {
       // TODO decide to fix it or not
       this.private_setConfig(config as StrictConfig);
@@ -64,7 +59,7 @@ class RegionInitial {
     }
   }
 
-  private_reducer = (state = {}, action: Action) => {
+  private_reducer = (state: State = {}, action: Action) => {
     const { enableLog, private_actionTypes } = this;
     // @ts-ignore
     const enableLogInDev = process.env.NODE_ENV !== 'production' && enableLog;

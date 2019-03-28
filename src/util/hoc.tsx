@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Props, ComponentType } from '../types/types';
+import { Props } from '../types/interfaces';
+import { ComponentType } from '../types/types';
 
 export const prehoc = (Display: ComponentType, Loading: ComponentType, Error: ComponentType) => {
   const ConnectWith = (props: Props) => {

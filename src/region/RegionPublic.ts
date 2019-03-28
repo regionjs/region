@@ -3,7 +3,7 @@ import { isAsync } from '../util/isAsync';
 import { shouldThrottle } from '../util/shouldThrottle';
 import { getStore } from '../global/store';
 import { EntityName, Result, AsyncFunction, Params } from '../types/types';
-import { LoadOptions } from '../types/interfaces';
+import { LoadOption } from '../types/interfaces';
 import RegionPrivate from './RegionPrivate';
 
 interface ToPromiseParams {
@@ -20,15 +20,24 @@ const toPromise = async ({ asyncFunction, params }: ToPromiseParams) => {
 };
 
 class RegionPublic extends RegionPrivate {
-  set = (key: EntityName, result: Result, option?: LoadOptions) => {
+  /**
+   * @param key string
+   * @param result any
+   * @param option
+   * @param option.format (result, snapshot) => any
+   */
+  set = (key: EntityName, result: Result, option: LoadOption = {}) => {
     const { setBy } = this;
     return setBy(key, option)(result);
   }
 
   /**
-   * @param format A function format result to other data structure
+   * @param key string
+   * @param option
+   * @param option.format (result, snapshot) => any | A function format result to other data structure
    */
-  setBy = (key: EntityName, { format }: LoadOptions = {}) => {
+  setBy = (key: EntityName, option: LoadOption = {}) => {
+    const { format } = option;
     const { private_getResults: getResults, private_actionTypes } = this;
     const { SET } = private_actionTypes;
     const { dispatch } = getStore();
@@ -48,7 +57,7 @@ class RegionPublic extends RegionPrivate {
     dispatch({ type: RESET });
   }
 
-  load = async (key: EntityName, asyncFunction: AsyncFunction, option: LoadOptions = {}) => {
+  load = async (key: EntityName, asyncFunction: AsyncFunction, option: LoadOption = {}) => {
     if (!isAsync(asyncFunction)) {
       console.warn('set result directly');
       const { set } = this;
@@ -59,11 +68,11 @@ class RegionPublic extends RegionPrivate {
   }
 
   /**
-   * @param params asyncFunction may need
-   * @param format A function format result to other data structure
-   * @param forceUpdate true | false
+   * @param option.params asyncFunction may need
+   * @param option.format A function format result to other data structure
+   * @param option.forceUpdate true | false
    */
-  loadBy = (key: EntityName, asyncFunction: AsyncFunction, option: LoadOptions = {}) => {
+  loadBy = (key: EntityName, asyncFunction: AsyncFunction, option: LoadOption = {}) => {
     const { forceUpdate, format, id } = option;
     const { private_getResults: getResults, private_actionTypes, expiredTime, private_getFetchTimes: getFetchTimes } = this;
     const { LOAD, SET } = private_actionTypes;
@@ -81,9 +90,8 @@ class RegionPublic extends RegionPrivate {
         dispatch({ type: SET, payload: { key, result: formattedResult, withLoadEnd: true } });
         return formattedResult;
       } catch (error) {
-        const formattedResult = formatResult({ error, snapshot, format, id });
-        dispatch({ type: SET, payload: { key, result: formattedResult, error, withLoadEnd: true } });
-        return formattedResult;
+        dispatch({ type: SET, payload: { key, result: undefined, error, withLoadEnd: true } });
+        return undefined;
       }
     };
   }

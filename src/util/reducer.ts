@@ -1,5 +1,6 @@
 import { assignValueDeep, setValueDeep } from './reducerPrototype';
 import { debug, group } from './logger';
+import { State, Action } from '../types/interfaces';
 
 const setKey = ({ state, key, fetchTime, result, error, withLoadEnd }: any) => {
   setValueDeep(state, ['fetchTimes', key], fetchTime);
@@ -11,7 +12,7 @@ const setKey = ({ state, key, fetchTime, result, error, withLoadEnd }: any) => {
   return nextState;
 };
 
-export const reducer = (state: any, action: any, actionTypes: any, enableLogInDev?: boolean) => {
+export const reducer = (state: State, action: Action, actionTypes: any, enableLogInDev?: boolean) => {
   const { LOAD, SET, RESET } = actionTypes;
   switch (action.type) {
     case LOAD: {

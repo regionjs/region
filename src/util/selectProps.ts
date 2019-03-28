@@ -1,10 +1,10 @@
-import { Props } from '../types/types';
+import { Props } from '../types/interfaces';
 
 type SelectPropsKey = string | string[];
 // loading === undefined occurs when strictLoading === false
 type Loading = boolean | undefined;
 
-export default (keys: SelectPropsKey, loading: Loading, results: any, error: any): object => {
+export default (keys: SelectPropsKey, loading: Loading, results: any, error: any): Props => {
   // TODO migrate selectProps
   // 可以在这里做更多的事情，把合并的过程放在这里，因为 getFunctions 已经是 private 的了，这样就不用考虑【是否要把 error: '' 给用户】
   // 同时可以把 fetchTime 放在这里

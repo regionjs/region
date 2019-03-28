@@ -5,7 +5,7 @@
 [![codecov](https://codecov.io/gh/regionjs/region-core/branch/develop/graph/badge.svg)](https://codecov.io/gh/regionjs/region-core)
 [![MIT License](https://img.shields.io/npm/l/region-core.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 
-一个代替 redux 处理同步与异步流程的 react 配套库。极其简单的 API！
+渐进式视图模型管理框架
 
 [English](https://github.com/regionjs/region-core/blob/master/docs/README.md) | 中文
 
