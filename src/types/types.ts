@@ -6,13 +6,14 @@ export type ComponentType = RawComponentType | any;
 // useProps
 type BaseKey = string | string[];
 interface ComplexKey {
-  key: BaseKey;
-  loading: BaseKey;
-  result: BaseKey;
-  error: BaseKey;
-  selector: any;
+  key?: BaseKey;
+  loading?: BaseKey;
+  result?: BaseKey;
+  fetchTime?: BaseKey;
+  error?: BaseKey;
+  selector?: any;
 }
-export type Key = BaseKey | ComplexKey | any;
+export type Key = BaseKey | ComplexKey;
 
 // connect
 export type DisplayType = ComponentType;
@@ -46,5 +47,6 @@ export type SelectPropsKey = string | string[];
 export type Loading = boolean | undefined;
 export type Loadings = Loading | Loading[];
 export type Results = Result | Result[];
+export type FetchTimes = number | number[];
 export type Error = any;
 export type Errors = Error | Error[];

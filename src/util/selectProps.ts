@@ -11,6 +11,11 @@ const selectError = (errors: Error[]) => {
   return undefined;
 };
 
+const selectFetchTime = (fetchTimes: number[]) => {
+  const fetchTime = fetchTimes.reduce((a, b) => a > b ? a : b, 0);
+  return fetchTime || undefined;
+};
+
 const selectResult = (keys: SelectPropsKey, results: Results) => {
   if (Array.isArray(keys)) {
     const props: Props = {};
@@ -22,12 +27,13 @@ const selectResult = (keys: SelectPropsKey, results: Results) => {
   return { [keys]: results };
 };
 
-export const selectProps = ({ keys, loadings, results, errors }: SelectPropsParams): Props => {
+export const selectProps = ({ keys, loadings, results, fetchTimes, errors }: SelectPropsParams): Props => {
   // TODO 可以把 fetchTime 放在这里
   const loading = Array.isArray(loadings) ? selectLoading(loadings) : loadings;
   const error = Array.isArray(errors) ? selectError(errors) : errors;
+  const fetchTime = Array.isArray(fetchTimes) ? selectFetchTime(fetchTimes) : fetchTimes;
   const resultMap = selectResult(keys, results);
-  return { loading, error, ...resultMap };
+  return { loading, fetchTime, error, ...resultMap };
 };
 
 export const formatLoading = (loading?: boolean, strictLoading?: boolean) => {

@@ -99,20 +99,21 @@ describe('get', () => {
   test('get things from stop loading', () => {
     setState({
       loadings: { a: false },
-      fetchTimes: { a: 0 },
+      fetchTimes: { a: 999 },
       results: { a: { name: '66', type: 'cat' } },
     });
     expect(getLoadings('a')).toEqual(false);
     expect(getResults('a')).toEqual({ name: '66', type: 'cat' });
-    expect(getFetchTimes('a')).toEqual(0);
+    expect(getFetchTimes('a')).toEqual(999);
     expect(getProps('a')).toEqual({
       loading: false,
+      fetchTime: 999,
       a: { name: '66', type: 'cat' },
     });
 
     expect(getLoadings(['a', 'b'])).toEqual([false, true]);
     expect(getResults(['a', 'b'])).toEqual([{ name: '66', type: 'cat' }, undefined]);
-    expect(getFetchTimes(['a', 'b'])).toEqual([0, undefined]);
+    expect(getFetchTimes(['a', 'b'])).toEqual([999, undefined]);
     expect(getProps(['a', 'b'])).toEqual({
       loading: true,
       a: { name: '66', type: 'cat' },
@@ -122,6 +123,10 @@ describe('get', () => {
 
   test('getProps with complex key', () => {
     expect(getProps({ key: ['a', 'b'], result:['b'] })).toEqual({
+      loading: true,
+      b: undefined,
+    });
+    expect(getProps({ loading: ['a', 'b'], result:['b'] })).toEqual({
       loading: true,
       b: undefined,
     });
