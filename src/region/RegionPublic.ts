@@ -2,9 +2,10 @@ import { formatResult } from '../util/formatResult';
 import { isAsync } from '../util/isAsync';
 import { shouldThrottle } from '../util/shouldThrottle';
 import { getStore } from '../global/store';
-import { EntityName, Result, AsyncFunction, Params } from '../types/types';
+import { EntityName, Result, AsyncFunction, Params, Key } from '../types/types';
 import { LoadOption } from '../types/interfaces';
 import RegionPrivate from './RegionPrivate';
+import { selectProps } from '../util/selectProps';
 
 interface ToPromiseParams {
   asyncFunction: AsyncFunction;
@@ -94,6 +95,24 @@ class RegionPublic extends RegionPrivate {
         return undefined;
       }
     };
+  }
+
+  getProps = (key: Key) => {
+    const { private_getLoading: getLoading, private_getResults: getResults, private_getError: getError } = this;
+    if (typeof key === 'string' || Array.isArray(key)) {
+      return selectProps(
+        key,
+        getLoading(key),
+        getResults(key),
+        getError(key),
+      );
+    }
+    return selectProps(
+      key.result || key.key,
+      getLoading(key.loading || key.key),
+      getResults(key.result || key.key),
+      getError(key.error || key.key),
+    );
   }
 }
 

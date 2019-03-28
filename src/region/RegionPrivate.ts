@@ -1,29 +1,7 @@
-import selectProps from '../util/selectProps';
 import { getStore } from '../global/store';
-import { Key, Path } from '../types/types';
+import { Path } from '../types/types';
 import RegionInitial from './RegionInitial';
-
-type Values = {[key: string]: any};
-
-const formatLoading = (loading?: boolean, strictLoading?: boolean) => {
-  if (loading) {
-    return true;
-  }
-  if (loading === undefined) {
-    if (strictLoading) { // treat undefined as true or as undefined
-      return true;
-    }
-    return undefined;
-  }
-  return false;
-};
-
-const mapValues = (values: Values, path: Path) => {
-  if (Array.isArray(path)) {
-    return path.map(i => values[i]);
-  }
-  return values[path];
-};
+import { formatLoading, mapValues } from '../util/selectProps';
 
 class RegionPrivate extends RegionInitial {
   private_getState = () => {
@@ -73,27 +51,6 @@ class RegionPrivate extends RegionInitial {
       return undefined;
     }
     return mapErrors && mapErrors.message;
-  }
-
-  /**
-   * @todo move to RegionPublic after private_selectorFactory removed
-   */
-  getProps = (key: Key) => {
-    const { private_getLoading: getLoading, private_getResults: getResults, private_getError: getError } = this;
-    if (typeof key === 'string' || Array.isArray(key)) {
-      return selectProps(
-        key,
-        getLoading(key),
-        getResults(key),
-        getError(key),
-      );
-    }
-    return selectProps(
-      key.result || key.key,
-      getLoading(key.loading || key.key),
-      getResults(key.result || key.key),
-      getError(key.error || key.key),
-    );
   }
 }
 
