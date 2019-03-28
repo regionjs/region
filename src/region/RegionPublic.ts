@@ -98,21 +98,21 @@ class RegionPublic extends RegionPrivate {
   }
 
   getProps = (key: Key) => {
-    const { private_getLoading: getLoading, private_getResults: getResults, private_getError: getError } = this;
+    const { private_getLoadings: getLoadings, private_getResults: getResults, private_getErrors: getErrors } = this;
     if (typeof key === 'string' || Array.isArray(key)) {
-      return selectProps(
-        key,
-        getLoading(key),
-        getResults(key),
-        getError(key),
-      );
+      return selectProps({
+        keys: key,
+        loadings: getLoadings(key),
+        results: getResults(key),
+        errors: getErrors(key),
+      });
     }
-    return selectProps(
-      key.result || key.key,
-      getLoading(key.loading || key.key),
-      getResults(key.result || key.key),
-      getError(key.error || key.key),
-    );
+    return selectProps({
+      keys: key.result || key.key,
+      loadings: getLoadings(key.loading || key.key),
+      results: getResults(key.result || key.key),
+      errors: getErrors(key.error || key.key),
+    });
   }
 }
 

@@ -40,7 +40,11 @@ export type Path = string | string[];
 // reducer
 
 // other
-/**
- * @type key: EntityName
- */
-export type Props = {[key: string]: any};
+// selectProps
+export type SelectPropsKey = string | string[];
+// loading === undefined occurs when strictLoading === false
+export type Loading = boolean | undefined;
+export type Loadings = Loading | Loading[];
+export type Results = Result | Result[];
+export type Error = any;
+export type Errors = Error | Error[];

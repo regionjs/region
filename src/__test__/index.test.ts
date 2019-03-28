@@ -16,7 +16,7 @@ describe('export api', () => {
       reset, set, setBy, load, loadBy, connect, connectWith, useProps, getProps,
       name, enableLog, expiredTime, strictLoading,
       private_actionTypes, private_getState, private_reducer,
-      private_getLoading, private_getResults, private_getFetchTimes, private_getError, private_setConfig,
+      private_getLoadings, private_getResults, private_getFetchTimes, private_getErrors, private_setConfig,
       // @ts-ignore test that they are not exists
       getLoading, getResults, getFetchTimes, getError, setConfig,
       ...rest
@@ -37,10 +37,10 @@ describe('export api', () => {
     expect(typeof private_actionTypes).toBe('object');
     expect(typeof private_getState).toBe('function');
     expect(typeof private_reducer).toBe('function');
-    expect(typeof private_getLoading).toBe('function');
+    expect(typeof private_getLoadings).toBe('function');
     expect(typeof private_getResults).toBe('function');
     expect(typeof private_getFetchTimes).toBe('function');
-    expect(typeof private_getError).toBe('function');
+    expect(typeof private_getErrors).toBe('function');
     expect(typeof private_setConfig).toBe('function');
     expect(typeof getLoading).toBe('undefined');
     expect(typeof getResults).toBe('undefined');
