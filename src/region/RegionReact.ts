@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import { connect as rawConnect } from 'react-redux';
 import * as shallowEqual from 'shallowequal';
 import { getStore } from '../global/store';
-import hoc, { prehoc } from '../util/hoc';
+import hoc from '../util/hoc';
 import { isValidConnectKey } from '../util/isValidConnectKey';
 import { Key, DisplayType } from '../types/types';
 import { ConnectOption, Props } from '../types/interfaces';
@@ -31,16 +30,6 @@ class RegionReact extends RegionPublic {
     });
 
     return WrapperComponent;
-  }
-
-  unstable_connect = (key: Key, { Loading, Error }: ConnectOption = {}) => (Display = Empty) => {
-    if (isValidConnectKey(key)) {
-      const { private_selectorFactory, DefaultLoading, DefaultError } = this;
-      const WrapperComponent = prehoc(Display, Loading || DefaultLoading || Display, Error || DefaultError || Display);
-      return rawConnect(private_selectorFactory(key))(WrapperComponent);
-    }
-    console.error('invalid key, provide valid key or use connect from \'react-redux\' directly');
-    return rawConnect(key as any)(Display);
   }
 
   /**

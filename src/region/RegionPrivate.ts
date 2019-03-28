@@ -1,5 +1,4 @@
 import selectProps from '../util/selectProps';
-import deprecate from '../util/deprecate';
 import { getStore } from '../global/store';
 import { Key, Path } from '../types/types';
 import RegionInitial from './RegionInitial';
@@ -24,22 +23,6 @@ const mapValues = (values: Values, path: Path) => {
     return path.map(i => values[i]);
   }
   return values[path];
-};
-
-/**
- * @deprecated
- */
-// @ts-ignore
-const select = ({ selector, props, ownProps }) => {
-  if (selector && typeof selector === 'function') {
-    if (!ownProps) {
-      deprecate('selector is deprecated. This may cause the error. Use unstable_connect instead, or use useProps and hooks into it.');
-    } else {
-      deprecate('selector is deprecated. Use unstable_connect instead, or use useProps and hooks into it.');
-    }
-    return selector({ ...props, ...ownProps }, { ...props, ...ownProps });
-  }
-  return {};
 };
 
 class RegionPrivate extends RegionInitial {
@@ -111,15 +94,6 @@ class RegionPrivate extends RegionInitial {
       getResults(key.result || key.key),
       getError(key.error || key.key),
     );
-  }
-
-  private_selectorFactory = (key: Key) => {
-    const { getProps } = this;
-    return (state?: any, ownProps?: any) => {
-      const props = getProps(key);
-      const selectedProps = select({ selector: key.selector, props, ownProps });
-      return { ...props, ...selectedProps };
-    };
   }
 }
 
