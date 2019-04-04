@@ -2,13 +2,17 @@ import { assignValueDeep, setValueDeep } from './reducerPrototype';
 import { debug, group } from './logger';
 import { State, Action } from '../types/interfaces';
 
+const increase = (v: number = 0) => v + 1;
+const forward = (v: number = 0) => v;
+const decrease = (v: number = 0) => v - 1;
+
 const setKey = ({ state, key, fetchTime, result, error, withLoadEnd }: any) => {
   setValueDeep(state, ['fetchTimes', key], fetchTime);
   if (result !== undefined) {
     setValueDeep(state, ['results', key], result);
   }
   setValueDeep(state, ['errors', key], error); // as well error ===  undefined
-  const nextState = assignValueDeep(state, ['loadings', key], withLoadEnd ? (v = 0) => v - 1 : (v = 0) => v);
+  const nextState = assignValueDeep(state, ['loadings', key], withLoadEnd ? decrease : forward);
   return nextState;
 };
 
@@ -20,7 +24,7 @@ export const reducer = (state: State, action: Action, actionTypes: any, enableLo
       if (enableLogInDev) {
         debug(LOAD, key);
       }
-      return assignValueDeep(state, ['loadings', key], (v = 0) => v + 1);
+      return assignValueDeep(state, ['loadings', key], increase);
     }
     case SET: {
       const { key, result, error, withLoadEnd } = action.payload;
