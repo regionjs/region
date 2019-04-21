@@ -1,6 +1,6 @@
 {
   "name": "region-core",
-  "version": "0.7.5",
+  "version": "8.0.0",
   "description": "region-core",
   "keywords": [
     "react",
@@ -30,10 +30,11 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
-    "setupFiles": ["<rootDir>/scripts/jest.setup.ts"]
+    "setupFiles": [
+      "<rootDir>/scripts/jest.setup.ts"
+    ]
   },
   "dependencies": {
-    "react-redux": "^6.0.0",
     "redux": "^4.0.0",
     "shallowequal": "^1.1.0"
   },

@@ -1,19 +1,21 @@
-import { combineReducers } from 'redux';
+import { createStore, combineReducers, Store } from 'redux';
 
-let store: any = null;
+type Reducer = any;
 
-export const setStore = (nextStore: any) => {
+interface EnhancedStore extends Store {
+  reducers: {[key: string]: Reducer};
+}
+
+let store: EnhancedStore = createStore(() => {});
+store.reducers = {};
+
+export const setStore = (nextStore: EnhancedStore) => {
   store = nextStore;
 };
 
-export const getStore = () => {
-  if (!store || typeof store.dispatch !== 'function' || typeof store.getState !== 'function') {
-    throw Error('getProvider must be called before new Region()');
-  }
-  return store;
-};
+export const getStore = () => store;
 
-export const injectStore = (name: string, private_reducer: any) => {
+export const injectStore = (name: string, private_reducer: Reducer) => {
   const store = getStore();
   const { reducers } = store;
   store.reducers = { ...reducers, [name]: private_reducer };

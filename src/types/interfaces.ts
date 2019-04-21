@@ -1,4 +1,4 @@
-import { Params, Format, Name, ComponentType } from './types';
+import { Params, Format, Name, ComponentType, SelectPropsKey, Loadings, Results, FetchTimes, Errors } from './types';
 
 // public
 // useProps
@@ -56,4 +56,14 @@ export interface Payload {
 export interface Action {
   type: string;
   payload: Payload;
+}
+
+// other
+// selectProps
+export interface SelectPropsParams {
+  keys: SelectPropsKey;
+  loadings: Loadings;
+  results: Results;
+  fetchTimes: FetchTimes;
+  errors: Errors;
 }

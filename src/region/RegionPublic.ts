@@ -2,9 +2,10 @@ import { formatResult } from '../util/formatResult';
 import { isAsync } from '../util/isAsync';
 import { shouldThrottle } from '../util/shouldThrottle';
 import { getStore } from '../global/store';
-import { EntityName, Result, AsyncFunction, Params } from '../types/types';
+import { EntityName, Result, AsyncFunction, Params, Key } from '../types/types';
 import { LoadOption } from '../types/interfaces';
 import RegionPrivate from './RegionPrivate';
+import { selectProps } from '../util/selectProps';
 
 interface ToPromiseParams {
   asyncFunction: AsyncFunction;
@@ -94,6 +95,31 @@ class RegionPublic extends RegionPrivate {
         return undefined;
       }
     };
+  }
+
+  getProps = (key: Key) => {
+    const {
+      private_getLoadings: getLoadings,
+      private_getResults: getResults,
+      private_getFetchTimes: getFetchTimes,
+      private_getErrors: getErrors,
+    } = this;
+    if (typeof key === 'string' || Array.isArray(key)) {
+      return selectProps({
+        keys: key,
+        loadings: getLoadings(key),
+        results: getResults(key),
+        fetchTimes: getFetchTimes(key),
+        errors: getErrors(key),
+      });
+    }
+    return selectProps({
+      keys: key.result || key.key || [],
+      loadings: getLoadings(key.loading || key.key || []),
+      results: getResults(key.result || key.key || []),
+      fetchTimes: getFetchTimes(key.fetchTime || key.key || []),
+      errors: getErrors(key.error || key.key || []),
+    });
   }
 }
 
