@@ -1,14 +1,13 @@
-import { getStore } from '../global/store';
 import { Path } from '../types/types';
 import RegionInitial from './RegionInitial';
 import { formatLoading, mapValues } from '../util/selectProps';
 
 class RegionPrivate extends RegionInitial {
   private_getState = () => {
-    const { name } = this;
-    const { getState } = getStore();
+    const { name, private_store } = this;
+    const { getState } = private_store;
     const state = getState();
-    return state[name] || {};
+    return state || {};
   }
 
   private_getLoadings = (path: Path) => {

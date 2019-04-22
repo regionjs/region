@@ -1,10 +1,11 @@
+import { createStore, Store } from 'redux';
 import getActionTypes from '../util/getActionTypes';
 import { State, Action, Config, StrictConfig } from '../types/interfaces';
-import { injectStore } from '../global/store';
 import { reducer } from '../util/reducer';
 
 class RegionInitial {
   name = '_';
+  private_store: Store;
   private_actionTypes = getActionTypes('_');
   expiredTime = 0;
   enableLog = true;
@@ -20,8 +21,8 @@ class RegionInitial {
       this.private_setConfig({ name: config });
     }
 
-    const { name, private_reducer } = this;
-    injectStore(name, private_reducer);
+    const { private_reducer } = this;
+    this.private_store = createStore(private_reducer);
   }
 
   private_setConfig = (config: StrictConfig = {}): void => {
@@ -34,12 +35,8 @@ class RegionInitial {
       DefaultError,
     } = config;
 
-    if (name !== undefined) {
-      if (typeof name === 'string') {
-        this.name = name;
-      } else {
-        console.error('Region name should be string');
-      }
+    if (typeof name === 'string') {
+      this.name = name;
       this.private_actionTypes = getActionTypes(name);
     }
     if (expiredTime !== undefined) {

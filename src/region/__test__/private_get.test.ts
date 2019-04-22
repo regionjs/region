@@ -1,6 +1,5 @@
 /* tslint:disable: max-file-line-count */
 import { region } from './region';
-import { getStore } from '../../global/store';
 
 const {
   private_setConfig,
@@ -9,11 +8,11 @@ const {
   private_getFetchTimes: getFetchTimes,
   private_getErrors: getErrors,
   getProps,
+  private_store: store,
 } = region;
 
 let state: any = null;
-const store = getStore();
-store.getState = () => ({ region: state });
+store.getState = () => state;
 
 const setState = (nextState: any) => {
   state = nextState;
@@ -155,13 +154,6 @@ describe('get', () => {
       errors: { a: errorA, b: errorB },
     });
     expect(getErrors(['a', 'b'])).toEqual([errorA, errorB]);
-  });
-
-  test('config reducePath', () => {
-    private_setConfig({ name: 'result' });
-    expect(getResults('a')).toEqual(undefined);
-    setState({ results: { a: 'config reducePath' } });
-    store.getState = () => ({ result: state });
-    expect(getResults('a')).toEqual('config reducePath');
+    expect(getProps(['a', 'b']).error).toEqual('error a, error b');
   });
 });

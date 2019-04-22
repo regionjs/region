@@ -28,7 +28,6 @@ const selectResult = (keys: SelectPropsKey, results: Results) => {
 };
 
 export const selectProps = ({ keys, loadings, results, fetchTimes, errors }: SelectPropsParams): Props => {
-  // TODO 可以把 fetchTime 放在这里
   const loading = Array.isArray(loadings) ? selectLoading(loadings) : loadings;
   const error = Array.isArray(errors) ? selectError(errors) : errors;
   const fetchTime = Array.isArray(fetchTimes) ? selectFetchTime(fetchTimes) : fetchTimes;

@@ -1,0 +1,112 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`constructor with config 1`] = `
+RegionReact {
+  "connect": [Function],
+  "connectWith": [Function],
+  "enableLog": true,
+  "expiredTime": 0,
+  "getProps": [Function],
+  "load": [Function],
+  "loadBy": [Function],
+  "name": "user",
+  "private_actionTypes": Object {
+    "LOAD": "@user/LOAD",
+    "RESET": "@user/RESET",
+    "SET": "@user/SET",
+  },
+  "private_getErrors": [Function],
+  "private_getFetchTimes": [Function],
+  "private_getLoadings": [Function],
+  "private_getResults": [Function],
+  "private_getState": [Function],
+  "private_reducer": [Function],
+  "private_setConfig": [Function],
+  "private_store": Object {
+    "dispatch": [Function],
+    "getState": [Function],
+    "replaceReducer": [Function],
+    "subscribe": [Function],
+    Symbol(observable): [Function],
+  },
+  "reset": [Function],
+  "set": [Function],
+  "setBy": [Function],
+  "strictLoading": true,
+  "useProps": [Function],
+}
+`;
+
+exports[`constructor with string 1`] = `
+RegionReact {
+  "connect": [Function],
+  "connectWith": [Function],
+  "enableLog": true,
+  "expiredTime": 0,
+  "getProps": [Function],
+  "load": [Function],
+  "loadBy": [Function],
+  "name": "follower",
+  "private_actionTypes": Object {
+    "LOAD": "@follower/LOAD",
+    "RESET": "@follower/RESET",
+    "SET": "@follower/SET",
+  },
+  "private_getErrors": [Function],
+  "private_getFetchTimes": [Function],
+  "private_getLoadings": [Function],
+  "private_getResults": [Function],
+  "private_getState": [Function],
+  "private_reducer": [Function],
+  "private_setConfig": [Function],
+  "private_store": Object {
+    "dispatch": [Function],
+    "getState": [Function],
+    "replaceReducer": [Function],
+    "subscribe": [Function],
+    Symbol(observable): [Function],
+  },
+  "reset": [Function],
+  "set": [Function],
+  "setBy": [Function],
+  "strictLoading": true,
+  "useProps": [Function],
+}
+`;
+
+exports[`constructor with undefined 1`] = `
+RegionReact {
+  "connect": [Function],
+  "connectWith": [Function],
+  "enableLog": true,
+  "expiredTime": 0,
+  "getProps": [Function],
+  "load": [Function],
+  "loadBy": [Function],
+  "name": "_",
+  "private_actionTypes": Object {
+    "LOAD": "@_/LOAD",
+    "RESET": "@_/RESET",
+    "SET": "@_/SET",
+  },
+  "private_getErrors": [Function],
+  "private_getFetchTimes": [Function],
+  "private_getLoadings": [Function],
+  "private_getResults": [Function],
+  "private_getState": [Function],
+  "private_reducer": [Function],
+  "private_setConfig": [Function],
+  "private_store": Object {
+    "dispatch": [Function],
+    "getState": [Function],
+    "replaceReducer": [Function],
+    "subscribe": [Function],
+    Symbol(observable): [Function],
+  },
+  "reset": [Function],
+  "set": [Function],
+  "setBy": [Function],
+  "strictLoading": true,
+  "useProps": [Function],
+}
+`;

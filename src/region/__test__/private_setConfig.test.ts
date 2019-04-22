@@ -17,6 +17,7 @@ describe('private_config', () => {
       RESET: '@region/RESET',
     });
   });
+
   test('set nothing', () => {
     private_setConfig();
     const { name, enableLog, expiredTime, strictLoading, private_actionTypes, DefaultLoading, DefaultError } = region;
@@ -32,6 +33,7 @@ describe('private_config', () => {
       RESET: '@region/RESET',
     });
   });
+
   test('set enableLog as false', () => {
     private_setConfig({ enableLog: false });
     const { name, enableLog, expiredTime, DefaultLoading, DefaultError } = region;
@@ -41,6 +43,7 @@ describe('private_config', () => {
     expect(DefaultLoading).toBe(undefined);
     expect(DefaultError).toBe(undefined);
   });
+
   test('set config', () => {
     private_setConfig({
       enableLog: false,
@@ -61,6 +64,7 @@ describe('private_config', () => {
       RESET: '@result/RESET',
     });
   });
+
   test('set config Default Loading & Error', () => {
     private_setConfig({
       DefaultLoading: () => 'loading',

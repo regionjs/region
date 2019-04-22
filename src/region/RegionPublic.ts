@@ -1,7 +1,6 @@
 import { formatResult } from '../util/formatResult';
 import { isAsync } from '../util/isAsync';
 import { shouldThrottle } from '../util/shouldThrottle';
-import { getStore } from '../global/store';
 import { EntityName, Result, AsyncFunction, Params, Key } from '../types/types';
 import { LoadOption } from '../types/interfaces';
 import RegionPrivate from './RegionPrivate';
@@ -39,9 +38,9 @@ class RegionPublic extends RegionPrivate {
    */
   setBy = (key: EntityName, option: LoadOption = {}) => {
     const { format } = option;
-    const { private_getResults: getResults, private_actionTypes } = this;
+    const { private_store, private_getResults: getResults, private_actionTypes } = this;
     const { SET } = private_actionTypes;
-    const { dispatch } = getStore();
+    const { dispatch } = private_store;
     const snapshot = getResults(key);
     // TODO optimize setBy
     return (result: Result) => {
@@ -52,9 +51,9 @@ class RegionPublic extends RegionPrivate {
   }
 
   reset = () => {
-    const { private_actionTypes } = this;
+    const { private_store, private_actionTypes } = this;
     const { RESET } = private_actionTypes;
-    const { dispatch } = getStore();
+    const { dispatch } = private_store;
     dispatch({ type: RESET });
   }
 
@@ -75,9 +74,9 @@ class RegionPublic extends RegionPrivate {
    */
   loadBy = (key: EntityName, asyncFunction: AsyncFunction, option: LoadOption = {}) => {
     const { forceUpdate, format, id } = option;
-    const { private_getResults: getResults, private_actionTypes, expiredTime, private_getFetchTimes: getFetchTimes } = this;
+    const { private_store, private_getResults: getResults, private_actionTypes, expiredTime, private_getFetchTimes: getFetchTimes } = this;
     const { LOAD, SET } = private_actionTypes;
-    const { dispatch } = getStore();
+    const { dispatch } = private_store;
     const snapshot = getResults(key);
     // TODO optimize loadBy
     return async (params: Params) => {

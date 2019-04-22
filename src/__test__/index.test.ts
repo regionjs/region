@@ -6,15 +6,14 @@ describe('export api', () => {
     const { __esModule, Region, provide, ...rest } = api;
     expect(__esModule || __esModule === undefined).toBe(true);
     expect(typeof Region).toBe('function');
-    expect(typeof provide).toBe('function');
+    expect(typeof provide).toBe('undefined');
     expect(rest).toEqual({});
   });
   test('region contains many api', () => {
-    const { Region, provide } = api;
-    provide();
+    const { Region } = api;
     const {
       reset, set, setBy, load, loadBy, connect, connectWith, useProps, getProps,
-      name, enableLog, expiredTime, strictLoading,
+      name, private_store, enableLog, expiredTime, strictLoading,
       private_actionTypes, private_getState, private_reducer,
       private_getLoadings, private_getResults, private_getFetchTimes, private_getErrors, private_setConfig,
       // @ts-ignore test that they are not exists
@@ -31,6 +30,7 @@ describe('export api', () => {
     expect(typeof useProps).toBe('function');
     expect(typeof getProps).toBe('function');
     expect(typeof name).toBe('string');
+    expect(typeof private_store).toBe('object');
     expect(typeof enableLog).toBe('boolean');
     expect(typeof expiredTime).toBe('number');
     expect(typeof strictLoading).toBe('boolean');

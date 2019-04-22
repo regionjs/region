@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import * as shallowEqual from 'shallowequal';
-import { getStore } from '../global/store';
 import hoc from '../util/hoc';
 import { isValidConnectKey } from '../util/isValidConnectKey';
 import { Key, DisplayType } from '../types/types';
@@ -44,12 +43,11 @@ class RegionReact extends RegionPublic {
    * @param key string | string[]
    */
   useProps = (key: Key): Props => {
-    const { getProps } = this;
-    const store = getStore();
+    const { private_store, getProps } = this;
     const [props, setProps] = useState(getProps(key));
     useEffect(
       () => {
-        const unsubscribe = store.subscribe(() => {
+        const unsubscribe = private_store.subscribe(() => {
           const nextProps = getProps(key);
           if (!shallowEqual(props, nextProps)) {
             setProps(nextProps);
