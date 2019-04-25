@@ -1,4 +1,5 @@
 import { formatResult } from '../util/formatResult';
+import * as shallowEqual from 'shallowequal';
 import { isAsync } from '../util/isAsync';
 import { shouldThrottle } from '../util/shouldThrottle';
 import { EntityName, Result, AsyncFunction, Params, Key } from '../types/types';
@@ -119,6 +120,23 @@ class RegionPublic extends RegionPrivate {
       fetchTimes: getFetchTimes(key.fetchTime || key.key || []),
       errors: getErrors(key.error || key.key || []),
     });
+  }
+
+  unstable_effect = (from: Key, to: EntityName, getDerivedStateFromProps: any) => {
+    const { private_store, getProps, set, private_getResults } = this;
+    let props = {};
+    const handleSubscribe = () => {
+      const nextProps = getProps(from);
+      if (!shallowEqual(props, nextProps)) {
+        // NOTE it is a recurse, assign props before set result
+        props = nextProps;
+        const snapshot = private_getResults(to);
+        const result = getDerivedStateFromProps(props, snapshot);
+        set(to, result);
+      }
+    };
+    handleSubscribe();
+    private_store.subscribe(handleSubscribe);
   }
 }
 

@@ -12,7 +12,7 @@ describe('export api', () => {
   test('region contains many api', () => {
     const { Region } = api;
     const {
-      reset, set, setBy, load, loadBy, connect, connectWith, useProps, getProps,
+      reset, set, setBy, load, loadBy, unstable_effect, connect, connectWith, useProps, getProps,
       name, private_store, enableLog, expiredTime, strictLoading,
       private_actionTypes, private_getState, private_reducer,
       private_getLoadings, private_getResults, private_getFetchTimes, private_getErrors, private_setConfig,
@@ -25,6 +25,7 @@ describe('export api', () => {
     expect(typeof setBy).toBe('function');
     expect(typeof load).toBe('function');
     expect(typeof loadBy).toBe('function');
+    expect(typeof unstable_effect).toBe('function');
     expect(typeof connect).toBe('function');
     expect(typeof connectWith).toBe('function');
     expect(typeof useProps).toBe('function');
