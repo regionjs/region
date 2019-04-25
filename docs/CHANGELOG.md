@@ -1,135 +1,135 @@
 # CHANGELOG
 
-### 0.7.4
+### 8.0.0
 
-- Region demands name to be string
+- remove `provide` & `unstable_connect`
 
-### 0.7.3
+- `Region` own its store instead of share it.
+
+### 0.7.x
 
 - migrate to ts and export es5
 
-- memoized useProps
-
-### 0.7.2
-
-- setFp/loadFp
+- `setBy`/`loadBy`
 
 - reset
 
-- getProps
+- `getProps`
 
-- make getLoading, getResults, getFetchTimes, getError private
+- `provide`(optional)
 
-- make provide optional
+- deprecate `getProvider`
 
-### 0.7.1
+- rename `connect` to `unstable_connect` & deprecate `selector` in new `connect`
 
-- provide
+- make `getLoading`, `getResults`, `getFetchTimes`, `getError` private
 
-- deprecate getProvider
+- memoized `useProps`
 
-- rename connect to unstable_connect & deprecate selector in new connect
+- `Region` demands `name` to be string
+
+- fix a bug try to build error boundary but failed
 
 ### 0.7.0
 
-- useProps
+- `useProps`
 
-- require react@16.8 & react-redux@6, in order to develop useProps hook
+- require `react@16.8` & `react-redux@6`, in order to develop `useProps` hook
 
-- remove setConfig, silentConnect(in config), reducerPath(in config), entity(in connect)
+- remove `setConfig`, `silentConnect`(in config), `reducerPath`(in config), `entity`(in connect)
 
 ### 0.6.x
 
-- format: `(result, snapshot) => ...` to `(result, snapshot, error) => ...`
+- `format`: `(result, snapshot) => ...` to `(result, snapshot, error) => ...`
 
-- DefaultLoading, DefaultError, Error
+- `DefaultLoading`, `DefaultError`, `Error`
 
-- connect & connectWith({ key }, ...)
+- `connect` & `connectWith`({ key }, ...)
 
-- rename mapResultToProps => private_selectorFactory
+- rename `mapResultToProps` => `private_selectorFactory`
 
-- fix loading when several load is called, using pendingMutex
+- fix `loading` when several load is called, using `pendingMutex`
 
-- new Region('name') & new Region({ name })
+- `new Region('name')` & `new Region({ name })`
 
 - error support
 
-- deprecate reducerPath, connectWith Loading, entity
+- deprecate `reducerPath`, `entity`
 
 ### 0.6.0
 
-- rename to region-core and region-shortcut
+- rename to `region-core` and `region-shortcut`
 
-- Region
+- `Region`
 
-- getProvider
+- `getProvider`
 
 ### 0.5.x
 
-- selector
+- `selector`
 
-- remove connect
+- remove `connect`
 
-- set
+- `set`
 
-- Provider
+- `Provider`
 
-- setConfig(silentConnect) and remove setConfig(actionType)
+- `setConfig(silentConnect)` and remove `setConfig(actionType)`
 
 - gh-pages
 
 ### 0.4.x
 
-- remove willSetResult, didSetResult
+- remove `willSetResult`, `didSetResult`
 
-- setConfig(strictLoading)
+- `setConfig(strictLoading)`
 
-- connectWith(key, Display, Loading)
+- `connectWith(key, Display, Loading)`
 
-- deprecate connect
+- deprecate `connect`
 
 ### 0.3.x
 
-- remove asyncLoad, getReducer
+- remove `asyncLoad`, `getReducer`
 
-- setConfig(store) is needed
+- `setConfig(store)` is needed
 
-- load not surround with dispatch anymore
+- `load` not surround with `dispatch` anymore
 
-- getLoading, getResults, getFetchTimes: state is not needed
+- `getLoading`, `getResults`, `getFetchTimes`: state is not needed
 
-- connect
+- `connect`
 
-- forceUpdate: from ``'never' | 'need' | 'always'` to `true | false`
+- `forceUpdate`: from `'never' | 'need' | 'always'` to `true | false`
 
-- deprecate willSetResult, didSetResult
+- deprecate `willSetResult`, `didSetResult`
 
 ### 0.2.x
 
-- remove setReducerPath
+- remove `setReducerPath`
 
-- setConfig(reducerPath, expiredTime, enableLog, actionType)
+- `setConfig(reducerPath, expiredTime, enableLog, actionType)`
 
-- getReducer
+- `getReducer`
 
-- willSetResult, didSetResult
+- `willSetResult`, `didSetResult`
 
-- provide snapshot for format, and catch format error
+- provide `snapshot` for `format`, and catch format error
 
-- load with promise
+- `load` with promise
 
-- deprecate asyncLoad, getReducer
+- deprecate `asyncLoad`, `getReducer`
 
 ### 0.1.x
 
-- load(params, forceUpdate, format)
+- `load(params, forceUpdate, format)`
 
-- asyncLoad
+- `asyncLoad`
 
-- mapResultToProps
+- `mapResultToProps`
 
-- getLoading, getResults, getFetchTimes
+- `getLoading`, `getResults`, `getFetchTimes`
 
-- reducer
+- `reducer`
 
-- setReducerPath
+- `setReducerPath`

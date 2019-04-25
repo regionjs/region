@@ -2,17 +2,34 @@
 
 English | [中文](https://github.com/regionjs/region-core/blob/master/docs/Migrate-zh_CN.md)
 
-## Migrate From 0.7.0 to 0.7.1
+First of all, you should ensure no deprecated warning before migrate. Then read the tips below.
 
-connect is rewrite with hooks instead of hoc, and selector is not supported any more.
+## Migrate Form 0.7 to 8.0
 
-If you are affected, use unstable_connect or see [example](https://github.com/regionjs/region-core/blob/master/example/src/Selector/index.jsx)
+`provide` & `unstable_connect` is removed, also with `react-redux`.
+
+Each `Region` maintains its own store instead of share it. So they will not affect each other.
+
+## Migrate From 0.7.0 to 0.7.x
+
+Rewrite in ts. Enjoy it.
+
+`provide` is optional now, and only when you are using `unstable_connect` should you use it.
+
+`connect` is rewrite with hooks instead of hoc, and `selector` is not supported any more.
+
+If you are affected, use `unstable_connect` or see [example](https://github.com/regionjs/region-core/blob/master/example/src/Selector/index.jsx)
+
+`getLoading`, `getResults`, `getFetchTimes`, `getError` are private now, use `useProps` instead.
+
+<details>
+  <summary>
+    Lower version
+  </summary>
 
 ## Migrate From 0.6 to 0.7
 
-Ensure no warning.
-
-update react@16.8 and react-redux@6 if you use it, because of the new hook useProps.
+update `react@16.8` and `react-redux@6` if you use it, because of the new hook `useProps`.
 
 ## Migrate From 0.6.0 to 0.6.x
 
@@ -28,11 +45,6 @@ expireTime is set to 0, you can remove your forceUpdate.
 
 You can get expireTime back, using [Region](https://github.com/regionjs/region-core/blob/master/docs/Document.md#Region).
 
-<details>
-  <summary>
-    No longer meaningful
-  </summary>
-
 If you are using your own store, create a file named `Provider.js`, then write:
 
 ```javascript
@@ -43,7 +55,6 @@ const Provider = getProvider({ store, reducers });
 
 export default Provider;
 ```
-</details>
 
 ## Migrate From 0.5.0 to 0.5.1
 
@@ -52,13 +63,6 @@ set & load is refactored. You may meet some tiny difference.
 If your usage is recommend, there should be no effect on you.
 
 ## Migrate From 0.4 to 0.5
-
-<details>
-  <summary>
-    No longer meaningful
-  </summary>
-
-Ensure no warning.
 
 You may use `Provider` to replace `reducer` as store is inside `redux-loadings`.
 
@@ -82,11 +86,8 @@ import { Provider } from 'redux-loading';
   <App />
 </Provider>
 ```
-</details>
 
 ## Migrate From 0.3 to 0.4
-
-Ensure no warning.
 
 In 0.3, if load is not called, loading returns undefined. Now loading is true. You can set `strictLoading` as false to forward.
 
@@ -97,13 +98,6 @@ setConfig({ store, reducerPath: 'result', strictLoading: false });
 ```
 
 ## Migrate From 0.2 to 0.3
-
-<details>
-  <summary>
-    Only meaningful when you are using 2.0 with redux-thunk
-  </summary>
-
-Ensure no warning.
 
 ### redux-thunk is not peered anymore
 

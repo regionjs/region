@@ -2,17 +2,34 @@
 
 [English](https://github.com/regionjs/region-core/blob/master/docs/Migrate.md) | 中文
 
-## 0.7.0 升级至 0.7.1
+首先，在你迁移之前确保处理所有的警告，然后阅读以下文档。
 
-connect 用 hooks 重写了，selector 不再支持。
+## 0.7 升级至 8.0
 
-如果你被影响了，使用 unstable_connect 或者参考[示例](https://github.com/regionjs/region-core/blob/master/example/src/Selector/index.jsx)
+`provide` 和 `unstable_connect` 被移除了（包括 `react-redux`）。
 
+`Region` 现在自己维护自己的 store，而不是共享一个 store，所以他们现在不会相互影响。
+
+## 0.7.0 升级至 0.7.x
+
+用 ts 重写了，你可以享受类型推断带来的开发体验了。
+
+`provide` 现在是可选的，只有当你使用 `unstable_connect` 时，你需要调用它。
+
+`connect` 用 hooks 重写了，`selector` 参数不再支持。
+
+如果你被影响了，使用 `unstable_connect` 或者参考[示例](https://github.com/regionjs/region-core/blob/master/example/src/Selector/index.jsx)
+
+`getLoading`, `getResults`, `getFetchTimes`, `getError` 现在是私有的，你可以用 `getProps` 代替。
+
+<details>
+  <summary>
+    低版本
+  </summary>
+  
 ## 0.6 升级至 0.7
 
-确保处理所有的警告.
-
-由于支持新的 useProps hook，你需要升级 react@16.8 以及 react-redux@6 （如果你用了 react-redux 的话）。
+由于支持新的 `useProps` hook，你需要升级 `react@16.8` 以及 `react-redux@6` （如果你用了 react-redux 的话）。
 
 ## 0.6.0 升级至 0.6.x
 
@@ -28,11 +45,6 @@ expireTime 现在默认为 0，你可以移除所有的 forceUpdate 了。
 
 或者如果你需要 expireTime ，你可以用 [Region](https://github.com/regionjs/region-core/blob/master/docs/Document-zh_CN.md#Region) 来设置。
 
-<details>
-  <summary>
-    不再有参考价值
-  </summary>
-
 如果你在使用自己的 store，创建一个文件名为 `Provider.js`，然后写：
 
 ```javascript
@@ -43,7 +55,6 @@ const Provider = getProvider({ store, reducers });
 
 export default Provider;
 ```
-</details>
 
 ## 0.5.0 升级至 0.5.1
 
@@ -52,13 +63,6 @@ set 与 load 重构了，处理某些值如 null 和 promise 时会有细微的�
 如果你没有使用推荐之外的用法，此次重构对你没有影响。
 
 ## 0.4 升级至 0.5
-
-<details>
-  <summary>
-    不再有参考价值
-  </summary>
-
-确保处理所有的警告.
 
 你可以用 `Provider` 代替 `reducer`，因为 store 已经内置了。
 
@@ -82,7 +86,6 @@ import { Provider } from 'redux-loadings';
   <App />
 </Provider>
 ```
-</details>
 
 ## 0.3 升级至 0.4
 
@@ -95,11 +98,6 @@ setConfig({ store, reducerPath: 'result', strictLoading: false });
 ```
 
 ## 0.2 升级至 0.3
-
-<details>
-  <summary>
-    只在你使用了 2.0 并使用了 redux-thunk 时，才有参考价值
-  </summary>
 
 确保处理所有的警告。
 

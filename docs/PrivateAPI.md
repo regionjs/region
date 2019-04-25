@@ -2,19 +2,6 @@
 
 English | [中文](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI-zh_CN.md)
 
-### provide
-
-If you are using your own store, you should provide your store and reducers before you new Region:
-
-```javascript
-import { provide } from 'region-shortcut';
-
-const reducer = combineReducers(reducers); // reducers should be provided, or it will be covered
-const store = createStore(...);
-
-provide({ store, reducers });
-```
-
 ### load#forceUpdate
 
 ```javascript

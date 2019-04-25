@@ -64,10 +64,6 @@ const Display = () => {
 export default Display;
 ```
 
-- 支持 redux
-
-如果你在使用自己的 store，参见 [`provide`](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI-zh_CN.md#provide)
-
 <details>
   <summary>
     建议你使用 useProps，然而传统的 connect 方式也被支持。

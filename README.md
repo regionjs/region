@@ -64,10 +64,6 @@ const Display = () => {
 export default Display;
 ```
 
-- use region with redux
-
-If you are using your own store, see [`provide`](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI.md#provide)
-
 <details>
   <summary>
     We recommend to use useProps, but the old connect way is also provided.
