@@ -1,18 +1,26 @@
 import { assignValueDeep, setValueDeep } from './reducerPrototype';
 import { debug, group } from './logger';
+import { Key, FetchTime, Result, Error } from '../types/types';
 import { State, Action } from '../types/interfaces';
 
-const increase = (v: number = 0) => v + 1;
-const forward = (v: number = 0) => v;
-const decrease = (v: number = 0) => v - 1;
+interface SetKeyParams {
+  state: State;
+  key: Key;
+  fetchTime: FetchTime;
+  result: Result;
+  error: Error;
+}
 
-const setKey = ({ state, key, fetchTime, result, error, withLoadEnd }: any) => {
+const increase = (v: number = 0) => v + 1;
+const decrease = (v: number = 0) => v - 1 > 0 ? v - 1 : 0;
+
+const setKey = ({ state, key, fetchTime, result, error }: SetKeyParams) => {
   setValueDeep(state, ['fetchTimes', key], fetchTime);
   if (result !== undefined) {
     setValueDeep(state, ['results', key], result);
   }
   setValueDeep(state, ['errors', key], error); // as well error ===  undefined
-  const nextState = assignValueDeep(state, ['loadings', key], withLoadEnd ? decrease : forward);
+  const nextState = assignValueDeep(state, ['loadings', key], decrease);
   return nextState;
 };
 
@@ -27,9 +35,9 @@ export const reducer = (state: State, action: Action, actionTypes: any, enableLo
       return assignValueDeep(state, ['loadings', key], increase);
     }
     case SET: {
-      const { key, result, error, withLoadEnd } = action.payload;
+      const { key, result, error } = action.payload;
       const fetchTime = new Date().getTime();
-      const nextState = setKey({ state, key, fetchTime, result, error, withLoadEnd });
+      const nextState = setKey({ state, key, fetchTime, result, error });
       if (enableLogInDev) {
         if (error) {
           console.error(error.message);
