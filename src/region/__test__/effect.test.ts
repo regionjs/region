@@ -5,22 +5,44 @@ describe('effect', () => {
     region.unstable_effect(['a', 'b'], 'sum', ({ a, b }: any) => a + b);
 
     region.set('a', 1);
-    const { sum: middleStatus } = region.getProps('sum');
-    expect(middleStatus).toBe(undefined); // b is loading
+    const mid = region.getProps('sum');
+    expect(mid.sum).toBe(undefined); // b is loading
 
     region.set('b', 1);
-    const { sum } = region.getProps('sum');
-    expect(sum).toBe(2);
+    const final = region.getProps('sum');
+    expect(final.sum).toBe(2);
   });
 
   test('forward loading', async () => {
     const promise = region.load('a', Promise.resolve(2));
-    const props = region.getProps('sum');
-    expect(props.loading).toBe(true);
-    expect(props.sum).toBe(2);
+    const pending = region.getProps('sum');
+    expect(pending.loading).toBe(true);
+    expect(pending.sum).toBe(2);
     await promise;
-    const nextProps = region.getProps('sum');
-    expect(nextProps.loading).toBe(false);
-    expect(nextProps.sum).toBe(3);
+    const resolved = region.getProps('sum');
+    expect(resolved.loading).toBe(false);
+    expect(resolved.sum).toBe(3);
+  });
+});
+
+describe('async effect', () => {
+  test('async effect', async () => {
+    const delay = Promise.resolve();
+    region.unstable_effect('result', 'asyncEffect', async ({ result }: any) => {
+      await delay;
+      return result + 1;
+    });
+    region.set('result', 1);
+    const pending = region.getProps('asyncEffect');
+    expect(pending.loading).toBe(true);
+    expect(pending.asyncEffect).toBe(undefined);
+
+    // go through next microtask
+    await delay;
+    await Promise.resolve();
+
+    const resolved = region.getProps('asyncEffect');
+    expect(resolved.loading).toBe(false);
+    expect(resolved.asyncEffect).toBe(2);
   });
 });

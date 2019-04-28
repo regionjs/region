@@ -123,7 +123,7 @@ class RegionPublic extends RegionPrivate {
   }
 
   unstable_effect = (from: Key, to: EntityName, getDerivedStateFromProps: any) => {
-    const { private_store, private_actionTypes, getProps, private_getResults } = this;
+    const { private_store, private_actionTypes, getProps, private_getResults, set, load } = this;
     const { SET, LOAD } = private_actionTypes;
     const { dispatch } = private_store;
     let props: Props = {};
@@ -143,7 +143,11 @@ class RegionPublic extends RegionPrivate {
         props = nextProps;
         const snapshot = private_getResults(to);
         const result = getDerivedStateFromProps(props, snapshot);
-        dispatch({ type: SET, payload: { key: to, result } });
+        if (!isAsync(result)) {
+          set(to, result);
+          return;
+        }
+        load(to, result);
       }
     };
     handleSubscribe();
