@@ -1,7 +1,6 @@
 import { createStore, Store } from 'redux';
-import getActionTypes from '../util/getActionTypes';
-import { State, Action, Config, StrictConfig } from '../types/interfaces';
-import { reducer } from '../util/reducer';
+import { getActionTypes, reducer } from '../util';
+import { State, Action, Config, StrictConfig } from '../types';
 
 class RegionInitial {
   name = '_';

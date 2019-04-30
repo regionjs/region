@@ -1,5 +1,5 @@
 import * as React from 'react';
-import hoc from '../hoc';
+import { hoc } from '../hoc';
 
 interface Props {
   withLabel: string;

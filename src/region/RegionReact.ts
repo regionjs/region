@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
 import * as shallowEqual from 'shallowequal';
-import hoc from '../util/hoc';
-import { isValidConnectKey } from '../util/isValidConnectKey';
-import { Key, DisplayType } from '../types/types';
-import { ConnectOption, Props } from '../types/interfaces';
 import RegionPublic from './RegionPublic';
+import { hoc, isValidConnectKey } from '../util';
+import { Props, Key, DisplayType, ConnectOption } from '../types';
 
 const Empty = () => null;
 
@@ -20,15 +18,13 @@ class RegionReact extends RegionPublic {
       console.error('invalid key, provide valid key or use connect from \'react-redux\' directly');
       return null;
     }
-    const WrapperComponent = hoc({
+    return hoc({
       Display,
       Loading: Loading || DefaultLoading || Display,
       Error: Error || DefaultError || Display,
       useProps,
       key,
     });
-
-    return WrapperComponent;
   }
 
   /**
@@ -53,7 +49,7 @@ class RegionReact extends RegionPublic {
             setProps(nextProps);
           }
         });
-        return () => unsubscribe();
+        return unsubscribe;
       },
       /**
        * effect should be changed with props, otherwise shallowEqual will never hit

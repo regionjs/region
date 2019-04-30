@@ -1,5 +1,4 @@
-import { Props, SelectPropsParams } from '../types/interfaces';
-import { Path, Loading, SelectPropsKey, Results } from '../types/types';
+import { Props, Path, Loading, SelectPropsKey, Results, SelectPropsParams } from '../types';
 
 const selectLoading = (loadings: Loading[]) => loadings.reduce((a, b) => a || b, false);
 

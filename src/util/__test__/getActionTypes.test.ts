@@ -1,4 +1,4 @@
-import getActionTypes from '../getActionTypes';
+import { getActionTypes } from '../getActionTypes';
 
 describe('getActionTypes', () => {
   test('getActionTypes', () => {

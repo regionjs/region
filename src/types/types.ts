@@ -1,4 +1,5 @@
 import { ComponentType as RawComponentType } from 'react';
+import { Props } from './basic';
 
 export type ComponentType = RawComponentType | any;
 
@@ -29,10 +30,10 @@ export type AsyncFunction = any;
 export type Params = any;
 export type Format = (result: any, snapshot: any) => any;
 
+// effect
+export type GetDerivedStateFromProps = (props: Props, snapshot: any) => any;
 // Region config
 export type Name = string;
-
-// provide
 
 // private
 // get

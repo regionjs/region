@@ -1,10 +1,8 @@
+import { Any } from './basic';
 import { Params, Format, Name, ComponentType, SelectPropsKey, Loadings, Results, FetchTimes, Errors } from './types';
 
 // public
 // useProps
-export interface Props {
-  [key: string]: any;
-}
 // connect
 export interface ConnectOption {
   Loading?: ComponentType;
@@ -37,12 +35,12 @@ export type Config = StrictConfig | Name;
 // get
 // reducer
 export interface State {
-  [key: string]: any;
+  [key: string]: Any;
 }
 
 export interface Payload {
   key: string;
-  result?: any;
+  result?: Any;
   error?: Error;
 }
 

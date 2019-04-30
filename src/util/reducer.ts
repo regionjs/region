@@ -1,7 +1,6 @@
 import { assignValueDeep, setValueDeep } from './reducerPrototype';
 import { debug, group } from './logger';
-import { Key, FetchTime, Result, Error } from '../types/types';
-import { State, Action } from '../types/interfaces';
+import { Key, FetchTime, Result, Error, State, Action } from '../types';
 
 interface SetKeyParams {
   state: State;

@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { Props } from '../types/interfaces';
-import { ComponentType } from '../types/types';
+import { Props, ComponentType } from '../types';
 
 interface Params {
   Display?: ComponentType;
@@ -10,7 +9,7 @@ interface Params {
   key?: any;
 }
 
-export default ({ Display, Loading, Error, useProps, key }: Params) => {
+export const hoc = ({ Display, Loading, Error, useProps, key }: Params) => {
   const ConnectWith = (ownProps: Props) => {
     const props = useProps(key);
     const { loading, error } = props;

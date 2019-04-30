@@ -1,10 +1,10 @@
-import { Path } from '../types/types';
 import RegionInitial from './RegionInitial';
-import { formatLoading, mapValues } from '../util/selectProps';
+import { formatLoading, mapValues } from '../util';
+import { Path } from '../types';
 
 class RegionPrivate extends RegionInitial {
   private_getState = () => {
-    const { name, private_store } = this;
+    const { private_store } = this;
     const { getState } = private_store;
     const state = getState();
     return state || {};

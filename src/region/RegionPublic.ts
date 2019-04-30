@@ -1,11 +1,7 @@
-import { formatResult } from '../util/formatResult';
 import * as shallowEqual from 'shallowequal';
-import { isAsync } from '../util/isAsync';
-import { shouldThrottle } from '../util/shouldThrottle';
-import { EntityName, Result, AsyncFunction, Params, Key } from '../types/types';
-import { LoadOption, Props } from '../types/interfaces';
 import RegionPrivate from './RegionPrivate';
-import { selectProps } from '../util/selectProps';
+import { formatResult, shouldThrottle, isAsync, selectProps } from '../util';
+import { Props, EntityName, Result, AsyncFunction, Params, Key, GetDerivedStateFromProps, LoadOption } from '../types';
 
 interface ToPromiseParams {
   asyncFunction: AsyncFunction;
@@ -122,9 +118,9 @@ class RegionPublic extends RegionPrivate {
     });
   }
 
-  unstable_effect = (from: Key, to: EntityName, getDerivedStateFromProps: any) => {
+  unstable_effect = (from: Key, to: EntityName, getDerivedStateFromProps: GetDerivedStateFromProps) => {
     const { private_store, private_actionTypes, getProps, private_getResults, set, load } = this;
-    const { SET, LOAD } = private_actionTypes;
+    const { LOAD } = private_actionTypes;
     const { dispatch } = private_store;
     let props: Props = {};
     const handleSubscribe = () => {
