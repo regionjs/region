@@ -147,6 +147,8 @@ describe('get', () => {
     expect(getErrors(['a', 'b'])).toEqual([errorA, undefined]);
     expect(getErrors('a')).toEqual(errorA);
     expect(getErrors('b')).toEqual(undefined);
+    expect(getProps('a').error).toEqual('error a');
+    expect(getProps(['a', 'b']).error).toEqual('error a');
 
     const errorB = new Error('error b');
     setState({

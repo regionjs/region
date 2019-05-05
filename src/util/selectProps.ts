@@ -28,7 +28,7 @@ const selectResult = (keys: SelectPropsKey, results: Results) => {
 
 export const selectProps = ({ keys, loadings, results, fetchTimes, errors }: SelectPropsParams): Props => {
   const loading = Array.isArray(loadings) ? selectLoading(loadings) : loadings;
-  const error = Array.isArray(errors) ? selectError(errors) : errors;
+  const error = Array.isArray(errors) ? selectError(errors) : errors && errors.message ;
   const fetchTime = Array.isArray(fetchTimes) ? selectFetchTime(fetchTimes) : fetchTimes;
   const resultMap = selectResult(keys, results);
   return { loading, fetchTime, error, ...resultMap };
