@@ -1,8 +1,9 @@
 import { formatResult } from '../util/formatResult';
+import * as shallowEqual from 'shallowequal';
 import { isAsync } from '../util/isAsync';
 import { shouldThrottle } from '../util/shouldThrottle';
 import { EntityName, Result, AsyncFunction, Params, Key } from '../types/types';
-import { LoadOption } from '../types/interfaces';
+import { LoadOption, Props } from '../types/interfaces';
 import RegionPrivate from './RegionPrivate';
 import { selectProps } from '../util/selectProps';
 
@@ -87,10 +88,10 @@ class RegionPublic extends RegionPrivate {
       try {
         const result = await toPromise({ asyncFunction, params });
         const formattedResult = formatResult({ result, snapshot, format, id });
-        dispatch({ type: SET, payload: { key, result: formattedResult, withLoadEnd: true } });
+        dispatch({ type: SET, payload: { key, result: formattedResult } });
         return formattedResult;
       } catch (error) {
-        dispatch({ type: SET, payload: { key, result: undefined, error, withLoadEnd: true } });
+        dispatch({ type: SET, payload: { key, result: undefined, error } });
         return undefined;
       }
     };
@@ -119,6 +120,38 @@ class RegionPublic extends RegionPrivate {
       fetchTimes: getFetchTimes(key.fetchTime || key.key || []),
       errors: getErrors(key.error || key.key || []),
     });
+  }
+
+  unstable_effect = (from: Key, to: EntityName, getDerivedStateFromProps: any) => {
+    const { private_store, private_actionTypes, getProps, private_getResults, set, load } = this;
+    const { SET, LOAD } = private_actionTypes;
+    const { dispatch } = private_store;
+    let props: Props = {};
+    const handleSubscribe = () => {
+      const nextProps = getProps(from);
+
+      // NOTE it is a recurse, assign props before dispatch
+      // something begin to load
+      if (props.loading === false && nextProps.loading === true) {
+        props = nextProps;
+        dispatch({ type: LOAD, payload: { key: to } });
+        return;
+      }
+
+      // something resolved
+      if (nextProps.loading === false && !shallowEqual(props, nextProps)) {
+        props = nextProps;
+        const snapshot = private_getResults(to);
+        const result = getDerivedStateFromProps(props, snapshot);
+        if (!isAsync(result)) {
+          set(to, result);
+          return;
+        }
+        load(to, result);
+      }
+    };
+    handleSubscribe();
+    private_store.subscribe(handleSubscribe);
   }
 }
 

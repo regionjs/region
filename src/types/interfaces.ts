@@ -33,12 +33,6 @@ export interface StrictConfig {
 
 export type Config = StrictConfig | Name;
 
-// provide
-export interface ProvideOptions {
-  store?: any;
-  reducers?: any;
-}
-
 // private
 // get
 // reducer
@@ -50,7 +44,6 @@ export interface Payload {
   key: string;
   result?: any;
   error?: Error;
-  withLoadEnd?: boolean;
 }
 
 export interface Action {
