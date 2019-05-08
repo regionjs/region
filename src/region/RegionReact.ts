@@ -28,14 +28,13 @@ class RegionReact extends RegionPublic {
   }
 
   /**
-   * There is only one store bound to all regions. App store is not related unless it is {@code provide()}
-   * So it is unnecessary to check whether store is memoized
+   * The store is bound to region and can not be changed.
+   * So it is unnecessary to check whether store is memoized.
+   * Some code is write for async mode. And they are not easy to test.
    * @see {
    *   @link https://gist.github.com/bvaughn/e25397f70e8c65b0ae0d7c90b731b189|
    *   Advanced example for manually managing subscriptions in an async-safe way using hooks
    * }
-   * The link implies that this hook may broke in async mode.
-   * Further information needed.
    * @param key string | string[]
    */
   useProps = (key: Key): Props => {
@@ -43,18 +42,31 @@ class RegionReact extends RegionPublic {
     const [props, setProps] = useState(getProps(key));
     useEffect(
       () => {
-        const unsubscribe = private_store.subscribe(() => {
-          const nextProps = getProps(key);
-          if (!shallowEqual(props, nextProps)) {
-            setProps(nextProps);
+        let didUnsubscribe = false;
+
+        const checkForUpdates = () => {
+          if (didUnsubscribe) {
+            return;
           }
-        });
-        return unsubscribe;
+          const nextProps = getProps(key);
+          setProps((prevProps) => {
+            if (!shallowEqual(prevProps, nextProps)) {
+              return nextProps;
+            }
+            return prevProps;
+          });
+        };
+
+        const unsubscribe = private_store.subscribe(checkForUpdates);
+
+        checkForUpdates();
+
+        return () => {
+          didUnsubscribe = true;
+          unsubscribe();
+        };
       },
-      /**
-       * effect should be changed with props, otherwise shallowEqual will never hit
-       */
-      [props],
+      [],
     );
     return props;
   }
