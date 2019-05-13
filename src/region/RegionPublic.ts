@@ -140,7 +140,7 @@ class RegionPublic extends RegionPrivate {
 
       // something went error
       if (error) {
-        dispatch({ type: SET, payload: { key: to, result: undefined, error } });
+        dispatch({ type: SET, payload: { key: to, result: undefined, error: new Error(error) } });
         return;
       }
 
