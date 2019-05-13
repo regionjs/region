@@ -134,6 +134,18 @@ class RegionPublic extends RegionPrivate {
       // NOTE it is a recurse, assign props before dispatch
       // something begin to load
       if (prevLoading === false && loading === true) {
+        // set a snapshot first otherwise effect is outdated, this should be think as optimistic-ui
+        // TODO optimize code & add cases
+        try {
+          const snapshot = private_getResults(to);
+          const result = getDerivedStateFromProps(props, snapshot);
+          if (!isAsync(result)) {
+            dispatch({ type: SET, payload: { key: to, result } });
+          }
+        } catch (error) {
+          dispatch({ type: SET, payload: { key: to, result: undefined, error } });
+        }
+        // NOTE LOAD after SET
         dispatch({ type: LOAD, payload: { key: to } });
         return;
       }
