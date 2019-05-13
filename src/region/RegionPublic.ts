@@ -119,31 +119,44 @@ class RegionPublic extends RegionPrivate {
   }
 
   unstable_effect = (from: Key, to: EntityName, getDerivedStateFromProps: GetDerivedStateFromProps) => {
-    const { private_store, private_actionTypes, getProps, private_getResults, set, load } = this;
-    const { LOAD } = private_actionTypes;
+    const { private_store, private_actionTypes, getProps, private_getResults, load } = this;
+    const { SET, LOAD } = private_actionTypes;
     const { dispatch } = private_store;
     let props: Props = {};
     const handleSubscribe = () => {
       const nextProps = getProps(from);
-
+      if (shallowEqual(props, nextProps)) {
+        return;
+      }
+      const prevLoading = props.loading;
+      props = nextProps;
+      const { loading, error } = props;
       // NOTE it is a recurse, assign props before dispatch
       // something begin to load
-      if (props.loading === false && nextProps.loading === true) {
-        props = nextProps;
+      if (prevLoading === false && loading === true) {
         dispatch({ type: LOAD, payload: { key: to } });
         return;
       }
 
+      // something went error
+      if (error) {
+        dispatch({ type: SET, payload: { key: to, result: undefined, error } });
+        return;
+      }
+
       // something resolved
-      if (nextProps.loading === false && !shallowEqual(props, nextProps)) {
-        props = nextProps;
+      if (loading === false) {
         const snapshot = private_getResults(to);
-        const result = getDerivedStateFromProps(props, snapshot);
-        if (!isAsync(result)) {
-          set(to, result);
-          return;
+        try {
+          const result = getDerivedStateFromProps(props, snapshot);
+          if (!isAsync(result)) {
+            dispatch({ type: SET, payload: { key: to, result } });
+            return;
+          }
+          load(to, result);
+        } catch (error) {
+          dispatch({ type: SET, payload: { key: to, result: undefined, error } });
         }
-        load(to, result);
       }
     };
     handleSubscribe();
