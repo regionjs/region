@@ -85,6 +85,10 @@ class RegionPublic extends RegionPrivate {
         const result = await toPromise({ asyncFunction, params });
         const formattedResult = formatResult({ result, snapshot, format, id });
         dispatch({ type: SET, payload: { key, result: formattedResult } });
+        if (id !== undefined) {
+          // TODO TEST ME
+          return formattedResult[id];
+        }
         return formattedResult;
       } catch (error) {
         dispatch({ type: SET, payload: { key, result: undefined, error } });
