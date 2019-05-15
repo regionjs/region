@@ -4,6 +4,16 @@
 
 首先，在你迁移之前确保处理所有的警告，然后阅读以下文档。
 
+## 8.0 升级至 next
+
+节流功能现在被废弃了。配置项 `expiredTime` 和 load 的参数 `forceUpdate` 会被影响。
+
+你可以使用 `getProps` 得到 `fetchTime` 来决定是否 load。
+
+此功能会持续到 9.0，到时可能有工具函数推出来代替它。
+
+此外，可以很容易实现这个功能，只需要 extends Region 然后从源码里找到相应到部分实现它。
+
 ## 0.7 升级至 8.0
 
 `provide` 和 `unstable_connect` 被移除了（包括 `react-redux`）。
@@ -39,7 +49,7 @@
 
 ## 0.5 升级至 0.6
 
-包已经重命名为 'region-core' 和 'region-shortcut'，当然 'redux-loadings' 依旧会持续一段时间。
+包已经重命名为 `region-core` 和 `region-shortcut`，当然 `redux-loadings` 依旧会持续一段时间。
 
 expireTime 现在默认为 0，你可以移除所有的 forceUpdate 了。
 
@@ -89,8 +99,6 @@ import { Provider } from 'redux-loadings';
 
 ## 0.3 升级至 0.4
 
-确保处理所有的警告。
-
 在 0.3，如果没有 `load`，`loading` 是 `undefined`。 现在它是 `true`。 你可以通过设置 `strictLoading` 为 `false` 来使用之前的逻辑。
 
 ```javascript
@@ -98,8 +106,6 @@ setConfig({ store, reducerPath: 'result', strictLoading: false });
 ```
 
 ## 0.2 升级至 0.3
-
-确保处理所有的警告。
 
 ### 不再需要 redux-thunk
 

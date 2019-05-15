@@ -118,7 +118,6 @@ const region = new Region('result');
 // or
 const region = new Region({
   name: 'result',
-  expiredTime: 300000, // default as 0
   enableLog: true, // default as true
   strictLoading: true, // default as true
   DefaultLoading: Loading, // default as undefined
@@ -127,8 +126,6 @@ const region = new Region({
 
 const { set, load, connect } = region;
 ```
-
-You can set `expiredTime` to enable throttle.
 
 You can set `enableLog` to enable logs when `env !== 'production'`.
 

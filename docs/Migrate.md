@@ -4,6 +4,16 @@ English | [中文](https://github.com/regionjs/region-core/blob/master/docs/Migr
 
 First of all, you should ensure no deprecated warning before migrate. Then read the tips below.
 
+## Migrate From 8.0 to 8.x
+
+Snapshot throttle is deprecated. `expiredTime` in config and `forceUpdate` in load is influenced.
+
+You can use `getProps` to get `fetchTime` and decide whether you should load or not.
+
+It will last until 9.0 and some helper function may release then.
+
+Also it is easy to implement one by extends the Region and copy some code into it.
+
 ## Migrate Form 0.7 to 8.0
 
 `provide` & `unstable_connect` is removed, also with `react-redux`.
@@ -39,7 +49,7 @@ They are `private_setState`, `private_reducer`, `private_selectorFactory` (from 
 
 ## Migrate From 0.5 to 0.6
 
-package is renamed to 'region-core' & 'region-shortcut', 'redux-loadings' will be maintained for a while.
+package is renamed to `region-core` & `region-shortcut`, `redux-loadings` will be maintained for a while.
 
 expireTime is set to 0, you can remove your forceUpdate.
 

@@ -1,5 +1,5 @@
 import { createStore, Store } from 'redux';
-import { getActionTypes, reducer } from '../util';
+import { deprecate, getActionTypes, reducer } from '../util';
 import { State, Action, Config, StrictConfig } from '../types';
 
 class RegionInitial {
@@ -39,6 +39,7 @@ class RegionInitial {
       this.private_actionTypes = getActionTypes(name);
     }
     if (expiredTime !== undefined) {
+      deprecate('expiredTime is deprecated. You can get fetchTime in getProps method to control your load function.');
       this.expiredTime = expiredTime;
     }
     if (enableLog !== undefined) {

@@ -2,21 +2,6 @@
 
 [English](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI-zh_CN.md) | 中文
 
-### load#forceUpdate
-
-```javascript
-import { load } from 'region-shortcut';
-
-load(key, asyncFunction, { params, forceUpdate, format });
-
-// or
-const result = await load(key, asyncFunction, { params, forceUpdate, format });
-```
-
-`forceUpdate: true | false` 默认为 `false`，在设定的时间内有发起异步就会使用上一次结果。如果你没有设定 expireTime 就不需要这个参数。
-
-`forceUpdate: true` 会立刻调用 asyncFunction。
-
 ### connectWith
 
 ```javascript
@@ -50,7 +35,6 @@ const { loading, error, user } = private_selectorFactory('user')(store.getState(
 ```javascript
 private_setConfig({
   name: 'result',
-  expiredTime: 300000, // default as 0
   enableLog: true, // default as true
   strictLoading: true, // default as true
   DefaultLoading: Loading, // default as undefined

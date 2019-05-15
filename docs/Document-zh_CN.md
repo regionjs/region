@@ -116,7 +116,6 @@ const region = new Region('result');
 // or
 const region = new Region({
   name: 'result',
-  expiredTime: 300000, // default as 0
   enableLog: true, // default as true
   strictLoading: true, // default as true
   DefaultLoading: Loading, // default as undefined
@@ -125,8 +124,6 @@ const region = new Region({
 
 const { set, load, connect } = region;
 ```
-
-你可以通过设置 `expiredTime` 以开启节流。
 
 你可以通过设置 `enableLog` 以开启日志，日志在 `env !== 'production'` 下打出。
 

@@ -1,6 +1,6 @@
 import * as shallowEqual from 'shallowequal';
 import RegionPrivate from './RegionPrivate';
-import { formatResult, shouldThrottle, isAsync, selectProps } from '../util';
+import { formatResult, shouldThrottle, isAsync, selectProps, deprecate } from '../util';
 import { Props, EntityName, Result, AsyncFunction, Params, Key, GetDerivedStateFromProps, LoadOption } from '../types';
 
 interface ToPromiseParams {
@@ -78,6 +78,7 @@ class RegionPublic extends RegionPrivate {
     // TODO optimize loadBy
     return async (params: Params) => {
       if (shouldThrottle({ asyncFunction, forceUpdate, key, snapshot, expiredTime, getFetchTimes })) {
+        deprecate('Snapshot inject is deprecated. If you do not want it load, you can simply not load it. You can get fetchTime in getProps method to control your load function.'); // tslint:disable max-line-length
         return snapshot;
       }
       dispatch({ type: LOAD, payload: { key } });

@@ -2,21 +2,6 @@
 
 English | [中文](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI-zh_CN.md)
 
-### load#forceUpdate
-
-```javascript
-import { load } from 'region-shortcut';
-
-load(key, asyncFunction, { params, forceUpdate, format });
-
-// or
-const result = await load(key, asyncFunction, { params, forceUpdate, format });
-```
-
-`forceUpdate: true | false`, default as `false`, throttles if the last load call is in the past time that is set. If you don't config expireTime, you may not use forceUpdate.
-
-`forceUpdate: true` calls asyncFunction at once.
-
 ### connectWith
 
 ```javascript
@@ -50,7 +35,6 @@ Use new Region instead of setConfig. private_setConfig dynamically is dangerous,
 ```javascript
 private_setConfig({
   name: 'result',
-  expiredTime: 300000, // default as 0
   enableLog: true, // default as true
   strictLoading: true, // default as true
   DefaultLoading: Loading, // default as undefined
