@@ -12,17 +12,17 @@ const Enhanced = connect(key, option)(Display);
 const Enhanced = connect(key, Display, option);
 ```
 
-### getLoading & getResults & getFetchTimes & getError & private_selectorFactory
+### private_getLoadings & private_getResults & private_getFetchTimes & private_getErrors
 
 ```javascript
-const loading = getLoading(['user', 'follower']);
-const user = getResults('user');
+const [user] = getResults('user');
+const [userLoading, followerLoading] = getLoadings(['user', 'follower']);
 const [user, follower] = getResults(['user', 'follower']);
 const [userFetchTime, followerFetchTime] = getFetchTimes(['user', 'follower']);
-const error = getError(['user', 'follower']);
-const { loading, error, user } = private_selectorFactory('user')(store.getState());
-}
+const [userError, followerError] = getErrors(['user', 'follower']);
 ```
+
+提示：这些方法会随时变动。
 
 `getFetchTimes` 返回 result resolved 时的 `date.getTime()`。
 

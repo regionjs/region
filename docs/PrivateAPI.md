@@ -12,17 +12,17 @@ const Enhanced = connect(key, option)(Display);
 const Enhanced = connect(key, Display, option);
 ```
 
-### private_getLoading & private_getResults & private_getFetchTimes & private_getError & private_selectorFactory
+### private_getLoadings & private_getResults & private_getFetchTimes & private_getErrors
 
 ```javascript
-const loading = private_getLoading(['user', 'follower']);
-const user = private_getResults('user');
-const [user, follower] = private_getResults(['user', 'follower']);
-const [userFetchTime, followerFetchTime] = private_getFetchTimes(['user', 'follower']);
-const error = private_getError(['user', 'follower']);
-const { loading, error, user } = private_selectorFactory('user')(store.getState());
-}
+const [user] = getResults('user');
+const [userLoading, followerLoading] = getLoadings(['user', 'follower']);
+const [user, follower] = getResults(['user', 'follower']);
+const [userFetchTime, followerFetchTime] = getFetchTimes(['user', 'follower']);
+const [userError, followerError] = getErrors(['user', 'follower']);
 ```
+
+NOTE: they may be changed without notice.
 
 `getFetchTimes` returns `date.getTime()` the moment result is resolved and stored.
 
