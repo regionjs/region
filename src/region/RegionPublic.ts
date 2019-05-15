@@ -77,7 +77,7 @@ class RegionPublic extends RegionPrivate {
     const snapshot = getResults(key);
     // TODO optimize loadBy
     return async (params: Params) => {
-      if (shouldThrottle({ asyncFunction, forceUpdate, key, snapshot, id, expiredTime, getFetchTimes })) {
+      if (shouldThrottle({ asyncFunction, forceUpdate, key, snapshot, expiredTime, getFetchTimes })) {
         return snapshot;
       }
       dispatch({ type: LOAD, payload: { key } });
