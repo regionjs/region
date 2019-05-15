@@ -8,7 +8,8 @@ interface Params {
 export const formatResult = ({ result, snapshot, format, id }: Params) => {
   const formatted = typeof format === 'function' ? format(result, snapshot) : result;
   if (id !== undefined) {
-    return Object.assign({ [id]: formatted }, snapshot);
+    // NOTE should return a different object or useProps may? broke
+    return Object.assign({}, snapshot, { [id]: formatted });
   }
   return formatted;
 };
