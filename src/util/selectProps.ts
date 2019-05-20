@@ -1,8 +1,18 @@
-import { Key, State, Props, BaseKey, Loading, SelectPropsKey, Results, SelectPropsParams, SimpleKey } from '../types';
+import {
+  Key,
+  State,
+  Props,
+  BaseKey,
+  Loading,
+  Result,
+  SelectPropsParams,
+  SimpleKey,
+  SimpleKeys,
+} from '../types';
 
-const selectLoading = (loadings: Loading[]) => loadings.reduce((a, b) => a || b, false);
+export const selectLoading = (loadings: Loading[]) => loadings.reduce((a, b) => a || b, false);
 
-const selectError = (errors: Error[]) => {
+export const selectError = (errors: Error[]) => {
   const filteredErrors = errors.filter(e => e);
   if (filteredErrors.length > 0) {
     return filteredErrors.map(e => e.message).join(', ');
@@ -10,28 +20,17 @@ const selectError = (errors: Error[]) => {
   return undefined;
 };
 
-const selectFetchTime = (fetchTimes: number[]) => {
+export const selectFetchTime = (fetchTimes: number[]) => {
   const fetchTime = fetchTimes.reduce((a, b) => a > b ? a : b, 0);
   return fetchTime || undefined;
 };
 
-const selectResult = (keys: SelectPropsKey, results: Results) => {
-  if (Array.isArray(keys)) {
-    const props: Props = {};
-    keys.forEach((key: string, index: number) => {
-      props[key] = results[index];
-    });
-    return props;
-  }
-  return { [keys]: results };
-};
-
-export const selectProps = ({ keys, loadings, results, fetchTimes, errors }: SelectPropsParams): Props => {
-  const loading = Array.isArray(loadings) ? selectLoading(loadings) : loadings;
-  const error = Array.isArray(errors) ? selectError(errors) : errors && errors.message ;
-  const fetchTime = Array.isArray(fetchTimes) ? selectFetchTime(fetchTimes) : fetchTimes;
-  const resultMap = selectResult(keys, results);
-  return { loading, fetchTime, error, ...resultMap };
+export const selectResult = (keys: SimpleKeys, results: Result[]) => {
+  const props: Props = {};
+  keys.forEach((key: string, index: number) => {
+    props[key] = results[index];
+  });
+  return props;
 };
 
 export const formatLoading = (loading?: boolean, strictLoading?: boolean) => {

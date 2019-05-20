@@ -1,6 +1,6 @@
 import * as shallowEqual from 'shallowequal';
 import RegionPrivate from './RegionPrivate';
-import { formatResult, shouldThrottle, isAsync, selectProps, deprecate } from '../util';
+import { formatResult, shouldThrottle, isAsync, deprecate, formatKeys, selectLoading, selectResult, selectFetchTime, selectError } from '../util';
 import { Props, EntityName, Result, AsyncFunction, Params, Key, GetDerivedStateFromProps, LoadOption } from '../types';
 
 interface ToPromiseParams {
@@ -100,27 +100,18 @@ class RegionPublic extends RegionPrivate {
 
   getProps = (key: Key) => {
     const {
-      private_getLoadings: getLoadings,
-      private_getResults: getResults,
-      private_getFetchTimes: getFetchTimes,
-      private_getErrors: getErrors,
+      private_getLoadings,
+      private_getResults,
+      private_getFetchTimes,
+      private_getErrors,
     } = this;
-    if (typeof key === 'string' || Array.isArray(key)) {
-      return selectProps({
-        keys: key,
-        loadings: getLoadings(key),
-        results: getResults(key),
-        fetchTimes: getFetchTimes(key),
-        errors: getErrors(key),
-      });
-    }
-    return selectProps({
-      keys: key.result || key.key || [],
-      loadings: getLoadings(key.loading || key.key || []),
-      results: getResults(key.result || key.key || []),
-      fetchTimes: getFetchTimes(key.fetchTime || key.key || []),
-      errors: getErrors(key.error || key.key || []),
-    });
+    const { keys, loadings, results, fetchTimes, errors } = formatKeys(key);
+
+    const loading = selectLoading(private_getLoadings(loadings));
+    const resultMap = selectResult(keys, private_getResults(results));
+    const fetchTime = selectFetchTime(private_getFetchTimes(fetchTimes));
+    const error = selectError(private_getErrors(errors)) ;
+    return Object.assign({ loading, fetchTime, error }, resultMap);
   }
 
   unstable_effect = (from: Key, to: EntityName, getDerivedStateFromProps: GetDerivedStateFromProps) => {

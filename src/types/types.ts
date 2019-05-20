@@ -6,7 +6,8 @@ export type ComponentType = RawComponentType | any;
 // public
 // useProps
 export type SimpleKey = string;
-export type BaseKey = SimpleKey | SimpleKey[];
+export type SimpleKeys = SimpleKey[];
+export type BaseKey = SimpleKey | SimpleKeys;
 interface ComplexKey {
   key?: BaseKey;
   loading?: BaseKey;
