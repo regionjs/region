@@ -1,4 +1,4 @@
-import { assignValueDeep, setValueDeep } from './reducerPrototype';
+import { setValueDeep } from './reducerPrototype';
 import { debug, group } from './logger';
 import { Key, FetchTime, Result, Error, State, Action } from '../types';
 
@@ -19,8 +19,8 @@ const setKey = ({ state, key, fetchTime, result, error }: SetKeyParams) => {
     setValueDeep(state, ['results', key], result);
   }
   setValueDeep(state, ['errors', key], error); // as well error ===  undefined
-  const nextState = assignValueDeep(state, ['loadings', key], decrease);
-  return nextState;
+  setValueDeep(state, ['loadings', key], decrease, true);
+  return state;
 };
 
 export const reducer = (state: State, action: Action, actionTypes: any, enableLogInDev?: boolean) => {
@@ -31,7 +31,8 @@ export const reducer = (state: State, action: Action, actionTypes: any, enableLo
       if (enableLogInDev) {
         debug(LOAD, key);
       }
-      return assignValueDeep(state, ['loadings', key], increase);
+      setValueDeep(state, ['loadings', key], increase, true);
+      return state;
     }
     case SET: {
       const { key, result, error } = action.payload;

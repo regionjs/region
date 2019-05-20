@@ -1,4 +1,4 @@
-import { assignValueDeep, setValueDeep } from '../reducerPrototype';
+import { setValueDeep } from '../reducerPrototype';
 
 describe('reducerPrototype', () => {
   test('setValueDeep deep path', () => {
@@ -7,13 +7,10 @@ describe('reducerPrototype', () => {
     expect(state).toEqual({ a: { b: 1 } });
   });
   test('assignValueDeep deep path func', () => {
-    const state = assignValueDeep({}, ['a', 'b'], () => 1);
+    const state = {};
+    setValueDeep(state, ['a', 'b'], () => 1, true);
     expect(state).toEqual({ a: { b: 1 } });
-    expect(assignValueDeep(state, ['a', 'b'], (v: number) => v + 1)).toEqual({ a: { b: 2 } });
-  });
-  test('assignValueDeep with undefined', () => {
-    const state = assignValueDeep(undefined, ['a', 'b'], () => 1);
-    expect(state).toEqual({ a: { b: 1 } });
-    expect(assignValueDeep(state, ['a', 'b'], (v: number) => v + 1)).toEqual({ a: { b: 2 } });
+    setValueDeep(state, ['a', 'b'], (v: number) => v + 1, true);
+    expect(state).toEqual({ a: { b: 2 } });
   });
 });
