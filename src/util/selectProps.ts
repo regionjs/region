@@ -48,8 +48,8 @@ export const formatLoading = (loading?: boolean, strictLoading?: boolean) => {
 };
 
 const getValue = (state: State, category: string, key: SimpleKey) => {
-  const values = state[category] || {};
-  return values[key];
+  const values = state[key] || {};
+  return values[category];
 };
 
 export const mapValues = (state: State = {}, category: string, key: BaseKey, format = (v: any) => v) => {

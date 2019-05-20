@@ -14,12 +14,12 @@ const increase = (v: number = 0) => v + 1;
 const decrease = (v: number = 0) => v - 1 > 0 ? v - 1 : 0;
 
 const setKey = ({ state, key, fetchTime, result, error }: SetKeyParams) => {
-  setValueDeep(state, ['fetchTimes', key], fetchTime);
+  setValueDeep(state, [key, 'fetchTime'], fetchTime);
   if (result !== undefined) {
-    setValueDeep(state, ['results', key], result);
+    setValueDeep(state, [key, 'result'], result);
   }
-  setValueDeep(state, ['errors', key], error); // as well error ===  undefined
-  setValueDeep(state, ['loadings', key], decrease, true);
+  setValueDeep(state, [key, 'error'], error); // as well error ===  undefined
+  setValueDeep(state, [key, 'loading'], decrease, true);
   return state;
 };
 
@@ -31,7 +31,7 @@ export const reducer = (state: State, action: Action, actionTypes: any, enableLo
       if (enableLogInDev) {
         debug(LOAD, key);
       }
-      setValueDeep(state, ['loadings', key], increase, true);
+      setValueDeep(state, [key, 'loading'], increase, true);
       return state;
     }
     case SET: {

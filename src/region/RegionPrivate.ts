@@ -12,22 +12,22 @@ class RegionPrivate extends RegionInitial {
 
   private_getLoadings = (key: BaseKey) => {
     const { private_getState, strictLoading } = this;
-    return mapValues(private_getState(), 'loadings', key, (i: any) => formatLoading(i, strictLoading));
+    return mapValues(private_getState(), 'loading', key, (i: any) => formatLoading(i, strictLoading));
   }
 
   private_getFetchTimes = (key: BaseKey) => {
     const { private_getState } = this;
-    return mapValues(private_getState(), 'fetchTimes', key);
+    return mapValues(private_getState(), 'fetchTime', key);
   }
 
   private_getResults = (key: BaseKey) => {
     const { private_getState } = this;
-    return mapValues(private_getState(), 'results', key);
+    return mapValues(private_getState(), 'result', key);
   }
 
   private_getErrors = (key: BaseKey) => {
     const { private_getState } = this;
-    return mapValues(private_getState(), 'errors', key);
+    return mapValues(private_getState(), 'error', key);
   }
 }
 

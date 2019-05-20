@@ -38,10 +38,12 @@ describe('private_reducer', () => {
     const result = 'a user';
     const state = private_reducer({}, { type: SET, payload: { key: 'user', result } });
     expect(state).toEqual({
-      errors: { user: undefined },
-      fetchTimes: { user: 0 },
-      loadings: { user: 0 },
-      results: { user: 'a user' },
+      user: {
+        error: undefined,
+        fetchTime: 0,
+        loading: 0,
+        result: 'a user',
+      },
     });
   });
 
@@ -49,10 +51,12 @@ describe('private_reducer', () => {
     const result = [{ id: 1, name: 'zhangcong' }, { id: 2, name: 'milly' }];
     const state = private_reducer({}, { type: SET, payload: { key: 'user', result } });
     expect(state).toEqual({
-      errors: { user: undefined },
-      fetchTimes: { user: 0 },
-      loadings: { user: 0 },
-      results: { user: [{ id: 1, name: 'zhangcong' }, { id: 2, name: 'milly' }] },
+      user: {
+        error: undefined,
+        fetchTime: 0,
+        loading: 0,
+        result: [{ id: 1, name: 'zhangcong' }, { id: 2, name: 'milly' }],
+      },
     });
   });
 
@@ -60,10 +64,12 @@ describe('private_reducer', () => {
     const result = () => 'should not be string';
     const state = private_reducer({}, { type: SET, payload: { key: 'user', result } });
     expect(state).toEqual({
-      errors: { user: undefined },
-      fetchTimes: { user: 0 },
-      loadings: { user: 0 },
-      results: { user: result },
+      user: {
+        error: undefined,
+        fetchTime: 0,
+        loading: 0,
+        result,
+      },
     });
   });
 
@@ -71,9 +77,12 @@ describe('private_reducer', () => {
     const error = new Error('error');
     const state = private_reducer({}, { type: SET, payload: { key: 'user', error } });
     expect(state).toEqual({
-      errors: { user: error },
-      fetchTimes: { user: 0 },
-      loadings: { user: 0 },
+      user: {
+        error,
+        fetchTime: 0,
+        loading: 0,
+        result: undefined,
+      },
     });
   });
 
@@ -83,10 +92,12 @@ describe('private_reducer', () => {
     const state = private_reducer({}, { type: SET, payload: { key: 'user', result } });
     const stateWithError = private_reducer(state, { type: SET, payload: { key: 'user', error } });
     expect(stateWithError).toEqual({
-      errors: { user: error },
-      fetchTimes: { user: 0 },
-      loadings: { user: 0 },
-      results: { user: 'a user' },
+      user: {
+        error,
+        fetchTime: 0,
+        loading: 0,
+        result: 'a user',
+      },
     });
   });
 });

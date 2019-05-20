@@ -18,7 +18,7 @@ const setState = (nextState: any) => {
   state = nextState;
 };
 
-describe('get', () => {
+describe('private_get', () => {
   test('get things from nothing', () => {
     // NOTE loading is true because we want to display loading ui when state is undefined.
     setState(undefined);
@@ -64,7 +64,7 @@ describe('get', () => {
 
   test('get things from start loading', () => {
     setState({
-      loadings: { a: true },
+      a: { loading: true },
     });
     expect(getLoadings('a')).toEqual(true);
     expect(getResults('a')).toEqual(undefined);
@@ -86,7 +86,7 @@ describe('get', () => {
 
   test('treat undefined', () => {
     setState({
-      loadings: { a: true },
+      a: { loading: true },
     });
     expect(getLoadings('b')).toEqual(true);
     private_setConfig({ strictLoading: false });
@@ -97,9 +97,11 @@ describe('get', () => {
 
   test('get things from stop loading', () => {
     setState({
-      loadings: { a: false },
-      fetchTimes: { a: 999 },
-      results: { a: { name: '66', type: 'cat' } },
+      a: {
+        loading: false,
+        fetchTime: 999,
+        result: { name: '66', type: 'cat' },
+      },
     });
     expect(getLoadings('a')).toEqual(false);
     expect(getResults('a')).toEqual({ name: '66', type: 'cat' });
@@ -133,7 +135,8 @@ describe('get', () => {
 
   test('getLoadings from all resolved', () => {
     setState({
-      loadings: { a: false, b: false },
+      a: { loading: false },
+      b: { loading: false },
     });
     expect(getLoadings(['a', 'b'])).toEqual([false, false]);
   });
@@ -141,8 +144,14 @@ describe('get', () => {
   test('getErrors', () => {
     const errorA = new Error('error a');
     setState({
-      loadings: { a: false, b: false },
-      errors: { a: errorA, b: undefined },
+      a: {
+        loading: false,
+        error: errorA,
+      },
+      b: {
+        loading: false,
+        error: undefined,
+      },
     });
     expect(getErrors(['a', 'b'])).toEqual([errorA, undefined]);
     expect(getErrors('a')).toEqual(errorA);
@@ -152,8 +161,14 @@ describe('get', () => {
 
     const errorB = new Error('error b');
     setState({
-      loadings: { a: false, b: false },
-      errors: { a: errorA, b: errorB },
+      a: {
+        loading: false,
+        error: errorA,
+      },
+      b: {
+        loading: false,
+        error: errorB,
+      },
     });
     expect(getErrors(['a', 'b'])).toEqual([errorA, errorB]);
     expect(getProps(['a', 'b']).error).toEqual('error a, error b');
