@@ -5,7 +5,8 @@ export type ComponentType = RawComponentType | any;
 
 // public
 // useProps
-type BaseKey = string | string[];
+export type SimpleKey = string;
+export type BaseKey = SimpleKey | SimpleKey[];
 interface ComplexKey {
   key?: BaseKey;
   loading?: BaseKey;
@@ -37,8 +38,6 @@ export type Name = string;
 
 // private
 // get
-export type Path = string | string[];
-
 // reducer
 
 // other

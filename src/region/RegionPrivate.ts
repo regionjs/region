@@ -1,6 +1,6 @@
 import RegionInitial from './RegionInitial';
 import { formatLoading, mapValues } from '../util';
-import { Path } from '../types';
+import { BaseKey } from '../types';
 
 class RegionPrivate extends RegionInitial {
   private_getState = () => {
@@ -10,28 +10,24 @@ class RegionPrivate extends RegionInitial {
     return state || {};
   }
 
-  private_getLoadings = (path: Path) => {
+  private_getLoadings = (key: BaseKey) => {
     const { private_getState, strictLoading } = this;
-    const { loadings } = private_getState();
-    return mapValues(loadings, path, (i: any) => formatLoading(i, strictLoading));
+    return mapValues(private_getState(), 'loadings', key, (i: any) => formatLoading(i, strictLoading));
   }
 
-  private_getFetchTimes = (path: Path) => {
+  private_getFetchTimes = (key: BaseKey) => {
     const { private_getState } = this;
-    const { fetchTimes } = private_getState();
-    return mapValues(fetchTimes, path);
+    return mapValues(private_getState(), 'fetchTimes', key);
   }
 
-  private_getResults = (path: Path) => {
+  private_getResults = (key: BaseKey) => {
     const { private_getState } = this;
-    const { results } = private_getState();
-    return mapValues(results, path);
+    return mapValues(private_getState(), 'results', key);
   }
 
-  private_getErrors = (path: Path) => {
+  private_getErrors = (key: BaseKey) => {
     const { private_getState } = this;
-    const { errors } = private_getState();
-    return mapValues(errors, path);
+    return mapValues(private_getState(), 'errors', key);
   }
 }
 

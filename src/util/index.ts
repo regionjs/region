@@ -6,5 +6,5 @@ export { isAsync } from './isAsync';
 export { isValidConnectKey } from './isValidConnectKey';
 export { debug, group } from './logger';
 export { reducer } from './reducer';
-export { mapValues, formatLoading, selectProps } from './selectProps';
+export { mapValues, formatLoading, selectProps, formatKeys } from './selectProps';
 export { shouldThrottle } from './shouldThrottle';

@@ -1,4 +1,4 @@
-import { Props, Path, Loading, SelectPropsKey, Results, SelectPropsParams } from '../types';
+import { Key, State, Props, BaseKey, Loading, SelectPropsKey, Results, SelectPropsParams, SimpleKey } from '../types';
 
 const selectLoading = (loadings: Loading[]) => loadings.reduce((a, b) => a || b, false);
 
@@ -47,11 +47,46 @@ export const formatLoading = (loading?: boolean, strictLoading?: boolean) => {
   return false;
 };
 
-type Values = {[key: string]: any};
+const getValue = (state: State, category: string, key: SimpleKey) => {
+  const values = state[category] || {};
+  return values[key];
+};
 
-export const mapValues = (values: Values = {}, path: Path, format = (v: any) => v) => {
-  if (Array.isArray(path)) {
-    return path.map(i => values[i]).map(format);
+export const mapValues = (state: State = {}, category: string, key: BaseKey, format = (v: any) => v) => {
+  if (Array.isArray(key)) {
+    return key.map(i => getValue(state, category, i)).map(format);
   }
-  return format(values[path]);
+  return format(getValue(state, category, key));
+};
+
+export const formatKeys = (key: Key) => {
+  if (typeof key === 'string') {
+    return {
+      keys: [key],
+      loadings: [key],
+      results: [key],
+      fetchTimes: [key],
+      errors: [key],
+    };
+  }
+  if (Array.isArray(key)) {
+    return {
+      keys: key,
+      loadings: key,
+      results: key,
+      fetchTimes: key,
+      errors: key,
+    };
+  }
+  let keys = key.result || key.key || [];
+  let loadings = key.loading || key.key || [];
+  let results = key.result || key.key || [];
+  let fetchTimes = key.fetchTime || key.key || [];
+  let errors = key.error || key.key || [];
+  keys = Array.isArray(keys) ? keys : [keys];
+  loadings = Array.isArray(loadings) ? loadings : [loadings];
+  results = Array.isArray(results) ? results : [results];
+  fetchTimes = Array.isArray(fetchTimes) ? fetchTimes : [fetchTimes];
+  errors = Array.isArray(errors) ? errors : [errors];
+  return { keys, loadings, results, fetchTimes, errors };
 };
