@@ -7,15 +7,20 @@ interface SetKeyParams {
   key: Key;
   fetchTime: FetchTime;
   result: Result;
+  results: any;
+  id: any;
   error: Error;
 }
 
 const increase = (v: number = 0) => v + 1;
 const decrease = (v: number = 0) => v - 1 > 0 ? v - 1 : 0;
 
-const setKey = ({ state, key, fetchTime, result, error }: SetKeyParams) => {
+const setKey = ({ state, key, result, results, id, fetchTime, error }: SetKeyParams) => {
   setValueDeep(state, [key, 'fetchTime'], fetchTime);
-  if (result !== undefined) {
+  if (id !== undefined) {
+    setValueDeep(state, [key, 'results'], results);
+    setValueDeep(state, [key, 'id'], id);
+  } else if (result !== undefined) {
     setValueDeep(state, [key, 'result'], result);
   }
   setValueDeep(state, [key, 'error'], error); // as well error ===  undefined
@@ -35,9 +40,9 @@ export const reducer = (state: State, action: Action, actionTypes: any, enableLo
       return state;
     }
     case SET: {
-      const { key, result, error } = action.payload;
+      const { key, result, results, id, error } = action.payload;
       const fetchTime = new Date().getTime();
-      const nextState = setKey({ state, key, fetchTime, result, error });
+      const nextState = setKey({ state, key, result, results, id, fetchTime, error });
       if (enableLogInDev) {
         if (error) {
           console.error(error.message);

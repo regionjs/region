@@ -5,7 +5,6 @@ import {
   BaseKey,
   Loading,
   Result,
-  SelectPropsParams,
   SimpleKey,
   SimpleKeys,
 } from '../types';
@@ -46,16 +45,16 @@ export const formatLoading = (loading?: boolean, strictLoading?: boolean) => {
   return false;
 };
 
-const getValue = (state: State, category: string, key: SimpleKey) => {
+const getValue = (state: State, key: SimpleKey) => {
   const values = state[key] || {};
-  return values[category];
+  return values;
 };
 
-export const mapValues = (state: State = {}, category: string, key: BaseKey, format = (v: any) => v) => {
+export const mapValues = (state: State = {}, key: BaseKey, format = (v: any) => v) => {
   if (Array.isArray(key)) {
-    return key.map(i => getValue(state, category, i)).map(format);
+    return key.map(i => getValue(state, i)).map(format);
   }
-  return format(getValue(state, category, key));
+  return format(getValue(state, key));
 };
 
 export const formatKeys = (key: Key) => {

@@ -2,6 +2,7 @@ import * as shallowEqual from 'shallowequal';
 import RegionPrivate from './RegionPrivate';
 import { formatResult, shouldThrottle, isAsync, deprecate, formatKeys, selectLoading, selectResult, selectFetchTime, selectError } from '../util';
 import { Props, EntityName, Result, AsyncFunction, Params, Key, GetDerivedStateFromProps, LoadOption } from '../types';
+import { formatResultWithId } from '../util/formatResult';
 
 interface ToPromiseParams {
   asyncFunction: AsyncFunction;
@@ -34,13 +35,19 @@ class RegionPublic extends RegionPrivate {
    * @param option.format (result, snapshot) => any | A function format result to other data structure
    */
   setBy = (key: EntityName, option: LoadOption = {}) => {
-    const { format } = option;
+    const { format, id } = option;
     const { private_store, private_getResults: getResults, private_actionTypes } = this;
     const { SET } = private_actionTypes;
     const { dispatch } = private_store;
     const snapshot = getResults(key);
     // TODO optimize setBy
     return (result: Result) => {
+      if (id !== undefined) {
+        // TODO TEST ME
+        const formattedResult = formatResultWithId({ result, snapshot, format, id });
+        dispatch({ type: SET, payload: { key, results: formattedResult, id } });
+        return formattedResult[id];
+      }
       const formattedResult = formatResult({ result, snapshot, format });
       dispatch({ type: SET, payload: { key, result: formattedResult } });
       return formattedResult;
@@ -70,12 +77,13 @@ class RegionPublic extends RegionPrivate {
    * @param option.forceUpdate true | false
    */
   loadBy = (key: EntityName, asyncFunction: AsyncFunction, option: LoadOption = {}) => {
-    const { forceUpdate, format, id } = option;
-    const { private_store, private_getResults: getResults, private_actionTypes, expiredTime, private_getFetchTimes: getFetchTimes } = this;
+    const { forceUpdate } = option;
+    const { private_store, private_getResults: getResults, private_actionTypes, expiredTime, private_getFetchTimes: getFetchTimes, setBy } = this;
     const { LOAD, SET } = private_actionTypes;
     const { dispatch } = private_store;
     const snapshot = getResults(key);
-    // TODO optimize loadBy
+    const setKey = setBy(key, option);
+
     return async (params: Params) => {
       if (shouldThrottle({ asyncFunction, forceUpdate, key, snapshot, expiredTime, getFetchTimes })) {
         deprecate('Snapshot inject is deprecated. If you do not want it load, you can simply not load it. You can get fetchTime in getProps method to control your load function.'); // tslint:disable max-line-length
@@ -84,13 +92,7 @@ class RegionPublic extends RegionPrivate {
       dispatch({ type: LOAD, payload: { key } });
       try {
         const result = await toPromise({ asyncFunction, params });
-        const formattedResult = formatResult({ result, snapshot, format, id });
-        dispatch({ type: SET, payload: { key, result: formattedResult } });
-        if (id !== undefined) {
-          // TODO TEST ME
-          return formattedResult[id];
-        }
-        return formattedResult;
+        return setKey(result);
       } catch (error) {
         dispatch({ type: SET, payload: { key, result: undefined, error } });
         return undefined;
