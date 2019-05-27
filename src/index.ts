@@ -1,3 +1,4 @@
-import Region from './region'; // tslint:disable-line import-name
+import Region from './Region';
+import Prop from './Prop';
 
-export { Region };
+export { Region, Prop };

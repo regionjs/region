@@ -1,4 +1,3 @@
-/* tslint:disable: max-file-line-count */
 import { region } from './region';
 import * as shallowEqual from 'shallowequal';
 

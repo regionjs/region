@@ -3,10 +3,10 @@ import * as api from '..';
 describe('export api', () => {
   test('api contains Region and provide', () => {
     // @ts-ignore
-    const { __esModule, Region, provide, ...rest } = api;
+    const { __esModule, Region, Prop, ...rest } = api;
     expect(__esModule || __esModule === undefined).toBe(true);
     expect(typeof Region).toBe('function');
-    expect(typeof provide).toBe('undefined');
+    expect(typeof Prop).toBe('function');
     expect(rest).toEqual({});
   });
   test('region contains many api', () => {
