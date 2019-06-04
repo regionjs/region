@@ -1,50 +1,42 @@
 import Region from '../Region';
-import { AsyncFunction, LoadOption, Result } from '../types';
+import { AsyncFunction, Config, LoadOption, Result } from '../types';
 
-class Prop extends Region {
+class Prop {
+  region: Region;
 
-  set = (result: Result, option: LoadOption = {}) => {
-    const { name } = this;
-    // @ts-ignore
-    return super.set(name, result, option);
+  constructor(config: Config) {
+    this.region = new Region(config);
   }
 
-  // @ts-ignore
+  set = (result: Result, option: LoadOption) => {
+    const { region } = this;
+    return region.set(region.name, result, option);
+  }
+
   setBy = (option: LoadOption = {}) => {
-    const { name } = this;
-    // @ts-ignore
-    return super.setBy(name, option);
+    const { region } = this;
+    return region.setBy(region.name, option);
   }
 
-  load = async (asyncFunction: AsyncFunction, option: LoadOption = {}) => {
-    const { name } = this;
-    // @ts-ignore
-    return super.load(name, asyncFunction, option);
+  load = async (asyncFunction: AsyncFunction, option: LoadOption) => {
+    const { region } = this;
+    return region.load(region.name, asyncFunction, option);
   }
 
-  // @ts-ignore
-  loadBy = async (asyncFunction: AsyncFunction, option: LoadOption = {}) => {
-    const { name } = this;
-    // @ts-ignore
-    return super.loadBy(name, asyncFunction, option);
+  loadBy = async (asyncFunction: AsyncFunction, option: LoadOption) => {
+    const { region } = this;
+    return region.loadBy(region.name, asyncFunction, option);
   }
 
   getProps = () => {
-    const { name } = this;
-    // @ts-ignore
-    return super.getProps(name);
+    const { region } = this;
+    return region.getProps(region.name);
   }
 
   useProps = () => {
-    const { name } = this;
-    // @ts-ignore
-    return super.useProps(name);
+    const { region } = this;
+    return region.useProps(region.name);
   }
-
-  // @ts-ignore
-  connect = undefined;
-  // @ts-ignore
-  connectWith = undefined;
 }
 
 export default Prop;
