@@ -18,12 +18,12 @@ class Prop {
     return region.setBy(region.name, option);
   }
 
-  load = async (asyncFunction: AsyncFunction, option: LoadOption) => {
+  load = (asyncFunction: AsyncFunction, option: LoadOption) => {
     const { region } = this;
     return region.load(region.name, asyncFunction, option);
   }
 
-  loadBy = async (asyncFunction: AsyncFunction, option: LoadOption) => {
+  loadBy = (asyncFunction: AsyncFunction, option: LoadOption) => {
     const { region } = this;
     return region.loadBy(region.name, asyncFunction, option);
   }

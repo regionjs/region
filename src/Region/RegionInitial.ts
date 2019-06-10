@@ -7,7 +7,7 @@ class RegionInitial {
   private_store: Store;
   private_actionTypes = getActionTypes('_');
   expiredTime = 0;
-  enableLog = true;
+  enableLog = false;
   strictLoading = true;
   DefaultLoading?: any;
   DefaultError?: any;
@@ -46,12 +46,15 @@ class RegionInitial {
       this.enableLog = enableLog;
     }
     if (strictLoading !== undefined) {
+      deprecate('strictLoading is deprecated. set an initialValue to prevent it loading if you want to.');
       this.strictLoading = strictLoading;
     }
     if (DefaultLoading !== undefined) {
+      deprecate('DefaultLoading is deprecated to make migration from connect to useProps fluently.');
       this.DefaultLoading = DefaultLoading;
     }
     if (DefaultError !== undefined) {
+      deprecate('DefaultError is deprecated to make migration from connect to useProps fluently.');
       this.DefaultError = DefaultError;
     }
   }

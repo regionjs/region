@@ -1,3 +1,3 @@
 import { Region } from '../..';
 
-export const region = new Region({ name: 'region' });
+export const region = new Region({ name: 'region', enableLog: true });
