@@ -24,7 +24,7 @@ const setKey = ({ state, key, result, results, id, fetchTime, error }: SetKeyPar
     setValueDeep(state, [key, 'result'], result);
   }
   setValueDeep(state, [key, 'error'], error); // as well error ===  undefined
-  setValueDeep(state, [key, 'loading'], decrease, true);
+  setValueDeep(state, [key, 'loading'], decrease);
   return state;
 };
 
@@ -36,17 +36,17 @@ export const reducer = (state: State, action: Action, actionTypes: any, enableLo
       if (enableLogInDev) {
         debug(LOAD, key);
       }
-      setValueDeep(state, [key, 'loading'], increase, true);
+      setValueDeep(state, [key, 'loading'], increase);
       return state;
     }
     case SET: {
       const { key, result, results, id, error } = action.payload;
       const fetchTime = new Date().getTime();
       const nextState = setKey({ state, key, result, results, id, fetchTime, error });
+      if (error) {
+        console.error(error.message);
+      }
       if (enableLogInDev) {
-        if (error) {
-          console.error(error.message);
-        }
         group({ actionType: SET, key, result, error, nextState });
       }
       return nextState;

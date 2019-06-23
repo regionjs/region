@@ -8,9 +8,9 @@ describe('reducerPrototype', () => {
   });
   test('assignValueDeep deep path func', () => {
     const state = {};
-    setValueDeep(state, ['a', 'b'], () => 1, true);
+    setValueDeep(state, ['a', 'b'], () => 1);
     expect(state).toEqual({ a: { b: 1 } });
-    setValueDeep(state, ['a', 'b'], (v: number) => v + 1, true);
+    setValueDeep(state, ['a', 'b'], (v: number) => v + 1);
     expect(state).toEqual({ a: { b: 2 } });
   });
 });

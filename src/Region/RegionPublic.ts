@@ -1,7 +1,6 @@
-import * as shallowEqual from 'shallowequal';
 import RegionPrivate from './RegionPrivate';
 import { formatResult, shouldThrottle, isAsync, deprecate, formatKeys, selectLoading, selectResult, selectFetchTime, selectError } from '../util';
-import { Props, EntityName, Result, AsyncFunction, Params, Key, GetDerivedStateFromProps, LoadOption } from '../types';
+import { EntityName, Result, AsyncFunction, Params, Key, LoadOption, SimpleKey } from '../types';
 import { formatResultWithId } from '../util/formatResult';
 
 interface ToPromiseParams {
@@ -116,61 +115,11 @@ class RegionPublic extends RegionPrivate {
     return Object.assign({ loading, fetchTime, error }, resultMap);
   }
 
-  unstable_effect = (from: Key, to: EntityName, getDerivedStateFromProps: GetDerivedStateFromProps) => {
-    const { private_store, private_actionTypes, getProps, private_getResults, load } = this;
-    const { SET, LOAD } = private_actionTypes;
-    const { dispatch } = private_store;
-    let props: Props = {};
-    const handleSubscribe = () => {
-      const nextProps = getProps(from);
-      if (shallowEqual(props, nextProps)) {
-        return;
-      }
-      const prevLoading = props.loading;
-      props = nextProps;
-      const { loading, error } = props;
-      // NOTE it is a recurse, assign props before dispatch
-      // something begin to load
-      if (prevLoading === false && loading === true) {
-        // set a snapshot first otherwise effect is outdated, this should be think as optimistic-ui
-        // TODO optimize code & add cases
-        try {
-          const snapshot = private_getResults(to);
-          const result = getDerivedStateFromProps(props, snapshot);
-          if (!isAsync(result)) {
-            dispatch({ type: SET, payload: { key: to, result } });
-          }
-        } catch (error) {
-          dispatch({ type: SET, payload: { key: to, result: undefined, error } });
-        }
-        // NOTE LOAD after SET
-        dispatch({ type: LOAD, payload: { key: to } });
-        return;
-      }
-
-      // something went error
-      if (error) {
-        dispatch({ type: SET, payload: { key: to, result: undefined, error: new Error(error) } });
-        return;
-      }
-
-      // something resolved
-      if (loading === false) {
-        const snapshot = private_getResults(to);
-        try {
-          const result = getDerivedStateFromProps(props, snapshot);
-          if (!isAsync(result)) {
-            dispatch({ type: SET, payload: { key: to, result } });
-            return;
-          }
-          load(to, result);
-        } catch (error) {
-          dispatch({ type: SET, payload: { key: to, result: undefined, error } });
-        }
-      }
-    };
-    handleSubscribe();
-    private_store.subscribe(handleSubscribe);
+  getValue = (key: SimpleKey) => {
+    if (typeof key !== 'string') {
+      throw Error('the key of getValue should be string');
+    }
+    return this.private_getResults(key);
   }
 }
 

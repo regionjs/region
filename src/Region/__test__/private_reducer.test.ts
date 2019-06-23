@@ -61,14 +61,14 @@ describe('private_reducer', () => {
   });
 
   test('function', () => {
-    const result = () => 'should not be string';
+    const result = () => 'should be string';
     const state = private_reducer({}, { type: SET, payload: { key: 'user', result } });
     expect(state).toEqual({
       user: {
         error: undefined,
         fetchTime: 0,
         loading: 0,
-        result,
+        result: 'should be string',
       },
     });
   });

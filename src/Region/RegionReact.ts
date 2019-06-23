@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import * as shallowEqual from 'shallowequal';
 import RegionPublic from './RegionPublic';
 import { hoc, isValidConnectKey } from '../util';
-import { Props, Key, DisplayType, ConnectOption } from '../types';
+import { Props, Key, DisplayType, ConnectOption, SimpleKey } from '../types';
 
 const Empty = () => null;
 
@@ -69,6 +69,35 @@ class RegionReact extends RegionPublic {
       [],
     );
     return props;
+  }
+
+  useValue = (key: SimpleKey) => {
+    const { private_store, getValue } = this;
+    const [value, setValue] = useState(getValue(key));
+    useEffect(
+      () => {
+        let didUnsubscribe = false;
+
+        const checkForUpdates = () => {
+          if (didUnsubscribe) {
+            return;
+          }
+          setValue(getValue(key));
+        };
+
+        const unsubscribe = private_store.subscribe(checkForUpdates);
+
+        checkForUpdates();
+
+        return () => {
+          didUnsubscribe = true;
+          unsubscribe();
+        };
+      },
+      [],
+    );
+    return value;
+
   }
 }
 

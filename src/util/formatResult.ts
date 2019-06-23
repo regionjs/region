@@ -1,6 +1,9 @@
 import { FormatResultParams, FormatResultWithIdParams } from '../types';
 
 export const formatResult = ({ result, snapshot, format }: FormatResultParams) => {
+  if (typeof result === 'function') {
+    return result(snapshot);
+  }
   const formatted = typeof format === 'function' ? format(result, snapshot) : result;
   return formatted;
 };

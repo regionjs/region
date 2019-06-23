@@ -15,9 +15,9 @@ describe('set', () => {
   });
 
   test('function', () => {
-    const target = () => 'should not be string';
+    const target = () => 'should be string';
     const result = set('user', target);
-    expect(result).toBe(target);
+    expect(result).toBe('should be string');
   });
 
   test('reset', () => {
