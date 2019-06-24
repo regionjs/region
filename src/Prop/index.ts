@@ -4,11 +4,11 @@ import { AsyncFunction, Config, LoadOption, Result } from '../types';
 class Prop {
   region: Region;
 
-  constructor(config: Config) {
+  constructor(config: Config = 'data') {
     this.region = new Region(config);
   }
 
-  set = (result: Result, option: LoadOption) => {
+  set = (result: Result, option: LoadOption= {}) => {
     const { region } = this;
     return region.set(region.name, result, option);
   }
@@ -18,12 +18,12 @@ class Prop {
     return region.setBy(region.name, option);
   }
 
-  load = (asyncFunction: AsyncFunction, option: LoadOption) => {
+  load = (asyncFunction: AsyncFunction, option: LoadOption= {}) => {
     const { region } = this;
     return region.load(region.name, asyncFunction, option);
   }
 
-  loadBy = (asyncFunction: AsyncFunction, option: LoadOption) => {
+  loadBy = (asyncFunction: AsyncFunction, option: LoadOption= {}) => {
     const { region } = this;
     return region.loadBy(region.name, asyncFunction, option);
   }
@@ -33,9 +33,19 @@ class Prop {
     return region.getProps(region.name);
   }
 
+  getValue = () => {
+    const { region } = this;
+    return region.getProps(region.name);
+  }
+
   useProps = () => {
     const { region } = this;
     return region.useProps(region.name);
+  }
+
+  useValue = () => {
+    const { region } = this;
+    return region.useValue(region.name);
   }
 }
 
