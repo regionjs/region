@@ -20,15 +20,24 @@ English | [中文](https://github.com/regionjs/region-core/blob/master/docs/READ
 - install
 
 ```bash
-npm i region-shortcut
-// or
 npm i region-core
+```
+
+- Create a region
+
+```jsx harmony
+import { Region } from 'region-core';
+
+const region = new Region();
+const { set, load, useProps } = region;
+
+export { set, load, useProps };
 ```
 
 - Create your Component
 
 ```jsx harmony
-import { useProps } from 'region-shortcut';
+import { set, load, useProps } from './region';
 import { fetchUser } from './fetch'; // somewhere with axios
 
 load('user', fetchUser);
@@ -44,7 +53,7 @@ export default Display;
 - or
 
 ```jsx harmony
-import { connect } from 'region-shortcut';
+import { set, load, useProps } from './region';
 import { fetchUser, fetchFollower } from './fetch'; // somewhere with axios
 
 load('user', fetchUser);
@@ -73,7 +82,7 @@ export default Display;
 - Create your Component
 
 ```jsx harmony
-import { connect } from 'region-shortcut';
+import { connect } from './region';
 
 const Display = ({ user }) => <div>{user}</div>
 
@@ -83,7 +92,7 @@ export default connect('user')(Display);
 - or
 
 ```jsx harmony
-import { connect } from 'region-shortcut';
+import { connect } from './region';
 
 const Display = ({ loading, error, user, follower }) => (
   <div>

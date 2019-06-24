@@ -20,15 +20,24 @@
 - 安装
 
 ```bash
-npm i region-shortcut
-// or
 npm i region-core
+```
+
+- 创建一个 region
+
+```jsx harmony
+import { Region } from 'region-core';
+
+const region = new Region();
+const { set, load, useProps } = region;
+
+export { set, load, useProps };
 ```
 
 - 创建你的组件
 
 ```jsx harmony
-import { useProps } from 'region-shortcut';
+import { set, load, useProps } from './region';
 import { fetchUser } from './fetch'; // somewhere with axios
 
 load('user', fetchUser);
@@ -44,7 +53,7 @@ export default Display;
 - 或者
 
 ```jsx harmony
-import { connect } from 'region-shortcut';
+import { set, load, useProps } from './region';
 import { fetchUser, fetchFollower } from './fetch'; // somewhere with axios
 
 load('user', fetchUser);
@@ -73,7 +82,7 @@ export default Display;
 - 创建你的组件
 
 ```jsx harmony
-import { connect } from 'region-shortcut';
+import { connect } from './region';
 
 const Display = ({ user }) => <div>{user}</div>
 
@@ -83,7 +92,7 @@ export default connect('user')(Display);
 - 或者
 
 ```jsx harmony
-import { connect } from 'region-shortcut';
+import { connect } from './region';
 
 const Display = ({ loading, error, user, follower }) => (
   <div>
