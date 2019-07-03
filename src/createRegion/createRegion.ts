@@ -1,11 +1,11 @@
-import Region from '../Region';
+import CombinedRegion from '../CombinedRegion';
 import { AsyncFunction, Config, LoadOption, Result } from '../types';
 
-class Prop {
-  region: Region;
+export class Region {
+  region: CombinedRegion;
 
   constructor(config: Config = 'data') {
-    this.region = new Region(config);
+    this.region = new CombinedRegion(config);
   }
 
   set = (result: Result, option: LoadOption= {}) => {
@@ -49,4 +49,12 @@ class Prop {
   }
 }
 
-export default Prop;
+const createRegion = (initialValue: any) => {
+  const region = new Region();
+  if (initialValue !== undefined) {
+    region.set(initialValue);
+  }
+  return region;
+};
+
+export default createRegion;

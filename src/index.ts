@@ -1,5 +1,6 @@
-import Region from './Region';
-import Prop from './Prop';
+import CombinedRegion from './CombinedRegion';
+import createRegion from './createRegion/createRegion';
+import createLocalStorageRegion from './createRegion/createLocalStorageRegion';
 
 export { createContext, useContext } from './Context';
-export { Region, Prop };
+export { CombinedRegion, CombinedRegion as Region, createRegion, createLocalStorageRegion };

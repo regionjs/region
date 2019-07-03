@@ -51,7 +51,7 @@ export interface LoadOption {
 
 // effect
 export type GetDerivedStateFromProps = (props: Props, snapshot: any) => any;
-// Region config
+// CombinedRegion config
 export type Name = string;
 
 export interface StrictConfig {

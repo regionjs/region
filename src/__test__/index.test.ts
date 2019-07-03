@@ -1,16 +1,20 @@
 import * as api from '..';
 
 describe('export api', () => {
-  test('api contains Region and provide', () => {
+  test('api contains', () => {
     // @ts-ignore
-    const { __esModule, Region, Prop, createContext, useContext, ...rest } = api;
+    const { __esModule, CombinedRegion, Region, createRegion, createLocalStorageRegion, createContext, useContext, ...rest } = api;
     expect(__esModule || __esModule === undefined).toBe(true);
+    expect(typeof CombinedRegion).toBe('function');
     expect(typeof Region).toBe('function');
-    expect(typeof Prop).toBe('function');
+    expect(typeof createRegion).toBe('function');
+    expect(typeof createLocalStorageRegion).toBe('function');
+    expect(typeof createContext).toBe('function');
+    expect(typeof useContext).toBe('function');
     expect(rest).toEqual({});
   });
   test('region contains many api', () => {
-    const { Region } = api;
+    const { CombinedRegion } = api;
     const {
       reset, set, setBy, load, loadBy, connect, connectWith, useProps, useValue, getProps, getValue,
       name, private_store, enableLog, expiredTime, strictLoading,
@@ -19,7 +23,7 @@ describe('export api', () => {
       // @ts-ignore test that they are not exists
       getLoading, getResults, getFetchTimes, getError, setConfig,
       ...rest
-    } = new Region('name');
+    } = new CombinedRegion('name');
     expect(typeof reset).toBe('function');
     expect(typeof set).toBe('function');
     expect(typeof setBy).toBe('function');

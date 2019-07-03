@@ -1,11 +1,10 @@
-import { createContext as createReactContext, useContext as useReactContext } from 'react';
-import Prop from '../Prop';
+import { createContext as createReactContext, useContext as useReactContext, Context as ReactContext } from 'react';
+import createRegion, { Region } from '../createRegion/createRegion';
 
 export const createContext = (defaultValue: any) => {
   const symbol = Symbol();
   const Context = createReactContext(symbol) as any;
-  const region = new Prop('data');
-  region.set(defaultValue);
+  const region = createRegion(defaultValue);
   Context.write = region.set;
   Context.read = region.getValue;
   Context.symbol = symbol;
@@ -13,7 +12,12 @@ export const createContext = (defaultValue: any) => {
   return Context;
 };
 
-export const useContext = (Context: any) => {
+interface ContextType extends ReactContext<any> {
+  symbol: Symbol;
+  region: Region;
+}
+
+export const useContext = (Context: ContextType) => {
   const { region, symbol } = Context;
   const providedValue = useReactContext(Context);
   const value = region.useValue();
