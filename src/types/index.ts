@@ -41,12 +41,15 @@ export type Result = any;
 export type AsyncFunction = any;
 export type Params = any;
 type Format = (result: any, snapshot: any) => any;
+type Reducer = (state: any, action: any, params: any) => any;
 
 export interface LoadOption {
   format?: Format;
+  reducer?: Reducer;
   forceUpdate?: boolean;
   params?: Params;
   id?: string;
+  delay?: boolean;
 }
 
 // effect

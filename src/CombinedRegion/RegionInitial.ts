@@ -3,16 +3,16 @@ import { deprecate, getActionTypes, reducer } from '../util';
 import { State, Action, Config, StrictConfig } from '../types';
 
 class RegionInitial {
-  name = '_';
+  name = 'region';
   private_store: Store;
-  private_actionTypes = getActionTypes('_');
+  private_actionTypes = getActionTypes('region');
   expiredTime = 0;
   enableLog = false;
   strictLoading = true;
   DefaultLoading?: any;
   DefaultError?: any;
 
-  constructor(config: Config) {
+  constructor(config?: Config) {
     if (typeof config === 'object') {
       // TODO decide to fix it or not
       this.private_setConfig(config as StrictConfig);
@@ -37,12 +37,14 @@ class RegionInitial {
     if (typeof name === 'string') {
       this.name = name;
       this.private_actionTypes = getActionTypes(name);
+      this.enableLog = true;
     }
     if (expiredTime !== undefined) {
       deprecate('expiredTime is deprecated. You can get fetchTime in getProps method to control your load function.');
       this.expiredTime = expiredTime;
     }
     if (enableLog !== undefined) {
+      deprecate('enableLog is deprecated. You can set name to enableLog.');
       this.enableLog = enableLog;
     }
     if (strictLoading !== undefined) {

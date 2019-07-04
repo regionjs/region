@@ -1,51 +1,51 @@
 import CombinedRegion from '../CombinedRegion';
-import { AsyncFunction, Config, LoadOption, Result } from '../types';
+import { AsyncFunction, LoadOption, Result } from '../types';
 
 export class Region {
   region: CombinedRegion;
 
-  constructor(config: Config = 'data') {
-    this.region = new CombinedRegion(config);
+  constructor() {
+    this.region = new CombinedRegion();
   }
 
   set = (result: Result, option: LoadOption= {}) => {
     const { region } = this;
-    return region.set(region.name, result, option);
+    return region.set('data', result, option);
   }
 
   setBy = (option: LoadOption = {}) => {
     const { region } = this;
-    return region.setBy(region.name, option);
+    return region.setBy('data', option);
   }
 
   load = (asyncFunction: AsyncFunction, option: LoadOption= {}) => {
     const { region } = this;
-    return region.load(region.name, asyncFunction, option);
+    return region.load('data', asyncFunction, option);
   }
 
   loadBy = (asyncFunction: AsyncFunction, option: LoadOption= {}) => {
     const { region } = this;
-    return region.loadBy(region.name, asyncFunction, option);
+    return region.loadBy('data', asyncFunction, option);
   }
 
   getProps = () => {
     const { region } = this;
-    return region.getProps(region.name);
+    return region.getProps('data');
   }
 
   getValue = () => {
     const { region } = this;
-    return region.getProps(region.name);
+    return region.getProps('data');
   }
 
   useProps = () => {
     const { region } = this;
-    return region.useProps(region.name);
+    return region.useProps('data');
   }
 
   useValue = () => {
     const { region } = this;
-    return region.useValue(region.name);
+    return region.useValue('data');
   }
 }
 
