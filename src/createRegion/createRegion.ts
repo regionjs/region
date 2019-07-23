@@ -35,7 +35,7 @@ export class Region {
 
   getValue = () => {
     const { region } = this;
-    return region.getProps('data');
+    return region.getValue('data');
   }
 
   useProps = () => {
