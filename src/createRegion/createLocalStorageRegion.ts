@@ -1,6 +1,6 @@
 import createRegion from './createRegion';
 
-const localStorage = window && window.localStorage;
+const localStorage = typeof window === 'object' && window.localStorage;
 
 type Key = string;
 type Value = any;
@@ -25,6 +25,7 @@ const getLocalStorageState = (key: Key, fallbackValue: Value) => {
       setLocalStorageState(key, fallbackValue);
       return fallbackValue;
     }
+    // @ts-ignore
     return JSON.parse(jsonString);
   } catch (e) {
     setLocalStorageState(key, fallbackValue);
@@ -45,6 +46,10 @@ const createLocalStorageRegion = (key: Key, fallbackValue: Value) => {
     setLocalStorageState(key, valueOrFunc);
     regionSet(valueOrFunc);
   };
+  typeof window === 'object' && window.addEventListener('storage', () => {
+    const value = getLocalStorageState(key, fallbackValue);
+    regionSet(value);
+  });
   return region;
 };
 
