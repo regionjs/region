@@ -116,10 +116,19 @@ class RegionPublic extends RegionPrivate {
   }
 
   getValue = (key: SimpleKey) => {
-    if (typeof key !== 'string') {
-      throw Error('the key of getValue should be string');
-    }
     return this.private_getResults(key);
+  }
+
+  getLoading = (key: SimpleKey) => {
+    return this.private_getLoadings(key);
+  }
+
+  getError = (key: SimpleKey) => {
+    return this.private_getErrors(key);
+  }
+
+  getFetchTime = (key: SimpleKey) => {
+    return this.private_getFetchTimes(key);
   }
 }
 

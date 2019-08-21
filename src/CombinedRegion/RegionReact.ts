@@ -97,7 +97,90 @@ class RegionReact extends RegionPublic {
       [],
     );
     return value;
+  }
 
+  useLoading = (key: SimpleKey) => {
+    const { private_store, getLoading } = this;
+    const [loading, setLoading] = useState(getLoading(key));
+    useEffect(
+      () => {
+        let didUnsubscribe = false;
+
+        const checkForUpdates = () => {
+          if (didUnsubscribe) {
+            return;
+          }
+          setLoading(getLoading(key));
+        };
+
+        const unsubscribe = private_store.subscribe(checkForUpdates);
+
+        checkForUpdates();
+
+        return () => {
+          didUnsubscribe = true;
+          unsubscribe();
+        };
+      },
+      [],
+    );
+    return loading;
+  }
+
+  useError = (key: SimpleKey) => {
+    const { private_store, getError } = this;
+    const [error, setError] = useState(getError(key));
+    useEffect(
+      () => {
+        let didUnsubscribe = false;
+
+        const checkForUpdates = () => {
+          if (didUnsubscribe) {
+            return;
+          }
+          setError(getError(key));
+        };
+
+        const unsubscribe = private_store.subscribe(checkForUpdates);
+
+        checkForUpdates();
+
+        return () => {
+          didUnsubscribe = true;
+          unsubscribe();
+        };
+      },
+      [],
+    );
+    return error;
+  }
+
+  useFetchTime = (key: SimpleKey) => {
+    const { private_store, getFetchTime } = this;
+    const [fetchTime, setFetchTime] = useState(getFetchTime(key));
+    useEffect(
+      () => {
+        let didUnsubscribe = false;
+
+        const checkForUpdates = () => {
+          if (didUnsubscribe) {
+            return;
+          }
+          setFetchTime(getFetchTime(key));
+        };
+
+        const unsubscribe = private_store.subscribe(checkForUpdates);
+
+        checkForUpdates();
+
+        return () => {
+          didUnsubscribe = true;
+          unsubscribe();
+        };
+      },
+      [],
+    );
+    return fetchTime;
   }
 }
 

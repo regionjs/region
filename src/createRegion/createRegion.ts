@@ -38,6 +38,21 @@ export class Region {
     return region.getValue('data');
   }
 
+  getLoading = () => {
+    const { region } = this;
+    return region.getLoading('data');
+  }
+
+  getError = () => {
+    const { region } = this;
+    return region.getError('data');
+  }
+
+  getFetchTime = () => {
+    const { region } = this;
+    return region.getFetchTime('data');
+  }
+
   useProps = () => {
     const { region } = this;
     return region.useProps('data');
@@ -47,9 +62,24 @@ export class Region {
     const { region } = this;
     return region.useValue('data');
   }
+
+  useLoading = () => {
+    const { region } = this;
+    return region.useLoading('data');
+  }
+
+  useError = () => {
+    const { region } = this;
+    return region.useError('data');
+  }
+
+  useFetchTime = () => {
+    const { region } = this;
+    return region.useFetchTime('data');
+  }
 }
 
-const createRegion = (initialValue: any) => {
+const createRegion = (initialValue?: any) => {
   const region = new Region();
   if (initialValue !== undefined) {
     region.set(initialValue);
