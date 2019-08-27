@@ -73,39 +73,6 @@ const Display = () => {
 export default Display;
 ```
 
-<details>
-  <summary>
-    建议你使用 useProps，然而传统的 connect 方式也被支持。
-    点击查看更多。
-  </summary>
-
-- 创建你的组件
-
-```jsx harmony
-import { connect } from './region';
-
-const Display = ({ user }) => <div>{user}</div>
-
-export default connect('user')(Display);
-```
-
-- 或者
-
-```jsx harmony
-import { connect } from './region';
-
-const Display = ({ loading, error, user, follower }) => (
-  <div>
-    {user}
-    {follower}
-    <Button loading={loading} onClick={handleClick} />
-  </div>
-);
-
-export default connect(['user', 'follower'])(Display);
-```
-</details>
-
 ## 文档
 
 [中文文档和最佳实践](https://github.com/regionjs/region-core/blob/master/docs/Document-zh_CN.md)

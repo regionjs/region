@@ -98,6 +98,13 @@ const Enhanced = connect({ loading: 'user', result: ['user', 'follower'] }, { Lo
 // or
 const Display = ({ loading, error, user }) => {...};
 const Enhanced = connect('user')(Display);
+
+// connectWith
+import { connect, connectWith } from 'region-shortcut';
+
+// They are the same
+const Enhanced = connect(key, option)(Display);
+const Enhanced = connect(key, Display, option);
 ```
 
 `loading === true` if `user.loading === true || follower.loading === true`.
@@ -134,7 +141,3 @@ You can set `strictLoading` to `false` to enable a different treat of `loading =
 You can set `DefaultLoading` to use a default Loading Component.
 
 You can set `DefaultError` to use a default Error Component.
-
-### Other Private API
-
-[Private API](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI.md)

@@ -96,6 +96,13 @@ const Enhanced = connect({ loading: 'user', result: ['user', 'follower'] }, { Lo
 // or
 const Display = ({ loading, error, user }) => {...};
 const Enhanced = connect('user')(Display);
+
+// connectWith
+import { connect, connectWith } from 'region-shortcut';
+
+// They are the same
+const Enhanced = connect(key, option)(Display);
+const Enhanced = connect(key, Display, option);
 ```
 
 `loading === true` 当 `user.loading === true || follower.loading === true`。
@@ -132,7 +139,3 @@ const { set, load, connect } = region;
 你可以通过设置 `DefaultLoading` 使用一个默认的 Loading Component。
 
 你可以通过设置 `DefaultError` 使用一个默认的 Error Component。
-
-### Other Private API
-
-[Private API](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI-zh_CN.md)

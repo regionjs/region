@@ -35,7 +35,6 @@ describe('export api', () => {
     expect(typeof useLoading).toBe('function');
     expect(typeof useError).toBe('function');
     expect(typeof useFetchTime).toBe('function');
-    expect(typeof name).toBe('string');
   });
 
   test('CombinedRegion contains many api', () => {

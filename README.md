@@ -73,39 +73,6 @@ const Display = () => {
 export default Display;
 ```
 
-<details>
-  <summary>
-    We recommend to use useProps, but the old connect way is also provided.
-    Click to see more.
-  </summary>
-
-- Create your Component
-
-```jsx harmony
-import { connect } from './region';
-
-const Display = ({ user }) => <div>{user}</div>
-
-export default connect('user')(Display);
-```
-
-- or
-
-```jsx harmony
-import { connect } from './region';
-
-const Display = ({ loading, error, user, follower }) => (
-  <div>
-    {user}
-    {follower}
-    <Button loading={loading} onClick={handleClick} />
-  </div>
-);
-
-export default connect(['user', 'follower'])(Display);
-```
-</details>
-
 ## Docs
 
 [Document And Best Practices](https://github.com/regionjs/region-core/blob/master/docs/Document.md)

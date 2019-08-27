@@ -6,6 +6,16 @@ First of all, you should ensure no deprecated warning before migrate. Then read 
 
 ## Migrate From 8.0 to 8.x
 
+Add `createRegion` and `createLocalStorageRegion` for more common usage.
+
+`Region` is renamed as `CombinedRegion` with same behavior.
+
+Add a group of functions and hooks as `getValue`, `getLoading`, `getError`, `getFetchTime`, `useValue`, `useLoading`, `useError`, `useFetchTime`
+
+`private_setConfig` is deprecated along with some config options since react hooks can take charge of them.
+
+`unstable_effect` is removed since `useEffect` takes it.
+
 Snapshot throttle is deprecated. `expiredTime` in config and `forceUpdate` in load is influenced.
 
 You can use `getProps` to get `fetchTime` and decide whether you should load or not.
