@@ -155,8 +155,8 @@ describe('private_get', () => {
     expect(getErrors(['a', 'b'])).toEqual([errorA, undefined]);
     expect(getErrors('a')).toEqual(errorA);
     expect(getErrors('b')).toEqual(undefined);
-    expect(getProps('a').error).toEqual('error a');
-    expect(getProps(['a', 'b']).error).toEqual('error a');
+    expect(getProps('a').error).toEqual(new Error('error a'));
+    expect(getProps(['a', 'b']).error).toEqual(new Error('error a'));
 
     const errorB = new Error('error b');
     setState({
@@ -170,6 +170,6 @@ describe('private_get', () => {
       },
     });
     expect(getErrors(['a', 'b'])).toEqual([errorA, errorB]);
-    expect(getProps(['a', 'b']).error).toEqual('error a, error b');
+    expect(getProps(['a', 'b']).error).toEqual(new Error('error a, error b'));
   });
 });

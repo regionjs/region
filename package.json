@@ -17,15 +17,15 @@
   },
   "scripts": {
     "build": "rm -rf lib/ && tsc",
-    "check": "npm run build && npm run lint && jest --colors",
-    "codecov": "npm test && codecov",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
-    "prepublishOnly": "npm run check",
-    "test": "jest src --colors --coverage"
+    "test": "jest src --colors --coverage",
+    "test-build": "npm run build && npm run lint && jest --colors",
+    "codecov": "npm test && codecov",
+    "prepublishOnly": "npm run test-build"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run check"
+      "pre-commit": "npm run test-build"
     }
   },
   "jest": {

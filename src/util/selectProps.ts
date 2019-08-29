@@ -14,7 +14,8 @@ export const selectLoading = (loadings: Loading[]) => loadings.reduce((a, b) => 
 export const selectError = (errors: Error[]) => {
   const filteredErrors = errors.filter(e => e);
   if (filteredErrors.length > 0) {
-    return filteredErrors.map(e => e.message).join(', ');
+    const errorMessage = filteredErrors.map(e => e.message).join(', ');
+    return new Error(errorMessage);
   }
   return undefined;
 };

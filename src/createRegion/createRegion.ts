@@ -10,72 +10,72 @@ export class Region {
 
   set = (result: Result, option: LoadOption= {}) => {
     const { region } = this;
-    return region.set('data', result, option);
+    return region.set('value', result, option);
   }
 
   setBy = (option: LoadOption = {}) => {
     const { region } = this;
-    return region.setBy('data', option);
+    return region.setBy('value', option);
   }
 
   load = (asyncFunction: AsyncFunction, option: LoadOption= {}) => {
     const { region } = this;
-    return region.load('data', asyncFunction, option);
+    return region.load('value', asyncFunction, option);
   }
 
   loadBy = (asyncFunction: AsyncFunction, option: LoadOption= {}) => {
     const { region } = this;
-    return region.loadBy('data', asyncFunction, option);
+    return region.loadBy('value', asyncFunction, option);
   }
 
   getProps = () => {
     const { region } = this;
-    return region.getProps('data');
+    return region.getProps('value');
   }
 
   getValue = () => {
     const { region } = this;
-    return region.getValue('data');
+    return region.getValue('value');
   }
 
   getLoading = () => {
     const { region } = this;
-    return region.getLoading('data');
+    return region.getLoading('value');
   }
 
   getError = () => {
     const { region } = this;
-    return region.getError('data');
+    return region.getError('value');
   }
 
   getFetchTime = () => {
     const { region } = this;
-    return region.getFetchTime('data');
+    return region.getFetchTime('value');
   }
 
   useProps = () => {
     const { region } = this;
-    return region.useProps('data');
+    return region.useProps('value');
   }
 
   useValue = () => {
     const { region } = this;
-    return region.useValue('data');
+    return region.useValue('value');
   }
 
   useLoading = () => {
     const { region } = this;
-    return region.useLoading('data');
+    return region.useLoading('value');
   }
 
   useError = () => {
     const { region } = this;
-    return region.useError('data');
+    return region.useError('value');
   }
 
   useFetchTime = () => {
     const { region } = this;
-    return region.useFetchTime('data');
+    return region.useFetchTime('value');
   }
 }
 
