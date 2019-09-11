@@ -26,51 +26,16 @@ npm i region-core
 - 创建一个 region
 
 ```jsx harmony
-import { Region } from 'region-core';
+import { createRegion } from 'region-core';
 
-const region = new Region();
-const { set, load, useProps } = region;
+const region = createRegion('initialValue');
 
-export { set, load, useProps };
-```
+const handleChange = e => region.set(e.target.value);
 
-- 创建你的组件
-
-```jsx harmony
-import { set, load, useProps } from './region';
-import { fetchUser } from './fetch'; // somewhere with axios
-
-load('user', fetchUser);
-
-const Display = () => {
-  const { user } = useProps('user');
-  return <div>{user}</div>;
-}
-
-export default Display;
-```
-
-- 或者
-
-```jsx harmony
-import { set, load, useProps } from './region';
-import { fetchUser, fetchFollower } from './fetch'; // somewhere with axios
-
-load('user', fetchUser);
-const handleClick = () => load('follower', fetchFollower);
-
-const Display = () => {
-  const { loading, error, user, follower } = useProps(['user', 'follower']);
-  return (
-    <div>
-      {user}
-      {follower}
-      <Button loading={loading} onClick={handleClick} />
-    </div>
-  );
-}
-
-export default Display;
+const Component = () => {
+  const value = region.useValue();
+  return <input value={value} onChange={handleChange} />;
+};
 ```
 
 ## 文档

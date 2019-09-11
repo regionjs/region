@@ -2,142 +2,106 @@
 
 English | [中文](https://github.com/regionjs/region-core/blob/master/docs/Document-zh_CN.md)
 
-[load](#load)
+### createRegion
 
-[set](#set)
+Create a region to manage your data.
 
-[useProps](#useProps)
+You are likely to create many of them, and they are separated.
 
-[getProps](#getProps)
-
-[connect](#connect)
-
-[Region](#Region)
-
-[Other Private API](https://github.com/regionjs/region-core/blob/master/docs/PrivateAPI.md)
-
-### load
+We provides several method to set, load, get and use the data stored in region.
 
 ```javascript
-import { load } from 'region-shortcut';
+import { createRegion } from 'region-core';
 
-load(key, asyncFunction, { params, format });
+const region = createRegion();
 
-// or
-const result = await load(key, asyncFunction, { params, format });
+// also
+const region = createRegion(initialValue);
+
+const {load, loadBy, set, useValue, useLoading, useError, useFetchTime, useProps} = region;
 ```
 
-`asyncFunction` is a function returns a promise.
+### region.load && region.loadBy
 
-`param` is what `asyncFunction` may need. asyncFunction is called when needed and pass the `param`.
+`region.load` calls the asyncFunction and store the value it resolved.
 
-`format` effects after promise resolved and before result is stored, you may do some heavy-calculating task and side effects. It may be something like `(result, snapshot) => ...`.
+When load starts, region will mark it `loading: true`, and when it is settled, it will be marked as `loading: false`.
 
-It is called after promise is resolved or rejected.
-
-`snapshot` is the preview result, it is useful when you try to merge the result of `POST/PUT/DELETE` method.
-
-### set
+You can have multiple load at the same time, since it is well race-condition optimized.
 
 ```javascript
-import { set, reset } from 'region-shortcut';
+region.load(asyncFunction);
 
-set(key, result, { format });
-reset()
+// it returns a promise
+const result = await load(asyncFunction);
+
+// this also works, but it is not recommended
+load(promise);
 ```
 
-### useProps
+Commonly, asyncFunction is called with params
 
 ```javascript
-import { useProps } from 'region-shortcut';
+const loadUser = region.loadBy(asyncFuncion);
 
-// in Functional Component
-const { user } = useProps('user');
+// when you call it, params will be passed to asyncFunction
+loadUser({userId: 1});
 
-// or
-const { loading, error, user } = useProps('user');
-const { loading, error, user, follower } = useProps(['user', 'follower']);
+// this also works, but it is not recommended
+region.load(asyncFunction, {params: {userId: 1}});
 ```
 
-Some usage in connect also works, but it is not recommend.
+Also you can use `format` to format resolved data before it is stored.
 
-### getProps
+Go to [examples](https://regionjs.github.io/region-core/#CURD) for more.
+
+### region.set
 
 ```javascript
-import { getProps } from 'region-shortcut';
-
-// out of Component
-const { user } = getProps('user');
-
-// or
-const { loading, error, user } = getProps('user');
-const { loading, error, user, follower } = getProps(['user', 'follower']);
+region.set(value);
+// also
+region.set(prevValue => value);
 ```
 
-Do not use it inside components, the component will not update. Some usage in connect also works, but it is not recommend.
+### hooks
+
+Includes `useValue`, `useLoading`, `useError`, `useFetchTime`, `useProps`
+
+```javascript
+const Component = () => {
+  const value = region.useValue();
+  const loading = region.useLoading();
+  const error = region.useError();
+  const fetchTime = region.useFetchTime();
+  const { loading, error, fetchTime, value } = region.useProps();
+  
+  return <div>{value}</div>
+}
+```
+
+Go to [examples](https://regionjs.github.io/region-core/#UseValue) for more.
+
+### get methods
+
+Includes `getValue`, `getLoading`, `getError`, `getFetchTime`, `getProps`
+
+```javascript
+const handler = () => {
+  const value = region.getValue();
+  const loading = region.getLoading();
+  const error = region.getError();
+  const fetchTime = region.getFetchTime();
+  const { loading, error, fetchTime, value } = region.getProps();
+  // do something
+}
+```
+
+Do not use them inside components, the component will not update.
 
 ### connect
 
-```javascript
-import { connect } from 'region-shortcut';
+Go to [examples](https://regionjs.github.io/region-core/#connect) for more.
 
-// these two are equal, in which option is optional
-const Enhanced = connect(key, option)(Component);
+### CombinedRegion
 
-const Display = ({ user }) => {...};
-const Loading = ({ user }) => {...}; // or just import one
-const Enhanced = connect('user', { Loading })(Display);
-
-// or
-const Display = ({ user, follower }) => {...};
-const Enhanced = connect(['user', 'follower'], { Loading })(Display);
-
-// or
-const Enhanced = connect({ loading: 'user', result: ['user', 'follower'] }, { Loading })(Display);
-
-// or
-const Display = ({ loading, error, user }) => {...};
-const Enhanced = connect('user')(Display);
-
-// connectWith
-import { connect, connectWith } from 'region-shortcut';
-
-// They are the same
-const Enhanced = connect(key, option)(Display);
-const Enhanced = connect(key, Display, option);
-```
-
-`loading === true` if `user.loading === true || follower.loading === true`.
-
-Component Loading receives data as well. You can provide the loading component renders part of the data.
-
-If you want some feature like react-redux ownProps, see [example](https://github.com/regionjs/region-core/blob/master/example/src/Selector/index.jsx)
-
-### Region
-
-You can create several region and they are separated.
-
-```javascript
-import { Region } from 'region-shortcut';
-
-const region = new Region('result');
-
-// or
-const region = new Region({
-  name: 'result',
-  enableLog: true, // default as true
-  strictLoading: true, // default as true
-  DefaultLoading: Loading, // default as undefined
-  DefaultError: Error, // default as undefined
-});
-
-const { set, load, connect } = region;
-```
-
-You can set `enableLog` to enable logs when `env !== 'production'`.
-
-You can set `strictLoading` to `false` to enable a different treat of `loading === undefined`, it  will be treated as `undefined` instead of `false` and not computed with others.
-
-You can set `DefaultLoading` to use a default Loading Component.
-
-You can set `DefaultError` to use a default Error Component.
+Go to [examples](https://regionjs.github.io/region-core/#CombinedError) for more.
