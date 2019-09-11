@@ -1,6 +1,16 @@
 # CHANGELOG
 
-### 8.0.0
+### 8.x
+
+- add `createRegion` & `createLocalStorageRegion`
+
+- add `getValue`, `getLoading`, `getError`, `getFetchTime`, `useValue`, `useLoading`, `useError`, `useFetchTime`
+
+- deprecate `Region` in favor of `CombinedRegion`
+
+- deprecate several method of `CombinedRegion`
+
+### 8.0
 
 - remove `provide` & `unstable_connect`
 

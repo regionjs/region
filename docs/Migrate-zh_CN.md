@@ -4,25 +4,9 @@
 
 首先，在你迁移之前确保处理所有的警告，然后阅读以下文档。
 
+如果你遇到的问题没有列出，请创建一个 issue。
+
 ## 8.0 升级至 8.x
-
-增加了 `createRegion` 和 `createLocalStorageRegion` 以适应更普遍的业务场景。
-
-`Region` 被重命名为 `CombinedRegion` 并拥有相同的表现。
-
-增加了一组函数和 hooks，包括 `getValue`, `getLoading`, `getError`, `getFetchTime`, `useValue`, `useLoading`, `useError`, `useFetchTime`。
-
-`private_setConfig` 和一些参数被废弃了，有一部分功能实际上可以由 hooks 代替。
-
-`unstable_effect` 被移除了，它可以由 `useEffect` 代替。
-
-节流功能现在被废弃了。配置项 `expiredTime` 和 load 的参数 `forceUpdate` 会被影响。
-
-你可以使用 `getProps` 得到 `fetchTime` 来决定是否 load。
-
-此功能会持续到 9.0，到时可能有工具函数推出来代替它。
-
-此外，可以很容易实现这个功能，只需要 extends Region 然后从源码里找到相应到部分实现它。
 
 ## 0.7 升级至 8.0
 
