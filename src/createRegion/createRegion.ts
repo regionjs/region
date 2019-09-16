@@ -77,6 +77,11 @@ export class Region {
     const { region } = this;
     return region.useFetchTime('value');
   }
+
+  connect = (Component: any, alias: string = 'value') => {
+    const { region } = this;
+    return region.connect(alias)(Component);
+  }
 }
 
 const createRegion = (initialValue?: any) => {

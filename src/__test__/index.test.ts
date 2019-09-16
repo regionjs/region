@@ -2,13 +2,24 @@ import * as api from '..';
 
 describe('export api', () => {
   test('api contains', () => {
-    // @ts-ignore
-    const { __esModule, CombinedRegion, Region, createRegion, createLocalStorageRegion, createContext, useContext, ...rest } = api;
+    const {
+      // @ts-ignore
+      __esModule,
+      CombinedRegion,
+      Region,
+      createRegion,
+      createLocalStorageRegion,
+      createCombinedRegion,
+      createContext,
+      useContext,
+      ...rest
+    } = api;
     expect(__esModule || __esModule === undefined).toBe(true);
     expect(typeof CombinedRegion).toBe('function');
     expect(typeof Region).toBe('function');
     expect(typeof createRegion).toBe('function');
     expect(typeof createLocalStorageRegion).toBe('function');
+    expect(typeof createCombinedRegion).toBe('function');
     expect(typeof createContext).toBe('function');
     expect(typeof useContext).toBe('function');
     expect(rest).toEqual({});
