@@ -2,11 +2,11 @@
 
 ### 8.x
 
-- add `createRegion` & `createLocalStorageRegion`
+- add `createRegion` & `createLocalStorageRegion` & `createCombinedRegion`
 
 - add `getValue`, `getLoading`, `getError`, `getFetchTime`, `useValue`, `useLoading`, `useError`, `useFetchTime`
 
-- deprecate `Region` in favor of `CombinedRegion`
+- deprecate `Region` in favor of `createCombinedRegion`
 
 - deprecate several method of `CombinedRegion`
 

@@ -54,14 +54,23 @@ const loadUser = region.loadBy(asyncFuncion);
 
 // 当你这样调用，params 会被传给 asyncFunction
 loadUser({userId: 1});
-
-// 可以运行，但不推荐
-region.load(asyncFunction, {params: {userId: 1}});
 ```
 
-你可以使用 `format` 处理返回的数据，在它被储存之前。
+你可以使用 `reducer` 处理返回的数据，在它被储存之前。
 
-前往 [examples](https://regionjs.github.io/region-core/#CURD) 获得更多信息。
+```javascript
+const loadUser = region.loadBy(
+  asyncFuncion,
+  (state = [], result, params) => {
+    result.id = params.userId;
+    state.push(result);
+    return state;
+  }
+);
+
+// params 会被透传
+loadUser({userId: 1});
+```
 
 ### hooks
 
@@ -105,5 +114,7 @@ const handler = () => {
 前往 [examples](https://regionjs.github.io/region-core/#ClassComponent) 获得更多信息。
 
 ### createCombinedRegion
+
+`CombinedRegion` 会为你组合 `loading`, `error`, `fetchTime` ，同时数据的监听也是共享的。
 
 前往 [examples](https://regionjs.github.io/region-core/#CombinedError) 获得更多信息。

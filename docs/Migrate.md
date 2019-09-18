@@ -8,6 +8,8 @@ If you meet some problem not listed, please raise an issue.
 
 ## Migrate From 8.0 to 8.x
 
+Some warning but nothing breaks.
+
 ## Migrate Form 0.7 to 8.0
 
 `provide` & `unstable_connect` is removed, also with `react-redux`.

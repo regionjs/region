@@ -54,14 +54,23 @@ const loadUser = region.loadBy(asyncFuncion);
 
 // when you call it, params will be passed to asyncFunction
 loadUser({userId: 1});
-
-// this also works, but it is not recommended
-region.load(asyncFunction, {params: {userId: 1}});
 ```
 
-Also you can use `format` to format resolved data before it is stored.
+Also you can use a `reducer` to format resolved data before it is stored.
 
-Go to [examples](https://regionjs.github.io/region-core/#CURD) for more.
+```javascript
+const loadUser = region.loadBy(
+  asyncFuncion,
+  (state = [], result, params) => {
+    result.id = params.userId;
+    state.push(result);
+    return state;
+  }
+);
+
+// params will be passed through
+loadUser({userId: 1});
+```
 
 ### hooks
 
@@ -105,5 +114,7 @@ You can wrap a class component with function component hoc.
 Go to [examples](https://regionjs.github.io/region-core/#ClassComponent) for more.
 
 ### createCombinedRegion
+
+A `CombinedRegion` will combine `loading`, `error`, `fetchTime` for you, also data will share their subscribe.
 
 Go to [examples](https://regionjs.github.io/region-core/#CombinedError) for more.

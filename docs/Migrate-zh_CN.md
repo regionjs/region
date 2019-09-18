@@ -8,6 +8,8 @@
 
 ## 8.0 升级至 8.x
 
+有一些警告，但没有破坏性变更。
+
 ## 0.7 升级至 8.0
 
 `provide` 和 `unstable_connect` 被移除了（包括 `react-redux`）。
