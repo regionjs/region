@@ -21,6 +21,14 @@ const region = createRegion(initialValue);
 const {load, loadBy, set, useValue, useLoading, useError, useFetchTime, useProps} = region;
 ```
 
+### region.set
+
+```javascript
+region.set(value);
+// also
+region.set(prevValue => value);
+```
+
 ### region.load && region.loadBy
 
 `region.load` 会调用 asyncFunction 并把它返回的值进行储存。
@@ -55,14 +63,6 @@ region.load(asyncFunction, {params: {userId: 1}});
 
 前往 [examples](https://regionjs.github.io/region-core/#CURD) 获得更多信息。
 
-### region.set
-
-```javascript
-region.set(value);
-// also
-region.set(prevValue => value);
-```
-
 ### hooks
 
 包括 `useValue`, `useLoading`, `useError`, `useFetchTime`, `useProps`
@@ -81,7 +81,7 @@ const Component = () => {
 
 前往 [examples](https://regionjs.github.io/region-core/#UseValue) 获得更多信息。
 
-### get methods
+### get 方法
 
 包括 `getValue`, `getLoading`, `getError`, `getFetchTime`, `getProps`
 
@@ -98,10 +98,12 @@ const handler = () => {
 
 不要在组件里这样调用，数据发生变化时，组件不会更新。
 
-### connect
+### 如何和 class component 一起使用
 
-前往 [examples](https://regionjs.github.io/region-core/#connect) 获得更多信息。
+你可以用一个 function component 的 hoc 包裹你的 class component。
 
-### CombinedRegion
+前往 [examples](https://regionjs.github.io/region-core/#ClassComponent) 获得更多信息。
+
+### createCombinedRegion
 
 前往 [examples](https://regionjs.github.io/region-core/#CombinedError) 获得更多信息。

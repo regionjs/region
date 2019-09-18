@@ -21,6 +21,14 @@ const region = createRegion(initialValue);
 const {load, loadBy, set, useValue, useLoading, useError, useFetchTime, useProps} = region;
 ```
 
+### region.set
+
+```javascript
+region.set(value);
+// also
+region.set(prevValue => value);
+```
+
 ### region.load && region.loadBy
 
 `region.load` calls the asyncFunction and store the value it resolved.
@@ -54,14 +62,6 @@ region.load(asyncFunction, {params: {userId: 1}});
 Also you can use `format` to format resolved data before it is stored.
 
 Go to [examples](https://regionjs.github.io/region-core/#CURD) for more.
-
-### region.set
-
-```javascript
-region.set(value);
-// also
-region.set(prevValue => value);
-```
 
 ### hooks
 
@@ -98,10 +98,12 @@ const handler = () => {
 
 Do not use them inside components, the component will not update.
 
-### connect
+### use region with class component
 
-Go to [examples](https://regionjs.github.io/region-core/#connect) for more.
+You can wrap a class component with function component hoc.
 
-### CombinedRegion
+Go to [examples](https://regionjs.github.io/region-core/#ClassComponent) for more.
+
+### createCombinedRegion
 
 Go to [examples](https://regionjs.github.io/region-core/#CombinedError) for more.
