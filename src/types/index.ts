@@ -1,9 +1,7 @@
 import { ComponentType as RawComponentType } from 'react';
 
-export type Any = any;
-
 export interface Props {
-  [key: string]: Any;
+  [key: string]: any;
 }
 
 export type ComponentType = RawComponentType | any;
@@ -40,8 +38,11 @@ export type Result = any;
 // load
 export type AsyncFunction = any;
 export type Params = any;
-type Format = (result: any, snapshot: any) => any;
-type Reducer = (state: any, action: any, params: any) => any;
+
+type Id = any;
+type Snapshot = any;
+type Format = (result: Result, snapshot: Snapshot) => Result;
+export type Reducer = (state: any, action: any, params: any) => any;
 
 export interface LoadOption {
   format?: Format;
@@ -52,8 +53,6 @@ export interface LoadOption {
   delay?: boolean;
 }
 
-// effect
-export type GetDerivedStateFromProps = (props: Props, snapshot: any) => any;
 // CombinedRegion config
 export type Name = string;
 
@@ -73,14 +72,14 @@ export type Config = StrictConfig | Name;
 // reducer
 
 export interface State {
-  [key: string]: Any;
+  [key: string]: any;
 }
 
 export interface Payload {
   key: string;
-  result?: Any;
-  results?: Any;
-  id?: Any;
+  result?: Result;
+  results?: Result[];
+  id?: Id;
   error?: Error;
 }
 
@@ -96,16 +95,21 @@ export type Loading = boolean | undefined;
 export type FetchTime = number;
 export type Error = any;
 
+type ResultFunction = (snapshot: Snapshot) => Result;
 // formatResult
 export interface FormatResultParams {
-  result: any;
-  snapshot: any;
-  format: any;
+  result: ResultFunction | Result;
+  snapshot: Snapshot;
+  format?: Format;
+  reducer?: Reducer;
+  params?: Params;
 }
 
 export interface FormatResultWithIdParams {
-  result: any;
-  snapshot: any;
-  format: any;
-  id: any;
+  result: Result;
+  snapshot: Snapshot;
+  format?: Format;
+  id: Id;
+  reducer?: Reducer;
+  params?: Params;
 }

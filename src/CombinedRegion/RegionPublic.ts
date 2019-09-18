@@ -1,6 +1,6 @@
 import RegionPrivate from './RegionPrivate';
 import { formatResult, shouldThrottle, isAsync, deprecate, formatKeys, selectLoading, selectResult, selectFetchTime, selectError } from '../util';
-import { EntityName, Result, AsyncFunction, Params, Key, LoadOption, SimpleKey } from '../types';
+import { EntityName, Result, AsyncFunction, Params, Key, LoadOption, SimpleKey, Reducer } from '../types';
 import { formatResultWithId } from '../util/formatResult';
 
 interface ToPromiseParams {
@@ -14,6 +14,18 @@ const toPromise = async ({ asyncFunction, params }: ToPromiseParams) => {
   }
   // promise
   return asyncFunction;
+};
+
+type GetCombinedOption = (optionOrReducer?: LoadOption | Reducer, exOption?: LoadOption) => LoadOption;
+
+const getCombinedOption: GetCombinedOption = (optionOrReducer = {}, exOption) => {
+  if (typeof optionOrReducer === 'function') {
+    if (exOption) {
+      return { reducer: optionOrReducer, ...exOption };
+    }
+    return { reducer: optionOrReducer };
+  }
+  return optionOrReducer || {};
 };
 
 class RegionPublic extends RegionPrivate {
@@ -34,7 +46,7 @@ class RegionPublic extends RegionPrivate {
    * @param option.format (result, snapshot) => any | A function format result to other data structure
    */
   setBy = (key: EntityName, option: LoadOption = {}) => {
-    const { format, id } = option;
+    const { format, reducer, id, params } = option;
     const { private_store, private_getResults: getResults, private_actionTypes } = this;
     const { SET } = private_actionTypes;
     const { dispatch } = private_store;
@@ -43,11 +55,11 @@ class RegionPublic extends RegionPrivate {
     return (result: Result) => {
       if (id !== undefined) {
         // TODO TEST ME
-        const formattedResult = formatResultWithId({ result, snapshot, format, id });
+        const formattedResult = formatResultWithId({ result, snapshot, format, id, reducer, params });
         dispatch({ type: SET, payload: { key, results: formattedResult, id } });
         return formattedResult[id];
       }
-      const formattedResult = formatResult({ result, snapshot, format });
+      const formattedResult = formatResult({ result, snapshot, format, reducer, params });
       dispatch({ type: SET, payload: { key, result: formattedResult } });
       return formattedResult;
     };
@@ -60,7 +72,8 @@ class RegionPublic extends RegionPrivate {
     dispatch({ type: RESET });
   }
 
-  load = async (key: EntityName, asyncFunction: AsyncFunction, option: LoadOption = {}) => {
+  load = async (key: EntityName, asyncFunction: AsyncFunction, optionOrReducer?: LoadOption | Reducer, exOption?: LoadOption) => {
+    const option = getCombinedOption(optionOrReducer, exOption);
     if (!isAsync(asyncFunction)) {
       console.warn('set result directly');
       const { set } = this;
@@ -70,18 +83,13 @@ class RegionPublic extends RegionPrivate {
     return loadBy(key, asyncFunction, option)(option.params);
   }
 
-  /**
-   * @param option.params asyncFunction may need
-   * @param option.format A function format result to other data structure
-   * @param option.forceUpdate true | false
-   */
-  loadBy = (key: EntityName, asyncFunction: AsyncFunction, option: LoadOption = {}) => {
+  loadBy = (key: EntityName, asyncFunction: AsyncFunction, optionOrReducer?: LoadOption | Reducer, exOption?: LoadOption) => {
+    const option = getCombinedOption(optionOrReducer, exOption);
     const { forceUpdate } = option;
-    const { private_store, private_getResults: getResults, private_actionTypes, expiredTime, private_getFetchTimes: getFetchTimes, setBy } = this;
+    const { private_store, private_getResults: getResults, private_actionTypes, expiredTime, private_getFetchTimes: getFetchTimes, set } = this;
     const { LOAD, SET } = private_actionTypes;
     const { dispatch } = private_store;
     const snapshot = getResults(key);
-    const setKey = setBy(key, option);
 
     return async (params: Params) => {
       if (shouldThrottle({ asyncFunction, forceUpdate, key, snapshot, expiredTime, getFetchTimes })) {
@@ -91,7 +99,7 @@ class RegionPublic extends RegionPrivate {
       dispatch({ type: LOAD, payload: { key } });
       try {
         const result = await toPromise({ asyncFunction, params });
-        return setKey(result);
+        return set(key, result, { params, ...option });
       } catch (error) {
         dispatch({ type: SET, payload: { key, result: undefined, error } });
         return undefined;
