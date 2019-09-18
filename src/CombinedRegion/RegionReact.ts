@@ -15,6 +15,12 @@ interface CreateHooksParams {
   store: Store;
 }
 
+/**
+ * @see https://github.com/facebook/react/issues/14994
+ * @param getFn
+ * @param equalityFn
+ * @param store
+ */
 const createHooks = ({ getFn, equalityFn, store }: CreateHooksParams) => {
   const useHook: (key: Key | SimpleKey) => any = (key) => {
     const [, forceUpdate] = useState({});

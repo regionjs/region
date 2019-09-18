@@ -1,5 +1,6 @@
 import CombinedRegion from '../CombinedRegion';
-import { AsyncFunction, LoadOption, Result } from '../types';
+import { AsyncFunction, LoadOption, Props, Result } from '../types';
+import { hoc } from './hoc';
 
 export class Region {
   region: CombinedRegion;
@@ -79,8 +80,8 @@ export class Region {
   }
 
   connect = (Component: any, alias: string = 'value') => {
-    const { region } = this;
-    return region.connect(alias)(Component);
+    const { useProps } = this;
+    return hoc({ Component, alias, useProps });
   }
 }
 
