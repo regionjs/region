@@ -1,10 +1,55 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { Store } from 'redux';
 import * as shallowEqual from 'shallowequal';
 import RegionPublic from './RegionPublic';
 import { hoc, isValidConnectKey } from '../util';
 import { Props, Key, DisplayType, ConnectOption, SimpleKey } from '../types';
 
 const Empty = () => null;
+
+const strictEqual = (a: any, b: any) => a === b;
+
+interface CreateHooksParams {
+  getFn: (key: any) => any;
+  equalityFn: (a: any, b: any) => boolean;
+  store: Store;
+}
+
+const createHooks = ({ getFn, equalityFn, store }: CreateHooksParams) => {
+  const useHook: (key: Key | SimpleKey) => any = (key) => {
+    const [, forceUpdate] = useState({});
+    const ref = useRef();
+    ref.current = getFn(key);
+    useEffect(
+      () => {
+        let didUnsubscribe = false;
+
+        const checkForUpdates = () => {
+          if (didUnsubscribe) {
+            return;
+          }
+          const nextValue = getFn(key);
+          if (!equalityFn(ref.current, nextValue)) {
+            ref.current = nextValue;
+            forceUpdate({});
+          }
+        };
+
+        const unsubscribe = store.subscribe(checkForUpdates);
+
+        checkForUpdates();
+
+        return () => {
+          didUnsubscribe = true;
+          unsubscribe();
+        };
+      },
+      [],
+    );
+    return ref.current;
+  };
+  return useHook;
+};
 
 class RegionReact extends RegionPublic {
   connectWith = (key: Key, Display: DisplayType, option?: ConnectOption) => {
@@ -37,151 +82,15 @@ class RegionReact extends RegionPublic {
    * }
    * @param key string | string[]
    */
-  useProps = (key: Key): Props => {
-    const { private_store, getProps } = this;
-    const [props, setProps] = useState(getProps(key));
-    useEffect(
-      () => {
-        let didUnsubscribe = false;
+  useProps: (key: Key) => Props = createHooks({ getFn: this.getProps, equalityFn: shallowEqual, store: this.private_store });
 
-        const checkForUpdates = () => {
-          if (didUnsubscribe) {
-            return;
-          }
-          const nextProps = getProps(key);
-          setProps((prevProps) => {
-            if (!shallowEqual(prevProps, nextProps)) {
-              return nextProps;
-            }
-            return prevProps;
-          });
-        };
+  useValue = createHooks({ getFn: this.getValue, equalityFn: strictEqual, store: this.private_store });
 
-        const unsubscribe = private_store.subscribe(checkForUpdates);
+  useLoading = createHooks({ getFn: this.getLoading, equalityFn: strictEqual, store: this.private_store });
 
-        checkForUpdates();
+  useError = createHooks({ getFn: this.getError, equalityFn: strictEqual, store: this.private_store });
 
-        return () => {
-          didUnsubscribe = true;
-          unsubscribe();
-        };
-      },
-      [],
-    );
-    return props;
-  }
-
-  useValue = (key: SimpleKey) => {
-    const { private_store, getValue } = this;
-    const [value, setValue] = useState(getValue(key));
-    useEffect(
-      () => {
-        let didUnsubscribe = false;
-
-        const checkForUpdates = () => {
-          if (didUnsubscribe) {
-            return;
-          }
-          setValue(getValue(key));
-        };
-
-        const unsubscribe = private_store.subscribe(checkForUpdates);
-
-        checkForUpdates();
-
-        return () => {
-          didUnsubscribe = true;
-          unsubscribe();
-        };
-      },
-      [],
-    );
-    return value;
-  }
-
-  useLoading = (key: SimpleKey) => {
-    const { private_store, getLoading } = this;
-    const [loading, setLoading] = useState(getLoading(key));
-    useEffect(
-      () => {
-        let didUnsubscribe = false;
-
-        const checkForUpdates = () => {
-          if (didUnsubscribe) {
-            return;
-          }
-          setLoading(getLoading(key));
-        };
-
-        const unsubscribe = private_store.subscribe(checkForUpdates);
-
-        checkForUpdates();
-
-        return () => {
-          didUnsubscribe = true;
-          unsubscribe();
-        };
-      },
-      [],
-    );
-    return loading;
-  }
-
-  useError = (key: SimpleKey) => {
-    const { private_store, getError } = this;
-    const [error, setError] = useState(getError(key));
-    useEffect(
-      () => {
-        let didUnsubscribe = false;
-
-        const checkForUpdates = () => {
-          if (didUnsubscribe) {
-            return;
-          }
-          setError(getError(key));
-        };
-
-        const unsubscribe = private_store.subscribe(checkForUpdates);
-
-        checkForUpdates();
-
-        return () => {
-          didUnsubscribe = true;
-          unsubscribe();
-        };
-      },
-      [],
-    );
-    return error;
-  }
-
-  useFetchTime = (key: SimpleKey) => {
-    const { private_store, getFetchTime } = this;
-    const [fetchTime, setFetchTime] = useState(getFetchTime(key));
-    useEffect(
-      () => {
-        let didUnsubscribe = false;
-
-        const checkForUpdates = () => {
-          if (didUnsubscribe) {
-            return;
-          }
-          setFetchTime(getFetchTime(key));
-        };
-
-        const unsubscribe = private_store.subscribe(checkForUpdates);
-
-        checkForUpdates();
-
-        return () => {
-          didUnsubscribe = true;
-          unsubscribe();
-        };
-      },
-      [],
-    );
-    return fetchTime;
-  }
+  useFetchTime = createHooks({ getFn: this.getFetchTime, equalityFn: strictEqual, store: this.private_store });
 }
 
 export default RegionReact;
