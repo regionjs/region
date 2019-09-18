@@ -42,7 +42,7 @@ export type Params = any;
 type Id = any;
 type Snapshot = any;
 type Format = (result: Result, snapshot: Snapshot) => Result;
-export type Reducer = (state: any, action: any, params: any) => any;
+type Reducer = (state: any, action: any, params: any) => any;
 
 export interface LoadOption {
   format?: Format;
@@ -52,6 +52,8 @@ export interface LoadOption {
   id?: string;
   delay?: boolean;
 }
+
+export type OptionOrReducer = LoadOption | Reducer;
 
 // CombinedRegion config
 export type Name = string;

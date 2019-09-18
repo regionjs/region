@@ -1,6 +1,6 @@
 import RegionPrivate from './RegionPrivate';
 import { formatResult, shouldThrottle, isAsync, deprecate, formatKeys, selectLoading, selectResult, selectFetchTime, selectError } from '../util';
-import { EntityName, Result, AsyncFunction, Params, Key, LoadOption, SimpleKey, Reducer } from '../types';
+import { EntityName, Result, AsyncFunction, Params, Key, LoadOption, SimpleKey, OptionOrReducer } from '../types';
 import { formatResultWithId } from '../util/formatResult';
 
 interface ToPromiseParams {
@@ -16,7 +16,7 @@ const toPromise = async ({ asyncFunction, params }: ToPromiseParams) => {
   return asyncFunction;
 };
 
-type GetCombinedOption = (optionOrReducer?: LoadOption | Reducer, exOption?: LoadOption) => LoadOption;
+type GetCombinedOption = (optionOrReducer?: OptionOrReducer, exOption?: LoadOption) => LoadOption;
 
 const getCombinedOption: GetCombinedOption = (optionOrReducer = {}, exOption) => {
   if (typeof optionOrReducer === 'function') {
@@ -72,7 +72,7 @@ class RegionPublic extends RegionPrivate {
     dispatch({ type: RESET });
   }
 
-  load = async (key: EntityName, asyncFunction: AsyncFunction, optionOrReducer?: LoadOption | Reducer, exOption?: LoadOption) => {
+  load = async (key: EntityName, asyncFunction: AsyncFunction, optionOrReducer?: OptionOrReducer, exOption?: LoadOption) => {
     const option = getCombinedOption(optionOrReducer, exOption);
     if (!isAsync(asyncFunction)) {
       console.warn('set result directly');
@@ -83,7 +83,7 @@ class RegionPublic extends RegionPrivate {
     return loadBy(key, asyncFunction, option)(option.params);
   }
 
-  loadBy = (key: EntityName, asyncFunction: AsyncFunction, optionOrReducer?: LoadOption | Reducer, exOption?: LoadOption) => {
+  loadBy = (key: EntityName, asyncFunction: AsyncFunction, optionOrReducer?: OptionOrReducer, exOption?: LoadOption) => {
     const option = getCombinedOption(optionOrReducer, exOption);
     const { forceUpdate } = option;
     const { private_store, private_getResults: getResults, private_actionTypes, expiredTime, private_getFetchTimes: getFetchTimes, set } = this;

@@ -1,5 +1,5 @@
 import CombinedRegion from '../CombinedRegion';
-import { AsyncFunction, LoadOption, Props, Result } from '../types';
+import { AsyncFunction, LoadOption, OptionOrReducer, Result } from '../types';
 import { hoc } from './hoc';
 
 export class Region {
@@ -9,7 +9,7 @@ export class Region {
     this.region = new CombinedRegion();
   }
 
-  set = (result: Result, option: LoadOption= {}) => {
+  set = (result: Result, option: LoadOption = {}) => {
     const { region } = this;
     return region.set('value', result, option);
   }
@@ -19,14 +19,14 @@ export class Region {
     return region.setBy('value', option);
   }
 
-  load = (asyncFunction: AsyncFunction, option: LoadOption= {}) => {
+  load = (asyncFunction: AsyncFunction, option: OptionOrReducer = {}, exOption?: LoadOption) => {
     const { region } = this;
-    return region.load('value', asyncFunction, option);
+    return region.load('value', asyncFunction, option, exOption);
   }
 
-  loadBy = (asyncFunction: AsyncFunction, option: LoadOption= {}) => {
+  loadBy = (asyncFunction: AsyncFunction, option: OptionOrReducer = {}, exOption?: LoadOption) => {
     const { region } = this;
-    return region.loadBy('value', asyncFunction, option);
+    return region.loadBy('value', asyncFunction, option, exOption);
   }
 
   getProps = () => {
