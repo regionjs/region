@@ -1,13 +1,9 @@
-import CombinedRegion from '../CombinedRegion';
+import createCombinedRegion from '../createCombinedRegion';
 import { AsyncFunction, LoadOption, OptionOrReducer, Result } from '../types';
 import { hoc } from './hoc';
 
 export class Region {
-  region: CombinedRegion;
-
-  constructor() {
-    this.region = new CombinedRegion({}, true);
-  }
+  region = createCombinedRegion();
 
   set = (result: Result, option: LoadOption = {}) => {
     const { region } = this;

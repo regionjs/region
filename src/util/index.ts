@@ -1,5 +1,5 @@
 export { deprecate } from './deprecate';
-export { formatResult } from './formatResult';
+export { formatResult, formatResultWithId } from './formatResult';
 export { getActionTypes } from './getActionTypes';
 export { hoc } from './hoc';
 export { isAsync } from './isAsync';
@@ -8,3 +8,4 @@ export { debug, group } from './logger';
 export { reducer } from './reducer';
 export { mapValues, formatLoading, formatKeys, selectLoading, selectResult, selectFetchTime, selectError } from './selectProps';
 export { shouldThrottle } from './shouldThrottle';
+export { createHooks } from './createHooks';

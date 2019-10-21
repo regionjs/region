@@ -1,7 +1,6 @@
 import { region } from './region';
 
 const {
-  private_setConfig,
   private_getLoadings: getLoadings,
   private_getResults: getResults,
   private_getFetchTimes: getFetchTimes,
@@ -88,9 +87,6 @@ describe('private_get', () => {
       a: { loading: true },
     });
     expect(getLoadings('b')).toEqual(true);
-    private_setConfig({ strictLoading: false });
-    expect(getLoadings('b')).toEqual(undefined);
-    private_setConfig({ strictLoading: true });
     expect(getLoadings('b')).toEqual(true);
   });
 
