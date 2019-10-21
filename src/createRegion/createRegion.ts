@@ -2,91 +2,90 @@ import createCombinedRegion from '../createCombinedRegion';
 import { AsyncFunction, LoadOption, OptionOrReducer, Result } from '../types';
 import { hoc } from './hoc';
 
-export class Region {
-  region = createCombinedRegion();
+export const createRegion = (initialValue?: any) => {
+  const region = createCombinedRegion();
 
-  set = (result: Result, option: LoadOption = {}) => {
-    const { region } = this;
+  const set = (result: Result, option: LoadOption = {}) => {
     return region.set('value', result, option);
-  }
+  };
 
-  setBy = (option: LoadOption = {}) => {
-    const { region } = this;
+  const setBy = (option: LoadOption = {}) => {
     return region.setBy('value', option);
-  }
+  };
 
-  load = (asyncFunction: AsyncFunction, option: OptionOrReducer = {}, exOption?: LoadOption) => {
-    const { region } = this;
+  const load = (asyncFunction: AsyncFunction, option: OptionOrReducer = {}, exOption?: LoadOption) => {
     return region.load('value', asyncFunction, option, exOption);
-  }
+  };
 
-  loadBy = (asyncFunction: AsyncFunction, option: OptionOrReducer = {}, exOption?: LoadOption) => {
-    const { region } = this;
+  const loadBy = (asyncFunction: AsyncFunction, option: OptionOrReducer = {}, exOption?: LoadOption) => {
     return region.loadBy('value', asyncFunction, option, exOption);
-  }
+  };
 
-  getProps = () => {
-    const { region } = this;
+  const getProps = () => {
     return region.getProps('value');
-  }
+  };
 
-  getValue = () => {
-    const { region } = this;
+  const getValue = () => {
     return region.getValue('value');
-  }
+  };
 
-  getLoading = () => {
-    const { region } = this;
+  const getLoading = () => {
     return region.getLoading('value');
-  }
+  };
 
-  getError = () => {
-    const { region } = this;
+  const getError = () => {
     return region.getError('value');
-  }
+  };
 
-  getFetchTime = () => {
-    const { region } = this;
+  const getFetchTime = () => {
     return region.getFetchTime('value');
-  }
+  };
 
-  useProps = () => {
-    const { region } = this;
+  const useProps = () => {
     return region.useProps('value');
-  }
+  };
 
-  useValue = () => {
-    const { region } = this;
+  const useValue = () => {
     return region.useValue('value');
-  }
+  };
 
-  useLoading = () => {
-    const { region } = this;
+  const useLoading = () => {
     return region.useLoading('value');
-  }
+  };
 
-  useError = () => {
-    const { region } = this;
+  const useError = () => {
     return region.useError('value');
-  }
+  };
 
-  useFetchTime = () => {
-    const { region } = this;
+  const useFetchTime = () => {
     return region.useFetchTime('value');
-  }
+  };
 
-  connect = (Component: any, alias: string = 'value') => {
-    const { useProps } = this;
+  const connect = (Component: any, alias: string = 'value') => {
     return hoc({ Component, alias, useProps });
-  }
-}
+  };
 
-const createRegion = (initialValue?: any) => {
-  const region = new Region();
   if (initialValue !== undefined) {
-    region.set(initialValue);
+    set(initialValue);
   }
-  return region;
+
+  return {
+    set,
+    setBy,
+    load,
+    loadBy,
+    getProps,
+    getValue,
+    getLoading,
+    getError,
+    getFetchTime,
+    useProps,
+    useValue,
+    useLoading,
+    useError,
+    useFetchTime,
+    connect,
+  };
 };
 
 export default createRegion;

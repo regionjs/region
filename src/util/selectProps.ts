@@ -33,17 +33,9 @@ export const selectResult = (keys: SimpleKeys, results: Result[]) => {
   return props;
 };
 
-export const formatLoading = (loading?: boolean, strictLoading?: boolean) => {
-  if (loading) {
-    return true;
-  }
-  if (loading === undefined) {
-    if (strictLoading) { // treat undefined as true or as undefined
-      return true;
-    }
-    return undefined;
-  }
-  return false;
+export const formatLoading = (loading?: boolean) => {
+  // treat undefined as true
+  return loading || loading === undefined;
 };
 
 const getValue = (state: State, key: SimpleKey) => {

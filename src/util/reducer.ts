@@ -1,5 +1,4 @@
 import { setValueDeep } from './reducerPrototype';
-import { debug, group } from './logger';
 import { Key, FetchTime, Result, Error, State, Action } from '../types';
 
 interface SetKeyParams {
@@ -28,14 +27,11 @@ const setKey = ({ state, key, result, results, id, fetchTime, error }: SetKeyPar
   return state;
 };
 
-export const reducer = (state: State, action: Action, actionTypes: any, enableLogInDev?: boolean) => {
+export const reducer = (state: State, action: Action, actionTypes: any) => {
   const { LOAD, SET, RESET } = actionTypes;
   switch (action.type) {
     case LOAD: {
       const { key } = action.payload;
-      if (enableLogInDev) {
-        debug(LOAD, key);
-      }
       setValueDeep(state, [key, 'loading'], increase);
       return state;
     }
@@ -45,9 +41,6 @@ export const reducer = (state: State, action: Action, actionTypes: any, enableLo
       const nextState = setKey({ state, key, result, results, id, fetchTime, error });
       if (error) {
         console.error(error.message);
-      }
-      if (enableLogInDev) {
-        group({ actionType: SET, key, result, error, nextState });
       }
       return nextState;
     }

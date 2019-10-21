@@ -3,9 +3,7 @@ import * as shallowEqual from 'shallowequal';
 import {
   formatResult,
   formatResultWithId,
-  shouldThrottle,
   isAsync,
-  deprecate,
   formatKeys,
   selectLoading,
   selectResult,
@@ -14,7 +12,10 @@ import {
   getActionTypes,
   reducer,
   mapValues,
-  formatLoading, isValidConnectKey, hoc, createHooks,
+  formatLoading,
+  isValidConnectKey,
+  hoc,
+  createHooks,
 } from '../util';
 import {
   EntityName,
@@ -61,18 +62,10 @@ const Empty = () => null;
 const strictEqual = (a: any, b: any) => a === b;
 
 const createCombinedRegion = () => {
-  const name = 'region';
   const private_actionTypes = getActionTypes('region');
-  const expiredTime = 0;
-  const enableLog = false;
-  const strictLoading = true;
-  // const DefaultLoading?: any;
-  // const DefaultError?: any;
 
   const private_reducer = (state: State = {}, action: Action) => {
-    // @ts-ignore
-    const enableLogInDev = process.env.NODE_ENV !== 'production' && enableLog;
-    return reducer(state, action, private_actionTypes, enableLogInDev);
+    return reducer(state, action, private_actionTypes);
   };
 
   const private_store: Store = createStore(private_reducer);
@@ -84,7 +77,7 @@ const createCombinedRegion = () => {
   };
 
   const private_getLoadings = (key: BaseKey) => {
-    return mapValues(private_getState(), key, ({ loading }: Props) => formatLoading(loading, strictLoading));
+    return mapValues(private_getState(), key, ({ loading }: Props) => formatLoading(loading));
   };
 
   const private_getResults = (key: BaseKey) => {
@@ -139,16 +132,10 @@ const createCombinedRegion = () => {
 
   const loadBy = (key: EntityName, asyncFunction: AsyncFunction, optionOrReducer?: OptionOrReducer, exOption?: LoadOption) => {
     const option = getCombinedOption(optionOrReducer, exOption);
-    const { forceUpdate } = option;
     const { LOAD, SET } = private_actionTypes;
     const { dispatch } = private_store;
-    const snapshot = private_getResults(key);
 
     return async (params: Params) => {
-      if (shouldThrottle({ asyncFunction, forceUpdate, key, snapshot, expiredTime, getFetchTimes: private_getFetchTimes })) {
-        deprecate('Snapshot inject is deprecated. If you do not want it load, you can simply not load it. You can get fetchTime in getProps method to control your load function.'); // tslint:disable max-line-length
-        return snapshot;
-      }
       dispatch({ type: LOAD, payload: { key } });
       try {
         const result = await toPromise({ asyncFunction, params });
@@ -215,11 +202,7 @@ const createCombinedRegion = () => {
   const useFetchTime = createHooks({ getFn: getFetchTime, equalityFn: strictEqual, store: private_store });
 
   return {
-    name,
     private_actionTypes,
-    expiredTime,
-    enableLog,
-    strictLoading,
     private_reducer,
     private_store,
     private_getState,

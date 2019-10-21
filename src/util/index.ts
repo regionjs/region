@@ -7,5 +7,4 @@ export { isValidConnectKey } from './isValidConnectKey';
 export { debug, group } from './logger';
 export { reducer } from './reducer';
 export { mapValues, formatLoading, formatKeys, selectLoading, selectResult, selectFetchTime, selectError } from './selectProps';
-export { shouldThrottle } from './shouldThrottle';
 export { createHooks } from './createHooks';

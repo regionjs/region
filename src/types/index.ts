@@ -58,17 +58,6 @@ export type OptionOrReducer = LoadOption | Reducer;
 // CombinedRegion config
 export type Name = string;
 
-export interface StrictConfig {
-  name?: Name;
-  expiredTime?: number;
-  enableLog?: boolean;
-  strictLoading?: boolean;
-  DefaultLoading?: ComponentType;
-  DefaultError?: ComponentType;
-}
-
-export type Config = StrictConfig | Name;
-
 // private
 // get
 // reducer

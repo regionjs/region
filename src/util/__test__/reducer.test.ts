@@ -1,6 +1,11 @@
-import { region } from './region';
+import { getActionTypes, reducer } from '..';
+import { Action, State } from '../../types';
 
-const { private_reducer, private_actionTypes } = region;
+const private_actionTypes = getActionTypes('region');
+
+const private_reducer = (state: State = {}, action: Action) => {
+  return reducer(state, action, private_actionTypes);
+};
 
 const { SET } = private_actionTypes;
 
