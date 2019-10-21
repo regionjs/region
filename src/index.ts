@@ -12,7 +12,7 @@ class Region extends CombinedRegion {
 }
 
 const createCombinedRegion = (config?: Config) => {
-  return new CombinedRegion(config);
+  return new CombinedRegion(config, true);
 };
 
 export { createContext, useContext } from './Context';

@@ -12,7 +12,10 @@ class RegionInitial {
   DefaultLoading?: any;
   DefaultError?: any;
 
-  constructor(config?: Config) {
+  constructor(config?: Config, disableDeprecateLog?: boolean) {
+    if (!disableDeprecateLog) {
+      deprecate('new Region() && new CombinedRegion() is deprecated. Use createCombinedRegion() instead.');
+    }
     if (typeof config === 'object') {
       // TODO decide to fix it or not
       this.private_setConfig(config as StrictConfig);

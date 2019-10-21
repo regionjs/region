@@ -6,7 +6,7 @@ export class Region {
   region: CombinedRegion;
 
   constructor() {
-    this.region = new CombinedRegion();
+    this.region = new CombinedRegion({}, true);
   }
 
   set = (result: Result, option: LoadOption = {}) => {
