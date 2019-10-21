@@ -1,4 +1,3 @@
-import { createStore, Store } from 'redux';
 import * as shallowEqual from 'shallowequal';
 import {
   formatResult,
@@ -9,13 +8,12 @@ import {
   selectResult,
   selectFetchTime,
   selectError,
-  getActionTypes,
-  reducer,
   mapValues,
   formatLoading,
   isValidConnectKey,
   hoc,
   createHooks,
+  createStore,
 } from '../util';
 import {
   EntityName,
@@ -62,13 +60,7 @@ const Empty = () => null;
 const strictEqual = (a: any, b: any) => a === b;
 
 const createCombinedRegion = () => {
-  const private_actionTypes = getActionTypes('region');
-
-  const private_reducer = (state: State = {}, action: Action) => {
-    return reducer(state, action, private_actionTypes);
-  };
-
-  const private_store: Store = createStore(private_reducer);
+  const private_store = createStore();
 
   const private_getState = () => {
     const { getState } = private_store;
@@ -98,28 +90,22 @@ const createCombinedRegion = () => {
 
   const setBy = (key: EntityName, option: LoadOption = {}) => {
     const { format, reducer, id, params } = option;
-    const { SET } = private_actionTypes;
-    const { dispatch } = private_store;
     const snapshot = private_getResults(key);
     // TODO optimize setBy
     return (result: Result) => {
       if (id !== undefined) {
         // TODO TEST ME
         const formattedResult = formatResultWithId({ result, snapshot, format, id, reducer, params });
-        dispatch({ type: SET, payload: { key, results: formattedResult, id } });
+        private_store.set({ key, results: formattedResult, id });
         return formattedResult[id];
       }
       const formattedResult = formatResult({ result, snapshot, format, reducer, params });
-      dispatch({ type: SET, payload: { key, result: formattedResult } });
+      private_store.set({ key, result: formattedResult });
       return formattedResult;
     };
   };
 
-  const reset = () => {
-    const { RESET } = private_actionTypes;
-    const { dispatch } = private_store;
-    dispatch({ type: RESET });
-  };
+  const reset = private_store.reset;
 
   const load = async (key: EntityName, asyncFunction: AsyncFunction, optionOrReducer?: OptionOrReducer, exOption?: LoadOption) => {
     const option = getCombinedOption(optionOrReducer, exOption);
@@ -132,16 +118,14 @@ const createCombinedRegion = () => {
 
   const loadBy = (key: EntityName, asyncFunction: AsyncFunction, optionOrReducer?: OptionOrReducer, exOption?: LoadOption) => {
     const option = getCombinedOption(optionOrReducer, exOption);
-    const { LOAD, SET } = private_actionTypes;
-    const { dispatch } = private_store;
 
     return async (params: Params) => {
-      dispatch({ type: LOAD, payload: { key } });
+      private_store.load({ key });
       try {
         const result = await toPromise({ asyncFunction, params });
         return set(key, result, { params, ...option });
       } catch (error) {
-        dispatch({ type: SET, payload: { key, result: undefined, error } });
+        private_store.set({ key, result: undefined, error });
         return undefined;
       }
     };
@@ -179,7 +163,7 @@ const createCombinedRegion = () => {
 
   const connect = (key: Key, { Loading, Error }: ConnectOption = {}) => (Display: DisplayType = Empty) => {
     if (!isValidConnectKey(key)) {
-      console.error('invalid key, provide valid key or use connect from \'react-redux\' directly');
+      console.error('invalid key.');
       return null;
     }
     return hoc({
@@ -202,8 +186,6 @@ const createCombinedRegion = () => {
   const useFetchTime = createHooks({ getFn: getFetchTime, equalityFn: strictEqual, store: private_store });
 
   return {
-    private_actionTypes,
-    private_reducer,
     private_store,
     private_getState,
     private_getLoadings,

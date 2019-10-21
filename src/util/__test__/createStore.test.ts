@@ -1,13 +1,6 @@
-import { getActionTypes, reducer } from '..';
-import { Action, State } from '../../types';
+import { createStore } from '..';
 
-const private_actionTypes = getActionTypes('region');
-
-const private_reducer = (state: State = {}, action: Action) => {
-  return reducer(state, action, private_actionTypes);
-};
-
-const { SET } = private_actionTypes;
+const store = createStore();
 
 const mockDate = () => {
   /* eslint-disable no-global-assign, class-methods-use-this */
@@ -41,7 +34,7 @@ mockDate();
 describe('private_reducer', () => {
   test('set string', () => {
     const result = 'a user';
-    const state = private_reducer({}, { type: SET, payload: { key: 'user', result } });
+    const state = store.set({ key: 'user', result });
     expect(state).toEqual({
       user: {
         error: undefined,
@@ -54,7 +47,7 @@ describe('private_reducer', () => {
 
   test('set array', () => {
     const result = [{ id: 1, name: 'zhangcong' }, { id: 2, name: 'milly' }];
-    const state = private_reducer({}, { type: SET, payload: { key: 'user', result } });
+    const state = store.set({ key: 'user', result });
     expect(state).toEqual({
       user: {
         error: undefined,
@@ -67,7 +60,7 @@ describe('private_reducer', () => {
 
   test('function', () => {
     const result = () => 'should be string';
-    const state = private_reducer({}, { type: SET, payload: { key: 'user', result } });
+    const state = store.set({ key: 'user', result });
     expect(state).toEqual({
       user: {
         error: undefined,
@@ -80,13 +73,13 @@ describe('private_reducer', () => {
 
   test('error', () => {
     const error = new Error('error');
-    const state = private_reducer({}, { type: SET, payload: { key: 'user', error } });
+    const state = store.set({ key: 'user', error });
     expect(state).toEqual({
       user: {
         error,
         fetchTime: 0,
         loading: 0,
-        result: undefined,
+        result: 'should be string',
       },
     });
   });
@@ -94,8 +87,8 @@ describe('private_reducer', () => {
   test('error not cover snapshot', () => {
     const result = 'a user';
     const error = new Error('error');
-    const state = private_reducer({}, { type: SET, payload: { key: 'user', result } });
-    const stateWithError = private_reducer(state, { type: SET, payload: { key: 'user', error } });
+    store.set({ key: 'user', result });
+    const stateWithError = store.set({ key: 'user', error });
     expect(stateWithError).toEqual({
       user: {
         error,

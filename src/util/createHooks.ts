@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-import { Store } from 'redux';
 import { Key, SimpleKey } from '../types';
 
 interface CreateHooksParams {
   getFn: (key: any) => any;
   equalityFn: (a: any, b: any) => boolean;
-  store: Store;
+  store: any;
 }
 
 /**
