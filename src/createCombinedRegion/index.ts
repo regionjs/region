@@ -161,15 +161,14 @@ const createCombinedRegion = () => {
     return connect(key, option)(Display);
   };
 
-  const connect = (key: Key, { Loading, Error }: ConnectOption = {}) => (Display: DisplayType = Empty) => {
+  const connect = (key: Key, { Loading, Error: ErrorComponent }: ConnectOption = {}) => (Display: DisplayType = Empty) => {
     if (!isValidConnectKey(key)) {
-      console.error('invalid key.');
-      return null;
+      throw new Error('invalid key.');
     }
     return hoc({
       Display,
       Loading: Loading || Display,
-      Error: Error || Display,
+      Error: ErrorComponent || Display,
       useProps,
       key,
     });

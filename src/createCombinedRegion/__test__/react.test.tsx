@@ -6,37 +6,31 @@ const { set, useProps, connect, connectWith } = region;
 
 describe('react', () => {
   test('useProps', () => {
-    const User = () => {
+    const User: React.FC = () => {
       const { loading, user } = useProps('user');
-      return loading ? `loading ${user}` : `!loading ${user}`;
+      return loading ? <div>{`loading ${user}`}</div> : <div>{`!loading ${user}`}</div>;
     };
-    // @ts-ignore
-    expect(reactTestRenderer.create(<User />).toJSON()).toEqual('loading undefined');
+    expect(reactTestRenderer.create(<User />).toJSON()).toMatchSnapshot();
     set('user', 'user');
-    // @ts-ignore
-    expect(reactTestRenderer.create(<User />).toJSON()).toEqual('!loading user');
+    expect(reactTestRenderer.create(<User />).toJSON()).toMatchSnapshot();
   });
 
   test('connect and connectWith', () => {
-    const User = ({ loading, user }: any) => loading ? `loading ${user}` : `!loading ${user}`;
+    const User: React.FC = ({ loading, user }: any) => loading ? <div>{`loading ${user}`}</div> : <div>{`!loading ${user}`}</div>;
     const ConnectUser = connect('user')(User);
-    // @ts-ignore
-    expect(reactTestRenderer.create(<ConnectUser />).toJSON()).toEqual('!loading user');
+    expect(reactTestRenderer.create(<ConnectUser />).toJSON()).toMatchSnapshot();
     set('user', 'user2');
-    // @ts-ignore
-    expect(reactTestRenderer.create(<ConnectUser />).toJSON()).toEqual('!loading user2');
+    expect(reactTestRenderer.create(<ConnectUser />).toJSON()).toMatchSnapshot();
     const ConnectWithUser = connectWith('user', User);
-    // @ts-ignore
-    expect(reactTestRenderer.create(<ConnectWithUser />).toJSON()).toEqual('!loading user2');
+    expect(reactTestRenderer.create(<ConnectWithUser />).toJSON()).toMatchSnapshot();
     set('user', 'user3');
-    // @ts-ignore
-    expect(reactTestRenderer.create(<ConnectWithUser />).toJSON()).toEqual('!loading user3');
+    expect(reactTestRenderer.create(<ConnectWithUser />).toJSON()).toMatchSnapshot();
   });
 
   test('connect with wrong key', () => {
-    const User = ({ loading, user }: any) => loading ? `loading ${user}` : `!loading ${user}`;
+    const User: React.FC = ({ loading, user }: any) => loading ? <div>{`loading ${user}`}</div> : <div>{`!loading ${user}`}</div>;
+    // expect to throw
     // @ts-ignore
-    const ConnectUser = connect(null)(User);
-    expect(ConnectUser).toBe(null);
+    expect(() => connect(null)(User)).toThrow();
   });
 });
