@@ -58,7 +58,7 @@ describe('load', () => {
 
   test('reject', async () => {
     const result = await load('user', () => Promise.reject(new Error('2')));
-    expect(result).toBe(undefined);
+    expect(result).toBe('0123');
   });
 
   test('params can be array', async () => {

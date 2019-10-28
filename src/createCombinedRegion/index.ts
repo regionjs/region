@@ -91,10 +91,8 @@ const createCombinedRegion = () => {
   const setBy = (key: EntityName, option: LoadOption = {}) => {
     const { format, reducer, id, params } = option;
     const snapshot = private_getResults(key);
-    // TODO optimize setBy
     return (result: Result) => {
       if (id !== undefined) {
-        // TODO TEST ME
         const formattedResult = formatResultWithId({ result, snapshot, format, id, reducer, params });
         private_store.set({ key, results: formattedResult, id });
         return formattedResult[id];
@@ -125,8 +123,9 @@ const createCombinedRegion = () => {
         const result = await toPromise({ asyncFunction, params });
         return set(key, result, { params, ...option });
       } catch (error) {
-        private_store.set({ key, result: undefined, error });
-        return undefined;
+        const result = private_getResults(key);
+        private_store.set({ key, result, error });
+        return result;
       }
     };
   };

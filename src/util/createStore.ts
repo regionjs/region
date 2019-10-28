@@ -19,7 +19,7 @@ const setKey = ({ state, key, result, results, id, fetchTime, error }: SetKeyPar
   if (id !== undefined) {
     setValueDeep(state, [key, 'results'], results);
     setValueDeep(state, [key, 'id'], id);
-  } else if (result !== undefined) {
+  } else {
     setValueDeep(state, [key, 'result'], result);
   }
   setValueDeep(state, [key, 'error'], error); // as well error ===  undefined

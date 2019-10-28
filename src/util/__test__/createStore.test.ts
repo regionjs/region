@@ -5,7 +5,7 @@ mockDate();
 
 const store = createStore();
 
-describe('private_reducer', () => {
+describe('createStore', () => {
   test('set string', () => {
     const result = 'a user';
     const state = store.set({ key: 'user', result });
@@ -53,7 +53,7 @@ describe('private_reducer', () => {
         error,
         fetchTime: 0,
         loading: 0,
-        result: 'should be string',
+        result: undefined,
       },
     });
   });
@@ -62,7 +62,8 @@ describe('private_reducer', () => {
     const result = 'a user';
     const error = new Error('error');
     store.set({ key: 'user', result });
-    const stateWithError = store.set({ key: 'user', error });
+    // actually region-core will do
+    const stateWithError = store.set({ key: 'user', result, error });
     expect(stateWithError).toEqual({
       user: {
         error,

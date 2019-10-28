@@ -48,9 +48,7 @@ describe('createRegion', () => {
     const region = createRegion();
     region.set('Jennifer Rodriguez');
     region.set(undefined);
-    // TODO it should be
-    // expect(region.getValue()).toBe(undefined);
-    expect(region.getValue()).not.toBe(undefined);
+    expect(region.getValue()).toBe(undefined);
   });
 
   test('load', () => {
