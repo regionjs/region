@@ -17,15 +17,13 @@ import {
 } from '../util';
 import {
   EntityName,
-  Result,
+  ResultOrFunc,
   AsyncFunction,
   Params,
   Key,
   LoadOption,
   SimpleKey,
   OptionOrReducer,
-  State,
-  Action,
   BaseKey,
   Props, DisplayType, ConnectOption,
 } from '../types';
@@ -84,23 +82,14 @@ const createCombinedRegion = () => {
     return mapValues(private_getState(), key, ({ error }: Props) => error);
   };
 
-  const set = (key: EntityName, result: Result, option: LoadOption = {}) => {
-    return setBy(key, option)(result);
-  };
-
-  const setBy = (key: EntityName, option: LoadOption = {}) => {
-    const { format, reducer, id, params } = option;
+  const set = (key: EntityName, resultOrFunc: ResultOrFunc) => {
     const snapshot = private_getResults(key);
-    return (result: Result) => {
-      if (id !== undefined) {
-        const formattedResult = formatResultWithId({ result, snapshot, format, id, reducer, params });
-        private_store.set({ key, results: formattedResult, id });
-        return formattedResult[id];
-      }
-      const formattedResult = formatResult({ result, snapshot, format, reducer, params });
-      private_store.set({ key, result: formattedResult });
-      return formattedResult;
-    };
+    let formattedResult = resultOrFunc;
+    if (typeof resultOrFunc === 'function') {
+      formattedResult = resultOrFunc(snapshot);
+    }
+    private_store.set({ key, result: formattedResult });
+    return formattedResult;
   };
 
   const reset = private_store.reset;
@@ -109,7 +98,7 @@ const createCombinedRegion = () => {
     const option = getCombinedOption(optionOrReducer, exOption);
     if (!isAsync(asyncFunction)) {
       console.warn('set result directly');
-      return set(key, asyncFunction, option);
+      return set(key, asyncFunction);
     }
     return loadBy(key, asyncFunction, option)(option.params);
   };
@@ -121,7 +110,16 @@ const createCombinedRegion = () => {
       private_store.load({ key });
       try {
         const result = await toPromise({ asyncFunction, params });
-        return set(key, result, { params, ...option });
+        const { format, reducer, id } = option;
+        const snapshot = private_getResults(key);
+        if (id !== undefined) {
+          const formattedResult = formatResultWithId({ resultOrFunc: result, snapshot, format, id, reducer, params });
+          private_store.set({ key, results: formattedResult, id });
+          return formattedResult[id];
+        }
+        const formattedResult = formatResult({ resultOrFunc: result, snapshot, format, reducer, params });
+        private_store.set({ key, result: formattedResult });
+        return formattedResult;
       } catch (error) {
         const result = private_getResults(key);
         private_store.set({ key, result, error });
@@ -191,7 +189,6 @@ const createCombinedRegion = () => {
     private_getFetchTimes,
     private_getErrors,
     set,
-    setBy,
     reset,
     load,
     loadBy,

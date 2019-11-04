@@ -34,6 +34,8 @@ export type EntityName = string;
 
 // set
 export type Result = any;
+type ResultFunc = (snapshot: Snapshot) => Result;
+export type ResultOrFunc = Result | ResultFunc;
 
 // load
 export type AsyncFunction = any;
@@ -86,10 +88,9 @@ export type Loading = boolean | undefined;
 export type FetchTime = number;
 export type Error = any;
 
-type ResultFunction = (snapshot: Snapshot) => Result;
 // formatResult
 export interface FormatResultParams {
-  result: ResultFunction | Result;
+  resultOrFunc: ResultOrFunc;
   snapshot: Snapshot;
   format?: Format;
   reducer?: Reducer;
@@ -97,7 +98,7 @@ export interface FormatResultParams {
 }
 
 export interface FormatResultWithIdParams {
-  result: Result;
+  resultOrFunc: ResultOrFunc;
   snapshot: Snapshot;
   format?: Format;
   id: Id;

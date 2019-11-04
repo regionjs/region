@@ -1,16 +1,12 @@
 import createCombinedRegion from '../createCombinedRegion';
-import { AsyncFunction, LoadOption, OptionOrReducer, Result } from '../types';
+import { AsyncFunction, LoadOption, OptionOrReducer, ResultOrFunc } from '../types';
 import { hoc } from './hoc';
 
 export const createRegion = (initialValue?: any) => {
   const region = createCombinedRegion();
 
-  const set = (result: Result, option: LoadOption = {}) => {
-    return region.set('value', result, option);
-  };
-
-  const setBy = (option: LoadOption = {}) => {
-    return region.setBy('value', option);
+  const set = (resultOrFunc: ResultOrFunc) => {
+    return region.set('value', resultOrFunc);
   };
 
   const load = (asyncFunction: AsyncFunction, option: OptionOrReducer = {}, exOption?: LoadOption) => {
@@ -71,7 +67,6 @@ export const createRegion = (initialValue?: any) => {
 
   return {
     set,
-    setBy,
     load,
     loadBy,
     getProps,

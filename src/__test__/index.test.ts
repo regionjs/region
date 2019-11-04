@@ -20,12 +20,11 @@ describe('export api', () => {
   test('createRegion contains many api', () => {
     const { createRegion } = api;
     const {
-      set, setBy, load, loadBy,
+      set, load, loadBy,
       getProps, getValue, getLoading, getError, getFetchTime,
       useProps, useValue, useLoading, useError, useFetchTime,
     } = createRegion();
     expect(typeof set).toBe('function');
-    expect(typeof setBy).toBe('function');
     expect(typeof load).toBe('function');
     expect(typeof loadBy).toBe('function');
     expect(typeof getProps).toBe('function');
@@ -43,7 +42,7 @@ describe('export api', () => {
   test('CombinedRegion contains many api', () => {
     const { createCombinedRegion } = api;
     const {
-      reset, set, setBy, load, loadBy, connect, connectWith,
+      reset, set, load, loadBy, connect, connectWith,
       getProps, getValue, getLoading, getError, getFetchTime,
       useProps, useValue, useLoading, useError, useFetchTime,
       private_store, private_getState,
@@ -52,7 +51,6 @@ describe('export api', () => {
     } = createCombinedRegion();
     expect(typeof reset).toBe('function');
     expect(typeof set).toBe('function');
-    expect(typeof setBy).toBe('function');
     expect(typeof load).toBe('function');
     expect(typeof loadBy).toBe('function');
     expect(typeof connect).toBe('function');
