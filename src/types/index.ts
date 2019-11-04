@@ -41,24 +41,23 @@ export type ResultOrFunc = Result | ResultFunc;
 export type AsyncFunction = any;
 export type Params = any;
 
-type Id = any;
+type Id = string | number;
 type Snapshot = any;
 type Format = (result: Result, snapshot: Snapshot) => Result;
 type Reducer = (state: any, action: any, params: any) => any;
+
+type IdFunc = (params: Params) => Id;
 
 export interface LoadOption {
   format?: Format;
   reducer?: Reducer;
   forceUpdate?: boolean;
   params?: Params;
-  id?: string;
+  id?: Id | IdFunc;
   delay?: boolean;
 }
 
 export type OptionOrReducer = LoadOption | Reducer;
-
-// CombinedRegion config
-export type Name = string;
 
 // private
 // get
@@ -74,11 +73,6 @@ export interface Payload {
   results?: Result[];
   id?: Id;
   error?: Error;
-}
-
-export interface Action {
-  type: string;
-  payload: Payload;
 }
 
 // other

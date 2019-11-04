@@ -113,9 +113,15 @@ const createCombinedRegion = () => {
         const { format, reducer, id } = option;
         const snapshot = private_getResults(key);
         if (id !== undefined) {
-          const formattedResult = formatResultWithId({ resultOrFunc: result, snapshot, format, id, reducer, params });
-          private_store.set({ key, results: formattedResult, id });
-          return formattedResult[id];
+          let formatId;
+          if (typeof id === 'function') {
+            formatId = id(params);
+          } else {
+            formatId = id;
+          }
+          const formattedResult = formatResultWithId({ resultOrFunc: result, snapshot, format, id: formatId, reducer, params });
+          private_store.set({ key, results: formattedResult, id: formatId });
+          return formattedResult[formatId];
         }
         const formattedResult = formatResult({ resultOrFunc: result, snapshot, format, reducer, params });
         private_store.set({ key, result: formattedResult });
