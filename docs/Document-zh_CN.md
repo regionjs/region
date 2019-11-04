@@ -37,7 +37,15 @@ region.set(prevValue => value);
 
 你可以同时发起多个 load，我们已经很好的处理了竞态问题。
 
+一般来说，asyncFunction 接受一些参数。
+
 ```javascript
+const loadUser = region.loadBy(asyncFuncion);
+
+// 当你这样调用，params 会被传给 asyncFunction
+loadUser({userId: 1});
+
+// 也可以
 region.load(asyncFunction);
 
 // 它返回一个 promise
@@ -45,15 +53,6 @@ const result = await load(asyncFunction);
 
 // 可以运行，但不推荐
 load(promise);
-```
-
-Commonly, asyncFunction is called with params
-
-```javascript
-const loadUser = region.loadBy(asyncFuncion);
-
-// 当你这样调用，params 会被传给 asyncFunction
-loadUser({userId: 1});
 ```
 
 你可以使用 `reducer` 处理返回的数据，在它被储存之前。

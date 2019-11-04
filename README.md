@@ -38,6 +38,29 @@ const Component = () => {
 };
 ```
 
+- Fetching data with region
+
+```jsx harmony
+import { createRegion } from 'region-core';
+
+const region = createRegion();
+
+const loadUser = region.loadBy(asyncFuncion);
+
+// call loadUser in application lifecycle
+loadUser({userId: 1});
+
+const Component = () => {
+  const value = region.useValue();
+  const loading = region.useLoading();
+  const error = region.useError();
+  const fetchTime = region.useFetchTime();
+  const { loading, error, fetchTime, value } = region.useProps();
+  
+  return <div>{value}</div>
+}
+```
+
 ## Docs
 
 [Document And Best Practices](https://github.com/regionjs/region-core/blob/master/docs/Document.md)

@@ -37,16 +37,6 @@ When load starts, region will mark it `loading: true`, and when it is settled, i
 
 You can have multiple load at the same time, since it is well race-condition optimized.
 
-```javascript
-region.load(asyncFunction);
-
-// it returns a promise
-const result = await load(asyncFunction);
-
-// this also works, but it is not recommended
-load(promise);
-```
-
 Commonly, asyncFunction is called with params
 
 ```javascript
@@ -54,6 +44,15 @@ const loadUser = region.loadBy(asyncFuncion);
 
 // when you call it, params will be passed to asyncFunction
 loadUser({userId: 1});
+
+// also
+region.load(asyncFunction);
+
+// it returns a promise
+const result = await load(asyncFunction);
+
+// this also works, but it is not recommended
+load(promise);
 ```
 
 Also you can use a `reducer` to format resolved data before it is stored.
