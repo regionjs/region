@@ -1,24 +1,15 @@
 import { setValueDeep } from './reducerPrototype';
-import { Key, FetchTime, Result, Error, State, Payload } from '../types';
-
-interface SetKeyParams {
-  state: State;
-  key: Key;
-  fetchTime: FetchTime;
-  result: Result;
-  results: any;
-  id: any;
-  error: Error;
-}
+import { State, Payload } from '../types';
 
 const increase = (v: number = 0) => v + 1;
 const decrease = (v: number = 0) => v - 1 > 0 ? v - 1 : 0;
 
-const setKey = ({ state, key, result, results, id, fetchTime, error }: SetKeyParams) => {
+const setKey = (state: State, { key, result, results, id, error }: Payload) => {
+  const fetchTime = new Date().getTime();
   setValueDeep(state, [key, 'fetchTime'], fetchTime);
+  setValueDeep(state, [key, 'id'], id); // as well id === undefined
   if (id !== undefined) {
     setValueDeep(state, [key, 'results'], results);
-    setValueDeep(state, [key, 'id'], id);
   } else {
     setValueDeep(state, [key, 'result'], result);
   }
@@ -48,8 +39,7 @@ export const createStore = () => {
 
   const set = (payload: Payload) => {
     const { key, result, results, id, error } = payload;
-    const fetchTime = new Date().getTime();
-    const nextState = setKey({ state, key, result, results, id, fetchTime, error });
+    const nextState = setKey(state, { key, result, results, id, error });
     if (error) {
       console.error(error.message);
     }

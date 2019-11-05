@@ -178,8 +178,7 @@ describe('createRegion', () => {
     return loadUser().then(() => {
       expect(region.getValue()).toBe('Steven Walker');
       region.set('Patricia Thompson');
-      // TODO it should be 'Patricia Thompson'
-      expect(region.getValue()).toBe('Steven Walker');
+      expect(region.getValue()).toBe('Patricia Thompson');
     });
   });
 });
