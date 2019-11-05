@@ -106,7 +106,7 @@ const createCombinedRegion = () => {
   const loadBy = (key: EntityName, asyncFunction: AsyncFunction, optionOrReducer?: OptionOrReducer, exOption?: LoadOption) => {
     const option = getCombinedOption(optionOrReducer, exOption);
 
-    return async (params: Params) => {
+    return async (params?: Params) => {
       private_store.load({ key });
       try {
         const result = await toPromise({ asyncFunction, params });

@@ -125,4 +125,61 @@ describe('createRegion', () => {
       expect(region.getError()).toBe(undefined);
     });
   });
+
+  test('load with id', () => {
+    const region = createRegion();
+    const asyncFunction = ({ id }: any) => Promise.resolve({ id, name: 'Robert Davis' });
+
+    expect.assertions(1);
+    return region.load(asyncFunction, {
+      params: { id: '620000198705195453' },
+      id: '620000198705195453',
+    }).then(() => {
+      expect(region.getValue()).toEqual({ id: '620000198705195453', name: 'Robert Davis' });
+    });
+  });
+
+  test('load with idFunc', () => {
+    const region = createRegion();
+    const asyncFunction = ({ id }: any) => Promise.resolve({ id, name: 'Scott Davis' });
+    const loadUser = region.loadBy(asyncFunction, { id: ({ id }) => id });
+
+    expect.assertions(1);
+    return loadUser({ id: '350000201202073963' }).then(() => {
+      expect(region.getValue()).toEqual({ id: '350000201202073963', name: 'Scott Davis' });
+    });
+  });
+
+  test('load normalize', () => {
+    const region = createRegion();
+    const asyncFunction = ({ id }: any) => Promise.resolve({ id, name: 'Amy Davis' });
+    const asyncFunction2 = ({ id }: any) => Promise.resolve({ id, name: 'Carol Jackson' });
+    const loadUser = region.loadBy(asyncFunction, { id: ({ id }) => id });
+    const loadUser2 = region.loadBy(asyncFunction2, { id: ({ id }) => id });
+
+    expect.assertions(3);
+    return loadUser({ id: '650000200512087988' }).then(() => {
+      expect(region.getValue()).toEqual({ id: '650000200512087988', name: 'Amy Davis' });
+      const promise = loadUser2({ id: '330000197010067769' });
+      // TODO it could some how be undefined with a provide flag
+      expect(region.getValue()).toEqual({ id: '650000200512087988', name: 'Amy Davis' });
+      return promise;
+    }).then(() => {
+      expect(region.getValue()).toEqual({ id: '330000197010067769', name: 'Carol Jackson' });
+    });
+  });
+
+  test('load normalize compatible with set', () => {
+    const region = createRegion();
+    const asyncFunction = () => Promise.resolve('Steven Walker');
+    const loadUser = region.loadBy(asyncFunction, { id: '630000198005021868' });
+
+    expect.assertions(2);
+    return loadUser().then(() => {
+      expect(region.getValue()).toBe('Steven Walker');
+      region.set('Patricia Thompson');
+      // TODO it should be 'Patricia Thompson'
+      expect(region.getValue()).toBe('Steven Walker');
+    });
+  });
 });
