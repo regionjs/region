@@ -1,7 +1,6 @@
 import * as shallowEqual from 'shallowequal';
 import {
-  formatResult,
-  formatResultWithId,
+  getPayload,
   isAsync,
   formatKeys,
   selectLoading,
@@ -25,7 +24,9 @@ import {
   SimpleKey,
   OptionOrReducer,
   BaseKey,
-  Props, DisplayType, ConnectOption,
+  Props,
+  DisplayType,
+  ConnectOption,
 } from '../types';
 
 interface ToPromiseParams {
@@ -71,7 +72,7 @@ const createCombinedRegion = () => {
   };
 
   const private_getResults = (key: BaseKey) => {
-    return mapValues(private_getState(), key, ({ result, results, id }: Props) => id ? results[id] : result);
+    return mapValues(private_getState(), key, ({ result }: Props) => result);
   };
 
   const private_getFetchTimes = (key: BaseKey) => {
@@ -110,22 +111,10 @@ const createCombinedRegion = () => {
       private_store.load({ key });
       try {
         const result = await toPromise({ asyncFunction, params });
-        const { format, reducer, id } = option;
         const snapshot = private_getResults(key);
-        if (id !== undefined) {
-          let formatId;
-          if (typeof id === 'function') {
-            formatId = id(params);
-          } else {
-            formatId = id;
-          }
-          const formattedResult = formatResultWithId({ resultOrFunc: result, snapshot, format, id: formatId, reducer, params });
-          private_store.set({ key, results: formattedResult, id: formatId });
-          return formattedResult[formatId];
-        }
-        const formattedResult = formatResult({ resultOrFunc: result, snapshot, format, reducer, params });
-        private_store.set({ key, result: formattedResult });
-        return formattedResult;
+        const payload = getPayload({ key, snapshot, result, params, option });
+        private_store.set(payload);
+        return payload.result;
       } catch (error) {
         const result = private_getResults(key);
         private_store.set({ key, result, error });

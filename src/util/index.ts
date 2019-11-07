@@ -1,5 +1,5 @@
 export { deprecate } from './deprecate';
-export { formatResult, formatResultWithId } from './formatResult';
+export { getPayload } from './formatResult';
 export { hoc } from './hoc';
 export { isAsync } from './isAsync';
 export { isValidConnectKey } from './isValidConnectKey';

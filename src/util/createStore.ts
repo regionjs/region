@@ -10,9 +10,8 @@ const setKey = (state: State, { key, result, results, id, error }: Payload) => {
   setValueDeep(state, [key, 'id'], id); // as well id === undefined
   if (id !== undefined) {
     setValueDeep(state, [key, 'results'], results);
-  } else {
-    setValueDeep(state, [key, 'result'], result);
   }
+  setValueDeep(state, [key, 'result'], result);
   setValueDeep(state, [key, 'error'], error); // as well error ===  undefined
   setValueDeep(state, [key, 'loading'], decrease);
   return state;

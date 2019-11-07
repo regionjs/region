@@ -67,10 +67,14 @@ export interface State {
   [key: string]: any;
 }
 
+interface Results {
+  [key: string]: Result;
+}
+
 export interface Payload {
   key: string;
   result?: Result;
-  results?: Result[];
+  results?: Results;
   id?: Id;
   error?: Error;
 }
