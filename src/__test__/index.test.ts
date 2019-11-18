@@ -8,12 +8,14 @@ describe('export api', () => {
       createRegion,
       createLocalStorageRegion,
       createCombinedRegion,
+      unstable_enableExperimental,
       ...rest
     } = api;
     expect(__esModule || __esModule === undefined).toBe(true);
     expect(typeof createRegion).toBe('function');
     expect(typeof createLocalStorageRegion).toBe('function');
     expect(typeof createCombinedRegion).toBe('function');
+    expect(typeof unstable_enableExperimental).toBe('function');
     expect(rest).toEqual({});
   });
 

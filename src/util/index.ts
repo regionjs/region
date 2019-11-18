@@ -1,9 +1,9 @@
 export { deprecate } from './deprecate';
-export { getPayload } from './formatResult';
+export { getPayload, getLoadPayload } from './formatResult';
 export { hoc } from './hoc';
 export { isAsync } from './isAsync';
 export { isValidConnectKey } from './isValidConnectKey';
-export { debug, group } from './logger';
 export { mapValues, formatLoading, formatKeys, selectLoading, selectResult, selectFetchTime, selectError } from './selectProps';
 export { createHooks } from './createHooks';
 export { createStore } from './createStore';
+export { setSwitchIdFlag, getAcceptLatestFlag, setAcceptLatestFlag } from './flags';

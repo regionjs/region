@@ -1,4 +1,4 @@
-import { FormatResultParams, Payload } from '../types';
+import { FormatResultParams, LoadPayload, Payload } from '../types';
 
 export const formatResult = ({ resultOrFunc, snapshot, format, reducer, params }: FormatResultParams) => {
   if (typeof resultOrFunc === 'function') {
@@ -12,14 +12,16 @@ export const formatResult = ({ resultOrFunc, snapshot, format, reducer, params }
   return formatted;
 };
 
-export const getPayloadWithId = ({ key, resultOrFunc, snapshot, params, option }: any) => {
-  const { format, reducer, id } = option;
-  let formatId;
+const getId = ({ id, params }: any) => {
   if (typeof id === 'function') {
-    formatId = id(params);
-  } else {
-    formatId = id;
+    return id(params);
   }
+  return id;
+};
+
+const getPayloadWithId = ({ key, resultOrFunc, snapshot, params, option }: any) => {
+  const { format, reducer, id } = option;
+  const formatId = getId({ id, params });
 
   let formatted;
   if (typeof reducer === 'function') {
@@ -40,4 +42,10 @@ export const getPayload = ({ key, snapshot, result, params, option }: any): Payl
   }
   const formattedResult = formatResult({ resultOrFunc: result, snapshot, format, reducer, params });
   return { key, result: formattedResult };
+};
+
+export const getLoadPayload = ({ key, promise, params, option }: any): LoadPayload => {
+  const { id } = option;
+  const formatId = getId({ id, params });
+  return { key, promise, id: formatId };
 };

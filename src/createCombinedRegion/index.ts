@@ -1,6 +1,7 @@
 import * as shallowEqual from 'shallowequal';
 import {
   getPayload,
+  getLoadPayload,
   isAsync,
   formatKeys,
   selectLoading,
@@ -13,6 +14,7 @@ import {
   hoc,
   createHooks,
   createStore,
+  getAcceptLatestFlag,
 } from '../util';
 import {
   EntityName,
@@ -67,6 +69,10 @@ const createCombinedRegion = () => {
     return state || {};
   };
 
+  const private_getPromises = (key: BaseKey) => {
+    return mapValues(private_getState(), key, ({ promise }: Props) => promise);
+  };
+
   const private_getLoadings = (key: BaseKey) => {
     return mapValues(private_getState(), key, ({ loading }: Props) => formatLoading(loading));
   };
@@ -108,10 +114,17 @@ const createCombinedRegion = () => {
     const option = getCombinedOption(optionOrReducer, exOption);
 
     return async (params?: Params) => {
-      private_store.load({ key });
+      const promise = toPromise({ asyncFunction, params });
+      const loadPayload = getLoadPayload({ key, promise, params, option });
+      private_store.load(loadPayload);
       try {
-        const result = await toPromise({ asyncFunction, params });
+        const result = await promise;
+        const currentPromise = private_getPromises(key);
         const snapshot = private_getResults(key);
+        if (getAcceptLatestFlag() && promise !== currentPromise) {
+          // store result for optimize purpose
+          return snapshot;
+        }
         const payload = getPayload({ key, snapshot, result, params, option });
         private_store.set(payload);
         return payload.result;

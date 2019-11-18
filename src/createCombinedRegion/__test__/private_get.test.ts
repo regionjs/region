@@ -1,16 +1,16 @@
 import { region } from './region';
 
 const {
-  private_getLoadings: getLoadings,
-  private_getResults: getResults,
-  private_getFetchTimes: getFetchTimes,
-  private_getErrors: getErrors,
+  private_getLoadings,
+  private_getResults,
+  private_getFetchTimes,
+  private_getErrors,
   getProps,
-  private_store: store,
+  private_store,
 } = region;
 
 let state: any = null;
-store.getState = () => state;
+private_store.getState = () => state;
 
 const setState = (nextState: any) => {
   state = nextState;
@@ -20,18 +20,18 @@ describe('private_get', () => {
   test('get things from nothing', () => {
     // NOTE loading is true because we want to display loading ui when state is undefined.
     setState(undefined);
-    expect(getLoadings('a')).toEqual(true);
-    expect(getResults('a')).toEqual(undefined);
-    expect(getFetchTimes('a')).toEqual(undefined);
+    expect(private_getLoadings('a')).toEqual(true);
+    expect(private_getResults('a')).toEqual(undefined);
+    expect(private_getFetchTimes('a')).toEqual(undefined);
     expect(getProps('a')).toEqual({
       loading: true,
       error: undefined,
       a: undefined,
     });
 
-    expect(getLoadings(['a', 'b'])).toEqual([true, true]);
-    expect(getResults(['a', 'b'])).toEqual([undefined, undefined]);
-    expect(getFetchTimes(['a', 'b'])).toEqual([undefined, undefined]);
+    expect(private_getLoadings(['a', 'b'])).toEqual([true, true]);
+    expect(private_getResults(['a', 'b'])).toEqual([undefined, undefined]);
+    expect(private_getFetchTimes(['a', 'b'])).toEqual([undefined, undefined]);
     expect(getProps(['a', 'b'])).toEqual({
       loading: true,
       error: undefined,
@@ -42,17 +42,17 @@ describe('private_get', () => {
 
   test('get things from initial state', () => {
     setState({});
-    expect(getLoadings('a')).toEqual(true);
-    expect(getResults('a')).toEqual(undefined);
-    expect(getFetchTimes('a')).toEqual(undefined);
+    expect(private_getLoadings('a')).toEqual(true);
+    expect(private_getResults('a')).toEqual(undefined);
+    expect(private_getFetchTimes('a')).toEqual(undefined);
     expect(getProps('a')).toEqual({
       loading: true,
       a: undefined,
     });
 
-    expect(getLoadings(['a', 'b'])).toEqual([true, true]);
-    expect(getResults(['a', 'b'])).toEqual([undefined, undefined]);
-    expect(getFetchTimes(['a', 'b'])).toEqual([undefined, undefined]);
+    expect(private_getLoadings(['a', 'b'])).toEqual([true, true]);
+    expect(private_getResults(['a', 'b'])).toEqual([undefined, undefined]);
+    expect(private_getFetchTimes(['a', 'b'])).toEqual([undefined, undefined]);
     expect(getProps(['a', 'b'])).toEqual({
       loading: true,
       a: undefined,
@@ -64,17 +64,17 @@ describe('private_get', () => {
     setState({
       a: { loading: true },
     });
-    expect(getLoadings('a')).toEqual(true);
-    expect(getResults('a')).toEqual(undefined);
-    expect(getFetchTimes('a')).toEqual(undefined);
+    expect(private_getLoadings('a')).toEqual(true);
+    expect(private_getResults('a')).toEqual(undefined);
+    expect(private_getFetchTimes('a')).toEqual(undefined);
     expect(getProps('a')).toEqual({
       loading: true,
       a: undefined,
     });
 
-    expect(getLoadings(['a', 'b'])).toEqual([true, true]);
-    expect(getResults(['a', 'b'])).toEqual([undefined, undefined]);
-    expect(getFetchTimes(['a', 'b'])).toEqual([undefined, undefined]);
+    expect(private_getLoadings(['a', 'b'])).toEqual([true, true]);
+    expect(private_getResults(['a', 'b'])).toEqual([undefined, undefined]);
+    expect(private_getFetchTimes(['a', 'b'])).toEqual([undefined, undefined]);
     expect(getProps(['a', 'b'])).toEqual({
       loading: true,
       a: undefined,
@@ -86,8 +86,8 @@ describe('private_get', () => {
     setState({
       a: { loading: true },
     });
-    expect(getLoadings('b')).toEqual(true);
-    expect(getLoadings('b')).toEqual(true);
+    expect(private_getLoadings('b')).toEqual(true);
+    expect(private_getLoadings('b')).toEqual(true);
   });
 
   test('get things from stop loading', () => {
@@ -98,18 +98,18 @@ describe('private_get', () => {
         result: { name: '66', type: 'cat' },
       },
     });
-    expect(getLoadings('a')).toEqual(false);
-    expect(getResults('a')).toEqual({ name: '66', type: 'cat' });
-    expect(getFetchTimes('a')).toEqual(999);
+    expect(private_getLoadings('a')).toEqual(false);
+    expect(private_getResults('a')).toEqual({ name: '66', type: 'cat' });
+    expect(private_getFetchTimes('a')).toEqual(999);
     expect(getProps('a')).toEqual({
       loading: false,
       fetchTime: 999,
       a: { name: '66', type: 'cat' },
     });
 
-    expect(getLoadings(['a', 'b'])).toEqual([false, true]);
-    expect(getResults(['a', 'b'])).toEqual([{ name: '66', type: 'cat' }, undefined]);
-    expect(getFetchTimes(['a', 'b'])).toEqual([999, undefined]);
+    expect(private_getLoadings(['a', 'b'])).toEqual([false, true]);
+    expect(private_getResults(['a', 'b'])).toEqual([{ name: '66', type: 'cat' }, undefined]);
+    expect(private_getFetchTimes(['a', 'b'])).toEqual([999, undefined]);
     expect(getProps(['a', 'b'])).toEqual({
       loading: true,
       a: { name: '66', type: 'cat' },
@@ -133,7 +133,7 @@ describe('private_get', () => {
       a: { loading: false },
       b: { loading: false },
     });
-    expect(getLoadings(['a', 'b'])).toEqual([false, false]);
+    expect(private_getLoadings(['a', 'b'])).toEqual([false, false]);
   });
 
   test('getErrors', () => {
@@ -148,9 +148,9 @@ describe('private_get', () => {
         error: undefined,
       },
     });
-    expect(getErrors(['a', 'b'])).toEqual([errorA, undefined]);
-    expect(getErrors('a')).toEqual(errorA);
-    expect(getErrors('b')).toEqual(undefined);
+    expect(private_getErrors(['a', 'b'])).toEqual([errorA, undefined]);
+    expect(private_getErrors('a')).toEqual(errorA);
+    expect(private_getErrors('b')).toEqual(undefined);
     expect(getProps('a').error).toEqual(new Error('error a'));
     expect(getProps(['a', 'b']).error).toEqual(new Error('error a'));
 
@@ -165,7 +165,7 @@ describe('private_get', () => {
         error: errorB,
       },
     });
-    expect(getErrors(['a', 'b'])).toEqual([errorA, errorB]);
+    expect(private_getErrors(['a', 'b'])).toEqual([errorA, errorB]);
     expect(getProps(['a', 'b']).error).toEqual(new Error('error a, error b'));
   });
 });

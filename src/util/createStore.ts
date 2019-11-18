@@ -1,5 +1,6 @@
+import { getSwitchIdFlag } from './flags';
 import { setValueDeep } from './reducerPrototype';
-import { State, Payload } from '../types';
+import { State, Payload, LoadPayload } from '../types';
 
 const increase = (v: number = 0) => v + 1;
 const decrease = (v: number = 0) => v - 1 > 0 ? v - 1 : 0;
@@ -29,8 +30,12 @@ export const createStore = () => {
 
   const getState = () => state;
 
-  const load = (payload: Payload) => {
-    const { key } = payload;
+  const load = (payload: LoadPayload) => {
+    const { key, promise, id } = payload;
+    if (getSwitchIdFlag()) {
+      setValueDeep(state, [key, 'id'], id); // as well id === undefined
+    }
+    setValueDeep(state, [key, 'promise'], promise);
     setValueDeep(state, [key, 'loading'], increase);
     emit();
     return state;
