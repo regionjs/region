@@ -23,7 +23,7 @@
 npm i region-core
 ```
 
-- 创建一个 region
+- 使用 region 创建一个组件
 
 ```jsx harmony
 import { createRegion } from 'region-core';
@@ -36,6 +36,29 @@ const Component = () => {
   const value = region.useValue();
   return <input value={value} onChange={handleChange} />;
 };
+```
+
+- 使用 region 请求数据
+
+```jsx harmony
+import { createRegion } from 'region-core';
+
+const region = createRegion();
+
+const loadUser = region.loadBy(asyncFuncion);
+
+// call loadUser in application lifecycle
+loadUser({userId: 1});
+
+const Component = () => {
+  const value = region.useValue();
+  const loading = region.useLoading();
+  const error = region.useError();
+  const fetchTime = region.useFetchTime();
+  const { loading, error, fetchTime, value } = region.useProps();
+
+  return <div>{value}</div>
+}
 ```
 
 ## 文档
@@ -58,3 +81,5 @@ cd example
 npm i
 npm start
 ```
+
+[服务端渲染: NextJs with Region](https://codesandbox.io/s/region-ssr-6xprd)

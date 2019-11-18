@@ -56,7 +56,7 @@ const Component = () => {
   const error = region.useError();
   const fetchTime = region.useFetchTime();
   const { loading, error, fetchTime, value } = region.useProps();
-  
+
   return <div>{value}</div>
 }
 ```
@@ -81,6 +81,8 @@ cd example
 npm i
 npm start
 ```
+
+[SSR: NextJs with Region](https://codesandbox.io/s/region-ssr-6xprd)
 
 ## Contribute
 
