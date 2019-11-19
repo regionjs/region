@@ -5,7 +5,7 @@
 [![codecov](https://codecov.io/gh/regionjs/region-core/branch/develop/graph/badge.svg)](https://codecov.io/gh/regionjs/region-core)
 [![MIT License](https://img.shields.io/npm/l/region-core.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 
-渐进式视图模型管理框架
+region-core 是一个 React 渐进式状态管理框架，你可以在使用 react state，redux 的同时使用它，并获得开发的便利。
 
 [English](https://github.com/regionjs/region-core/blob/master/docs/README.md) | 中文
 
@@ -57,7 +57,7 @@ const Component = () => {
   const fetchTime = region.useFetchTime();
   const { loading, error, fetchTime, value } = region.useProps();
 
-  return <div>{value}</div>
+  return <div>{value}</div>;
 }
 ```
 

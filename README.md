@@ -5,7 +5,7 @@
 [![codecov](https://codecov.io/gh/regionjs/region-core/branch/develop/graph/badge.svg)](https://codecov.io/gh/regionjs/region-core)
 [![MIT License](https://img.shields.io/npm/l/region-core.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 
-Progressive View Model Management Framework
+region-core is a progressive View Model Management Framework. You can use it while using react state, redux, and benefit from it.
 
 English | [中文](https://github.com/regionjs/region-core/blob/master/docs/README-zh_CN.md)
 
@@ -57,7 +57,7 @@ const Component = () => {
   const fetchTime = region.useFetchTime();
   const { loading, error, fetchTime, value } = region.useProps();
 
-  return <div>{value}</div>
+  return <div>{value}</div>;
 }
 ```
 
