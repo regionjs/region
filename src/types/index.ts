@@ -10,16 +10,16 @@ export type ComponentType = RawComponentType | any;
 // useProps
 export type SimpleKey = string;
 export type SimpleKeys = SimpleKey[];
-export type BaseKey = SimpleKey | SimpleKeys;
+export type Key = SimpleKey | SimpleKeys;
 interface ComplexKey {
-  key?: BaseKey;
-  loading?: BaseKey;
-  result?: BaseKey;
-  fetchTime?: BaseKey;
-  error?: BaseKey;
+  key?: Key;
+  loading?: Key;
+  result?: Key;
+  fetchTime?: Key;
+  error?: Key;
 }
 
-export type Key = BaseKey | ComplexKey;
+export type LegacyKey = Key | ComplexKey;
 
 // connect
 export type DisplayType = ComponentType;

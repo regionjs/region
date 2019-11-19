@@ -21,11 +21,11 @@ import {
   ResultOrFunc,
   AsyncFunction,
   Params,
-  Key,
+  LegacyKey,
   LoadOption,
   SimpleKey,
   OptionOrReducer,
-  BaseKey,
+  Key,
   Props,
   DisplayType,
   ConnectOption,
@@ -69,23 +69,23 @@ const createCombinedRegion = () => {
     return state || {};
   };
 
-  const private_getPromises = (key: BaseKey) => {
+  const private_getPromises = (key: Key) => {
     return mapValues(private_getState(), key, ({ promise }: Props) => promise);
   };
 
-  const private_getLoadings = (key: BaseKey) => {
+  const private_getLoadings = (key: Key) => {
     return mapValues(private_getState(), key, ({ loading }: Props) => formatLoading(loading));
   };
 
-  const private_getResults = (key: BaseKey) => {
+  const private_getResults = (key: Key) => {
     return mapValues(private_getState(), key, ({ result }: Props) => result);
   };
 
-  const private_getFetchTimes = (key: BaseKey) => {
+  const private_getFetchTimes = (key: Key) => {
     return mapValues(private_getState(), key, ({ fetchTime }: Props) => fetchTime);
   };
 
-  const private_getErrors = (key: BaseKey) => {
+  const private_getErrors = (key: Key) => {
     return mapValues(private_getState(), key, ({ error }: Props) => error);
   };
 
@@ -136,7 +136,7 @@ const createCombinedRegion = () => {
     };
   };
 
-  const getProps = (key: Key) => {
+  const getProps = (key: LegacyKey) => {
     const { keys, loadings, results, fetchTimes, errors } = formatKeys(key);
 
     const loading = selectLoading(private_getLoadings(loadings));
@@ -146,27 +146,27 @@ const createCombinedRegion = () => {
     return Object.assign({ loading, fetchTime, error }, resultMap);
   };
 
-  const getValue = (key: SimpleKey) => {
+  const getValue = (key: Key) => {
     return private_getResults(key);
   };
 
-  const getLoading = (key: SimpleKey) => {
+  const getLoading = (key: Key) => {
     return private_getLoadings(key);
   };
 
-  const getError = (key: SimpleKey) => {
+  const getError = (key: Key) => {
     return private_getErrors(key);
   };
 
-  const getFetchTime = (key: SimpleKey) => {
+  const getFetchTime = (key: Key) => {
     return private_getFetchTimes(key);
   };
 
-  const connectWith = (key: Key, Display: DisplayType, option?: ConnectOption) => {
+  const connectWith = (key: LegacyKey, Display: DisplayType, option?: ConnectOption) => {
     return connect(key, option)(Display);
   };
 
-  const connect = (key: Key, { Loading, Error: ErrorComponent }: ConnectOption = {}) => (Display: DisplayType = Empty) => {
+  const connect = (key: LegacyKey, { Loading, Error: ErrorComponent }: ConnectOption = {}) => (Display: DisplayType = Empty) => {
     if (!isValidConnectKey(key)) {
       throw new Error('invalid key.');
     }
@@ -179,7 +179,7 @@ const createCombinedRegion = () => {
     });
   };
 
-  const useProps: (key: Key) => Props = createHooks({ getFn: getProps, equalityFn: shallowEqual, store: private_store });
+  const useProps: (key: LegacyKey) => Props = createHooks({ getFn: getProps, equalityFn: shallowEqual, store: private_store });
 
   const useValue = createHooks({ getFn: getValue, equalityFn: strictEqual, store: private_store });
 

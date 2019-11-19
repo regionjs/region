@@ -1,8 +1,8 @@
 import {
-  Key,
+  LegacyKey,
   State,
   Props,
-  BaseKey,
+  Key,
   Loading,
   Result,
   SimpleKey,
@@ -43,14 +43,14 @@ const getValue = (state: State, key: SimpleKey) => {
   return values;
 };
 
-export const mapValues = (state: State = {}, key: BaseKey, format = (v: any) => v) => {
+export const mapValues = (state: State = {}, key: Key, format = (v: any) => v) => {
   if (Array.isArray(key)) {
     return key.map(i => getValue(state, i)).map(format);
   }
   return format(getValue(state, key));
 };
 
-export const formatKeys = (key: Key) => {
+export const formatKeys = (key: LegacyKey) => {
   if (typeof key === 'string') {
     return {
       keys: [key],

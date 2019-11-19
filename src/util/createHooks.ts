@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Key, SimpleKey } from '../types';
+import { LegacyKey, SimpleKey } from '../types';
 
 interface CreateHooksParams {
   getFn: (key: any) => any;
@@ -17,7 +17,7 @@ interface CreateHooksParams {
  * }
  */
 export const createHooks = ({ getFn, equalityFn, store }: CreateHooksParams) => {
-  const useHook: (key: Key | SimpleKey) => any = (key) => {
+  const useHook: (key: LegacyKey | SimpleKey) => any = (key) => {
     const [, forceUpdate] = useState({});
     const ref = useRef();
     ref.current = getFn(key);
