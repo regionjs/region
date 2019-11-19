@@ -56,7 +56,7 @@ describe('createRegion', () => {
     const asyncFunction = () => Promise.resolve('Amy Hernandez');
 
     expect.assertions(1);
-    return region.load(asyncFunction).finally(() => {
+    return region.load(asyncFunction).then(() => {
       expect(region.getValue()).toBe('Amy Hernandez');
     });
   });
@@ -66,7 +66,7 @@ describe('createRegion', () => {
     const asyncFunction = () => Promise.reject('Barbara Garcia');
 
     expect.assertions(2);
-    return region.load(asyncFunction).finally(() => {
+    return region.load(asyncFunction).then(() => {
       expect(region.getValue()).toBe(undefined);
       expect(region.getError()).toStrictEqual(new Error('Barbara Garcia'));
     });
@@ -78,7 +78,7 @@ describe('createRegion', () => {
     const asyncFunction = () => Promise.reject(error);
 
     expect.assertions(2);
-    return region.load(asyncFunction).finally(() => {
+    return region.load(asyncFunction).then(() => {
       expect(region.getValue()).toBe(undefined);
       expect(region.getError()).toStrictEqual(error);
     });
@@ -89,7 +89,7 @@ describe('createRegion', () => {
     const asyncFunction = (state: string) => Promise.resolve(`${state} & Joseph Hall`);
 
     expect.assertions(1);
-    return region.loadBy(asyncFunction)('Barbara Rodriguez').finally(() => {
+    return region.loadBy(asyncFunction)('Barbara Rodriguez').then(() => {
       expect(region.getValue()).toBe('Barbara Rodriguez & Joseph Hall');
     });
   });
@@ -104,7 +104,7 @@ describe('createRegion', () => {
       expect(region.getValue()).toBe('Deborah Anderson');
       expect(region.getError()).toBe(undefined);
       return region.load(asyncFunction2);
-    }).finally(() => {
+    }).then(() => {
       expect(region.getValue()).toBe('Deborah Anderson');
       expect(region.getError()).toStrictEqual(new Error('Susan Gonzalez'));
     });
