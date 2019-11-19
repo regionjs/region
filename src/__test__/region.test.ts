@@ -94,6 +94,22 @@ describe('createRegion', () => {
     });
   });
 
+  test('load with reducer', () => {
+    const region = createRegion();
+    const asyncFunction = (state: string) => Promise.resolve(`${state} & Robert Thomas`);
+    const reducer = (state = '', result = '') => `${state} | ${result}`;
+    const loadUser1 = region.loadBy(asyncFunction, reducer);
+    const loadUser2 = region.loadBy(asyncFunction, reducer, {});
+
+    expect.assertions(2);
+    return loadUser1('Michael Lee').then(() => {
+      expect(region.getValue()).toBe(' | Michael Lee & Robert Thomas');
+      return loadUser2('Richard Hall');
+    }).then(() => {
+      expect(region.getValue()).toBe(' | Michael Lee & Robert Thomas | Richard Hall & Robert Thomas');
+    });
+  });
+
   test('reject will not erase resolve', () => {
     const region = createRegion();
     const asyncFunction = () => Promise.resolve('Deborah Anderson');
@@ -181,4 +197,18 @@ describe('createRegion', () => {
       expect(region.getValue()).toBe('Patricia Thompson');
     });
   });
+
+  test('load accepts latest', () => {
+    const region = createRegion();
+    const asyncFunction1 = () => new Promise(resolve => setTimeout(() => resolve('Sharon Brown'), 40));
+    const asyncFunction2 = () => new Promise(resolve => setTimeout(() => resolve('William Harris'), 20));
+    const promise1 = region.load(asyncFunction1);
+    const promise2 = region.load(asyncFunction2);
+
+    expect.assertions(1);
+    return Promise.all([promise1, promise2]).then(() => {
+      expect(region.getValue()).toBe('William Harris');
+    });
+  });
+// tslint:disable-next-line max-file-line-count
 });

@@ -15,10 +15,12 @@ describe('isValidConnectKey', () => {
   });
 
   test('undefined is not key', () => {
+    // @ts-ignore
     expect(isValidConnectKey(undefined)).toEqual(false);
   });
 
   test('null is not key', () => {
+    // @ts-ignore
     expect(isValidConnectKey(null)).toEqual(false);
   });
 

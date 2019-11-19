@@ -1,4 +1,4 @@
-import { FormatResultParams, LoadPayload, Payload } from '../types';
+import { FormatResultParams, LoadOption, LoadPayload, Id, Params, Payload, SimpleKey, ResultOrFunc } from '../types';
 
 export const formatResult = ({ resultOrFunc, snapshot, format, reducer, params }: FormatResultParams) => {
   if (typeof resultOrFunc === 'function') {
@@ -12,14 +12,28 @@ export const formatResult = ({ resultOrFunc, snapshot, format, reducer, params }
   return formatted;
 };
 
-const getId = ({ id, params }: any) => {
+interface GetIdParams {
+  id: LoadOption['id'];
+  params: Params;
+}
+
+const getId = ({ id, params }: GetIdParams): Id => {
   if (typeof id === 'function') {
     return id(params);
   }
-  return id;
+  // undefined as 'undefined'
+  return id as string;
 };
 
-const getPayloadWithId = ({ key, resultOrFunc, snapshot, params, option }: any) => {
+interface GetPayloadWithIdParams {
+  key: SimpleKey;
+  resultOrFunc: ResultOrFunc;
+  snapshot: any;
+  params: Params;
+  option: LoadOption;
+}
+
+const getPayloadWithId = ({ key, resultOrFunc, snapshot, params, option }: GetPayloadWithIdParams) => {
   const { format, reducer, id } = option;
   const formatId = getId({ id, params });
 
@@ -34,17 +48,32 @@ const getPayloadWithId = ({ key, resultOrFunc, snapshot, params, option }: any) 
   return { key, results: formattedResult, id: formatId, result: formatted };
 };
 
-export const getPayload = ({ key, snapshot, result, params, option }: any): Payload => {
+interface GetPayloadParams {
+  key: SimpleKey;
+  result: ResultOrFunc;
+  snapshot: any;
+  params: Params;
+  option: LoadOption;
+}
+
+export const getPayload = ({ key, snapshot, result, params, option }: GetPayloadParams): Payload => {
   const { format, reducer, id } = option;
 
   if (id !== undefined) {
-    return getPayloadWithId({ key, resultOrFunc: result, snapshot, format, id, reducer, params, option });
+    return getPayloadWithId({ key, resultOrFunc: result, snapshot, params, option });
   }
   const formattedResult = formatResult({ resultOrFunc: result, snapshot, format, reducer, params });
   return { key, result: formattedResult };
 };
 
-export const getLoadPayload = ({ key, promise, params, option }: any): LoadPayload => {
+interface GetLoadPayloadParams {
+  key: SimpleKey;
+  promise: Promise<any>;
+  params: Params;
+  option: LoadOption;
+}
+
+export const getLoadPayload = ({ key, promise, params, option }: GetLoadPayloadParams): LoadPayload => {
   const { id } = option;
   const formatId = getId({ id, params });
   return { key, promise, id: formatId };

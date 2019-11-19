@@ -14,7 +14,6 @@ import {
   hoc,
   createHooks,
   createStore,
-  getAcceptLatestFlag,
 } from '../util';
 import {
   EntityName,
@@ -52,7 +51,7 @@ const getCombinedOption: GetCombinedOption = (optionOrReducer = {}, exOption) =>
     }
     return { reducer: optionOrReducer };
   }
-  return optionOrReducer || {};
+  return optionOrReducer;
 };
 
 const Empty = () => null;
@@ -108,7 +107,7 @@ const createCombinedRegion = () => {
         const result = await promise;
         const currentPromise = private_getPromises(key);
         const snapshot = private_getResults(key);
-        if (getAcceptLatestFlag() && promise !== currentPromise) {
+        if (promise !== currentPromise) {
           // store result for optimize purpose
           return snapshot;
         }
@@ -170,7 +169,7 @@ const createCombinedRegion = () => {
     });
   };
 
-  const useProps: (key: LegacyKey) => Props = createHooks({ getFn: getProps, equalityFn: shallowEqual, store: private_store });
+  const useProps: (key: Key) => Props = createHooks({ getFn: getProps, equalityFn: shallowEqual, store: private_store });
 
   const useValue = createHooks({ getFn: getValue, equalityFn: strictEqual, store: private_store });
 

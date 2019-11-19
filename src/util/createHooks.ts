@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import { LegacyKey, SimpleKey } from '../types';
+import { Key } from '../types';
 
-interface CreateHooksParams {
-  getFn: (key: any) => any;
-  equalityFn: (a: any, b: any) => boolean;
+interface CreateHooksParams<T> {
+  getFn: (key: Key) => T;
+  equalityFn: (a?: T, b?: T) => boolean;
   store: any;
 }
 
@@ -16,10 +16,10 @@ interface CreateHooksParams {
  *   Advanced example for manually managing subscriptions in an async-safe way using hooks
  * }
  */
-export const createHooks = ({ getFn, equalityFn, store }: CreateHooksParams) => {
-  const useHook: (key: LegacyKey | SimpleKey) => any = (key) => {
+export const createHooks = <T>({ getFn, equalityFn, store }: CreateHooksParams<T>) => {
+  const useHook: (key: Key) => T = (key) => {
     const [, forceUpdate] = useState({});
-    const ref = useRef();
+    const ref = useRef<T>();
     ref.current = getFn(key);
     useEffect(
       () => {
