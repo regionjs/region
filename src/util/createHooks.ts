@@ -17,7 +17,7 @@ interface CreateHooksParams<T> {
  * }
  */
 export const createHooks = <T>({ getFn, equalityFn, store }: CreateHooksParams<T>) => {
-  const useHook: (key: Key) => T = (key) => {
+  return (key: Key): T => {
     const [, forceUpdate] = useState({});
     const ref = useRef<T>();
     ref.current = getFn(key);
@@ -50,5 +50,4 @@ export const createHooks = <T>({ getFn, equalityFn, store }: CreateHooksParams<T
     );
     return ref.current;
   };
-  return useHook;
 };
