@@ -47,8 +47,7 @@ describe('export api', () => {
       reset, set, load, loadBy, connect, connectWith,
       getProps, getValue, getLoading, getError, getFetchTime,
       useProps, useValue, useLoading, useError, useFetchTime,
-      private_store, private_getState,
-      private_getLoadings, private_getResults, private_getFetchTimes, private_getErrors,
+      private_store,
       ...rest
     } = createCombinedRegion();
     expect(typeof reset).toBe('function');
@@ -68,11 +67,6 @@ describe('export api', () => {
     expect(typeof useError).toBe('function');
     expect(typeof useFetchTime).toBe('function');
     expect(typeof private_store).toBe('object');
-    expect(typeof private_getState).toBe('function');
-    expect(typeof private_getLoadings).toBe('function');
-    expect(typeof private_getResults).toBe('function');
-    expect(typeof private_getFetchTimes).toBe('function');
-    expect(typeof private_getErrors).toBe('function');
     expect(rest).toEqual({});
   });
 });

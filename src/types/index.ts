@@ -89,7 +89,7 @@ export interface Payload {
 // selectProps
 // loading === undefined occurs when strictLoading === false
 export type Loading = boolean | undefined;
-export type FetchTime = number;
+export type FetchTime = number | undefined;
 export type Error = any;
 
 // formatResult

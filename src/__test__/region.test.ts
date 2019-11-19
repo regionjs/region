@@ -68,7 +68,7 @@ describe('createRegion', () => {
     expect.assertions(2);
     return region.load(asyncFunction).finally(() => {
       expect(region.getValue()).toBe(undefined);
-      expect(region.getError()).toBe('Barbara Garcia');
+      expect(region.getError()).toStrictEqual(new Error('Barbara Garcia'));
     });
   });
 
@@ -80,7 +80,7 @@ describe('createRegion', () => {
     expect.assertions(2);
     return region.load(asyncFunction).finally(() => {
       expect(region.getValue()).toBe(undefined);
-      expect(region.getError()).toBe(error);
+      expect(region.getError()).toStrictEqual(error);
     });
   });
 
@@ -106,7 +106,7 @@ describe('createRegion', () => {
       return region.load(asyncFunction2);
     }).finally(() => {
       expect(region.getValue()).toBe('Deborah Anderson');
-      expect(region.getError()).toBe('Susan Gonzalez');
+      expect(region.getError()).toStrictEqual(new Error('Susan Gonzalez'));
     });
   });
 
@@ -118,9 +118,9 @@ describe('createRegion', () => {
     expect.assertions(4);
     return region.load(asyncFunction).then(() => {
       expect(region.getValue()).toBe(undefined);
-      expect(region.getError()).toBe('Christopher Hall');
+      expect(region.getError()).toStrictEqual(new Error('Christopher Hall'));
       return region.load(asyncFunction2);
-    }).finally(() => {
+    }).then(() => {
       expect(region.getValue()).toBe('Jason Lee');
       expect(region.getError()).toBe(undefined);
     });

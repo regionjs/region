@@ -29,9 +29,9 @@ describe('get', () => {
       a: undefined,
     });
 
-    expect(getLoading(['a', 'b'])).toEqual([true, true]);
+    expect(getLoading(['a', 'b'])).toEqual(true);
     expect(getValue(['a', 'b'])).toEqual([undefined, undefined]);
-    expect(getFetchTime(['a', 'b'])).toEqual([undefined, undefined]);
+    expect(getFetchTime(['a', 'b'])).toEqual(undefined);
     expect(getProps(['a', 'b'])).toEqual({
       loading: true,
       error: undefined,
@@ -50,9 +50,9 @@ describe('get', () => {
       a: undefined,
     });
 
-    expect(getLoading(['a', 'b'])).toEqual([true, true]);
+    expect(getLoading(['a', 'b'])).toEqual(true);
     expect(getValue(['a', 'b'])).toEqual([undefined, undefined]);
-    expect(getFetchTime(['a', 'b'])).toEqual([undefined, undefined]);
+    expect(getFetchTime(['a', 'b'])).toEqual(undefined);
     expect(getProps(['a', 'b'])).toEqual({
       loading: true,
       a: undefined,
@@ -72,9 +72,9 @@ describe('get', () => {
       a: undefined,
     });
 
-    expect(getLoading(['a', 'b'])).toEqual([true, true]);
+    expect(getLoading(['a', 'b'])).toEqual(true);
     expect(getValue(['a', 'b'])).toEqual([undefined, undefined]);
-    expect(getFetchTime(['a', 'b'])).toEqual([undefined, undefined]);
+    expect(getFetchTime(['a', 'b'])).toEqual(undefined);
     expect(getProps(['a', 'b'])).toEqual({
       loading: true,
       a: undefined,
@@ -107,23 +107,36 @@ describe('get', () => {
       a: { name: '66', type: 'cat' },
     });
 
-    expect(getLoading(['a', 'b'])).toEqual([false, true]);
+    expect(getLoading(['a', 'b'])).toEqual(true);
     expect(getValue(['a', 'b'])).toEqual([{ name: '66', type: 'cat' }, undefined]);
-    expect(getFetchTime(['a', 'b'])).toEqual([999, undefined]);
+    expect(getFetchTime(['a', 'b'])).toEqual(999);
     expect(getProps(['a', 'b'])).toEqual({
       loading: true,
+      error : undefined,
+      fetchTime: 999,
       a: { name: '66', type: 'cat' },
       b: undefined,
     });
   });
 
   test('getProps with complex key', () => {
+    setState({
+      a: {
+        loading: false,
+        fetchTime: 999,
+        result: { name: '66', type: 'cat' },
+      },
+    });
     expect(getProps({ key: ['a', 'b'], result:['b'] })).toEqual({
       loading: true,
+      error : undefined,
+      fetchTime: 999,
       b: undefined,
     });
     expect(getProps({ loading: ['a', 'b'], result:['b'] })).toEqual({
       loading: true,
+      error : undefined,
+      fetchTime: undefined,
       b: undefined,
     });
   });
@@ -133,7 +146,7 @@ describe('get', () => {
       a: { loading: false },
       b: { loading: false },
     });
-    expect(getLoading(['a', 'b'])).toEqual([false, false]);
+    expect(getLoading(['a', 'b'])).toEqual(false);
   });
 
   test('getErrors', () => {
@@ -148,7 +161,7 @@ describe('get', () => {
         error: undefined,
       },
     });
-    expect(getError(['a', 'b'])).toEqual([errorA, undefined]);
+    expect(getError(['a', 'b'])).toEqual(errorA);
     expect(getError('a')).toEqual(errorA);
     expect(getError('b')).toEqual(undefined);
     expect(getProps('a').error).toEqual(new Error('error a'));
@@ -165,7 +178,7 @@ describe('get', () => {
         error: errorB,
       },
     });
-    expect(getError(['a', 'b'])).toEqual([errorA, errorB]);
+    expect(getError(['a', 'b'])).toEqual(new Error('error a, error b'));
     expect(getProps(['a', 'b']).error).toEqual(new Error('error a, error b'));
   });
 });

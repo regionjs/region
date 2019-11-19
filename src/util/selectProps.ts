@@ -4,6 +4,7 @@ import {
   Props,
   Key,
   Loading,
+  FetchTime,
   Result,
   SimpleKey,
   SimpleKeys,
@@ -14,15 +15,27 @@ export const selectLoading = (loadings: Loading[]) => loadings.reduce((a, b) => 
 export const selectError = (errors: Error[]) => {
   const filteredErrors = errors.filter(e => e);
   if (filteredErrors.length > 0) {
-    const errorMessage = filteredErrors.map(e => e.message).join(', ');
+    // e, as agreed, should be Error. but when it isn't, return e as string
+    const errorMessage = filteredErrors.map(e => typeof e === 'string' ? e : e.message).join(', ');
     return new Error(errorMessage);
   }
   return undefined;
 };
 
-export const selectFetchTime = (fetchTimes: number[]) => {
-  const fetchTime = fetchTimes.reduce((a, b) => a > b ? a : b, 0);
-  return fetchTime || undefined;
+export const selectFetchTime = (fetchTimes: FetchTime[]) => {
+  const fetchTime = fetchTimes.reduce(
+    (a, b) => {
+      if (a === undefined) {
+        return b;
+      }
+      if (b === undefined) {
+        return a;
+      }
+      return a > b ? a : b;
+    },
+    undefined,
+  );
+  return fetchTime;
 };
 
 export const selectResult = (keys: SimpleKeys, results: Result[]) => {
