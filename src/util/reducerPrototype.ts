@@ -1,6 +1,6 @@
 import { State } from '../types';
 
-// NOTE 只支持 path.length === 2 和 value
+// NOTE only support path.length === 2, 3 and value
 export const setValueDeep = (state: State, path: any, value: any) => {
   let obj = state;
   let i;

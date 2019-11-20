@@ -43,9 +43,7 @@ const getPayloadWithId = ({ key, resultOrFunc, snapshot, params, option }: GetPa
   } else {
     formatted = typeof format === 'function' ? format(resultOrFunc, snapshot) : resultOrFunc;
   }
-  // NOTE should return a different object or useProps may? broke
-  const formattedResult = Object.assign({}, snapshot, { [formatId]: formatted });
-  return { key, results: formattedResult, id: formatId, result: formatted };
+  return { key, id: formatId, result: formatted };
 };
 
 interface GetPayloadParams {

@@ -4,12 +4,12 @@ import { State, Payload, LoadPayload } from '../types';
 const increase = (v: number = 0) => v + 1;
 const decrease = (v: number = 0) => v - 1 > 0 ? v - 1 : 0;
 
-const setKey = (state: State, { key, result, results, id, error }: Payload) => {
+const setKey = (state: State, { key, result, id, error }: Payload) => {
   const fetchTime = new Date().getTime();
   setValueDeep(state, [key, 'fetchTime'], fetchTime);
   setValueDeep(state, [key, 'id'], id); // as well id === undefined
   if (id !== undefined) {
-    setValueDeep(state, [key, 'results'], results);
+    setValueDeep(state, [key, 'results', id], result);
   }
   setValueDeep(state, [key, 'result'], result);
   setValueDeep(state, [key, 'error'], error); // as well error ===  undefined
@@ -46,8 +46,8 @@ export const createStore = () => {
   };
 
   const set = (payload: Payload) => {
-    const { key, result, results, id, error } = payload;
-    const nextState = setKey(state, { key, result, results, id, error });
+    const { key, result, id, error } = payload;
+    const nextState = setKey(state, { key, result, id, error });
     if (error) {
       console.error(error.message);
     }

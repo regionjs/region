@@ -80,7 +80,6 @@ export interface LoadPayload {
 export interface Payload {
   key: string;
   result?: Result;
-  results?: Results;
   id?: Id;
   error?: Error;
 }
