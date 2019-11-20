@@ -20,7 +20,7 @@ const setKey = (state: State, { key, result, results, id, error }: Payload) => {
 type Listener = () => void;
 
 export const createStore = () => {
-  let state = {};
+  let state: State = {};
   const listeners: Listener[] = [];
 
   const emit = () => {
@@ -32,6 +32,13 @@ export const createStore = () => {
   const load = (payload: LoadPayload) => {
     const { key, promise, id } = payload;
     setValueDeep(state, [key, 'id'], id); // as well id === undefined
+    // It could be extracted as mapValue, also some of private get method could inline
+    // I will decide later
+    const simpleState = state[key] || {};
+    if (simpleState.results) {
+      const result = simpleState.results[id as string];
+      setValueDeep(state, [key, 'result'], result);
+    }
     setValueDeep(state, [key, 'promise'], promise);
     setValueDeep(state, [key, 'loading'], increase);
     emit();

@@ -177,8 +177,9 @@ describe('createRegion', () => {
     return loadUser({ id: '650000200512087988' }).then(() => {
       expect(region.getValue()).toEqual({ id: '650000200512087988', name: 'Amy Davis' });
       const promise = loadUser2({ id: '330000197010067769' });
-      // TODO it could some how be undefined with a provide flag
-      expect(region.getValue()).toEqual({ id: '650000200512087988', name: 'Amy Davis' });
+      // TODO this could cause huge change that may included in major release
+      // If so, it should be provided a flag
+      expect(region.getValue()).toEqual(undefined);
       return promise;
     }).then(() => {
       expect(region.getValue()).toEqual({ id: '330000197010067769', name: 'Carol Jackson' });
