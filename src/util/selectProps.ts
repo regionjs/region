@@ -1,16 +1,28 @@
 import {
   LegacyKey,
-  State,
   AnyObject,
-  Key,
-  Loading,
   FetchTime,
   Result,
-  SimpleKey,
   SimpleKeys,
 } from '../types';
 
-export const selectLoading = (loadings: Loading[]) => loadings.reduce((a, b) => a || b, false);
+type Loading = number | undefined;
+
+const formatLoading = (loading?: number) => {
+  // treat undefined as true
+  if (loading === undefined) {
+    return true;
+  }
+  return loading > 0;
+};
+
+export const selectLoading = (loadings: Loading[]) => loadings.reduce(
+  (a, b) => {
+    const currentLoading = formatLoading(b);
+    return a || currentLoading;
+  },
+  false,
+);
 
 export const selectError = (errors: Error[]) => {
   const filteredErrors = errors.filter(e => e);
@@ -44,26 +56,6 @@ export const selectResult = (keys: SimpleKeys, results: Result[]) => {
     props[key] = results[index];
   });
   return props;
-};
-
-export const formatLoading = (loading?: number) => {
-  // treat undefined as true
-  if (loading === undefined) {
-    return true;
-  }
-  return loading > 0;
-};
-
-const getValue = (state: State, key: SimpleKey) => {
-  const values = state[key] || {};
-  return values;
-};
-
-export const mapValues = (state: State = {}, key: Key, format = (v: any) => v) => {
-  if (Array.isArray(key)) {
-    return key.map(i => getValue(state, i)).map(format);
-  }
-  return format(getValue(state, key));
 };
 
 export const formatKeys = (key: LegacyKey) => {

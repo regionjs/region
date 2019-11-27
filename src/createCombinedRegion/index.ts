@@ -8,8 +8,6 @@ import {
   selectResult,
   selectFetchTime,
   selectError,
-  mapValues,
-  formatLoading,
   isValidConnectKey,
   hoc,
   createHooks,
@@ -24,10 +22,10 @@ import {
   LoadOption,
   OptionOrReducer,
   Key,
-  Props,
   DisplayType,
   ConnectOption,
   AnyObject,
+  PropsKey,
 } from '../types';
 
 interface ToPromiseParams {
@@ -62,22 +60,15 @@ const strictEqual = (a: any, b: any) => a === b;
 const createCombinedRegion = () => {
   const private_store = createStore();
 
-  const private_getState = () => {
+  const private_get = (key: EntityName, attribute: PropsKey) => {
     const { getState } = private_store;
-    const state = getState();
-    return state || {};
-  };
-
-  const private_getPromises = (key: Key) => {
-    return mapValues(private_getState(), key, ({ promise }: Props) => promise);
-  };
-
-  const private_getResults = (key: Key) => {
-    return mapValues(private_getState(), key, ({ result }: Props) => result);
+    const state = getState() || {};
+    const props = state[key] || {};
+    return props[attribute];
   };
 
   const set = (key: EntityName, resultOrFunc: ResultOrFunc) => {
-    const snapshot = private_getResults(key);
+    const snapshot = private_get(key, 'result');
     let formattedResult = resultOrFunc;
     if (typeof resultOrFunc === 'function') {
       formattedResult = resultOrFunc(snapshot);
@@ -106,8 +97,8 @@ const createCombinedRegion = () => {
       private_store.load(loadPayload);
       try {
         const result = await promise;
-        const currentPromise = private_getPromises(key);
-        const snapshot = private_getResults(key);
+        const currentPromise = private_get(key, 'promise');
+        const snapshot = private_get(key, 'result');
         const payload = getPayload({ key, snapshot, result, params, option });
         if (promise !== currentPromise) {
           // store result for optimize purpose
@@ -117,7 +108,7 @@ const createCombinedRegion = () => {
         private_store.set(payload);
         return payload.result;
       } catch (error) {
-        const result = private_getResults(key);
+        const result = private_get(key, 'result');
         private_store.set({ key, result, error });
         return result;
       }
@@ -125,22 +116,32 @@ const createCombinedRegion = () => {
   };
 
   const getValue = (key: Key) => {
-    return mapValues(private_getState(), key, ({ result }: Props) => result);
+
+    if (Array.isArray(key)) {
+      return key.map(k => private_get(k, 'result'));
+    }
+    return private_get(key, 'result');
   };
 
   const getLoading = (key: Key) => {
-    const loadings = mapValues(private_getState(), key, ({ loading }: Props) => formatLoading(loading));
-    return selectLoading(Array.isArray(loadings) ? loadings : [loadings]);
+    if (Array.isArray(key)) {
+      return selectLoading(key.map(k => private_get(k, 'loading')));
+    }
+    return selectLoading([private_get(key, 'loading')]);
   };
 
   const getError = (key: Key) => {
-    const errors = mapValues(private_getState(), key, ({ error }: Props) => error);
-    return selectError(Array.isArray(errors) ? errors : [errors]);
+    if (Array.isArray(key)) {
+      return selectError(key.map(k => private_get(k, 'error')));
+    }
+    return selectError([private_get(key, 'error')]);
   };
 
   const getFetchTime = (key: Key) => {
-    const fetchTimes = mapValues(private_getState(), key, ({ fetchTime }: Props) => fetchTime);
-    return selectFetchTime(Array.isArray(fetchTimes) ? fetchTimes : [fetchTimes]);
+    if (Array.isArray(key)) {
+      return selectFetchTime(key.map(k => private_get(k, 'fetchTime')));
+    }
+    return selectFetchTime([private_get(key, 'fetchTime')]);
   };
 
   const getProps = (key: LegacyKey) => {
