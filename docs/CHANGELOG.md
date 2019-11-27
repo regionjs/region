@@ -1,5 +1,19 @@
 # CHANGELOG
 
+### 9.x
+
+- enhance `id`, now it can be a function
+
+- fix compatible of `load` and `set`
+
+- implement and enable swr by default
+
+### 9.0
+
+- remove all deprecated api
+
+- reimplement and remove `redux`
+
 ### 8.x
 
 - add `createRegion` & `createLocalStorageRegion` & `createCombinedRegion`

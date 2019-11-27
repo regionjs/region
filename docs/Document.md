@@ -55,16 +55,27 @@ const result = await load(asyncFunction);
 load(promise);
 ```
 
-Also you can use a `reducer` to format resolved data before it is stored.
+- You can use a `reducer` to format resolved data before it is stored.
 
 ```javascript
 const loadUser = region.loadBy(
   asyncFuncion,
   (state = [], result, params) => {
-    result.id = params.userId;
     state.push(result);
     return state;
   }
+);
+
+// params will be passed through
+loadUser({userId: 1});
+```
+
+- Provide an `id` to enjoy `swr`, go to [examples](https://regionjs.github.io/region-core/#SWR) for more.
+
+```javascript
+const loadUser = region.loadBy(
+  asyncFuncion,
+  { id: (params) => params.userId }
 );
 
 // params will be passed through

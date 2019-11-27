@@ -55,19 +55,30 @@ const result = await load(asyncFunction);
 load(promise);
 ```
 
-你可以使用 `reducer` 处理返回的数据，在它被储存之前。
+- 你可以使用 `reducer` 处理返回的数据，在它被储存之前。
 
 ```javascript
 const loadUser = region.loadBy(
   asyncFuncion,
   (state = [], result, params) => {
-    result.id = params.userId;
     state.push(result);
     return state;
   }
 );
 
 // params 会被透传
+loadUser({userId: 1});
+```
+
+- 提供一个 `id` 可以开启 `swr`，前往 [examples](https://regionjs.github.io/region-core/#SWR) 获得更多信息。
+
+```javascript
+const loadUser = region.loadBy(
+  asyncFuncion,
+  { id: (params) => params.userId }
+);
+
+// params will be passed through
 loadUser({userId: 1});
 ```
 
