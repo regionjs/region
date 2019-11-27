@@ -1,4 +1,4 @@
-import { State, Payload, LoadPayload } from '../types';
+import { State, Payload, LoadPayload, EntityName, PropsKey } from '../types';
 
 const increase = (v: number = 0) => v + 1;
 const decrease = (v: number = 0) => v - 1 > 0 ? v - 1 : 0;
@@ -21,7 +21,15 @@ export const createStore = () => {
     listeners.forEach(listener => listener());
   };
 
-  const getState = () => state;
+  // only used for test
+  const private_setState = (value: State) => {
+    state = value;
+  };
+
+  const getAttribute = (key: EntityName, attribute: PropsKey) => {
+    const props = state[key] || {};
+    return props[attribute];
+  };
 
   const load = (payload: LoadPayload) => {
     const { key, promise, id } = payload;
@@ -35,7 +43,21 @@ export const createStore = () => {
     return state;
   };
 
-  const set = (payload: Payload, cache?: boolean) => {
+  const setCache = (payload: Payload) => {
+    const { key, result, id } = payload;
+    const currentId = getAttribute(key, 'id');
+    ensure(key);
+    const props = state[key];
+    if (id !== currentId) {
+      const snapshot = props.results[id as string];
+      const formatResult = typeof result === 'function' ? result(snapshot) : result;
+      props.results[id as string] = formatResult;
+    }
+    props.loading = decrease(props.loading);
+    return state;
+  };
+
+  const set = (payload: Payload) => {
     const { key, result, id, error } = payload;
     ensure(key);
     const props = state[key];
@@ -43,13 +65,11 @@ export const createStore = () => {
     const formatResult = typeof result === 'function' ? result(snapshot) : result;
     props.results[id as string] = formatResult;
     props.loading = decrease(props.loading);
-    if (!cache) {
-      const fetchTime = new Date().getTime();
-      props.fetchTime = fetchTime;
-      props.id = id; // as well id === undefined
-      props.result = formatResult;
-      props.error = error; // as well error ===  undefined
-    }
+    const fetchTime = new Date().getTime();
+    props.fetchTime = fetchTime;
+    props.id = id; // as well id === undefined
+    props.result = formatResult;
+    props.error = error; // as well error ===  undefined
 
     if (error) {
       console.error(error.message);
@@ -70,5 +90,5 @@ export const createStore = () => {
     };
   };
 
-  return { getState, load, set, reset, subscribe };
+  return { getAttribute, private_setState, load, set, setCache, reset, subscribe };
 };

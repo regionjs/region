@@ -9,17 +9,12 @@ const {
     private_store,
 } = region;
 
-let state: any = null;
-private_store.getState = () => state;
-
-const setState = (nextState: any) => {
-  state = nextState;
-};
+const setState = private_store.private_setState;
 
 describe('get', () => {
   test('get things from nothing', () => {
     // NOTE loading is true because we want to display loading ui when state is undefined.
-    setState(undefined);
+    setState({});
     expect(getLoading('a')).toEqual(true);
     expect(getValue('a')).toEqual(undefined);
     expect(getFetchTime('a')).toEqual(undefined);
@@ -62,7 +57,8 @@ describe('get', () => {
 
   test('get things from start loading', () => {
     setState({
-      a: { loading: true },
+      // @ts-ignore
+      a: { loading: 1 },
     });
     expect(getLoading('a')).toEqual(true);
     expect(getValue('a')).toEqual(undefined);
@@ -84,7 +80,8 @@ describe('get', () => {
 
   test('treat undefined', () => {
     setState({
-      a: { loading: true },
+      // @ts-ignore
+      a: { loading: 1 },
     });
     expect(getLoading('b')).toEqual(true);
     expect(getLoading('b')).toEqual(true);
@@ -92,8 +89,9 @@ describe('get', () => {
 
   test('get things from stop loading', () => {
     setState({
+      // @ts-ignore
       a: {
-        loading: false,
+        loading: 0,
         fetchTime: 999,
         result: { name: '66', type: 'cat' },
       },
@@ -121,8 +119,9 @@ describe('get', () => {
 
   test('getProps with complex key', () => {
     setState({
+      // @ts-ignore
       a: {
-        loading: false,
+        loading: 0,
         fetchTime: 999,
         result: { name: '66', type: 'cat' },
       },
@@ -143,8 +142,10 @@ describe('get', () => {
 
   test('getLoadings from all resolved', () => {
     setState({
-      a: { loading: false },
-      b: { loading: false },
+      // @ts-ignore
+      a: { loading: 0 },
+      // @ts-ignore
+      b: { loading: 0 },
     });
     expect(getLoading(['a', 'b'])).toEqual(false);
   });
@@ -152,12 +153,14 @@ describe('get', () => {
   test('getErrors', () => {
     const errorA = new Error('error a');
     setState({
+      // @ts-ignore
       a: {
-        loading: false,
+        loading: 0,
         error: errorA,
       },
+      // @ts-ignore
       b: {
-        loading: false,
+        loading: 0,
         error: undefined,
       },
     });
@@ -169,12 +172,14 @@ describe('get', () => {
 
     const errorB = new Error('error b');
     setState({
+      // @ts-ignore
       a: {
-        loading: false,
+        loading: 0,
         error: errorA,
       },
+      // @ts-ignore
       b: {
-        loading: false,
+        loading: 0,
         error: errorB,
       },
     });

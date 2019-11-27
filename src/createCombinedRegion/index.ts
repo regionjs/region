@@ -60,15 +60,8 @@ const strictEqual = (a: any, b: any) => a === b;
 const createCombinedRegion = () => {
   const private_store = createStore();
 
-  const private_get = (key: EntityName, attribute: PropsKey) => {
-    const { getState } = private_store;
-    const state = getState() || {};
-    const props = state[key] || {};
-    return props[attribute];
-  };
-
   const set = (key: EntityName, resultOrFunc: ResultOrFunc) => {
-    const snapshot = private_get(key, 'result');
+    const snapshot = private_store.getAttribute(key, 'result');
     let formattedResult = resultOrFunc;
     if (typeof resultOrFunc === 'function') {
       formattedResult = resultOrFunc(snapshot);
@@ -97,18 +90,18 @@ const createCombinedRegion = () => {
       private_store.load(loadPayload);
       try {
         const result = await promise;
-        const currentPromise = private_get(key, 'promise');
-        const snapshot = private_get(key, 'result');
+        const currentPromise = private_store.getAttribute(key, 'promise');
+        const snapshot = private_store.getAttribute(key, 'result');
         const payload = getPayload({ key, snapshot, result, params, option });
         if (promise !== currentPromise) {
           // store result for optimize purpose
-          private_store.set(payload, true);
+          private_store.setCache(payload);
           return snapshot;
         }
         private_store.set(payload);
         return payload.result;
       } catch (error) {
-        const result = private_get(key, 'result');
+        const result = private_store.getAttribute(key, 'result');
         private_store.set({ key, result, error });
         return result;
       }
@@ -118,30 +111,30 @@ const createCombinedRegion = () => {
   const getValue = (key: Key) => {
 
     if (Array.isArray(key)) {
-      return key.map(k => private_get(k, 'result'));
+      return key.map(k => private_store.getAttribute(k, 'result'));
     }
-    return private_get(key, 'result');
+    return private_store.getAttribute(key, 'result');
   };
 
   const getLoading = (key: Key) => {
     if (Array.isArray(key)) {
-      return selectLoading(key.map(k => private_get(k, 'loading')));
+      return selectLoading(key.map(k => private_store.getAttribute(k, 'loading')));
     }
-    return selectLoading([private_get(key, 'loading')]);
+    return selectLoading([private_store.getAttribute(key, 'loading')]);
   };
 
   const getError = (key: Key) => {
     if (Array.isArray(key)) {
-      return selectError(key.map(k => private_get(k, 'error')));
+      return selectError(key.map(k => private_store.getAttribute(k, 'error')));
     }
-    return selectError([private_get(key, 'error')]);
+    return selectError([private_store.getAttribute(key, 'error')]);
   };
 
   const getFetchTime = (key: Key) => {
     if (Array.isArray(key)) {
-      return selectFetchTime(key.map(k => private_get(k, 'fetchTime')));
+      return selectFetchTime(key.map(k => private_store.getAttribute(k, 'fetchTime')));
     }
-    return selectFetchTime([private_get(key, 'fetchTime')]);
+    return selectFetchTime([private_store.getAttribute(key, 'fetchTime')]);
   };
 
   const getProps = (key: LegacyKey) => {
