@@ -13,8 +13,12 @@ describe('createStore', () => {
       user: {
         error: undefined,
         fetchTime: 0,
+        id: undefined,
         loading: 0,
         result: 'a user',
+        results: {
+          undefined: 'a user',
+        },
       },
     });
   });
@@ -26,8 +30,12 @@ describe('createStore', () => {
       user: {
         error: undefined,
         fetchTime: 0,
+        id: undefined,
         loading: 0,
         result: [{ id: 1, name: 'zhangcong' }, { id: 2, name: 'milly' }],
+        results: {
+          undefined: [{ id: 1, name: 'zhangcong' }, { id: 2, name: 'milly' }],
+        },
       },
     });
   });
@@ -39,8 +47,12 @@ describe('createStore', () => {
       user: {
         error: undefined,
         fetchTime: 0,
+        id: undefined,
         loading: 0,
         result: 'should be string',
+        results: {
+          undefined: 'should be string',
+        },
       },
     });
   });
@@ -52,8 +64,13 @@ describe('createStore', () => {
       user: {
         error,
         fetchTime: 0,
+        id: undefined,
         loading: 0,
         result: undefined,
+        results: {
+          // tslint:disable-next-line object-literal-shorthand
+          undefined: undefined,
+        },
       },
     });
   });
@@ -68,8 +85,12 @@ describe('createStore', () => {
       user: {
         error,
         fetchTime: 0,
+        id: undefined,
         loading: 0,
         result: 'a user',
+        results: {
+          undefined: 'a user',
+        },
       },
     });
   });

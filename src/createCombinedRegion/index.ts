@@ -107,11 +107,12 @@ const createCombinedRegion = () => {
         const result = await promise;
         const currentPromise = private_getPromises(key);
         const snapshot = private_getResults(key);
+        const payload = getPayload({ key, snapshot, result, params, option });
         if (promise !== currentPromise) {
           // store result for optimize purpose
+          private_store.set(payload, true);
           return snapshot;
         }
-        const payload = getPayload({ key, snapshot, result, params, option });
         private_store.set(payload);
         return payload.result;
       } catch (error) {

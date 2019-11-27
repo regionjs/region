@@ -206,8 +206,9 @@ describe('createRegion', () => {
     const promise1 = region.load(asyncFunction1);
     const promise2 = region.load(asyncFunction2);
 
-    expect.assertions(1);
+    expect.assertions(2);
     return Promise.all([promise1, promise2]).then(() => {
+      expect(region.getLoading()).toBe(false);
       expect(region.getValue()).toBe('William Harris');
     });
   });

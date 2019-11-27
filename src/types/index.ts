@@ -41,7 +41,7 @@ export type ResultOrFunc = Result | ResultFunc;
 export type AsyncFunction = any;
 export type Params = any;
 
-export type Id = string | number;
+export type Id = string | number | Symbol;
 type Snapshot = any;
 type Format = (result: Result, snapshot: Snapshot) => Result;
 type Reducer = (state: any, action: any, params: any) => any;
@@ -64,7 +64,7 @@ export type OptionOrReducer = LoadOption | Reducer;
 // reducer
 
 export interface State {
-  [key: string]: any;
+  [key: string]: Props;
 }
 
 interface Results {
