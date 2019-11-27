@@ -27,6 +27,7 @@ import {
   Props,
   DisplayType,
   ConnectOption,
+  AnyObject,
 } from '../types';
 
 interface ToPromiseParams {
@@ -170,7 +171,7 @@ const createCombinedRegion = () => {
     });
   };
 
-  const useProps: (key: Key) => Props = createHooks({ getFn: getProps, equalityFn: shallowEqual, store: private_store });
+  const useProps: (key: Key) => AnyObject = createHooks({ getFn: getProps, equalityFn: shallowEqual, store: private_store });
 
   const useValue = createHooks({ getFn: getValue, equalityFn: strictEqual, store: private_store });
 

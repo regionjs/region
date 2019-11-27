@@ -1,7 +1,7 @@
 import {
   LegacyKey,
   State,
-  Props,
+  AnyObject,
   Key,
   Loading,
   FetchTime,
@@ -39,16 +39,19 @@ export const selectFetchTime = (fetchTimes: FetchTime[]) => {
 };
 
 export const selectResult = (keys: SimpleKeys, results: Result[]) => {
-  const props: Props = {};
+  const props: AnyObject = {};
   keys.forEach((key: string, index: number) => {
     props[key] = results[index];
   });
   return props;
 };
 
-export const formatLoading = (loading?: boolean) => {
+export const formatLoading = (loading?: number) => {
   // treat undefined as true
-  return loading || loading === undefined;
+  if (loading === undefined) {
+    return true;
+  }
+  return loading > 0;
 };
 
 const getValue = (state: State, key: SimpleKey) => {
