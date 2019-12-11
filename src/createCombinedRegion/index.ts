@@ -25,7 +25,6 @@ import {
   DisplayType,
   ConnectOption,
   AnyObject,
-  PropsKey,
 } from '../types';
 
 interface ToPromiseParams {
@@ -108,8 +107,21 @@ const createCombinedRegion = () => {
     };
   };
 
-  const getValue = (key: Key) => {
+  const getMap = (key: Key) => {
+    if (Array.isArray(key)) {
+      return key.map(k => private_store.getAttribute(k, 'results'));
+    }
+    return private_store.getAttribute(key, 'results');
+  };
 
+  const getId = (key: Key) => {
+    if (Array.isArray(key)) {
+      return key.map(k => private_store.getAttribute(k, 'id'));
+    }
+    return private_store.getAttribute(key, 'id');
+  };
+
+  const getValue = (key: Key) => {
     if (Array.isArray(key)) {
       return key.map(k => private_store.getAttribute(k, 'result'));
     }
@@ -167,6 +179,10 @@ const createCombinedRegion = () => {
 
   const useProps: (key: Key) => AnyObject = createHooks({ getFn: getProps, equalityFn: shallowEqual, store: private_store });
 
+  const useMap = createHooks({ getFn: getMap, equalityFn: strictEqual, store: private_store });
+
+  const useId = createHooks({ getFn: getId, equalityFn: strictEqual, store: private_store });
+
   const useValue = createHooks({ getFn: getValue, equalityFn: strictEqual, store: private_store });
 
   const useLoading = createHooks({ getFn: getLoading, equalityFn: strictEqual, store: private_store });
@@ -182,6 +198,8 @@ const createCombinedRegion = () => {
     load,
     loadBy,
     getProps,
+    getMap,
+    getId,
     getValue,
     getLoading,
     getError,
@@ -190,6 +208,8 @@ const createCombinedRegion = () => {
     connect,
     useProps,
     useValue,
+    useMap,
+    useId,
     useLoading,
     useError,
     useFetchTime,

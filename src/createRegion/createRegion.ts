@@ -21,6 +21,14 @@ export const createRegion = (initialValue?: any) => {
     return region.getProps('value');
   };
 
+  const getMap = () => {
+    return region.getMap('value');
+  };
+
+  const getId = () => {
+    return region.getId('value');
+  };
+
   const getValue = () => {
     return region.getValue('value');
   };
@@ -39,6 +47,14 @@ export const createRegion = (initialValue?: any) => {
 
   const useProps = () => {
     return region.useProps('value');
+  };
+
+  const useMap = () => {
+    return region.useMap('value');
+  };
+
+  const useId = () => {
+    return region.useId('value');
   };
 
   const useValue = () => {
@@ -70,11 +86,15 @@ export const createRegion = (initialValue?: any) => {
     load,
     loadBy,
     getProps,
+    getMap,
+    getId,
     getValue,
     getLoading,
     getError,
     getFetchTime,
     useProps,
+    useMap,
+    useId,
     useValue,
     useLoading,
     useError,

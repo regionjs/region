@@ -21,18 +21,22 @@ describe('export api', () => {
     const { createRegion } = api;
     const {
       set, load, loadBy,
-      getProps, getValue, getLoading, getError, getFetchTime,
-      useProps, useValue, useLoading, useError, useFetchTime,
+      getProps, getMap, getId, getValue, getLoading, getError, getFetchTime,
+      useProps, useMap, useId, useValue, useLoading, useError, useFetchTime,
     } = createRegion();
     expect(typeof set).toBe('function');
     expect(typeof load).toBe('function');
     expect(typeof loadBy).toBe('function');
     expect(typeof getProps).toBe('function');
+    expect(typeof getMap).toBe('function');
+    expect(typeof getId).toBe('function');
     expect(typeof getValue).toBe('function');
     expect(typeof getLoading).toBe('function');
     expect(typeof getError).toBe('function');
     expect(typeof getFetchTime).toBe('function');
     expect(typeof useProps).toBe('function');
+    expect(typeof useMap).toBe('function');
+    expect(typeof useId).toBe('function');
     expect(typeof useValue).toBe('function');
     expect(typeof useLoading).toBe('function');
     expect(typeof useError).toBe('function');
@@ -43,8 +47,8 @@ describe('export api', () => {
     const { createCombinedRegion } = api;
     const {
       reset, set, load, loadBy, connect, connectWith,
-      getProps, getValue, getLoading, getError, getFetchTime,
-      useProps, useValue, useLoading, useError, useFetchTime,
+      getProps, getMap, getId, getValue, getLoading, getError, getFetchTime,
+      useProps, useMap, useId, useValue, useLoading, useError, useFetchTime,
       private_store,
       ...rest
     } = createCombinedRegion();
@@ -55,11 +59,15 @@ describe('export api', () => {
     expect(typeof connect).toBe('function');
     expect(typeof connectWith).toBe('function');
     expect(typeof getProps).toBe('function');
+    expect(typeof getMap).toBe('function');
+    expect(typeof getId).toBe('function');
     expect(typeof getValue).toBe('function');
     expect(typeof getLoading).toBe('function');
     expect(typeof getError).toBe('function');
     expect(typeof getFetchTime).toBe('function');
     expect(typeof useProps).toBe('function');
+    expect(typeof useMap).toBe('function');
+    expect(typeof useId).toBe('function');
     expect(typeof useValue).toBe('function');
     expect(typeof useLoading).toBe('function');
     expect(typeof useError).toBe('function');
