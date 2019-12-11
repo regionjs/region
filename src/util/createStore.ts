@@ -54,6 +54,8 @@ export const createStore = () => {
       props.results[id as string] = formatResult;
     }
     props.loading = decrease(props.loading);
+    // we should trigger useMap & useLoading anyway
+    emit();
     return state;
   };
 

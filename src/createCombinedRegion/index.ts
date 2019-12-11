@@ -179,7 +179,7 @@ const createCombinedRegion = () => {
 
   const useProps: (key: Key) => AnyObject = createHooks({ getFn: getProps, equalityFn: shallowEqual, store: private_store });
 
-  const useMap = createHooks({ getFn: getMap, equalityFn: strictEqual, store: private_store });
+  const useMap = createHooks({ getFn: getMap, equalityFn: shallowEqual, store: private_store });
 
   const useId = createHooks({ getFn: getId, equalityFn: strictEqual, store: private_store });
 
