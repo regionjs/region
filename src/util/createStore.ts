@@ -51,7 +51,7 @@ export const createStore = () => {
     if (id !== currentId) {
       const snapshot = props.results[id as string];
       const formatResult = typeof result === 'function' ? result(snapshot) : result;
-      props.results[id as string] = formatResult;
+      props.results = { ...props.results, [id as string]: formatResult };
     }
     props.loading = decrease(props.loading);
     // we should trigger useMap & useLoading anyway
@@ -65,7 +65,7 @@ export const createStore = () => {
     const props = state[key];
     const snapshot = props.results[id as string];
     const formatResult = typeof result === 'function' ? result(snapshot) : result;
-    props.results[id as string] = formatResult;
+    props.results = { ...props.results, [id as string]: formatResult };
     props.loading = decrease(props.loading);
     const fetchTime = new Date().getTime();
     props.fetchTime = fetchTime;
