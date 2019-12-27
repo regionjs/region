@@ -1,23 +1,31 @@
-import { FormatResultParams, LoadOption, LoadPayload, Id, Params, Payload, SimpleKey, ResultOrFunc } from '../types';
+import {
+  LoadOption,
+  LoadPayload,
+  Id,
+  IdFunc,
+  Payload,
+} from '../types';
 
-export const formatResult = ({ resultOrFunc, snapshot, format, reducer, params }: FormatResultParams) => {
-  if (typeof resultOrFunc === 'function') {
-    return resultOrFunc(snapshot);
+const formatResult = ({ snapshot, result, params, option }: any) => {
+  const { format, reducer } = option;
+  if (typeof result === 'function') {
+    // never
+    return (result as any)(snapshot);
   }
   if (typeof reducer === 'function') {
-    const formatted = reducer(snapshot, resultOrFunc, params);
+    const formatted = reducer(snapshot, result, params);
     return formatted;
   }
-  const formatted = typeof format === 'function' ? format(resultOrFunc, snapshot) : resultOrFunc;
+  const formatted = typeof format === 'function' ? format(result, snapshot) : result;
   return formatted;
 };
 
-interface GetIdParams {
-  id: LoadOption['id'];
-  params: Params;
+interface GetIdParams<TParams> {
+  id: Id | IdFunc<TParams> | undefined;
+  params: TParams;
 }
 
-const getId = ({ id, params }: GetIdParams): Id => {
+export const selectId = <TParams>({ id, params }: GetIdParams<TParams>): Id => {
   if (typeof id === 'function') {
     return id(params);
   }
@@ -25,54 +33,33 @@ const getId = ({ id, params }: GetIdParams): Id => {
   return id as string;
 };
 
-interface GetPayloadWithIdParams {
-  key: SimpleKey;
-  resultOrFunc: ResultOrFunc;
-  snapshot: any;
-  params: Params;
-  option: LoadOption;
+interface GetPayloadParams<T, K extends keyof T, TParams, TResult> {
+  key: K;
+  result: TResult;
+  snapshot?: T[K];
+  params: TParams;
+  option: LoadOption<TParams, TResult, T[K]>;
 }
 
-const getPayloadWithId = ({ key, resultOrFunc, snapshot, params, option }: GetPayloadWithIdParams) => {
-  const { format, reducer, id } = option;
-  const formatId = getId({ id, params });
-
-  let formatted;
-  if (typeof reducer === 'function') {
-    formatted = reducer(snapshot, resultOrFunc, params);
-  } else {
-    formatted = typeof format === 'function' ? format(resultOrFunc, snapshot) : resultOrFunc;
-  }
-  return { key, id: formatId, result: formatted };
-};
-
-interface GetPayloadParams {
-  key: SimpleKey;
-  result: ResultOrFunc;
-  snapshot: any;
-  params: Params;
-  option: LoadOption;
-}
-
-export const getPayload = ({ key, snapshot, result, params, option }: GetPayloadParams): Payload => {
-  const { format, reducer, id } = option;
+export const selectPayload = <T, K extends keyof T, TParams, TResult>(
+  { key, snapshot, result, params, option }: GetPayloadParams<T, K, TParams, TResult>,
+): Payload<T, K> => {
+  const { id } = option;
 
   if (id !== undefined) {
-    return getPayloadWithId({ key, resultOrFunc: result, snapshot, params, option });
+
+    const { id, reducer, format } = option;
+    const formatId = selectId({ id, params });
+
+    const formattedResult = typeof reducer === 'function'
+      ? reducer(snapshot, result, params)
+      : (
+        typeof format === 'function'
+          ? format(result, snapshot)
+          : (result as unknown as T[K])
+      );
+    return { key, id: formatId, result: formattedResult };
   }
-  const formattedResult = formatResult({ resultOrFunc: result, snapshot, format, reducer, params });
+  const formattedResult = formatResult({ snapshot, result, params, option });
   return { key, result: formattedResult };
-};
-
-interface GetLoadPayloadParams {
-  key: SimpleKey;
-  promise: Promise<any>;
-  params: Params;
-  option: LoadOption;
-}
-
-export const getLoadPayload = ({ key, promise, params, option }: GetLoadPayloadParams): LoadPayload => {
-  const { id } = option;
-  const formatId = getId({ id, params });
-  return { key, promise, id: formatId };
 };

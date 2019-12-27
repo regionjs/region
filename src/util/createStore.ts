@@ -1,15 +1,15 @@
-import { State, Payload, LoadPayload, EntityName, PropsKey } from '../types';
+import { State, Props, PropsAttribute, Payload, LoadPayload } from '../types';
 
 const increase = (v: number = 0) => v + 1;
 const decrease = (v: number = 0) => v - 1 > 0 ? v - 1 : 0;
 
 type Listener = () => void;
 
-export const createStore = () => {
-  let state: State = {};
+export const createStore = <T>() => {
+  let state: State<T> = {};
   const listeners: Listener[] = [];
 
-  const ensure = (key: string) => {
+  const ensure = <K extends keyof T>(key: K) => {
     if (!state[key]) {
       state[key] = {
         results: {},
@@ -22,19 +22,26 @@ export const createStore = () => {
   };
 
   // only used for test
-  const private_setState = (value: State) => {
+  const private_setState = (value: State<T>) => {
     state = value;
   };
 
-  const getAttribute = (key: EntityName, attribute: PropsKey) => {
-    const props = state[key] || {};
+  const getAttribute = <K extends keyof T, A extends keyof Props<T[K]>>(key: K, attribute: A): Props<T[K]>[A] => {
+    const props = state[key];
+    if (!props) {
+      return undefined;
+    }
     return props[attribute];
   };
 
-  const load = (payload: LoadPayload) => {
+  const load = <K extends keyof T, TResult>(payload: LoadPayload<K, TResult>) => {
     const { key, promise, id } = payload;
+
     ensure(key);
-    const props = state[key];
+
+    // since it is ensured
+    const props = state[key] as Props<T[K]>;
+
     props.id = id; // as well id === undefined
     props.result = props.results[id as string];
     props.promise = promise;
@@ -43,11 +50,15 @@ export const createStore = () => {
     return state;
   };
 
-  const setCache = (payload: Payload) => {
+  const setCache = <K extends keyof T>(payload: Payload<T, K>) => {
     const { key, result, id } = payload;
     const currentId = getAttribute(key, 'id');
+
     ensure(key);
-    const props = state[key];
+
+    // since it is ensured
+    const props = state[key] as Props<T[K]>;
+
     if (id !== currentId) {
       const snapshot = props.results[id as string];
       const formatResult = typeof result === 'function' ? result(snapshot) : result;
@@ -59,10 +70,14 @@ export const createStore = () => {
     return state;
   };
 
-  const set = (payload: Payload) => {
+  const set = <K extends keyof T>(payload: Payload<T, K>) => {
     const { key, result, id, error } = payload;
+
     ensure(key);
-    const props = state[key];
+
+    // since it is ensured
+    const props = state[key] as Props<T[K]>;
+
     const snapshot = props.results[id as string];
     const formatResult = typeof result === 'function' ? result(snapshot) : result;
     props.results = { ...props.results, [id as string]: formatResult };

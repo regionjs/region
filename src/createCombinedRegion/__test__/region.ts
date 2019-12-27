@@ -1,3 +1,3 @@
 import { createCombinedRegion } from '../..';
 
-export const region = createCombinedRegion();
+export const region = createCombinedRegion<any>();

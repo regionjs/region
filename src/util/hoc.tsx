@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { AnyObject, ComponentType } from '../types';
+import { ComponentType } from '../types';
 
 interface Params {
   Display?: ComponentType;
@@ -10,7 +10,7 @@ interface Params {
 }
 
 export const hoc = ({ Display, Loading, Error, useProps, key }: Params) => {
-  const ConnectWith = (ownProps: AnyObject) => {
+  const ConnectWith = (ownProps: any) => {
     const props = useProps(key);
     const { loading, error } = props;
     if (loading) {

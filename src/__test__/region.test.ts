@@ -95,7 +95,7 @@ describe('createRegion', () => {
   });
 
   test('load with reducer', () => {
-    const region = createRegion();
+    const region = createRegion<string>();
     const asyncFunction = (state: string) => Promise.resolve(`${state} & Robert Thomas`);
     const reducer = (state = '', result = '') => `${state} | ${result}`;
     const loadUser1 = region.loadBy(asyncFunction, reducer);
@@ -157,7 +157,7 @@ describe('createRegion', () => {
 
   test('load with idFunc', () => {
     const region = createRegion();
-    const asyncFunction = ({ id }: any) => Promise.resolve({ id, name: 'Scott Davis' });
+    const asyncFunction = ({ id }: {id: string}) => Promise.resolve({ id, name: 'Scott Davis' });
     const loadUser = region.loadBy(asyncFunction, { id: ({ id }) => id });
 
     expect.assertions(1);

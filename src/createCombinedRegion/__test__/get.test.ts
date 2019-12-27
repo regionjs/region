@@ -126,12 +126,14 @@ describe('get', () => {
         result: { name: '66', type: 'cat' },
       },
     });
+    // @ts-ignore
     expect(getProps({ key: ['a', 'b'], result:['b'] })).toEqual({
       loading: true,
       error : undefined,
       fetchTime: 999,
       b: undefined,
     });
+    // @ts-ignore
     expect(getProps({ loading: ['a', 'b'], result:['b'] })).toEqual({
       loading: true,
       error : undefined,

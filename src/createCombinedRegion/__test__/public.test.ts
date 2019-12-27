@@ -28,11 +28,13 @@ describe('set', () => {
 
 describe('load', () => {
   test('fallback to set', async () => {
+    // @ts-ignore
     const result = await load('user', 'set a user');
     expect(result).toBe('set a user');
   });
 
   test('promise', async () => {
+    // @ts-ignore
     const result = await load('user', Promise.resolve('a user'));
     expect(result).toBe('a user');
   });

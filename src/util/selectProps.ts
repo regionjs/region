@@ -1,10 +1,4 @@
-import {
-  LegacyKey,
-  AnyObject,
-  FetchTime,
-  Result,
-  SimpleKeys,
-} from '../types';
+import { LegacyKey } from '../types';
 
 type Loading = number | undefined;
 
@@ -34,7 +28,7 @@ export const selectError = (errors: Error[]) => {
   return undefined;
 };
 
-export const selectFetchTime = (fetchTimes: FetchTime[]) => {
+export const selectFetchTime = (fetchTimes: (number | undefined)[]) => {
   const fetchTime = fetchTimes.reduce(
     (a, b) => {
       if (a === undefined) {
@@ -50,15 +44,25 @@ export const selectFetchTime = (fetchTimes: FetchTime[]) => {
   return fetchTime;
 };
 
-export const selectResult = (keys: SimpleKeys, results: Result[]) => {
-  const props: AnyObject = {};
-  keys.forEach((key: string, index: number) => {
+type K = keyof any;
+
+export const selectResult = (keys: K[], results: any[]) => {
+  const props: any = {};
+  keys.forEach((key, index) => {
     props[key] = results[index];
   });
   return props;
 };
 
-export const formatKeys = (key: LegacyKey) => {
+interface FormatLegacyKeysResult<K> {
+  keys: K[];
+  loadings: K[];
+  results: K[];
+  fetchTimes: K[];
+  errors: K[];
+}
+
+export const formatLegacyKeys = <K>(key: LegacyKey<K>): FormatLegacyKeysResult<K> => {
   if (typeof key === 'string') {
     return {
       keys: [key],
@@ -77,10 +81,15 @@ export const formatKeys = (key: LegacyKey) => {
       errors: key,
     };
   }
+  // @ts-ignore
   let keys = key.result || key.key || [];
+  // @ts-ignore
   let loadings = key.loading || key.key || [];
+  // @ts-ignore
   let results = key.result || key.key || [];
+  // @ts-ignore
   let fetchTimes = key.fetchTime || key.key || [];
+  // @ts-ignore
   let errors = key.error || key.key || [];
   keys = Array.isArray(keys) ? keys : [keys];
   loadings = Array.isArray(loadings) ? loadings : [loadings];

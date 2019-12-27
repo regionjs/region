@@ -3,7 +3,7 @@ import { createStore } from '..';
 
 mockDate();
 
-const store = createStore();
+const store = createStore<{user: any}>();
 
 describe('createStore', () => {
   test('set string', () => {
