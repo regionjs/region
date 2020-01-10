@@ -54,15 +54,7 @@ export const selectResult = (keys: K[], results: any[]) => {
   return props;
 };
 
-interface FormatLegacyKeysResult<K> {
-  keys: K[];
-  loadings: K[];
-  results: K[];
-  fetchTimes: K[];
-  errors: K[];
-}
-
-export const formatLegacyKeys = <K>(key: LegacyKey<K>): FormatLegacyKeysResult<K> => {
+export const formatLegacyKeys = <K>(key: LegacyKey<K>): any => {
   if (typeof key === 'string') {
     return {
       keys: [key],

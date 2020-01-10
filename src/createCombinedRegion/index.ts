@@ -139,70 +139,81 @@ const createCombinedRegion = <T>() => {
     };
   }
 
-  function getMap <K extends keyof T>(key: K): {[key: string]: T[K]};
-  function getMap <K extends keyof T>(key: K[]): {[key: string]: T[K]}[];
-  function getMap <K extends keyof T>(key: K | K[]) {
+  type UseMap = <K extends keyof T>(key: K) => {[key: string]: T[K]};
+
+  function getMap <K extends keyof T>(key: K): {[key: string]: T[K]} {
     if (Array.isArray(key)) {
+      // @ts-ignore
       return key.map(k => private_store.getAttribute(k, 'results'));
     }
     return private_store.getAttribute(key, 'results');
   }
 
-  function getId <K extends keyof T>(key: K): string | undefined;
-  function getId <K extends keyof T>(key: K[]): (string | undefined)[];
-  function getId <K extends keyof T>(key: K | K[]) {
+  type UseId = <K extends keyof T>(key: K) => string | undefined;
+
+  function getId <K extends keyof T>(key: K): string | undefined {
     if (Array.isArray(key)) {
+      // @ts-ignore
       return key.map(k => private_store.getAttribute(k, 'id'));
     }
     return private_store.getAttribute(key, 'id');
   }
 
-  function getValue <K extends keyof T>(key: K): T[K] | undefined;
-  function getValue <K extends keyof T>(key: K[]): (T[K] | undefined)[];
-  function getValue <K extends keyof T>(key: K | K[]) {
+  type UseValue = <K extends keyof T>(key: K) => T[K] | undefined;
+
+  function getValue <K extends keyof T>(key: K): T[K] | undefined {
     if (Array.isArray(key)) {
+      // @ts-ignore
       return key.map(k => private_store.getAttribute(k, 'result'));
     }
     return private_store.getAttribute(key, 'result');
   }
 
-  function getLoading <K extends keyof T>(key: K | K[]) {
+  type UseLoading = <K extends keyof T>(key: K) => boolean;
+
+  function getLoading <K extends keyof T>(key: K): boolean {
     if (Array.isArray(key)) {
       return selectLoading(key.map(k => private_store.getAttribute(k, 'loading')));
     }
     return selectLoading([private_store.getAttribute(key, 'loading')]);
   }
 
-  function getError <K extends keyof T>(key: K | K[]) {
+  type UseError = <K extends keyof T>(key: K) => Error | undefined;
+
+  function getError <K extends keyof T>(key: K): Error | undefined {
     if (Array.isArray(key)) {
       return selectError(key.map(k => private_store.getAttribute(k, 'error')));
     }
     return selectError([private_store.getAttribute(key, 'error')]);
   }
 
-  function getFetchTime <K extends keyof T>(key: K | K[]) {
+  type UseFetchTime = <K extends keyof T>(key: K) => number | undefined;
+
+  function getFetchTime <K extends keyof T>(key: K): number | undefined {
     if (Array.isArray(key)) {
       return selectFetchTime(key.map(k => private_store.getAttribute(k, 'fetchTime')));
     }
     return selectFetchTime([private_store.getAttribute(key, 'fetchTime')]);
   }
 
-  function getProps <K extends keyof T>(key: K | K[]) {
+  type UseProps = <K extends keyof T>(key: K) => any;
+
+  function getProps <K extends keyof T>(key: K): any {
     const { keys, loadings, results, fetchTimes, errors } = formatLegacyKeys(key);
 
     const loading = getLoading(loadings);
-    const resultMap = selectResult(keys, getValue(results) as T[K][]);
+    const resultMap = selectResult(keys, getValue(results) as any);
     const fetchTime = getFetchTime(fetchTimes);
     const error = getError(errors);
 
     return Object.assign({ loading, fetchTime, error }, resultMap);
   }
 
-  const connectWith = <K extends keyof T>(key: K | K[], Display: DisplayType, option?: ConnectOption) => {
+  const connectWith = <K extends keyof T>(key: K, Display: DisplayType, option?: ConnectOption) => {
     return connect(key, option)(Display);
   };
 
-  const connect = <K extends keyof T>(key: K | K[], { Loading, Error: ErrorComponent }: ConnectOption = {}) => (Display: DisplayType = Empty) => {
+  const connect = <K extends keyof T>(key: K, { Loading, Error: ErrorComponent }: ConnectOption = {}) => (Display: DisplayType = Empty) => {
     if (!isValidConnectKey(key)) {
       throw new Error('invalid key.');
     }
@@ -215,12 +226,10 @@ const createCombinedRegion = <T>() => {
     });
   };
 
-  type GetFn<TReturnType> = (key: any) => TReturnType;
-
   type EqualityFn = <T>(a?: T, b?: T) => boolean;
 
-  const createHooks = <TReturnType>(getFn: GetFn<TReturnType>, equalityFn: EqualityFn) => {
-    return <K extends keyof T>(key: K | K[]): TReturnType => {
+  const createHooks = <TReturnType>(getFn: (key: any) => TReturnType, equalityFn: EqualityFn) => {
+    return <K extends keyof T>(key: K): TReturnType => {
       const [, forceUpdate] = useState({});
       const ref = useRef<TReturnType>();
       ref.current = getFn(key);
@@ -255,22 +264,19 @@ const createCombinedRegion = <T>() => {
     };
   };
 
-  const useProps = createHooks(getProps, shallowEqual);
+  const useProps: UseProps = createHooks(getProps, shallowEqual);
 
-  // implement the common usage
-  const useMap = createHooks(getMap as <K extends keyof T>(key: K) => {[key: string]: T[K]}, shallowEqual);
+  const useMap: UseMap = createHooks(getMap, shallowEqual);
 
-  // implement the common usage
-  const useId = createHooks(getId as <K extends keyof T>(key: K) => string | undefined, strictEqual);
+  const useId: UseId = createHooks(getId, strictEqual);
 
-  // implement the common usage
-  const useValue = createHooks(getValue as <K extends keyof T>(key: K) => T[K] | undefined, strictEqual);
+  const useValue: UseValue = createHooks(getValue, strictEqual);
 
-  const useLoading = createHooks(getLoading, strictEqual);
+  const useLoading: UseLoading = createHooks(getLoading, strictEqual);
 
-  const useError = createHooks(getError, strictEqual);
+  const useError: UseError = createHooks(getError, strictEqual);
 
-  const useFetchTime = createHooks(getFetchTime, strictEqual);
+  const useFetchTime: UseFetchTime = createHooks(getFetchTime, strictEqual);
 
   return {
     private_store,

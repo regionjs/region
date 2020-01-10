@@ -24,9 +24,13 @@ describe('get', () => {
       a: undefined,
     });
 
+    // @ts-ignore
     expect(getLoading(['a', 'b'])).toEqual(true);
+    // @ts-ignore
     expect(getValue(['a', 'b'])).toEqual([undefined, undefined]);
+    // @ts-ignore
     expect(getFetchTime(['a', 'b'])).toEqual(undefined);
+    // @ts-ignore
     expect(getProps(['a', 'b'])).toEqual({
       loading: true,
       error: undefined,
@@ -45,9 +49,13 @@ describe('get', () => {
       a: undefined,
     });
 
+    // @ts-ignore
     expect(getLoading(['a', 'b'])).toEqual(true);
+    // @ts-ignore
     expect(getValue(['a', 'b'])).toEqual([undefined, undefined]);
+    // @ts-ignore
     expect(getFetchTime(['a', 'b'])).toEqual(undefined);
+    // @ts-ignore
     expect(getProps(['a', 'b'])).toEqual({
       loading: true,
       a: undefined,
@@ -68,9 +76,13 @@ describe('get', () => {
       a: undefined,
     });
 
+    // @ts-ignore
     expect(getLoading(['a', 'b'])).toEqual(true);
+    // @ts-ignore
     expect(getValue(['a', 'b'])).toEqual([undefined, undefined]);
+    // @ts-ignore
     expect(getFetchTime(['a', 'b'])).toEqual(undefined);
+    // @ts-ignore
     expect(getProps(['a', 'b'])).toEqual({
       loading: true,
       a: undefined,
@@ -105,9 +117,13 @@ describe('get', () => {
       a: { name: '66', type: 'cat' },
     });
 
+    // @ts-ignore
     expect(getLoading(['a', 'b'])).toEqual(true);
+    // @ts-ignore
     expect(getValue(['a', 'b'])).toEqual([{ name: '66', type: 'cat' }, undefined]);
+    // @ts-ignore
     expect(getFetchTime(['a', 'b'])).toEqual(999);
+    // @ts-ignore
     expect(getProps(['a', 'b'])).toEqual({
       loading: true,
       error : undefined,
@@ -149,6 +165,7 @@ describe('get', () => {
       // @ts-ignore
       b: { loading: 0 },
     });
+    // @ts-ignore
     expect(getLoading(['a', 'b'])).toEqual(false);
   });
 
@@ -166,10 +183,12 @@ describe('get', () => {
         error: undefined,
       },
     });
+    // @ts-ignore
     expect(getError(['a', 'b'])).toEqual(errorA);
     expect(getError('a')).toEqual(errorA);
     expect(getError('b')).toEqual(undefined);
     expect(getProps('a').error).toEqual(new Error('error a'));
+    // @ts-ignore
     expect(getProps(['a', 'b']).error).toEqual(new Error('error a'));
 
     const errorB = new Error('error b');
@@ -185,7 +204,10 @@ describe('get', () => {
         error: errorB,
       },
     });
+    // @ts-ignore
     expect(getError(['a', 'b'])).toEqual(new Error('error a, error b'));
+    // @ts-ignore
     expect(getProps(['a', 'b']).error).toEqual(new Error('error a, error b'));
   });
+// tslint:disable-next-line:max-file-line-count
 });
