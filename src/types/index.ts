@@ -1,7 +1,3 @@
-import { ComponentType as RawComponentType } from 'react';
-
-export type ComponentType = RawComponentType | any;
-
 // public
 // useProps
 export interface ComplexKey<K> {
@@ -15,11 +11,9 @@ export interface ComplexKey<K> {
 export type LegacyKey<K> = K | K[] | ComplexKey<K>;
 
 // connect
-export type DisplayType = ComponentType;
-
 export interface ConnectOption {
-  Loading?: ComponentType;
-  Error?: ComponentType;
+  Loading?: any;
+  Error?: any;
 }
 
 // set & load

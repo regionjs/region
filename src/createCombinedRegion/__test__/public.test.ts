@@ -53,7 +53,7 @@ describe('load', () => {
 
   test('format snapshot', async () => {
     const result = await load('user', () => Promise.resolve('2'), {
-      format: (user, snapshot) => `${snapshot}${user}3`,
+      format: (user: any, snapshot: any) => `${snapshot}${user}3`,
     });
     expect(result).toBe('0123');
   });

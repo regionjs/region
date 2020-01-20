@@ -1,16 +1,17 @@
 import * as React from 'react';
-import { ComponentType } from '../types';
 
 interface Params {
-  Display?: ComponentType;
-  Loading?: ComponentType;
-  Error?: ComponentType;
+  Display?: any;
+  Loading?: any;
+  Error?: any;
   useProps?: any;
   key?: any;
 }
 
-export const hoc = ({ Display, Loading, Error, useProps, key }: Params) => {
-  const ConnectWith = (ownProps: any) => {
+type Hoc = (params: Params) => React.FC<any>;
+
+export const hoc: Hoc = ({ Display, Loading, Error, useProps, key }) => {
+  const ConnectWith: React.FC<any> = (ownProps: any) => {
     const props = useProps(key);
     const { loading, error } = props;
     if (loading) {
