@@ -9,7 +9,7 @@ export const createRegion = <V>(initialValue?: V) => {
     return region.set('value', resultOrFunc);
   };
 
-  const load = <TParams, TResult>(
+  const load = <TParams = void, TResult = unknown>(
     asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
     option: OptionOrReducer<TParams, TResult, V> = {},
     exOption?: LoadOption<TParams, TResult, V>,
@@ -17,7 +17,7 @@ export const createRegion = <V>(initialValue?: V) => {
     return region.load('value', asyncFunction, option, exOption);
   };
 
-  const loadBy = <TParams, TResult>(
+  const loadBy = <TParams = void, TResult = unknown>(
     asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
     option: OptionOrReducer<TParams, TResult, V> = {},
     exOption?: LoadOption<TParams, TResult, V>,

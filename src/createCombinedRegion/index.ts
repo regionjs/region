@@ -89,7 +89,7 @@ const createCombinedRegion = <T>() => {
     return { key, promise, id: formatId };
   };
 
-  const load = async <K extends keyof T, TParams, TResult>(
+  const load = async <K extends keyof T, TParams = void, TResult = unknown>(
     key: K,
     asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
     optionOrReducer?: OptionOrReducer<TParams, TResult, T[K]>,
@@ -105,7 +105,7 @@ const createCombinedRegion = <T>() => {
     return loadBy(key, asyncFunction, option)(params);
   };
 
-  function loadBy <TParams, TResult, K extends keyof T>(
+  function loadBy <K extends keyof T, TParams = void, TResult = unknown>(
     key: K,
     asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
     optionOrReducer?: OptionOrReducer<TParams, TResult, T[K]>,
@@ -113,9 +113,7 @@ const createCombinedRegion = <T>() => {
   ) {
     const option = getCombinedOption(optionOrReducer, exOption);
 
-    return async (params?: TParams) => {
-      // tslint:disable-next-line:no-parameter-reassignment
-      params = params as TParams;
+    return async (params: TParams) => {
       const promise = toPromise({ asyncFunction, params });
       const loadPayload = selectLoadPayload({ key, promise, params, option });
       private_store.load(loadPayload);
