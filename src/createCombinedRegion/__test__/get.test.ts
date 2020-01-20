@@ -1,20 +1,18 @@
 import { region } from './region';
 
 const {
-    getLoading,
-    getValue,
-    getFetchTime,
-    getError,
-    getProps,
-    private_store,
+  getLoading,
+  getValue,
+  getFetchTime,
+  getError,
+  getProps,
+  private_setState_just_for_test: private_setState,
 } = region;
-
-const setState = private_store.private_setState;
 
 describe('get', () => {
   test('get things from nothing', () => {
     // NOTE loading is true because we want to display loading ui when state is undefined.
-    setState({});
+    private_setState({});
     expect(getLoading('a')).toEqual(true);
     expect(getValue('a')).toEqual(undefined);
     expect(getFetchTime('a')).toEqual(undefined);
@@ -40,7 +38,7 @@ describe('get', () => {
   });
 
   test('get things from initial state', () => {
-    setState({});
+    private_setState({});
     expect(getLoading('a')).toEqual(true);
     expect(getValue('a')).toEqual(undefined);
     expect(getFetchTime('a')).toEqual(undefined);
@@ -64,7 +62,7 @@ describe('get', () => {
   });
 
   test('get things from start loading', () => {
-    setState({
+    private_setState({
       // @ts-ignore
       a: { loading: 1 },
     });
@@ -91,7 +89,7 @@ describe('get', () => {
   });
 
   test('treat undefined', () => {
-    setState({
+    private_setState({
       // @ts-ignore
       a: { loading: 1 },
     });
@@ -100,7 +98,7 @@ describe('get', () => {
   });
 
   test('get things from stop loading', () => {
-    setState({
+    private_setState({
       // @ts-ignore
       a: {
         loading: 0,
@@ -134,7 +132,7 @@ describe('get', () => {
   });
 
   test('getProps with complex key', () => {
-    setState({
+    private_setState({
       // @ts-ignore
       a: {
         loading: 0,
@@ -159,7 +157,7 @@ describe('get', () => {
   });
 
   test('getLoadings from all resolved', () => {
-    setState({
+    private_setState({
       // @ts-ignore
       a: { loading: 0 },
       // @ts-ignore
@@ -171,7 +169,7 @@ describe('get', () => {
 
   test('getErrors', () => {
     const errorA = new Error('error a');
-    setState({
+    private_setState({
       // @ts-ignore
       a: {
         loading: 0,
@@ -192,7 +190,7 @@ describe('get', () => {
     expect(getProps(['a', 'b']).error).toEqual(new Error('error a'));
 
     const errorB = new Error('error b');
-    setState({
+    private_setState({
       // @ts-ignore
       a: {
         loading: 0,

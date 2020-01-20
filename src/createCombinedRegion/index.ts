@@ -65,7 +65,9 @@ const getSetResult = <V>(resultOrFunc: ResultOrFunc<V>, snapshot?: V) => {
 const createCombinedRegion = <T>() => {
   const private_store = createStore<T>();
 
-  const set = <K extends keyof T>(key: K, resultOrFunc: ResultOrFunc<T[K]>) => {
+  type Set = <K extends keyof T>(key: K, resultOrFunc: ResultOrFunc<T[K]>) => T[K];
+
+  const set: Set = (key, resultOrFunc) => {
     const snapshot = private_store.getAttribute(key, 'result');
     const result = getSetResult(resultOrFunc, snapshot);
     private_store.set({ key, result });
@@ -81,39 +83,57 @@ const createCombinedRegion = <T>() => {
     option: LoadOption<TParams, TResult, T[K]>;
   }
 
-  const selectLoadPayload = <K extends keyof T, TParams, TResult>(
+  type SelectLoadPayload = <K extends keyof T, TParams, TResult>(
     { key, promise, params, option }: GetLoadPayloadParams<K, TParams, TResult>,
-  ): LoadPayload<K, TResult> => {
+  ) => LoadPayload<K, TResult>;
+
+  const selectLoadPayload: SelectLoadPayload = (
+    { key, promise, params, option },
+  ) => {
     const { id } = option;
     const formatId = selectId({ id, params });
     return { key, promise, id: formatId };
   };
 
-  const load = async <K extends keyof T, TParams = void, TResult = unknown>(
+  type Load = <K extends keyof T, TParams = void, TResult = unknown>(
     key: K,
     asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
     optionOrReducer?: OptionOrReducer<TParams, TResult, T[K]>,
     exOption?: LoadOption<TParams, TResult, T[K]>,
+  ) => Promise<T[K] | void>;
+
+  const load: Load = async (
+    key,
+    asyncFunction,
+    optionOrReducer,
+    exOption,
   ) => {
     const option = getCombinedOption(optionOrReducer, exOption);
     if (!isAsync(asyncFunction)) {
       console.warn('set result directly');
-      return set(key, asyncFunction as unknown as T[K]);
+      return set(key, asyncFunction as unknown as any);
     }
     // @ts-ignore
     const params = option.params as TParams;
     return loadBy(key, asyncFunction, option)(params);
   };
 
-  function loadBy <K extends keyof T, TParams = void, TResult = unknown>(
+  type LoadBy = <K extends keyof T, TParams = void, TResult = unknown>(
     key: K,
     asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
     optionOrReducer?: OptionOrReducer<TParams, TResult, T[K]>,
     exOption?: LoadOption<TParams, TResult, T[K]>,
-  ) {
+  ) => (params: TParams) => Promise<T[K] | void>;
+
+  const loadBy: LoadBy = (
+    key,
+    asyncFunction,
+    optionOrReducer,
+    exOption,
+  ) => {
     const option = getCombinedOption(optionOrReducer, exOption);
 
-    return async (params: TParams) => {
+    return async (params) => {
       const promise = toPromise({ asyncFunction, params });
       const loadPayload = selectLoadPayload({ key, promise, params, option });
       private_store.load(loadPayload);
@@ -135,68 +155,65 @@ const createCombinedRegion = <T>() => {
         return result;
       }
     };
-  }
+  };
 
-  type UseMap = <K extends keyof T>(key: K) => {[key: string]: T[K]};
+  type GetMap = <K extends keyof T>(key: K) => {[key: string]: T[K]};
 
-  function getMap <K extends keyof T>(key: K): {[key: string]: T[K]} {
+  const getMap: GetMap = (key) => {
     if (Array.isArray(key)) {
-      // @ts-ignore
-      return key.map(k => private_store.getAttribute(k, 'results'));
+      return key.map(k => private_store.getAttribute(k, 'results')) as any;
     }
     return private_store.getAttribute(key, 'results');
-  }
+  };
 
-  type UseId = <K extends keyof T>(key: K) => string | undefined;
+  type GetId = <K extends keyof T>(key: K) => string | undefined;
 
-  function getId <K extends keyof T>(key: K): string | undefined {
+  const getId: GetId = (key) => {
     if (Array.isArray(key)) {
-      // @ts-ignore
       return key.map(k => private_store.getAttribute(k, 'id'));
     }
     return private_store.getAttribute(key, 'id');
-  }
+  };
 
-  type UseValue = <K extends keyof T>(key: K) => T[K] | undefined;
+  type GetValue = <K extends keyof T>(key: K) => T[K] | undefined;
 
-  function getValue <K extends keyof T>(key: K): T[K] | undefined {
+  const getValue: GetValue = (key) => {
     if (Array.isArray(key)) {
-      // @ts-ignore
-      return key.map(k => private_store.getAttribute(k, 'result'));
+      return key.map(k => private_store.getAttribute(k, 'result')) as any;
     }
     return private_store.getAttribute(key, 'result');
-  }
+  };
 
-  type UseLoading = <K extends keyof T>(key: K) => boolean;
+  type GetLoading = <K extends keyof T>(key: K) => boolean;
 
-  function getLoading <K extends keyof T>(key: K): boolean {
+  const getLoading: GetLoading = (key) => {
     if (Array.isArray(key)) {
       return selectLoading(key.map(k => private_store.getAttribute(k, 'loading')));
     }
     return selectLoading([private_store.getAttribute(key, 'loading')]);
-  }
+  };
 
-  type UseError = <K extends keyof T>(key: K) => Error | undefined;
+  type GetError = <K extends keyof T>(key: K) => Error | undefined;
 
-  function getError <K extends keyof T>(key: K): Error | undefined {
+  const getError: GetError = (key) => {
     if (Array.isArray(key)) {
       return selectError(key.map(k => private_store.getAttribute(k, 'error')));
     }
     return selectError([private_store.getAttribute(key, 'error')]);
-  }
+  };
 
-  type UseFetchTime = <K extends keyof T>(key: K) => number | undefined;
+  type GetFetchTime = <K extends keyof T>(key: K) => number | undefined;
 
-  function getFetchTime <K extends keyof T>(key: K): number | undefined {
+  const getFetchTime: GetFetchTime = (key) => {
     if (Array.isArray(key)) {
       return selectFetchTime(key.map(k => private_store.getAttribute(k, 'fetchTime')));
     }
     return selectFetchTime([private_store.getAttribute(key, 'fetchTime')]);
-  }
+  };
 
-  type UseProps = <K extends keyof T>(key: K) => any;
+  type GetProps = <K extends keyof T>(key: K) => any;
 
-  function getProps <K extends keyof T>(key: K): any {
+  const getProps: GetProps = (key) => {
     const { keys, loadings, results, fetchTimes, errors } = formatLegacyKeys(key);
 
     const loading = getLoading(loadings);
@@ -205,7 +222,7 @@ const createCombinedRegion = <T>() => {
     const error = getError(errors);
 
     return Object.assign({ loading, fetchTime, error }, resultMap);
-  }
+  };
 
   const connectWith = <K extends keyof T>(key: K, Display: DisplayType, option?: ConnectOption) => {
     return connect(key, option)(Display);
@@ -262,22 +279,22 @@ const createCombinedRegion = <T>() => {
     };
   };
 
-  const useProps: UseProps = createHooks(getProps, shallowEqual);
+  const useProps: GetProps = createHooks(getProps, shallowEqual);
 
-  const useMap: UseMap = createHooks(getMap, shallowEqual);
+  const useMap: GetMap = createHooks(getMap, shallowEqual);
 
-  const useId: UseId = createHooks(getId, strictEqual);
+  const useId: GetId = createHooks(getId, strictEqual);
 
-  const useValue: UseValue = createHooks(getValue, strictEqual);
+  const useValue: GetValue = createHooks(getValue, strictEqual);
 
-  const useLoading: UseLoading = createHooks(getLoading, strictEqual);
+  const useLoading: GetLoading = createHooks(getLoading, strictEqual);
 
-  const useError: UseError = createHooks(getError, strictEqual);
+  const useError: GetError = createHooks(getError, strictEqual);
 
-  const useFetchTime: UseFetchTime = createHooks(getFetchTime, strictEqual);
+  const useFetchTime: GetFetchTime = createHooks(getFetchTime, strictEqual);
 
   return {
-    private_store,
+    private_setState_just_for_test: private_store.private_setState,
     set,
     reset,
     load,
