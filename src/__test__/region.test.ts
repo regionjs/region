@@ -15,14 +15,18 @@ describe('createRegion', () => {
   test('createRegion with value', () => {
     const region = createRegion('Karen Martinez');
     expect(region.getValue()).toBe('Karen Martinez');
-    expect(region.getLoading()).toBe(false);
+    expect(region.getLoading()).toBe(true);
     expect(region.getError()).toBe(undefined);
-    expect(region.getFetchTime()).toBe(0);
+    expect(region.getFetchTime()).toBe(undefined);
+
+    region.set(v => `${v}+`);
+    expect(region.getValue()).toBe('Karen Martinez+');
   });
 
   test('createRegion with function', () => {
-    const region = createRegion(() => 'Helen Davis');
-    expect(region.getValue()).toBe('Helen Davis');
+    const func = () => 'Helen Davis';
+    const region = createRegion(func);
+    expect(region.getValue()).toBe(func);
   });
 
   test('setValue with value', () => {

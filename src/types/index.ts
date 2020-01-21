@@ -19,7 +19,7 @@ export interface ConnectOption {
 // set & load
 // set
 export type ResultFunc<V> = (snapshot?: V) => V;
-export type ResultOrFunc<V> = V | ResultFunc<V>;
+export type ResultFuncPure<V> = (snapshot: V) => V;
 
 // load
 export type AsyncFunction<TParams, TResult> = (params: TParams) => Promise<TResult>;

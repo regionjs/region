@@ -14,8 +14,8 @@ import {
   createStore,
 } from '../util';
 import {
-  ResultOrFunc,
   ResultFunc,
+  ResultFuncPure,
   AsyncFunctionOrPromise,
   LoadOption,
   OptionOrReducer,
@@ -53,16 +53,16 @@ const Empty = () => null;
 
 const strictEqual = (a: any, b: any) => a === b;
 
-const getSetResult = <V>(resultOrFunc: ResultOrFunc<V>, snapshot?: V) => {
+const getSetResult = <V>(resultOrFunc: V | ResultFuncPure<V>, snapshot: V) => {
   if (typeof resultOrFunc === 'function') {
-    return (resultOrFunc as ResultFunc<V>)(snapshot);
+    return (resultOrFunc as ResultFuncPure<V>)(snapshot);
   }
   return resultOrFunc;
 };
 
 export interface CreateCombinedRegionReturnValue<T> {
   private_setState_just_for_test: (value: any) => void;
-  set: <K extends keyof T>(key: K, resultOrFunc: ResultOrFunc<T[K]>) => T[K];
+  set: <K extends keyof T>(key: K, resultOrFunc: T[K] | ResultFunc<T[K]>) => T[K];
   reset: () => void;
   load: <K extends keyof T, TParams = void, TResult = unknown>(
     key: K,
@@ -95,7 +95,8 @@ export interface CreateCombinedRegionReturnValue<T> {
 }
 
 export interface CreateCombinedRegionPureReturnValue<T>
-  extends Omit<CreateCombinedRegionReturnValue<T>, 'load' | 'loadBy' | 'getValue' | 'useValue'> {
+  extends Omit<CreateCombinedRegionReturnValue<T>, 'set' | 'load' | 'loadBy' | 'getValue' | 'useValue'> {
+  set: <K extends keyof T>(key: K, resultOrFunc: T[K] | ResultFuncPure<T[K]>) => T[K];
   load: <K extends keyof T, TParams = void, TResult = unknown>(
     key: K,
     asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
@@ -117,12 +118,12 @@ function createCombinedRegion <T>(initialValue: void): CreateCombinedRegionRetur
 function createCombinedRegion <T>(initialValue: T): CreateCombinedRegionPureReturnValue<T>;
 function createCombinedRegion <T>(initialValue: T | void): CreateCombinedRegionReturnValue<T> | CreateCombinedRegionPureReturnValue<T> {
   // ---- Utils ----
-  type Result = CreateCombinedRegionReturnValue<T>;
+  type Result = CreateCombinedRegionPureReturnValue<T>;
 
   const private_store = createStore<T>();
 
-  const getInitialValue = <K extends keyof T>(key: K) => {
-    return initialValue && initialValue[key];
+  const getInitialValue = <K extends keyof T>(key: K): T[K] => {
+    return (initialValue && initialValue[key]) as T[K];
   };
 
   interface GetLoadPayloadParams<K extends keyof T, TParams, TResult> {
@@ -184,7 +185,8 @@ function createCombinedRegion <T>(initialValue: T | void): CreateCombinedRegionR
 
   // ---- APIs ----
   const set: Result['set'] = (key, resultOrFunc) => {
-    const snapshot = private_store.getAttribute(key, 'result');
+    // Maybe we can use getValue here
+    const snapshot = private_store.getAttribute(key, 'result') || getInitialValue(key);
     const result = getSetResult(resultOrFunc, snapshot);
     private_store.set({ key, result });
     return result;

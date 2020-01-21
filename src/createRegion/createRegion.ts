@@ -1,11 +1,65 @@
-import createCombinedRegion from '../createCombinedRegion';
-import { AsyncFunctionOrPromise, LoadOption, OptionOrReducer, ResultOrFunc } from '../types';
+import { FC } from 'react';
+import createCombinedRegion, { CreateCombinedRegionPureReturnValue } from '../createCombinedRegion';
+import { AsyncFunctionOrPromise, LoadOption, OptionOrReducer, ResultFunc, ResultFuncPure } from '../types';
 import { hoc } from './hoc';
 
-export const createRegion = <V>(initialValue?: V) => {
-  const region = createCombinedRegion<{value: V}>();
+export interface CreateRegionReturnValue<V> {
+  set: (resultOrFunc: V | ResultFunc<V>) => V;
+  load: <TParams = void, TResult = unknown>(
+    asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
+    optionOrReducer?: OptionOrReducer<TParams, TResult, V>,
+    exOption?: LoadOption<TParams, TResult, V>,
+  ) => Promise<V | void>;
+  loadBy: <TParams = void, TResult = unknown>(
+    asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
+    optionOrReducer?: OptionOrReducer<TParams, TResult, V>,
+    exOption?: LoadOption<TParams, TResult, V>,
+  ) => (params: TParams) => Promise<V | void>;
+  getMap: () => {[key: string]: V};
+  getId: () => string | undefined;
+  getValue: () => V | undefined;
+  getLoading: () => boolean;
+  getError: () => Error | undefined;
+  getFetchTime: () => number | undefined;
+  getProps: () => any;
+  connect: (Component: any, alias?: string) => FC<any>;
+  useMap: () => {[key: string]: V};
+  useId: () => string | undefined;
+  useValue: () => V | undefined;
+  useLoading: () => boolean;
+  useError: () => Error | undefined;
+  useFetchTime: () => number | undefined;
+  useProps: () => any;
+}
 
-  const set = (resultOrFunc: ResultOrFunc<V>) => {
+export interface CreateRegionPureReturnValue<V> extends Omit<CreateRegionReturnValue<V>, 'set' | 'load' | 'loadBy' | 'getValue' | 'useValue'> {
+  set: (resultOrFunc: V | ResultFuncPure<V>) => V;
+  load: <TParams = void, TResult = unknown>(
+    asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
+    optionOrReducer?: OptionOrReducer<TParams, TResult, V>,
+    exOption?: LoadOption<TParams, TResult, V>,
+  ) => Promise<V>;
+  loadBy: <TParams = void, TResult = unknown>(
+    asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
+    optionOrReducer?: OptionOrReducer<TParams, TResult, V>,
+    exOption?: LoadOption<TParams, TResult, V>,
+  ) => (params: TParams) => Promise<V>;
+  getValue: () => V;
+  useValue: () => V;
+}
+
+// overload is unsafe in some way, ensure the return type is correct
+function createRegion <V>(initialValue: void): CreateRegionReturnValue<V>;
+function createRegion <V>(initialValue: V): CreateRegionPureReturnValue<V>;
+function createRegion <V>(initialValue: void | V): CreateRegionReturnValue<V> | CreateRegionPureReturnValue<V> {
+  let region: CreateCombinedRegionPureReturnValue<{value: V}>;
+  if (initialValue) {
+    region = createCombinedRegion<{value: V}>({ value: initialValue });
+  } else {
+    region = createCombinedRegion<{value: V}>() as CreateCombinedRegionPureReturnValue<{value: V}>;
+  }
+
+  const set = (resultOrFunc: V | ResultFuncPure<V>) => {
     return region.set('value', resultOrFunc);
   };
 
@@ -85,30 +139,26 @@ export const createRegion = <V>(initialValue?: V) => {
     return hoc({ Component, alias, useProps });
   };
 
-  if (initialValue !== undefined) {
-    set(initialValue);
-  }
-
   return {
     set,
     load,
     loadBy,
-    getProps,
     getMap,
     getId,
     getValue,
     getLoading,
     getError,
     getFetchTime,
-    useProps,
+    getProps,
+    connect,
     useMap,
     useId,
     useValue,
     useLoading,
     useError,
     useFetchTime,
-    connect,
+    useProps,
   };
-};
+}
 
 export default createRegion;
