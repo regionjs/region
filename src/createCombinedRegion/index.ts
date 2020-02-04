@@ -122,7 +122,10 @@ function createCombinedRegion <T>(initialValue: T | void): CreateCombinedRegionR
 
   const private_store = createStore<T>();
 
-  const getInitialValue = <K extends keyof T>(key: K): T[K] => {
+  const getValueOrInitialValue = <K extends keyof T>(key: K, value: T[K] | undefined): T[K] => {
+    if (value !== undefined) {
+      return value;
+    }
     return (initialValue && initialValue[key]) as T[K];
   };
 
@@ -186,7 +189,8 @@ function createCombinedRegion <T>(initialValue: T | void): CreateCombinedRegionR
   // ---- APIs ----
   const set: Result['set'] = (key, resultOrFunc) => {
     // Maybe we can use getValue here
-    const snapshot = private_store.getAttribute(key, 'result') || getInitialValue(key);
+    const maybeSnapshot = private_store.getAttribute(key, 'result');
+    const snapshot = getValueOrInitialValue(key, maybeSnapshot);
     const result = getSetResult(resultOrFunc, snapshot);
     private_store.set({ key, result });
     return result;
@@ -231,22 +235,20 @@ function createCombinedRegion <T>(initialValue: T | void): CreateCombinedRegionR
         const result = await promise;
         const currentPromise = private_store.getAttribute(key, 'promise');
         const snapshot = private_store.getAttribute(key, 'result');
-        const initialValueOfKey = getInitialValue(key);
 
         const payload = selectPayload({ key, snapshot, result, params, option });
         if (promise !== currentPromise) {
           // store result for optimize purpose
           private_store.setCache(payload);
-          return snapshot || initialValueOfKey;
+          return getValueOrInitialValue(key, snapshot);
         }
         private_store.set(payload);
-        return payload.result || initialValueOfKey;
+        return getValueOrInitialValue(key, payload.result);
       } catch (error) {
         const result = private_store.getAttribute(key, 'result');
-        const initialValueOfKey = getInitialValue(key);
 
         private_store.set({ key, result, error });
-        return result || initialValueOfKey;
+        return getValueOrInitialValue(key, result);
       }
     };
   };
@@ -269,7 +271,8 @@ function createCombinedRegion <T>(initialValue: T | void): CreateCombinedRegionR
     if (Array.isArray(key)) {
       return key.map(k => private_store.getAttribute(k, 'result')) as any;
     }
-    return private_store.getAttribute(key, 'result') || getInitialValue(key);
+    const value = private_store.getAttribute(key, 'result');
+    return getValueOrInitialValue(key, value);
   };
 
   const getLoading: Result['getLoading'] = (key) => {

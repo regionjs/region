@@ -23,6 +23,22 @@ describe('createRegion', () => {
     expect(region.getValue()).toBe('Karen Martinez+');
   });
 
+  test('createRegion with truthy/falsy value', () => {
+    const falsyRegion = createRegion(false);
+    expect(falsyRegion.getValue()).toBe(false);
+    expect(falsyRegion.getLoading()).toBe(true);
+
+    falsyRegion.set(v => !v);
+    expect(falsyRegion.getValue()).toBe(true);
+
+    const truthyRegion = createRegion(true);
+    expect(truthyRegion.getValue()).toBe(true);
+    expect(truthyRegion.getLoading()).toBe(true);
+
+    truthyRegion.set(v => !v);
+    expect(truthyRegion.getValue()).toBe(false);
+  });
+
   test('createRegion with function', () => {
     const func = () => 'Helen Davis';
     const region = createRegion(func);

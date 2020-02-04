@@ -53,7 +53,7 @@ function createRegion <V>(initialValue: void): CreateRegionReturnValue<V>;
 function createRegion <V>(initialValue: V): CreateRegionPureReturnValue<V>;
 function createRegion <V>(initialValue: void | V): CreateRegionReturnValue<V> | CreateRegionPureReturnValue<V> {
   let region: CreateCombinedRegionPureReturnValue<{value: V}>;
-  if (initialValue) {
+  if (initialValue !== undefined) {
     region = createCombinedRegion<{value: V}>({ value: initialValue });
   } else {
     region = createCombinedRegion<{value: V}>() as CreateCombinedRegionPureReturnValue<{value: V}>;
