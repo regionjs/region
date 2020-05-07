@@ -5,6 +5,7 @@ import { hoc } from './hoc';
 
 export interface CreateRegionReturnValue<V> {
   set: (resultOrFunc: V | ResultFunc<V>) => V;
+  reset: () => void;
   load: <TParams = void, TResult = unknown>(
     asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
     optionOrReducer?: OptionOrReducer<TParams, TResult, V>,
@@ -62,6 +63,8 @@ function createRegion <V>(initialValue: void | V): CreateRegionReturnValue<V> | 
   const set = (resultOrFunc: V | ResultFuncPure<V>) => {
     return region.set('value', resultOrFunc);
   };
+
+  const reset = region.reset;
 
   const load = <TParams = void, TResult = unknown>(
     asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
@@ -141,6 +144,7 @@ function createRegion <V>(initialValue: void | V): CreateRegionReturnValue<V> | 
 
   return {
     set,
+    reset,
     load,
     loadBy,
     getMap,
