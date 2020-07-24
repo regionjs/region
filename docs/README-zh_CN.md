@@ -7,7 +7,7 @@
 
 region-core 是一个 React 渐进式状态管理框架，你可以在使用 react state，redux 的同时使用它，并获得开发的便利。
 
-[English](https://github.com/regionjs/region-core/blob/master/docs/README.md) | 中文
+[English](https://github.com/regionjs/region-core/blob/master/README.md) | 中文
 
 | Package | Version | Docs | Description |
 | --- | --- | --- | --- |
