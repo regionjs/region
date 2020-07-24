@@ -17,7 +17,7 @@
   },
   "scripts": {
     "build": "rm -rf lib/ && tsc",
-    "lint": "tslint -c tslint.json 'src/**/*.ts'",
+    "lint": "tsc && tslint -c tslint.json 'src/**/*.ts'",
     "test": "jest src --colors --coverage",
     "test-build": "npm run build && npm run lint && jest --colors",
     "codecov": "npm test && codecov",

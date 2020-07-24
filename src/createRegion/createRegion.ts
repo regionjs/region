@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import createCombinedRegion, { CreateCombinedRegionPureReturnValue } from '../createCombinedRegion';
+import createMappedRegion, { CreateMappedRegionPureReturnValue } from '../createMappedRegion';
 import { AsyncFunctionOrPromise, LoadOption, OptionOrReducer, ResultFunc, ResultFuncPure } from '../types';
 import { hoc } from './hoc';
 
@@ -53,11 +53,11 @@ export interface CreateRegionPureReturnValue<V> extends Omit<CreateRegionReturnV
 function createRegion <V>(initialValue: void): CreateRegionReturnValue<V>;
 function createRegion <V>(initialValue: V): CreateRegionPureReturnValue<V>;
 function createRegion <V>(initialValue: void | V): CreateRegionReturnValue<V> | CreateRegionPureReturnValue<V> {
-  let region: CreateCombinedRegionPureReturnValue<{value: V}>;
+  let region: CreateMappedRegionPureReturnValue<'value', V>;
   if (initialValue !== undefined) {
-    region = createCombinedRegion<{value: V}>({ value: initialValue });
+    region = createMappedRegion<'value', V>(initialValue);
   } else {
-    region = createCombinedRegion<{value: V}>() as CreateCombinedRegionPureReturnValue<{value: V}>;
+    region = createMappedRegion<'value', V>() as CreateMappedRegionPureReturnValue<'value', V>;
   }
 
   const set = (resultOrFunc: V | ResultFuncPure<V>) => {

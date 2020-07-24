@@ -33,17 +33,17 @@ export const selectId = <TParams>({ id, params }: GetIdParams<TParams>): Id => {
   return id as string;
 };
 
-interface GetPayloadParams<T, K extends keyof T, TParams, TResult> {
+interface GetPayloadParams<K, V, TParams, TResult> {
   key: K;
   result: TResult;
-  snapshot?: T[K];
+  snapshot?: V;
   params: TParams;
-  option: LoadOption<TParams, TResult, T[K]>;
+  option: LoadOption<TParams, TResult, V>;
 }
 
-export const selectPayload = <T, K extends keyof T, TParams, TResult>(
-  { key, snapshot, result, params, option }: GetPayloadParams<T, K, TParams, TResult>,
-): Payload<T, K> => {
+export const selectPayload = <K, V, TParams, TResult>(
+  { key, snapshot, result, params, option }: GetPayloadParams<K, V, TParams, TResult>,
+) => {
   const { id } = option;
 
   if (id !== undefined) {
@@ -56,7 +56,7 @@ export const selectPayload = <T, K extends keyof T, TParams, TResult>(
       : (
         typeof format === 'function'
           ? format(result, snapshot)
-          : (result as unknown as T[K])
+          : (result as unknown as V)
       );
     return { key, id: formatId, result: formattedResult };
   }
