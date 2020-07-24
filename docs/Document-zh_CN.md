@@ -123,8 +123,6 @@ const handler = () => {
 
 前往 [examples](https://regionjs.github.io/region-core/#ClassComponent) 获得更多信息。
 
-### createCombinedRegion
+### createMappedRegion
 
-`CombinedRegion` 会为你组合 `loading`, `error`, `fetchTime` ，同时数据的监听也是共享的。
-
-前往 [examples](https://regionjs.github.io/region-core/#CombinedError) 获得更多信息。
+`MappedRegion` 可以让你以 key-value 的形式管理数据。

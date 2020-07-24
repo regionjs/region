@@ -2,7 +2,7 @@
 
 ### 9.x
 
-- enhance `id`, now it can be a function
+- createMappedRegion
 
 - fix compatible of `load` and `set`
 

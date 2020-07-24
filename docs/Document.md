@@ -123,8 +123,6 @@ You can wrap a class component with function component hoc.
 
 Go to [examples](https://regionjs.github.io/region-core/#ClassComponent) for more.
 
-### createCombinedRegion
+### createMappedRegion
 
-A `CombinedRegion` will combine `loading`, `error`, `fetchTime` for you, also data will share their subscribe.
-
-Go to [examples](https://regionjs.github.io/region-core/#CombinedError) for more.
+A `MappedRegion` provides a key-value way of managing your data.
