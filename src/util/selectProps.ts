@@ -55,15 +55,6 @@ export const selectResult = (keys: K[], results: any[]) => {
 };
 
 export const formatLegacyKeys = <K>(key: LegacyKey<K>): any => {
-  if (typeof key === 'string') {
-    return {
-      keys: [key],
-      loadings: [key],
-      results: [key],
-      fetchTimes: [key],
-      errors: [key],
-    };
-  }
   if (Array.isArray(key)) {
     return {
       keys: key,
@@ -73,20 +64,11 @@ export const formatLegacyKeys = <K>(key: LegacyKey<K>): any => {
       errors: key,
     };
   }
-  // @ts-ignore
-  let keys = key.result || key.key || [];
-  // @ts-ignore
-  let loadings = key.loading || key.key || [];
-  // @ts-ignore
-  let results = key.result || key.key || [];
-  // @ts-ignore
-  let fetchTimes = key.fetchTime || key.key || [];
-  // @ts-ignore
-  let errors = key.error || key.key || [];
-  keys = Array.isArray(keys) ? keys : [keys];
-  loadings = Array.isArray(loadings) ? loadings : [loadings];
-  results = Array.isArray(results) ? results : [results];
-  fetchTimes = Array.isArray(fetchTimes) ? fetchTimes : [fetchTimes];
-  errors = Array.isArray(errors) ? errors : [errors];
-  return { keys, loadings, results, fetchTimes, errors };
+  return {
+    keys: [key],
+    loadings: [key],
+    results: [key],
+    fetchTimes: [key],
+    errors: [key],
+  };
 };

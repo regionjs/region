@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState, FC } from 'react';
-import * as shallowEqual from 'shallowequal';
+// tslint:disable-next-line:import-name
+import shallowEqual from 'shallowequal';
+import jsonStableStringify from 'json-stable-stringify';
 import {
-  selectPayload,
+  formatResult,
   isAsync,
-  formatLegacyKeys,
   selectLoading,
-  selectResult,
   selectFetchTime,
   selectError,
   isValidConnectKey,
@@ -19,7 +19,7 @@ import {
   LoadOption,
   OptionOrReducer,
   ConnectOption,
-  AsyncFunction, LoadPayload,
+  AsyncFunction,
 } from '../types';
 
 interface ToPromiseParams<TParams, V> {
@@ -64,42 +64,42 @@ export interface CreateMappedRegionReturnValue<K, V> {
   set: (key: K, resultOrFunc: V | ResultFunc<V>) => V;
   reset: () => void;
   load: <TParams = void, TResult = unknown>(
-    key: K,
+    key: K | ((params: TParams) => K),
     asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
     optionOrReducer?: OptionOrReducer<TParams, TResult, V>,
     exOption?: LoadOption<TParams, TResult, V>,
   ) => Promise<V | void>;
   loadBy: <TParams = void, TResult = unknown>(
-    key: K,
+    key: K | ((params: TParams) => K),
     asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
     optionOrReducer?: OptionOrReducer<TParams, TResult, V>,
     exOption?: LoadOption<TParams, TResult, V>,
   ) => (params: TParams) => Promise<V | void>;
   getValue: (key: K) => V | undefined;
-  getLoading: (key: K) => boolean;
-  getError: (key: K) => Error | undefined;
-  getFetchTime: (key: K) => number | undefined;
-  getProps: (key: K) => any;
+  getLoading: (key: K | K[]) => boolean;
+  getError: (key: K | K[]) => Error | undefined;
+  getFetchTime: (key: K | K[]) => number | undefined;
+  getProps: (key: K | K[]) => any;
   connectWith: (key: K, Display: any, option?: ConnectOption) => FC<any>;
   connect: (key: K, option?: ConnectOption) => (Display?: any) => FC<any>;
   useValue: (key: K) => V | undefined;
-  useLoading: (key: K) => boolean;
-  useError: (key: K) => Error | undefined;
-  useFetchTime: (key: K) => number | undefined;
-  useProps: (key: K) => any;
+  useLoading: (key: K | K[]) => boolean;
+  useError: (key: K | K[]) => Error | undefined;
+  useFetchTime: (key: K | K[]) => number | undefined;
+  useProps: (key: K | K[]) => any;
 }
 
 export interface CreateMappedRegionPureReturnValue<K, V>
   extends Omit<CreateMappedRegionReturnValue<K, V>, 'set' | 'load' | 'loadBy' | 'getValue' | 'useValue'> {
   set: (key: K, resultOrFunc: V | ResultFuncPure<V>) => V;
   load: <TParams = void, TResult = unknown>(
-    key: K,
+    key: K | ((params: TParams) => K),
     asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
     optionOrReducer?: OptionOrReducer<TParams, TResult, V>,
     exOption?: LoadOption<TParams, TResult, V>,
   ) => Promise<V>;
   loadBy: <TParams = void, TResult = unknown>(
-    key: K,
+    key: K | ((params: TParams) => K),
     asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
     optionOrReducer?: OptionOrReducer<TParams, TResult, V>,
     exOption?: LoadOption<TParams, TResult, V>,
@@ -109,16 +109,23 @@ export interface CreateMappedRegionPureReturnValue<K, V>
 }
 
 // overload is unsafe in some way, ensure the return type is correct
-function createMappedRegion <K extends string, V>(initialValue: void): CreateMappedRegionReturnValue<K, V>;
-function createMappedRegion <K extends string, V>(initialValue: V): CreateMappedRegionPureReturnValue<K, V>;
+function createMappedRegion <K, V>(initialValue: void): CreateMappedRegionReturnValue<K, V>;
+function createMappedRegion <K, V>(initialValue: V): CreateMappedRegionPureReturnValue<K, V>;
 // tslint:disable-next-line:max-line-length
-function createMappedRegion <K extends string, V>(initialValue: V | void): CreateMappedRegionReturnValue<K, V> | CreateMappedRegionPureReturnValue<K, V> {
+function createMappedRegion <K, V>(initialValue: V | void): CreateMappedRegionReturnValue<K, V> | CreateMappedRegionPureReturnValue<K, V> {
   // ---- Utils ----
   type Result = CreateMappedRegionPureReturnValue<K, V>;
 
   const private_store = createStore<{[key: string]: V}>();
 
-  const getValueOrInitialValue = (key: K, value: V | undefined): V => {
+  const getKeyString = (key: K): string => {
+    if (typeof key === 'string') {
+      return key;
+    }
+    return jsonStableStringify(key);
+  };
+
+  const getValueOrInitialValue = (value: V | undefined): V => {
     if (value !== undefined) {
       return value;
     }
@@ -127,8 +134,8 @@ function createMappedRegion <K extends string, V>(initialValue: V | void): Creat
 
   type EqualityFn = <T>(a?: T, b?: T) => boolean;
 
-  const createHooks = <TReturnType>(getFn: (key: any) => TReturnType, equalityFn: EqualityFn) => {
-    return (key: K): TReturnType => {
+  const createHooks = <TReturnType>(getFn: (key: K | K[]) => TReturnType, equalityFn: EqualityFn) => {
+    return (key: K | K[]): TReturnType => {
       const [, forceUpdate] = useState({});
       const ref = useRef<TReturnType>();
       ref.current = getFn(key);
@@ -165,11 +172,12 @@ function createMappedRegion <K extends string, V>(initialValue: V | void): Creat
 
   // ---- APIs ----
   const set: Result['set'] = (key, resultOrFunc) => {
+    const keyString = getKeyString(key);
     // Maybe we can use getValue here
-    const maybeSnapshot = private_store.getAttribute(key, 'result');
-    const snapshot = getValueOrInitialValue(key, maybeSnapshot);
+    const maybeSnapshot = private_store.getAttribute(keyString, 'result');
+    const snapshot = getValueOrInitialValue(maybeSnapshot);
     const result = getSetResult(resultOrFunc, snapshot);
-    private_store.set({ key, result });
+    private_store.set({ key: keyString, result });
     return result;
   };
 
@@ -184,7 +192,8 @@ function createMappedRegion <K extends string, V>(initialValue: V | void): Creat
     const option = getCombinedOption(optionOrReducer, exOption);
     if (!isAsync(asyncFunction)) {
       console.warn('set result directly');
-      return set(key, asyncFunction as unknown as any);
+      const setKey = typeof key === 'function' ? (key as Function)(option.params) : key;
+      return set(setKey, asyncFunction as unknown as any);
     }
     // @ts-ignore
     const params = option.params as TParams;
@@ -200,8 +209,10 @@ function createMappedRegion <K extends string, V>(initialValue: V | void): Creat
     const option = getCombinedOption(optionOrReducer, exOption);
 
     return async (params) => {
+      const loadKey = typeof key === 'function' ? (key as Function)(params) : key;
+      const keyString = getKeyString(loadKey);
       const promise = toPromise({ asyncFunction, params });
-      private_store.load({ key, promise });
+      private_store.load({ key: keyString, promise });
       /**
        * note
        * 1. always get value after await, so it is the current one
@@ -209,62 +220,89 @@ function createMappedRegion <K extends string, V>(initialValue: V | void): Creat
        */
       try {
         const result = await promise;
-        const currentPromise = private_store.getAttribute(key, 'promise');
-        const snapshot = private_store.getAttribute(key, 'result');
+        const currentPromise = private_store.getAttribute(keyString, 'promise');
+        const snapshot = private_store.getAttribute(keyString, 'result');
 
-        const payload = selectPayload({ key, snapshot, result, params, option });
+        const formattedResult = formatResult({ snapshot, result, params, option });
         if (promise !== currentPromise) {
           // decrease loading & return snapshot
-          private_store.loadEnd({ key });
-          return getValueOrInitialValue(key, snapshot);
+          private_store.loadEnd({ key: keyString });
+          return getValueOrInitialValue(snapshot);
         }
-        private_store.set(payload);
-        return getValueOrInitialValue(key, payload.result);
+        private_store.set({ key: keyString, result: formattedResult });
+        return getValueOrInitialValue(formattedResult);
       } catch (error) {
-        const result = private_store.getAttribute(key, 'result');
+        const result = private_store.getAttribute(keyString, 'result');
 
-        private_store.set({ key, result, error });
-        return getValueOrInitialValue(key, result);
+        private_store.set({ key: keyString, result, error });
+        return getValueOrInitialValue(result);
       }
     };
   };
 
+  // @ts-ignore overload
   const getValue: Result['getValue'] = (key) => {
     if (Array.isArray(key)) {
-      return key.map(k => private_store.getAttribute(k, 'result')) as any;
+      return key.map((k: K) => {
+        const keyString = getKeyString(k);
+        const value = private_store.getAttribute(keyString, 'result');
+        return getValueOrInitialValue(value);
+      });
     }
-    const value = private_store.getAttribute(key, 'result');
-    return getValueOrInitialValue(key, value);
+    const keyString = getKeyString(key);
+    const value = private_store.getAttribute(keyString, 'result');
+    return getValueOrInitialValue(value);
   };
 
   const getLoading: Result['getLoading'] = (key) => {
     if (Array.isArray(key)) {
-      return selectLoading(key.map(k => private_store.getAttribute(k, 'loading')));
+      return selectLoading(key.map((k: K) => {
+        const keyString = getKeyString(k);
+        return private_store.getAttribute(keyString, 'loading');
+      }));
     }
-    return selectLoading([private_store.getAttribute(key, 'loading')]);
+    const keyString = getKeyString(key);
+    return selectLoading([private_store.getAttribute(keyString, 'loading')]);
   };
 
   const getError: Result['getError'] = (key) => {
     if (Array.isArray(key)) {
-      return selectError(key.map(k => private_store.getAttribute(k, 'error')));
+      return selectError(key.map((k: K) => {
+        const keyString = getKeyString(k);
+        return private_store.getAttribute(keyString, 'error');
+      }));
     }
-    return selectError([private_store.getAttribute(key, 'error')]);
+    const keyString = getKeyString(key);
+    return selectError([private_store.getAttribute(keyString, 'error')]);
   };
 
   const getFetchTime: Result['getFetchTime'] = (key) => {
     if (Array.isArray(key)) {
-      return selectFetchTime(key.map(k => private_store.getAttribute(k, 'fetchTime')));
+      return selectFetchTime(key.map((k: K) => {
+        const keyString = getKeyString(k);
+        return private_store.getAttribute(keyString, 'fetchTime');
+      }));
     }
-    return selectFetchTime([private_store.getAttribute(key, 'fetchTime')]);
+    const keyString = getKeyString(key);
+    return selectFetchTime([private_store.getAttribute(keyString, 'fetchTime')]);
   };
 
   const getProps: Result['getProps'] = (key) => {
-    const { keys, loadings, results, fetchTimes, errors } = formatLegacyKeys(key);
+    const resultMap: {[key: string]: V} = {};
+    const result: V | V[] = getValue(key as K);
+    if (Array.isArray(key)) {
+      key.map((k, index) => {
+        const keyString = getKeyString(k);
+        resultMap[keyString] = (result as unknown as V[])[index];
+      });
+    } else {
+      const keyString = getKeyString(key);
+      resultMap[keyString] = result as V;
+    }
 
-    const loading = getLoading(loadings);
-    const resultMap = selectResult(keys, getValue(results) as any);
-    const fetchTime = getFetchTime(fetchTimes);
-    const error = getError(errors);
+    const loading = getLoading(key);
+    const fetchTime = getFetchTime(key);
+    const error = getError(key);
 
     return Object.assign({ loading, fetchTime, error }, resultMap);
   };
@@ -289,6 +327,7 @@ function createMappedRegion <K extends string, V>(initialValue: V | void): Creat
 
   const useProps: Result['getProps'] = createHooks(getProps, shallowEqual);
 
+  // @ts-ignore
   const useValue: Result['getValue'] = createHooks(getValue, strictEqual);
 
   const useLoading: Result['getLoading'] = createHooks(getLoading, strictEqual);

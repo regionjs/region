@@ -7,7 +7,7 @@ interface FormatResultParams<V, TParams, TResult> {
   option: LoadOption<TParams, TResult, V>;
 }
 
-const formatResult = <V, TParams, TResult>({ snapshot, result, params, option }: FormatResultParams<V, TParams, TResult>) => {
+export const formatResult = <V, TParams, TResult>({ snapshot, result, params, option }: FormatResultParams<V, TParams, TResult>) => {
   const { reducer } = option;
   if (typeof result === 'function') {
     // never

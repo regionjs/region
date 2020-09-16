@@ -5,7 +5,8 @@
         "declaration": true,
         "jsx": "react",
         "target": "es5",
-        "lib": ["esnext", "dom"]
+        "lib": ["esnext", "dom"],
+        "esModuleInterop": true
     },
     "include": [
         "./src/**/*/"

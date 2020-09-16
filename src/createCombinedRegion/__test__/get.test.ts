@@ -131,31 +131,6 @@ describe('get', () => {
     });
   });
 
-  test('getProps with complex key', () => {
-    private_setState({
-      // @ts-ignore
-      a: {
-        loading: 0,
-        fetchTime: 999,
-        result: { name: '66', type: 'cat' },
-      },
-    });
-    // @ts-ignore
-    expect(getProps({ key: ['a', 'b'], result:['b'] })).toEqual({
-      loading: true,
-      error : undefined,
-      fetchTime: 999,
-      b: undefined,
-    });
-    // @ts-ignore
-    expect(getProps({ loading: ['a', 'b'], result:['b'] })).toEqual({
-      loading: true,
-      error : undefined,
-      fetchTime: undefined,
-      b: undefined,
-    });
-  });
-
   test('getLoadings from all resolved', () => {
     private_setState({
       // @ts-ignore

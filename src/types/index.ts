@@ -1,14 +1,6 @@
 // public
 // useProps
-export interface ComplexKey<K> {
-  key?: K;
-  loading?: K;
-  result?: K;
-  fetchTime?: K;
-  error?: K;
-}
-
-export type LegacyKey<K> = K | K[] | ComplexKey<K>;
+export type LegacyKey<K> = K | K[];
 
 // connect
 export interface ConnectOption {

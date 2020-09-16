@@ -1,5 +1,6 @@
 import { region } from './region';
-import * as shallowEqual from 'shallowequal';
+// tslint:disable-next-line:import-name
+import shallowEqual from 'shallowequal';
 
 describe('getProps should be shallow equal', () => {
   test('shallow equal', () => {

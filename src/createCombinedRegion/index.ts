@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, FC } from 'react';
-import * as shallowEqual from 'shallowequal';
+// tslint:disable-next-line:import-name
+import shallowEqual from 'shallowequal';
 import {
   selectPayload,
   isAsync,
