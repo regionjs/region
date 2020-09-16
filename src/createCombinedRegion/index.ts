@@ -2,7 +2,6 @@ import { useEffect, useRef, useState, FC } from 'react';
 import * as shallowEqual from 'shallowequal';
 import {
   selectPayload,
-  selectId,
   isAsync,
   formatLegacyKeys,
   selectLoading,
@@ -20,7 +19,7 @@ import {
   LoadOption,
   OptionOrReducer,
   ConnectOption,
-  AsyncFunction, LoadPayload,
+  AsyncFunction,
 } from '../types';
 
 interface ToPromiseParams<TParams, V> {
@@ -76,8 +75,6 @@ export interface CreateCombinedRegionReturnValue<T> {
     optionOrReducer?: OptionOrReducer<TParams, TResult, T[K]>,
     exOption?: LoadOption<TParams, TResult, T[K]>,
   ) => (params: TParams) => Promise<T[K] | void>;
-  getMap: <K extends keyof T>(key: K) => {[key: string]: T[K]};
-  getId: <K extends keyof T>(key: K) => string | undefined;
   getValue: <K extends keyof T>(key: K) => T[K] | undefined;
   getLoading: <K extends keyof T>(key: K) => boolean;
   getError: <K extends keyof T>(key: K) => Error | undefined;
@@ -85,8 +82,6 @@ export interface CreateCombinedRegionReturnValue<T> {
   getProps: <K extends keyof T>(key: K) => any;
   connectWith: <K extends keyof T>(key: K, Display: any, option?: ConnectOption) => FC<any>;
   connect: <K extends keyof T>(key: K, option?: ConnectOption) => (Display?: any) => FC<any>;
-  useMap: <K extends keyof T>(key: K) => {[key: string]: T[K]};
-  useId: <K extends keyof T>(key: K) => string | undefined;
   useValue: <K extends keyof T>(key: K) => T[K] | undefined;
   useLoading: <K extends keyof T>(key: K) => boolean;
   useError: <K extends keyof T>(key: K) => Error | undefined;
@@ -127,25 +122,6 @@ function createCombinedRegion <T>(initialValue: T | void): CreateCombinedRegionR
       return value;
     }
     return (initialValue && initialValue[key]) as T[K];
-  };
-
-  interface GetLoadPayloadParams<K extends keyof T, TParams, TResult> {
-    key: K;
-    promise: Promise<TResult>;
-    params: TParams;
-    option: LoadOption<TParams, TResult, T[K]>;
-  }
-
-  type SelectLoadPayload = <K extends keyof T, TParams, TResult>(
-    { key, promise, params, option }: GetLoadPayloadParams<K, TParams, TResult>,
-  ) => LoadPayload<K, TResult>;
-
-  const selectLoadPayload: SelectLoadPayload = (
-    { key, promise, params, option },
-  ) => {
-    const { id } = option;
-    const formatId = selectId({ id, params });
-    return { key, promise, id: formatId };
   };
 
   type EqualityFn = <T>(a?: T, b?: T) => boolean;
@@ -224,8 +200,7 @@ function createCombinedRegion <T>(initialValue: T | void): CreateCombinedRegionR
 
     return async (params) => {
       const promise = toPromise({ asyncFunction, params });
-      const loadPayload = selectLoadPayload({ key, promise, params, option });
-      private_store.load(loadPayload);
+      private_store.load({ key, promise });
       /**
        * note
        * 1. always get value after await, so it is the current one
@@ -238,8 +213,8 @@ function createCombinedRegion <T>(initialValue: T | void): CreateCombinedRegionR
 
         const payload = selectPayload({ key, snapshot, result, params, option });
         if (promise !== currentPromise) {
-          // store result for optimize purpose
-          private_store.setCache(payload);
+          // decrease loading & return snapshot
+          private_store.loadEnd({ key });
           return getValueOrInitialValue(key, snapshot);
         }
         private_store.set(payload);
@@ -251,20 +226,6 @@ function createCombinedRegion <T>(initialValue: T | void): CreateCombinedRegionR
         return getValueOrInitialValue(key, result);
       }
     };
-  };
-
-  const getMap: Result['getMap'] = (key) => {
-    if (Array.isArray(key)) {
-      return key.map(k => private_store.getAttribute(k, 'results')) as any;
-    }
-    return private_store.getAttribute(key, 'results');
-  };
-
-  const getId: Result['getId'] = (key) => {
-    if (Array.isArray(key)) {
-      return key.map(k => private_store.getAttribute(k, 'id'));
-    }
-    return private_store.getAttribute(key, 'id');
   };
 
   const getValue: Result['getValue'] = (key) => {
@@ -327,10 +288,6 @@ function createCombinedRegion <T>(initialValue: T | void): CreateCombinedRegionR
 
   const useProps: Result['getProps'] = createHooks(getProps, shallowEqual);
 
-  const useMap: Result['getMap'] = createHooks(getMap, shallowEqual);
-
-  const useId: Result['getId'] = createHooks(getId, strictEqual);
-
   const useValue: Result['getValue'] = createHooks(getValue, strictEqual);
 
   const useLoading: Result['getLoading'] = createHooks(getLoading, strictEqual);
@@ -345,8 +302,6 @@ function createCombinedRegion <T>(initialValue: T | void): CreateCombinedRegionR
     reset,
     load,
     loadBy,
-    getMap,
-    getId,
     getValue,
     getLoading,
     getError,
@@ -354,8 +309,6 @@ function createCombinedRegion <T>(initialValue: T | void): CreateCombinedRegionR
     getProps,
     connectWith,
     connect,
-    useMap,
-    useId,
     useValue,
     useLoading,
     useError,

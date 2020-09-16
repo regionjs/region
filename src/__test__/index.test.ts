@@ -23,8 +23,8 @@ describe('export api', () => {
     const { createRegion } = api;
     const {
       set, reset, load, loadBy, connect,
-      getProps, getMap, getId, getValue, getLoading, getError, getFetchTime,
-      useProps, useMap, useId, useValue, useLoading, useError, useFetchTime,
+      getProps, getValue, getLoading, getError, getFetchTime,
+      useProps, useValue, useLoading, useError, useFetchTime,
       ...rest
     } = createRegion();
     expect(typeof set).toBe('function');
@@ -33,15 +33,11 @@ describe('export api', () => {
     expect(typeof loadBy).toBe('function');
     expect(typeof connect).toBe('function');
     expect(typeof getProps).toBe('function');
-    expect(typeof getMap).toBe('function');
-    expect(typeof getId).toBe('function');
     expect(typeof getValue).toBe('function');
     expect(typeof getLoading).toBe('function');
     expect(typeof getError).toBe('function');
     expect(typeof getFetchTime).toBe('function');
     expect(typeof useProps).toBe('function');
-    expect(typeof useMap).toBe('function');
-    expect(typeof useId).toBe('function');
     expect(typeof useValue).toBe('function');
     expect(typeof useLoading).toBe('function');
     expect(typeof useError).toBe('function');
@@ -53,8 +49,8 @@ describe('export api', () => {
     const { createCombinedRegion } = api;
     const {
       set, reset, load, loadBy, connect, connectWith,
-      getProps, getMap, getId, getValue, getLoading, getError, getFetchTime,
-      useProps, useMap, useId, useValue, useLoading, useError, useFetchTime,
+      getProps, getValue, getLoading, getError, getFetchTime,
+      useProps, useValue, useLoading, useError, useFetchTime,
       private_setState_just_for_test,
       ...rest
     } = createCombinedRegion();
@@ -65,15 +61,11 @@ describe('export api', () => {
     expect(typeof connect).toBe('function');
     expect(typeof connectWith).toBe('function');
     expect(typeof getProps).toBe('function');
-    expect(typeof getMap).toBe('function');
-    expect(typeof getId).toBe('function');
     expect(typeof getValue).toBe('function');
     expect(typeof getLoading).toBe('function');
     expect(typeof getError).toBe('function');
     expect(typeof getFetchTime).toBe('function');
     expect(typeof useProps).toBe('function');
-    expect(typeof useMap).toBe('function');
-    expect(typeof useId).toBe('function');
     expect(typeof useValue).toBe('function');
     expect(typeof useLoading).toBe('function');
     expect(typeof useError).toBe('function');
@@ -86,8 +78,8 @@ describe('export api', () => {
     const { createMappedRegion } = api;
     const {
       set, reset, load, loadBy, connect, connectWith,
-      getProps, getMap, getId, getValue, getLoading, getError, getFetchTime,
-      useProps, useMap, useId, useValue, useLoading, useError, useFetchTime,
+      getProps, getValue, getLoading, getError, getFetchTime,
+      useProps, useValue, useLoading, useError, useFetchTime,
       private_setState_just_for_test,
       ...rest
     } = createMappedRegion();
@@ -98,15 +90,11 @@ describe('export api', () => {
     expect(typeof connect).toBe('function');
     expect(typeof connectWith).toBe('function');
     expect(typeof getProps).toBe('function');
-    expect(typeof getMap).toBe('function');
-    expect(typeof getId).toBe('function');
     expect(typeof getValue).toBe('function');
     expect(typeof getLoading).toBe('function');
     expect(typeof getError).toBe('function');
     expect(typeof getFetchTime).toBe('function');
     expect(typeof useProps).toBe('function');
-    expect(typeof useMap).toBe('function');
-    expect(typeof useId).toBe('function');
     expect(typeof useValue).toBe('function');
     expect(typeof useLoading).toBe('function');
     expect(typeof useError).toBe('function');

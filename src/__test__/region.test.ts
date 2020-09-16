@@ -169,7 +169,6 @@ describe('createRegion', () => {
     expect.assertions(1);
     return region.load(asyncFunction, {
       params: { id: '620000198705195453' },
-      id: '620000198705195453',
     }).then(() => {
       expect(region.getValue()).toEqual({ id: '620000198705195453', name: 'Robert Davis' });
     });
@@ -178,7 +177,7 @@ describe('createRegion', () => {
   test('load with idFunc', () => {
     const region = createRegion();
     const asyncFunction = ({ id }: {id: string}) => Promise.resolve({ id, name: 'Scott Davis' });
-    const loadUser = region.loadBy(asyncFunction, { id: ({ id }) => id });
+    const loadUser = region.loadBy(asyncFunction);
 
     expect.assertions(1);
     return loadUser({ id: '350000201202073963' }).then(() => {
@@ -190,16 +189,18 @@ describe('createRegion', () => {
     const region = createRegion();
     const asyncFunction = ({ id }: any) => Promise.resolve({ id, name: 'Amy Davis' });
     const asyncFunction2 = ({ id }: any) => Promise.resolve({ id, name: 'Carol Jackson' });
-    const loadUser = region.loadBy(asyncFunction, { id: ({ id }) => id });
-    const loadUser2 = region.loadBy(asyncFunction2, { id: ({ id }) => id });
+    const loadUser = region.loadBy(asyncFunction);
+    const loadUser2 = region.loadBy(asyncFunction2);
 
     expect.assertions(3);
     return loadUser({ id: '650000200512087988' }).then(() => {
       expect(region.getValue()).toEqual({ id: '650000200512087988', name: 'Amy Davis' });
       const promise = loadUser2({ id: '330000197010067769' });
-      // TODO this could cause huge change that may included in major release
-      // If so, it should be provided a flag
-      expect(region.getValue()).toEqual(undefined);
+      // TODO feature request
+      // if user wants it undefined, MappedRegion should be used
+      // Or some flag may provided to clear result
+      // Seems that it is not so good to provide it, I will decided it later
+      expect(region.getValue()).toEqual({ id: '650000200512087988', name: 'Amy Davis' });
       return promise;
     }).then(() => {
       expect(region.getValue()).toEqual({ id: '330000197010067769', name: 'Carol Jackson' });
@@ -209,7 +210,7 @@ describe('createRegion', () => {
   test('load normalize compatible with set', () => {
     const region = createRegion();
     const asyncFunction = () => Promise.resolve('Steven Walker');
-    const loadUser = region.loadBy(asyncFunction, { id: '630000198005021868' });
+    const loadUser = region.loadBy(asyncFunction);
 
     expect.assertions(2);
     return loadUser().then(() => {

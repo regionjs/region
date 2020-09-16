@@ -16,16 +16,12 @@ export interface CreateRegionReturnValue<V> {
     optionOrReducer?: OptionOrReducer<TParams, TResult, V>,
     exOption?: LoadOption<TParams, TResult, V>,
   ) => (params: TParams) => Promise<V | void>;
-  getMap: () => {[key: string]: V};
-  getId: () => string | undefined;
   getValue: () => V | undefined;
   getLoading: () => boolean;
   getError: () => Error | undefined;
   getFetchTime: () => number | undefined;
   getProps: () => any;
   connect: (Component: any, alias?: string) => FC<any>;
-  useMap: () => {[key: string]: V};
-  useId: () => string | undefined;
   useValue: () => V | undefined;
   useLoading: () => boolean;
   useError: () => Error | undefined;
@@ -86,14 +82,6 @@ function createRegion <V>(initialValue: void | V): CreateRegionReturnValue<V> | 
     return region.getProps('value');
   };
 
-  const getMap = () => {
-    return region.getMap('value');
-  };
-
-  const getId = () => {
-    return region.getId('value');
-  };
-
   const getValue = () => {
     return region.getValue('value');
   };
@@ -112,14 +100,6 @@ function createRegion <V>(initialValue: void | V): CreateRegionReturnValue<V> | 
 
   const useProps = () => {
     return region.useProps('value');
-  };
-
-  const useMap = () => {
-    return region.useMap('value');
-  };
-
-  const useId = () => {
-    return region.useId('value');
   };
 
   const useValue = () => {
@@ -147,16 +127,12 @@ function createRegion <V>(initialValue: void | V): CreateRegionReturnValue<V> | 
     reset,
     load,
     loadBy,
-    getMap,
-    getId,
     getValue,
     getLoading,
     getError,
     getFetchTime,
     getProps,
     connect,
-    useMap,
-    useId,
     useValue,
     useLoading,
     useError,

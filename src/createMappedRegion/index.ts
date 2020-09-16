@@ -2,7 +2,6 @@ import { useEffect, useRef, useState, FC } from 'react';
 import * as shallowEqual from 'shallowequal';
 import {
   selectPayload,
-  selectId,
   isAsync,
   formatLegacyKeys,
   selectLoading,
@@ -76,8 +75,6 @@ export interface CreateMappedRegionReturnValue<K, V> {
     optionOrReducer?: OptionOrReducer<TParams, TResult, V>,
     exOption?: LoadOption<TParams, TResult, V>,
   ) => (params: TParams) => Promise<V | void>;
-  getMap: (key: K) => {[key: string]: V};
-  getId: (key: K) => string | undefined;
   getValue: (key: K) => V | undefined;
   getLoading: (key: K) => boolean;
   getError: (key: K) => Error | undefined;
@@ -85,8 +82,6 @@ export interface CreateMappedRegionReturnValue<K, V> {
   getProps: (key: K) => any;
   connectWith: (key: K, Display: any, option?: ConnectOption) => FC<any>;
   connect: (key: K, option?: ConnectOption) => (Display?: any) => FC<any>;
-  useMap: (key: K) => {[key: string]: V};
-  useId: (key: K) => string | undefined;
   useValue: (key: K) => V | undefined;
   useLoading: (key: K) => boolean;
   useError: (key: K) => Error | undefined;
@@ -128,25 +123,6 @@ function createMappedRegion <K extends string, V>(initialValue: V | void): Creat
       return value;
     }
     return initialValue as V;
-  };
-
-  interface GetLoadPayloadParams<TParams, TResult> {
-    key: K;
-    promise: Promise<TResult>;
-    params: TParams;
-    option: LoadOption<TParams, TResult, V>;
-  }
-
-  type SelectLoadPayload = <TParams, TResult>(
-    { key, promise, params, option }: GetLoadPayloadParams<TParams, TResult>,
-  ) => LoadPayload<K, TResult>;
-
-  const selectLoadPayload: SelectLoadPayload = (
-    { key, promise, params, option },
-  ) => {
-    const { id } = option;
-    const formatId = selectId({ id, params });
-    return { key, promise, id: formatId };
   };
 
   type EqualityFn = <T>(a?: T, b?: T) => boolean;
@@ -225,8 +201,7 @@ function createMappedRegion <K extends string, V>(initialValue: V | void): Creat
 
     return async (params) => {
       const promise = toPromise({ asyncFunction, params });
-      const loadPayload = selectLoadPayload({ key, promise, params, option });
-      private_store.load(loadPayload);
+      private_store.load({ key, promise });
       /**
        * note
        * 1. always get value after await, so it is the current one
@@ -239,8 +214,8 @@ function createMappedRegion <K extends string, V>(initialValue: V | void): Creat
 
         const payload = selectPayload({ key, snapshot, result, params, option });
         if (promise !== currentPromise) {
-          // store result for optimize purpose
-          private_store.setCache(payload);
+          // decrease loading & return snapshot
+          private_store.loadEnd({ key });
           return getValueOrInitialValue(key, snapshot);
         }
         private_store.set(payload);
@@ -252,20 +227,6 @@ function createMappedRegion <K extends string, V>(initialValue: V | void): Creat
         return getValueOrInitialValue(key, result);
       }
     };
-  };
-
-  const getMap: Result['getMap'] = (key) => {
-    if (Array.isArray(key)) {
-      return key.map(k => private_store.getAttribute(k, 'results')) as any;
-    }
-    return private_store.getAttribute(key, 'results');
-  };
-
-  const getId: Result['getId'] = (key) => {
-    if (Array.isArray(key)) {
-      return key.map(k => private_store.getAttribute(k, 'id'));
-    }
-    return private_store.getAttribute(key, 'id');
   };
 
   const getValue: Result['getValue'] = (key) => {
@@ -328,10 +289,6 @@ function createMappedRegion <K extends string, V>(initialValue: V | void): Creat
 
   const useProps: Result['getProps'] = createHooks(getProps, shallowEqual);
 
-  const useMap: Result['getMap'] = createHooks(getMap, shallowEqual);
-
-  const useId: Result['getId'] = createHooks(getId, strictEqual);
-
   const useValue: Result['getValue'] = createHooks(getValue, strictEqual);
 
   const useLoading: Result['getLoading'] = createHooks(getLoading, strictEqual);
@@ -346,8 +303,6 @@ function createMappedRegion <K extends string, V>(initialValue: V | void): Creat
     reset,
     load,
     loadBy,
-    getMap,
-    getId,
     getValue,
     getLoading,
     getError,
@@ -355,8 +310,6 @@ function createMappedRegion <K extends string, V>(initialValue: V | void): Creat
     getProps,
     connectWith,
     connect,
-    useMap,
-    useId,
     useValue,
     useLoading,
     useError,

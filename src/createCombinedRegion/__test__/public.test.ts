@@ -45,16 +45,16 @@ describe('load', () => {
   });
 
   test('format', async () => {
-    const result = await load('user', () => Promise.resolve('0'), {
-      format: (user: string) => `${user}1`,
-    });
+    const result = await load('user', () => Promise.resolve('0'), (_: any, user: string) => `${user}1`);
     expect(result).toBe('01');
   });
 
   test('format snapshot', async () => {
-    const result = await load('user', () => Promise.resolve('2'), {
-      format: (user: any, snapshot: any) => `${snapshot}${user}3`,
-    });
+    const result = await load(
+      'user',
+      () => Promise.resolve('2'),
+      (snapshot: any, user: any) => `${snapshot}${user}3`,
+    );
     expect(result).toBe('0123');
   });
 

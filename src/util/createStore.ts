@@ -1,4 +1,4 @@
-import { State, Props, PropsAttribute, Payload, LoadPayload } from '../types';
+import { State, Props, Payload, LoadPayload } from '../types';
 
 const increase = (v: number = 0) => v + 1;
 const decrease = (v: number = 0) => v - 1 > 0 ? v - 1 : 0;
@@ -11,9 +11,7 @@ export const createStore = <T>() => {
 
   const ensure = <K extends keyof T>(key: K) => {
     if (!state[key]) {
-      state[key] = {
-        results: {},
-      };
+      state[key] = {};
     }
   };
 
@@ -35,56 +33,45 @@ export const createStore = <T>() => {
   };
 
   const load = <K extends keyof T, TResult>(payload: LoadPayload<K, TResult>) => {
-    const { key, promise, id } = payload;
+    const { key, promise } = payload;
 
     ensure(key);
 
     // since it is ensured
     const props = state[key] as Props<T[K]>;
 
-    props.id = id; // as well id === undefined
-    props.result = props.results[id as string];
     props.promise = promise;
     props.loading = increase(props.loading);
     emit();
     return state;
   };
 
-  const setCache = <K extends keyof T>(payload: Payload<T, K>) => {
-    const { key, result, id } = payload;
-    const currentId = getAttribute(key, 'id');
+  const loadEnd = <K extends keyof T, TResult>(payload: {key: K}) => {
+    const { key } = payload;
 
     ensure(key);
 
     // since it is ensured
     const props = state[key] as Props<T[K]>;
 
-    if (id !== currentId) {
-      const snapshot = props.results[id as string];
-      const formatResult = typeof result === 'function' ? result(snapshot) : result;
-      props.results = { ...props.results, [id as string]: formatResult };
-    }
     props.loading = decrease(props.loading);
-    // we should trigger useMap & useLoading anyway
     emit();
     return state;
   };
 
   const set = <K extends keyof T>(payload: Payload<T, K>) => {
-    const { key, result, id, error } = payload;
+    const { key, result, error } = payload;
 
     ensure(key);
 
     // since it is ensured
     const props = state[key] as Props<T[K]>;
 
-    const snapshot = props.results[id as string];
+    const snapshot = props.result;
     const formatResult = typeof result === 'function' ? result(snapshot) : result;
-    props.results = { ...props.results, [id as string]: formatResult };
     props.loading = decrease(props.loading);
     const fetchTime = new Date().getTime();
     props.fetchTime = fetchTime;
-    props.id = id; // as well id === undefined
     props.result = formatResult;
     props.error = error; // as well error ===  undefined
 
@@ -107,5 +94,5 @@ export const createStore = <T>() => {
     };
   };
 
-  return { getAttribute, private_setState, load, set, setCache, reset, subscribe };
+  return { getAttribute, private_setState, load, loadEnd, set, reset, subscribe };
 };
