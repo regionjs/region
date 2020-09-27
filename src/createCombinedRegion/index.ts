@@ -221,10 +221,16 @@ function createCombinedRegion <T>(initialValue: T | void): CreateCombinedRegionR
         private_store.set(payload);
         return getValueOrInitialValue(key, payload.result);
       } catch (error) {
-        const result = private_store.getAttribute(key, 'result');
+        const currentPromise = private_store.getAttribute(key, 'promise');
+        const snapshot = private_store.getAttribute(key, 'result');
 
-        private_store.set({ key, result, error });
-        return getValueOrInitialValue(key, result);
+        if (promise !== currentPromise) {
+          // decrease loading & return snapshot
+          private_store.loadEnd({ key });
+          return getValueOrInitialValue(key, snapshot);
+        }
+        private_store.set({ key, result: snapshot, error });
+        return getValueOrInitialValue(key, snapshot);
       }
     };
   };

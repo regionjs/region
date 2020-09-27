@@ -232,10 +232,16 @@ function createMappedRegion <K, V>(initialValue: V | void): CreateMappedRegionRe
         private_store.set({ key: keyString, result: formattedResult });
         return getValueOrInitialValue(formattedResult);
       } catch (error) {
-        const result = private_store.getAttribute(keyString, 'result');
+        const currentPromise = private_store.getAttribute(keyString, 'promise');
+        const snapshot = private_store.getAttribute(keyString, 'result');
 
-        private_store.set({ key: keyString, result, error });
-        return getValueOrInitialValue(result);
+        if (promise !== currentPromise) {
+          // decrease loading & return snapshot
+          private_store.loadEnd({ key: keyString });
+          return getValueOrInitialValue(snapshot);
+        }
+        private_store.set({ key: keyString, result: snapshot, error });
+        return getValueOrInitialValue(snapshot);
       }
     };
   };
