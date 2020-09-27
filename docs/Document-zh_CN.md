@@ -70,18 +70,6 @@ const loadUser = region.loadBy(
 loadUser({userId: 1});
 ```
 
-- 提供一个 `id` 可以开启 `swr`，前往 [examples](https://regionjs.github.io/region-core/#SWR) 获得更多信息。
-
-```javascript
-const loadUser = region.loadBy(
-  asyncFuncion,
-  { id: (params) => params.userId }
-);
-
-// params will be passed through
-loadUser({userId: 1});
-```
-
 ### hooks
 
 包括 `useValue`, `useLoading`, `useError`, `useFetchTime`, `useProps`

@@ -6,6 +6,16 @@ First of all, you should ensure no deprecated warning before migrate. Then read 
 
 If you meet some problem not listed, please raise an issue.
 
+## Migrate From 9.x to 10.x
+
+remove deprecated functions.
+
+## Migrate From 8.x to 9.x
+
+use `createCombinedRegion` instead of `createRegion`.
+
+remove deprecated functions.
+
 ## Migrate From 8.0 to 8.x
 
 Some warning but nothing breaks.

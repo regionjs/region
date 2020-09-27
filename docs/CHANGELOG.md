@@ -1,5 +1,9 @@
 # CHANGELOG
 
+### 10.0
+
+- remove `map` and `id` and surrounded apis.
+
 ### 9.x
 
 - createMappedRegion
