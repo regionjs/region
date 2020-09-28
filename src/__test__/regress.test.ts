@@ -26,7 +26,7 @@ describe('reject race condition', () => {
       setTimeout(() => reject('error'), 0);
     });
 
-    const resolve1 = () => new Promise((resolve, reject) => {
+    const resolve1 = () => new Promise((resolve) => {
       setTimeout(() => resolve(1), 100);
     });
 
@@ -38,6 +38,30 @@ describe('reject race condition', () => {
       () => {
         expect(region.getLoading()).toBe(true);
         expect(region.getError()?.message).toBe(undefined);
+        done();
+      },
+      50,
+    );
+  });
+
+  test('acceptEvery', (done) => {
+    const region = createRegion(undefined, { strategy: 'acceptEvery' });
+    const throwError = () => new Promise((resolve, reject) => {
+      setTimeout(() => reject('error'), 0);
+    });
+
+    const resolve1 = () => new Promise((resolve) => {
+      setTimeout(() => resolve(1), 100);
+    });
+
+    region.load(throwError);
+    region.load(resolve1);
+
+    expect(region.getError()?.message).toBe(undefined);
+    setTimeout(
+      () => {
+        expect(region.getLoading()).toBe(true);
+        expect(region.getError()?.message).toBe('error');
         done();
       },
       50,

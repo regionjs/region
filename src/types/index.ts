@@ -1,4 +1,10 @@
 // public
+export type Strategy = 'acceptLatest' | 'acceptEvery';
+
+export interface RegionOption {
+  strategy: Strategy;
+}
+
 // useProps
 export type LegacyKey<K> = K | K[];
 

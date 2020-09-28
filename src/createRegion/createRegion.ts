@@ -1,6 +1,13 @@
 import { FC } from 'react';
 import createMappedRegion, { CreateMappedRegionPureReturnValue } from '../createMappedRegion';
-import { AsyncFunctionOrPromise, LoadOption, OptionOrReducer, ResultFunc, ResultFuncPure } from '../types';
+import {
+  AsyncFunctionOrPromise,
+  LoadOption,
+  OptionOrReducer,
+  RegionOption,
+  ResultFunc,
+  ResultFuncPure,
+} from '../types';
 import { hoc } from './hoc';
 
 export interface CreateRegionReturnValue<V> {
@@ -46,14 +53,14 @@ export interface CreateRegionPureReturnValue<V> extends Omit<CreateRegionReturnV
 }
 
 // overload is unsafe in some way, ensure the return type is correct
-function createRegion <V>(initialValue: void): CreateRegionReturnValue<V>;
-function createRegion <V>(initialValue: V): CreateRegionPureReturnValue<V>;
-function createRegion <V>(initialValue: void | V): CreateRegionReturnValue<V> | CreateRegionPureReturnValue<V> {
+function createRegion <V>(initialValue: void | undefined, option?: RegionOption): CreateRegionReturnValue<V>;
+function createRegion <V>(initialValue: V, option?: RegionOption): CreateRegionPureReturnValue<V>;
+function createRegion <V>(initialValue: void | V | undefined, option?: RegionOption): CreateRegionReturnValue<V> | CreateRegionPureReturnValue<V> {
   let region: CreateMappedRegionPureReturnValue<'value', V>;
   if (initialValue !== undefined) {
-    region = createMappedRegion<'value', V>(initialValue);
+    region = createMappedRegion<'value', V>(initialValue, option);
   } else {
-    region = createMappedRegion<'value', V>() as CreateMappedRegionPureReturnValue<'value', V>;
+    region = createMappedRegion<'value', V>(undefined, option) as CreateMappedRegionPureReturnValue<'value', V>;
   }
 
   const set = (resultOrFunc: V | ResultFuncPure<V>) => {

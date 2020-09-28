@@ -21,6 +21,8 @@ import {
   OptionOrReducer,
   ConnectOption,
   AsyncFunction,
+  Strategy,
+  RegionOption,
 } from '../types';
 
 interface ToPromiseParams<TParams, V> {
@@ -110,11 +112,14 @@ export interface CreateCombinedRegionPureReturnValue<T>
 }
 
 // overload is unsafe in some way, ensure the return type is correct
-function createCombinedRegion <T>(initialValue: void): CreateCombinedRegionReturnValue<T>;
-function createCombinedRegion <T>(initialValue: T): CreateCombinedRegionPureReturnValue<T>;
-function createCombinedRegion <T>(initialValue: T | void): CreateCombinedRegionReturnValue<T> | CreateCombinedRegionPureReturnValue<T> {
+function createCombinedRegion <T>(initialValue: void | undefined, option?: RegionOption): CreateCombinedRegionReturnValue<T>;
+function createCombinedRegion <T>(initialValue: T, option?: RegionOption): CreateCombinedRegionPureReturnValue<T>;
+// tslint:disable-next-line:max-line-length
+function createCombinedRegion <T>(initialValue: T | void | undefined, option?: RegionOption): CreateCombinedRegionReturnValue<T> | CreateCombinedRegionPureReturnValue<T> {
   // ---- Utils ----
   type Result = CreateCombinedRegionPureReturnValue<T>;
+
+  const strategy: Strategy = option?.strategy ?? 'acceptLatest';
 
   const private_store = createStore<T>();
 
@@ -213,7 +218,7 @@ function createCombinedRegion <T>(initialValue: T | void): CreateCombinedRegionR
         const snapshot = private_store.getAttribute(key, 'result');
 
         const payload = selectPayload({ key, snapshot, result, params, option });
-        if (promise !== currentPromise) {
+        if (strategy === 'acceptLatest' && promise !== currentPromise) {
           // decrease loading & return snapshot
           private_store.loadEnd({ key });
           return getValueOrInitialValue(key, snapshot);
@@ -224,7 +229,7 @@ function createCombinedRegion <T>(initialValue: T | void): CreateCombinedRegionR
         const currentPromise = private_store.getAttribute(key, 'promise');
         const snapshot = private_store.getAttribute(key, 'result');
 
-        if (promise !== currentPromise) {
+        if (strategy === 'acceptLatest' && promise !== currentPromise) {
           // decrease loading & return snapshot
           private_store.loadEnd({ key });
           return getValueOrInitialValue(key, snapshot);
