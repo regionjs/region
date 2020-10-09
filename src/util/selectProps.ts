@@ -20,7 +20,14 @@ export const selectLoading = (loadings: Loading[]) => loadings.reduce(
 
 export const selectError = (errors: Error[]) => {
   const filteredErrors = errors.filter(e => e);
-  if (filteredErrors.length > 0) {
+
+  if (filteredErrors.length === 1) {
+    const e = errors[0];
+    return typeof e === 'string' ? new Error(e) : e;
+  }
+
+  if (filteredErrors.length > 1) {
+    console.warn('select multiple error may cause problems.');
     // e, as agreed, should be Error. but when it isn't, return e as string
     const errorMessage = filteredErrors.map(e => typeof e === 'string' ? e : e.message).join(', ');
     return new Error(errorMessage);

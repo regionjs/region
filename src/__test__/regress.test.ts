@@ -68,3 +68,28 @@ describe('reject race condition', () => {
     );
   });
 });
+
+describe('bypass error when error should not be combined', () => {
+  test('basic', (done) => {
+    const region = createRegion();
+    const throwError = () => new Promise((resolve, reject) => {
+      const error = new Error('error');
+      // @ts-ignore
+      error.a = 1;
+      setTimeout(() => reject(error), 0);
+    });
+
+    region.load(throwError);
+    expect(region.getError()?.message).toBe(undefined);
+
+    setTimeout(
+      () => {
+        expect(region.getError()?.message).toBe('error');
+        // @ts-ignore
+        expect(region.getError()?.a).toBe(1);
+        done();
+      },
+      50,
+    );
+  });
+});
