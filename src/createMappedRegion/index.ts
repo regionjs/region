@@ -3,7 +3,6 @@ import { useEffect, useRef, useState, FC } from 'react';
 import shallowEqual from 'shallowequal';
 import jsonStableStringify from 'json-stable-stringify';
 import {
-  formatResult,
   isAsync,
   selectLoading,
   selectFetchTime,
@@ -227,7 +226,9 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         const currentPromise = private_store.getAttribute(keyString, 'promise');
         const snapshot = private_store.getAttribute(keyString, 'result');
 
-        const formattedResult = formatResult({ snapshot, result, params, option });
+        const formattedResult = typeof option.reducer === 'function'
+          ? option.reducer(getValueOrInitialValue(snapshot), result, params)
+          : result as unknown as V;
         if (strategy === 'acceptLatest' && promise !== currentPromise) {
           // decrease loading & return snapshot
           private_store.loadEnd({ key: keyString });

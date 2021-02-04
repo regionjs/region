@@ -33,18 +33,17 @@ const getLocalStorageState = (key: Key, fallbackValue: Value) => {
   }
 };
 
-const createLocalStorageRegion = (key: Key, fallbackValue: Value) => {
-  const region = createRegion(getLocalStorageState(key, fallbackValue));
+const createLocalStorageRegion = <V>(key: Key, fallbackValue: V) => {
+  const region = createRegion<V>(getLocalStorageState(key, fallbackValue));
   const regionSet = region.set;
-  region.set = (valueOrFunc: any) => {
+  region.set = (valueOrFunc) => {
     if (typeof valueOrFunc === 'function') {
-      const value = valueOrFunc(getLocalStorageState(key, fallbackValue));
+      const value = (valueOrFunc as any)(getLocalStorageState(key, fallbackValue));
       setLocalStorageState(key, value);
-      regionSet(value);
-      return;
+      return regionSet(value);
     }
     setLocalStorageState(key, valueOrFunc);
-    regionSet(valueOrFunc);
+    return regionSet(valueOrFunc);
   };
   typeof window === 'object' && window.addEventListener('storage', () => {
     const value = getLocalStorageState(key, fallbackValue);
