@@ -114,3 +114,5 @@ Go to [examples](https://regionjs.github.io/region-core/#ClassComponent) for mor
 ### createMappedRegion
 
 A `MappedRegion` provides a key-value way of managing your data.
+
+Go to [examples](https://regionjs.github.io/region-core/#SWR) for more.

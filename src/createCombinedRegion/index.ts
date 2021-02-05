@@ -12,6 +12,7 @@ import {
   isValidConnectKey,
   hoc,
   createStore,
+  deprecate,
 } from '../util';
 import {
   ResultFunc,
@@ -111,11 +112,16 @@ export interface CreateCombinedRegionPureReturnValue<T>
   useValue: <K extends keyof T>(key: K) => T[K];
 }
 
+/** @deprecated */
 // overload is unsafe in some way, ensure the return type is correct
 function createCombinedRegion <T>(initialValue: void | undefined, option?: RegionOption): CreateCombinedRegionReturnValue<T>;
+/** @deprecated */
 function createCombinedRegion <T>(initialValue: T, option?: RegionOption): CreateCombinedRegionPureReturnValue<T>;
+/** @deprecated */
 // tslint:disable-next-line:max-line-length
 function createCombinedRegion <T>(initialValue: T | void | undefined, option?: RegionOption): CreateCombinedRegionReturnValue<T> | CreateCombinedRegionPureReturnValue<T> {
+  deprecate('combinedRegion is deprecated, use region or mappedRegion instead. ');
+
   // ---- Utils ----
   type Result = CreateCombinedRegionPureReturnValue<T>;
 

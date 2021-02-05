@@ -10,6 +10,7 @@ import {
   isValidConnectKey,
   hoc,
   createStore,
+  deprecate,
 } from '../util';
 import {
   ResultFunc,
@@ -318,11 +319,14 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     return Object.assign({ loading, fetchTime, error }, resultMap);
   };
 
+  /** @deprecated */
   const connectWith: Result['connectWith'] = (key, Display, option) => {
     return connect(key, option)(Display);
   };
 
+  /** @deprecated */
   const connect: Result['connect'] = (key, option = {}) => (Display = Empty) => {
+    deprecate('connect is deprecated, use hooks instead. ');
     const { Loading, Error: ErrorComponent } = option;
     if (!isValidConnectKey(key)) {
       throw new Error('invalid key.');

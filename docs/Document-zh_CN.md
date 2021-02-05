@@ -114,3 +114,5 @@ const handler = () => {
 ### createMappedRegion
 
 `MappedRegion` 可以让你以 key-value 的形式管理数据。
+
+前往 [examples](https://regionjs.github.io/region-core/#SWR) 获得更多信息。
