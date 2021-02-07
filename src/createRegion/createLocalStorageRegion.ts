@@ -34,7 +34,7 @@ const getLocalStorageState = (key: Key, fallbackValue: Value) => {
 };
 
 const createLocalStorageRegion = <V>(key: Key, fallbackValue: V) => {
-  const region = createRegion<V>(getLocalStorageState(key, fallbackValue));
+  const region = createRegion<V>(getLocalStorageState(key, fallbackValue) as V);
   const regionSet = region.set;
   region.set = (valueOrFunc) => {
     if (typeof valueOrFunc === 'function') {
