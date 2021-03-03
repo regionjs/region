@@ -20,5 +20,5 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-/lib/__test__
-/lib/*/__test__
+/lib
+/es

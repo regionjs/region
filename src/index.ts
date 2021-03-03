@@ -1,6 +1,4 @@
-import createMappedRegion from './createMappedRegion';
-import createCombinedRegion from './createCombinedRegion';
-import createRegion from './createRegion/createRegion';
-import createLocalStorageRegion from './createRegion/createLocalStorageRegion';
-
-export { createMappedRegion, createCombinedRegion, createRegion, createLocalStorageRegion };
+export { default as createMappedRegion } from './createMappedRegion';
+export { default as createCombinedRegion } from './createCombinedRegion';
+export { default as createRegion } from './createRegion/createRegion';
+export { default as createLocalStorageRegion } from './createRegion/createLocalStorageRegion';

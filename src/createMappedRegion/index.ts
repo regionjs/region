@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, FC } from 'react';
 // tslint:disable-next-line:import-name
-import shallowEqual from 'shallowequal';
-import jsonStableStringify from 'json-stable-stringify';
+import * as shallowEqual from 'shallowequal';
+import * as jsonStableStringify from 'json-stable-stringify';
 import {
   isAsync,
   selectLoading,
