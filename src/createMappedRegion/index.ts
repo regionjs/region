@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState, FC } from 'react';
+import { FC, useMemo } from 'react';
+import { useSubscription } from 'use-subscription';
 // tslint:disable-next-line:import-name
 import * as shallowEqual from 'shallowequal';
 import * as jsonStableStringify from 'json-stable-stringify';
@@ -122,7 +123,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
 
   const private_store = createStore<{[key: string]: V}>();
 
-  const getKeyString = (key: K): string => {
+  const getKeyString = (key: K | K[]): string => {
     if (typeof key === 'string') {
       return key;
     }
@@ -136,41 +137,17 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     return initialValue as V;
   };
 
-  type EqualityFn = <T>(a?: T, b?: T) => boolean;
-
-  const createHooks = <TReturnType>(getFn: (key: K | K[]) => TReturnType, equalityFn: EqualityFn) => {
+  const createHooks = <TReturnType>(getFn: (key: K | K[]) => TReturnType) => {
     return (key: K | K[]): TReturnType => {
-      const [, forceUpdate] = useState({});
-      const ref = useRef<TReturnType>();
-      ref.current = getFn(key);
-      useEffect(
-        () => {
-          let didUnsubscribe = false;
-
-          const checkForUpdates = () => {
-            if (didUnsubscribe) {
-              return;
-            }
-            const nextValue = getFn(key);
-            /** @see https://github.com/facebook/react/issues/14994 */
-            if (!equalityFn(ref.current, nextValue)) {
-              ref.current = nextValue;
-              forceUpdate({});
-            }
-          };
-
-          const unsubscribe = private_store.subscribe(checkForUpdates);
-
-          checkForUpdates();
-
-          return () => {
-            didUnsubscribe = true;
-            unsubscribe();
-          };
-        },
-        [],
+      const subscription = useMemo(
+        () => ({
+          getCurrentValue: () => getFn(key),
+          subscribe: private_store.subscribe,
+        }),
+        // shallow-equal
+        [getFn, getKeyString(key)],
       );
-      return ref.current;
+      return useSubscription(subscription);
     };
   };
 
@@ -299,6 +276,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     return selectFetchTime([private_store.getAttribute(keyString, 'fetchTime')]);
   };
 
+  /** @deprecated */
   const getProps: Result['getProps'] = (key) => {
     const resultMap: {[key: string]: V} = {};
     const result: V | V[] = getValue(key as K);
@@ -340,16 +318,17 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     });
   };
 
-  const useProps: Result['getProps'] = createHooks(getProps, shallowEqual);
+  /** @deprecated */
+  const useProps: Result['getProps'] = createHooks(getProps);
 
   // @ts-ignore
-  const useValue: Result['getValue'] = createHooks(getValue, strictEqual);
+  const useValue: Result['getValue'] = createHooks(getValue);
 
-  const useLoading: Result['getLoading'] = createHooks(getLoading, strictEqual);
+  const useLoading: Result['getLoading'] = createHooks(getLoading);
 
-  const useError: Result['getError'] = createHooks(getError, strictEqual);
+  const useError: Result['getError'] = createHooks(getError);
 
-  const useFetchTime: Result['getFetchTime'] = createHooks(getFetchTime, strictEqual);
+  const useFetchTime: Result['getFetchTime'] = createHooks(getFetchTime);
 
   return {
     private_setState_just_for_test: private_store.private_setState,
