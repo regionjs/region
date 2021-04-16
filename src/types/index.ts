@@ -5,15 +5,6 @@ export interface RegionOption {
   strategy: Strategy;
 }
 
-// useProps
-export type LegacyKey<K> = K | K[];
-
-// connect
-export interface ConnectOption {
-  Loading?: any;
-  Error?: any;
-}
-
 // set & load
 // set
 export type ResultFunc<V> = (snapshot?: V) => V;
@@ -47,15 +38,15 @@ export type OptionOrReducerPure<TParams, TResult, V> = LoadOptionPure<TParams, T
 // get
 // reducer
 
-export interface LoadPayload<K, TResult> {
-  key: K;
+export interface LoadPayload<TResult> {
+  key: string;
   promise: Promise<TResult>;
 }
 
-export interface Payload<T, K extends keyof T> {
-  key: K;
-  result?: T[K];
-  error?: any;
+export interface Payload<V> {
+  key: string;
+  result?: V;
+  error?: unknown;
 }
 
 // internal
@@ -63,7 +54,7 @@ export interface Props<V> {
   loading?: number;
   result?: V;
   promise?: Promise<unknown>;
-  error?: any;
+  error?: unknown;
   fetchTime?: number;
 }
 

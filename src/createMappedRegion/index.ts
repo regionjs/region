@@ -1,23 +1,13 @@
-import { FC, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useSubscription } from 'use-subscription';
 import * as jsonStableStringify from 'json-stable-stringify';
-import {
-  isAsync,
-  selectLoading,
-  selectFetchTime,
-  selectError,
-  isValidConnectKey,
-  hoc,
-  createStore,
-  deprecate,
-} from '../util';
+import { isAsync, createStore } from '../util';
 import {
   ResultFunc,
   ResultFuncPure,
   AsyncFunctionOrPromise,
   LoadOption,
   OptionOrReducer,
-  ConnectOption,
   AsyncFunction,
   Strategy,
   RegionOption,
@@ -36,6 +26,18 @@ const toPromise = async <TParams, V>({ asyncFunction, params }: ToPromiseParams<
   return asyncFunction;
 };
 
+const formatLoading = (loading?: number) => {
+  // treat undefined as true
+  if (loading === undefined) {
+    return true;
+  }
+  return loading > 0;
+};
+
+const formatError = (error?: unknown): Error => {
+  return typeof error === 'string' ? new Error(error) : (error as Error);
+};
+
 const getCombinedOption = <TParams, TResult, V>(
   optionOrReducer: OptionOrReducer<TParams, TResult, V> = {},
   exOption?: LoadOption<TParams, TResult, V>,
@@ -49,8 +51,6 @@ const getCombinedOption = <TParams, TResult, V>(
   return optionOrReducer;
 };
 
-const Empty = () => null;
-
 const getSetResult = <V>(resultOrFunc: V | ResultFuncPure<V>, snapshot: V) => {
   if (typeof resultOrFunc === 'function') {
     return (resultOrFunc as ResultFuncPure<V>)(snapshot);
@@ -59,6 +59,7 @@ const getSetResult = <V>(resultOrFunc: V | ResultFuncPure<V>, snapshot: V) => {
 };
 
 export interface CreateMappedRegionReturnValue<K, V> {
+  private_getState_just_for_test: () => any;
   private_setState_just_for_test: (value: any) => void;
   set: (key: K, resultOrFunc: V | ResultFunc<V>) => V;
   reset: () => void;
@@ -75,17 +76,13 @@ export interface CreateMappedRegionReturnValue<K, V> {
     exOption?: LoadOption<TParams, TResult, V>,
   ) => (params: TParams) => Promise<V | void>;
   getValue: (key: K) => V | undefined;
-  getLoading: (key: K | K[]) => boolean;
-  getError: (key: K | K[]) => Error | undefined;
-  getFetchTime: (key: K | K[]) => number | undefined;
-  getProps: (key: K | K[]) => any;
-  connectWith: (key: K, Display: any, option?: ConnectOption) => FC<any>;
-  connect: (key: K, option?: ConnectOption) => (Display?: any) => FC<any>;
+  getLoading: (key: K) => boolean;
+  getError: (key: K) => Error | undefined;
+  getFetchTime: (key: K) => number | undefined;
   useValue: (key: K) => V | undefined;
-  useLoading: (key: K | K[]) => boolean;
-  useError: (key: K | K[]) => Error | undefined;
-  useFetchTime: (key: K | K[]) => number | undefined;
-  useProps: (key: K | K[]) => any;
+  useLoading: (key: K) => boolean;
+  useError: (key: K) => Error | undefined;
+  useFetchTime: (key: K) => number | undefined;
 }
 
 export interface CreateMappedRegionPureReturnValue<K, V>
@@ -117,9 +114,9 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
 
   const strategy: Strategy = option?.strategy ?? 'acceptLatest';
 
-  const private_store = createStore<{[key: string]: V}>();
+  const private_store = createStore<V>();
 
-  const getKeyString = (key: K | K[]): string => {
+  const getKeyString = (key: K): string => {
     if (typeof key === 'string') {
       return key;
     }
@@ -133,8 +130,8 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     return initialValue as V;
   };
 
-  const createHooks = <TReturnType>(getFn: (key: K | K[]) => TReturnType) => {
-    return (key: K | K[]): TReturnType => {
+  const createHooks = <TReturnType>(getFn: (key: K) => TReturnType) => {
+    return (key: K): TReturnType => {
       const subscription = useMemo(
         () => ({
           getCurrentValue: () => getFn(key),
@@ -225,104 +222,27 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     };
   };
 
-  // @ts-ignore overload
   const getValue: Result['getValue'] = (key) => {
-    if (Array.isArray(key)) {
-      return key.map((k: K) => {
-        deprecate('getValue & useValue with array of keys is deprecated. ');
-        const keyString = getKeyString(k);
-        const value = private_store.getAttribute(keyString, 'result');
-        return getValueOrInitialValue(value);
-      });
-    }
     const keyString = getKeyString(key);
     const value = private_store.getAttribute(keyString, 'result');
     return getValueOrInitialValue(value);
   };
 
   const getLoading: Result['getLoading'] = (key) => {
-    if (Array.isArray(key)) {
-      deprecate('getLoading & useLoading with array of keys is deprecated. ');
-      return selectLoading(key.map((k: K) => {
-        const keyString = getKeyString(k);
-        return private_store.getAttribute(keyString, 'loading');
-      }));
-    }
     const keyString = getKeyString(key);
-    return selectLoading([private_store.getAttribute(keyString, 'loading')]);
+    return formatLoading(private_store.getAttribute(keyString, 'loading'));
   };
 
   const getError: Result['getError'] = (key) => {
-    if (Array.isArray(key)) {
-      deprecate('getError & useError with array of keys is deprecated. ');
-      return selectError(key.map((k: K) => {
-        const keyString = getKeyString(k);
-        return private_store.getAttribute(keyString, 'error');
-      }));
-    }
     const keyString = getKeyString(key);
-    return selectError([private_store.getAttribute(keyString, 'error')]);
+    return formatError(private_store.getAttribute(keyString, 'error'));
   };
 
   const getFetchTime: Result['getFetchTime'] = (key) => {
-    if (Array.isArray(key)) {
-      deprecate('getFetchTime & useFetchTime with array of keys is deprecated. ');
-      return selectFetchTime(key.map((k: K) => {
-        const keyString = getKeyString(k);
-        return private_store.getAttribute(keyString, 'fetchTime');
-      }));
-    }
     const keyString = getKeyString(key);
-    return selectFetchTime([private_store.getAttribute(keyString, 'fetchTime')]);
+    return private_store.getAttribute(keyString, 'fetchTime');
   };
 
-  /** @deprecated */
-  const getProps: Result['getProps'] = (key) => {
-    deprecate('getProps & useProps is deprecated, use getValue & useValue instead. ');
-    const resultMap: {[key: string]: V} = {};
-    const result: V | V[] = getValue(key as K);
-    if (Array.isArray(key)) {
-      key.map((k, index) => {
-        const keyString = getKeyString(k);
-        resultMap[keyString] = (result as unknown as V[])[index];
-      });
-    } else {
-      const keyString = getKeyString(key);
-      resultMap[keyString] = result as V;
-    }
-
-    const loading = getLoading(key);
-    const fetchTime = getFetchTime(key);
-    const error = getError(key);
-
-    return Object.assign({ loading, fetchTime, error }, resultMap);
-  };
-
-  /** @deprecated */
-  const connectWith: Result['connectWith'] = (key, Display, option) => {
-    return connect(key, option)(Display);
-  };
-
-  /** @deprecated */
-  const connect: Result['connect'] = (key, option = {}) => (Display = Empty) => {
-    deprecate('connect is deprecated, use hooks instead. ');
-    const { Loading, Error: ErrorComponent } = option;
-    if (!isValidConnectKey(key)) {
-      throw new Error('invalid key.');
-    }
-    return hoc({
-      Display,
-      Loading: Loading || Display,
-      Error: ErrorComponent || Display,
-      useProps,
-      key,
-    });
-  };
-
-  /** @deprecated */
-  const useProps: Result['getProps'] = createHooks(getProps);
-
-  // @ts-ignore
   const useValue: Result['getValue'] = createHooks(getValue);
 
   const useLoading: Result['getLoading'] = createHooks(getLoading);
@@ -332,6 +252,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
   const useFetchTime: Result['getFetchTime'] = createHooks(getFetchTime);
 
   return {
+    private_getState_just_for_test: private_store.private_getState,
     private_setState_just_for_test: private_store.private_setState,
     set,
     reset,
@@ -341,14 +262,10 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     getLoading,
     getError,
     getFetchTime,
-    getProps,
-    connectWith,
-    connect,
     useValue,
     useLoading,
     useError,
     useFetchTime,
-    useProps,
   };
 }
 

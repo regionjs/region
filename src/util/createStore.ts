@@ -5,26 +5,32 @@ const decrease = (v: number = 0) => v - 1 > 0 ? v - 1 : 0;
 
 type Listener = () => void;
 
-export const createStore = <T>() => {
+export const createStore = <V>() => {
+  type T = {[key: string]: V };
   let state: State<T> = {};
   const listeners: Listener[] = [];
 
-  const ensure = <K extends keyof T>(key: K) => {
+  const ensure = (key: string): void => {
     if (!state[key]) {
       state[key] = {};
     }
   };
 
-  const emit = () => {
+  const emit = (): void => {
     listeners.forEach(listener => listener());
   };
 
   // only used for test
-  const private_setState = (value: State<T>) => {
+  const private_getState = (): State<T> => {
+    return state;
+  };
+
+  // only used for test
+  const private_setState = (value: State<T>): void => {
     state = value;
   };
 
-  const getAttribute = <K extends keyof T, A extends keyof Props<T[K]>>(key: K, attribute: A): Props<T[K]>[A] => {
+  const getAttribute = <A extends keyof Props<V>>(key: string, attribute: A): Props<V>[A] => {
     const props = state[key];
     if (!props) {
       return undefined;
@@ -32,40 +38,38 @@ export const createStore = <T>() => {
     return props[attribute];
   };
 
-  const load = <K extends keyof T, TResult>(payload: LoadPayload<K, TResult>) => {
+  const load = <TResult>(payload: LoadPayload<TResult>): void => {
     const { key, promise } = payload;
 
     ensure(key);
 
     // since it is ensured
-    const props = state[key] as Props<T[K]>;
+    const props = state[key] as Props<V>;
 
     props.promise = promise;
     props.loading = increase(props.loading);
     emit();
-    return state;
   };
 
-  const loadEnd = <K extends keyof T, TResult>(payload: {key: K}) => {
+  const loadEnd = (payload: {key: string}): void => {
     const { key } = payload;
 
     ensure(key);
 
     // since it is ensured
-    const props = state[key] as Props<T[K]>;
+    const props = state[key] as Props<V>;
 
     props.loading = decrease(props.loading);
     emit();
-    return state;
   };
 
-  const set = <K extends keyof T>(payload: Payload<T, K>) => {
+  const set = (payload: Payload<V>): void => {
     const { key, result, error } = payload;
 
     ensure(key);
 
     // since it is ensured
-    const props = state[key] as Props<T[K]>;
+    const props = state[key] as Props<V>;
 
     const snapshot = props.result;
     const formatResult = typeof result === 'function' ? result(snapshot) : result;
@@ -76,23 +80,22 @@ export const createStore = <T>() => {
     props.error = error; // as well error ===  undefined
 
     if (error) {
-      console.error(error.message);
+      console.error(error);
     }
     emit();
-    return state;
   };
 
-  const reset = () => {
+  const reset = (): void => {
     state = {};
     emit();
   };
 
-  const subscribe = (listener: Listener) => {
+  const subscribe = (listener: Listener): () => void => {
     listeners.push(listener);
     return () => {
       listeners.splice(listeners.indexOf(listener), 1);
     };
   };
 
-  return { getAttribute, private_setState, load, loadEnd, set, reset, subscribe };
+  return { private_getState, private_setState, getAttribute, load, loadEnd, set, reset, subscribe };
 };

@@ -3,13 +3,13 @@ import { createStore } from '..';
 
 mockDate();
 
-const store = createStore<{user: any}>();
+const store = createStore<any>();
 
 describe('createStore', () => {
   test('set string', () => {
     const result = 'a user';
-    const state = store.set({ key: 'user', result });
-    expect(state).toEqual({
+    store.set({ key: 'user', result });
+    expect(store.private_getState()).toEqual({
       user: {
         error: undefined,
         fetchTime: 0,
@@ -21,8 +21,8 @@ describe('createStore', () => {
 
   test('set array', () => {
     const result = [{ id: 1, name: 'zhangcong' }, { id: 2, name: 'milly' }];
-    const state = store.set({ key: 'user', result });
-    expect(state).toEqual({
+    store.set({ key: 'user', result });
+    expect(store.private_getState()).toEqual({
       user: {
         error: undefined,
         fetchTime: 0,
@@ -34,8 +34,8 @@ describe('createStore', () => {
 
   test('function', () => {
     const result = () => 'should be string';
-    const state = store.set({ key: 'user', result });
-    expect(state).toEqual({
+    store.set({ key: 'user', result });
+    expect(store.private_getState()).toEqual({
       user: {
         error: undefined,
         fetchTime: 0,
@@ -47,8 +47,8 @@ describe('createStore', () => {
 
   test('error', () => {
     const error = new Error('error');
-    const state = store.set({ key: 'user', error });
-    expect(state).toEqual({
+    store.set({ key: 'user', error });
+    expect(store.private_getState()).toEqual({
       user: {
         error,
         fetchTime: 0,
@@ -63,8 +63,8 @@ describe('createStore', () => {
     const error = new Error('error');
     store.set({ key: 'user', result });
     // actually region-core will do
-    const stateWithError = store.set({ key: 'user', result, error });
-    expect(stateWithError).toEqual({
+    store.set({ key: 'user', result, error });
+    expect(store.private_getState()).toEqual({
       user: {
         error,
         fetchTime: 0,

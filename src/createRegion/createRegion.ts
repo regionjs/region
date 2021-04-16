@@ -1,4 +1,3 @@
-import { FC } from 'react';
 import createMappedRegion, { CreateMappedRegionPureReturnValue } from '../createMappedRegion';
 import {
   AsyncFunctionOrPromise,
@@ -10,7 +9,6 @@ import {
   ResultFunc,
   ResultFuncPure,
 } from '../types';
-import { hoc } from './hoc';
 
 export interface CreateRegionReturnValue<V> {
   set: (resultOrFunc: V | ResultFunc<V>) => V;
@@ -29,13 +27,10 @@ export interface CreateRegionReturnValue<V> {
   getLoading: () => boolean;
   getError: () => Error | undefined;
   getFetchTime: () => number | undefined;
-  getProps: () => any;
-  connect: (Component: any, alias?: string) => FC<any>;
   useValue: () => V | undefined;
   useLoading: () => boolean;
   useError: () => Error | undefined;
   useFetchTime: () => number | undefined;
-  useProps: () => any;
 }
 
 export interface CreateRegionPureReturnValue<V> extends Omit<CreateRegionReturnValue<V>, 'set' | 'load' | 'loadBy' | 'getValue' | 'useValue'> {
@@ -87,10 +82,6 @@ function createRegion <V>(initialValue: void | V | undefined, option?: RegionOpt
     return region.loadBy('value', asyncFunction, option, exOption);
   };
 
-  const getProps = () => {
-    return region.getProps('value');
-  };
-
   const getValue = () => {
     return region.getValue('value');
   };
@@ -105,10 +96,6 @@ function createRegion <V>(initialValue: void | V | undefined, option?: RegionOpt
 
   const getFetchTime = () => {
     return region.getFetchTime('value');
-  };
-
-  const useProps = () => {
-    return region.useProps('value');
   };
 
   const useValue = () => {
@@ -127,10 +114,6 @@ function createRegion <V>(initialValue: void | V | undefined, option?: RegionOpt
     return region.useFetchTime('value');
   };
 
-  const connect = (Component: any, alias: string = 'value') => {
-    return hoc({ Component, alias, useProps });
-  };
-
   return {
     set,
     reset,
@@ -140,13 +123,10 @@ function createRegion <V>(initialValue: void | V | undefined, option?: RegionOpt
     getLoading,
     getError,
     getFetchTime,
-    getProps,
-    connect,
     useValue,
     useLoading,
     useError,
     useFetchTime,
-    useProps,
   };
 }
 
