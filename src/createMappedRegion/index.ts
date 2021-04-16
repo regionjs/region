@@ -1,7 +1,5 @@
 import { FC, useMemo } from 'react';
 import { useSubscription } from 'use-subscription';
-// tslint:disable-next-line:import-name
-import * as shallowEqual from 'shallowequal';
 import * as jsonStableStringify from 'json-stable-stringify';
 import {
   isAsync,
@@ -52,8 +50,6 @@ const getCombinedOption = <TParams, TResult, V>(
 };
 
 const Empty = () => null;
-
-const strictEqual = (a: any, b: any) => a === b;
 
 const getSetResult = <V>(resultOrFunc: V | ResultFuncPure<V>, snapshot: V) => {
   if (typeof resultOrFunc === 'function') {
@@ -233,6 +229,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
   const getValue: Result['getValue'] = (key) => {
     if (Array.isArray(key)) {
       return key.map((k: K) => {
+        deprecate('getValue & useValue with array of keys is deprecated. ');
         const keyString = getKeyString(k);
         const value = private_store.getAttribute(keyString, 'result');
         return getValueOrInitialValue(value);
@@ -245,6 +242,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
 
   const getLoading: Result['getLoading'] = (key) => {
     if (Array.isArray(key)) {
+      deprecate('getLoading & useLoading with array of keys is deprecated. ');
       return selectLoading(key.map((k: K) => {
         const keyString = getKeyString(k);
         return private_store.getAttribute(keyString, 'loading');
@@ -256,6 +254,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
 
   const getError: Result['getError'] = (key) => {
     if (Array.isArray(key)) {
+      deprecate('getError & useError with array of keys is deprecated. ');
       return selectError(key.map((k: K) => {
         const keyString = getKeyString(k);
         return private_store.getAttribute(keyString, 'error');
@@ -267,6 +266,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
 
   const getFetchTime: Result['getFetchTime'] = (key) => {
     if (Array.isArray(key)) {
+      deprecate('getFetchTime & useFetchTime with array of keys is deprecated. ');
       return selectFetchTime(key.map((k: K) => {
         const keyString = getKeyString(k);
         return private_store.getAttribute(keyString, 'fetchTime');
@@ -278,6 +278,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
 
   /** @deprecated */
   const getProps: Result['getProps'] = (key) => {
+    deprecate('getProps & useProps is deprecated, use getValue & useValue instead. ');
     const resultMap: {[key: string]: V} = {};
     const result: V | V[] = getValue(key as K);
     if (Array.isArray(key)) {

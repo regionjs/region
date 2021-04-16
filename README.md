@@ -49,7 +49,6 @@ const Component = () => {
   const loading = region.useLoading();
   const error = region.useError();
   const fetchTime = region.useFetchTime();
-  const { loading, error, fetchTime, value } = region.useProps();
 
   return <div>{value}</div>;
 }

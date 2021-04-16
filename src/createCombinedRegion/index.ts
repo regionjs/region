@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, FC } from 'react';
 // tslint:disable-next-line:import-name
-import * as shallowEqual from 'shallowequal';
+import * as shallowEqual from 'shallowequal'; // TODO remove shallowequal in region-core@11
 import {
   selectPayload,
   isAsync,

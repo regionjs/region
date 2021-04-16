@@ -1,5 +1,13 @@
 # CHANGELOG
 
+### 10.x
+
+- deprecate `getProps` & `useProps`
+
+- deprecate `createCombinedRegion`
+
+- deprecate `getValue` & `useValue` with array of keys
+
 ### 10.0
 
 - remove `map` and `id` and surrounded apis.
