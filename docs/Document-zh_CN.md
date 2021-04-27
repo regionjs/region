@@ -72,7 +72,7 @@ loadUser({userId: 1});
 
 ### hooks
 
-包括 `useValue`, `useLoading`, `useError`, `useFetchTime`, `useProps`
+包括 `useValue`, `useLoading`, `useError`, `useFetchTime`
 
 ```javascript
 const Component = () => {
@@ -80,7 +80,6 @@ const Component = () => {
   const loading = region.useLoading();
   const error = region.useError();
   const fetchTime = region.useFetchTime();
-  const { loading, error, fetchTime, value } = region.useProps();
   
   return <div>{value}</div>
 }
@@ -90,7 +89,7 @@ const Component = () => {
 
 ### get 方法
 
-包括 `getValue`, `getLoading`, `getError`, `getFetchTime`, `getProps`
+包括 `getValue`, `getLoading`, `getError`, `getFetchTime`
 
 ```javascript
 const handler = () => {
@@ -98,7 +97,6 @@ const handler = () => {
   const loading = region.getLoading();
   const error = region.getError();
   const fetchTime = region.getFetchTime();
-  const { loading, error, fetchTime, value } = region.getProps();
   // do something
 }
 ```
@@ -115,4 +113,4 @@ const handler = () => {
 
 `MappedRegion` 可以让你以 key-value 的形式管理数据。
 
-前往 [examples](https://regionjs.github.io/region-core/#SWR) 获得更多信息。
+前往 [examples](https://regionjs.github.io/region-core/#MappedRegion) 获得更多信息。

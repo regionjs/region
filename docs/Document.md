@@ -72,7 +72,7 @@ loadUser({userId: 1});
 
 ### hooks
 
-Includes `useValue`, `useLoading`, `useError`, `useFetchTime`, `useProps`
+Includes `useValue`, `useLoading`, `useError`, `useFetchTime`
 
 ```javascript
 const Component = () => {
@@ -80,7 +80,6 @@ const Component = () => {
   const loading = region.useLoading();
   const error = region.useError();
   const fetchTime = region.useFetchTime();
-  const { loading, error, fetchTime, value } = region.useProps();
   
   return <div>{value}</div>
 }
@@ -90,7 +89,7 @@ Go to [examples](https://regionjs.github.io/region-core/#UseValue) for more.
 
 ### get methods
 
-Includes `getValue`, `getLoading`, `getError`, `getFetchTime`, `getProps`
+Includes `getValue`, `getLoading`, `getError`, `getFetchTime`
 
 ```javascript
 const handler = () => {
@@ -98,7 +97,6 @@ const handler = () => {
   const loading = region.getLoading();
   const error = region.getError();
   const fetchTime = region.getFetchTime();
-  const { loading, error, fetchTime, value } = region.getProps();
   // do something
 }
 ```
@@ -115,4 +113,4 @@ Go to [examples](https://regionjs.github.io/region-core/#ClassComponent) for mor
 
 A `MappedRegion` provides a key-value way of managing your data.
 
-Go to [examples](https://regionjs.github.io/region-core/#SWR) for more.
+Go to [examples](https://regionjs.github.io/region-core/#MappedRegion) for more.

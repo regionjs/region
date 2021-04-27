@@ -1,5 +1,9 @@
 # CHANGELOG
 
+### 11.0
+
+- remove `createCombinedRegion`, `getProps`, `useProps`, and `getValue` & `useValue` with array of keys
+
 ### 10.x
 
 - deprecate `getProps` & `useProps`

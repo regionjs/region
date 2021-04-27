@@ -6,6 +6,10 @@ First of all, you should ensure no deprecated warning before migrate. Then read 
 
 If you meet some problem not listed, please raise an issue.
 
+## Migrate From 10.x to 11.x
+
+remove deprecated functions.
+
 ## Migrate From 9.x to 10.x
 
 remove deprecated functions.
