@@ -1,6 +1,6 @@
 import { region } from './region';
 
-const { set, reset, load } = region;
+const { set, reset, resetAll, load, getValue } = region;
 
 describe('set', () => {
   test('string', () => {
@@ -21,8 +21,26 @@ describe('set', () => {
   });
 
   test('reset', () => {
-    const result = reset();
+    const result = reset('user');
     expect(result).toBe(undefined);
+  });
+
+  test('resetAll', () => {
+    set('user1', 'a user');
+    set('user2', 'another user');
+
+    expect(getValue('user1')).toBe('a user');
+    expect(getValue('user2')).toBe('another user');
+
+    reset('user1');
+
+    expect(getValue('user1')).toBe(undefined);
+    expect(getValue('user2')).toBe('another user');
+
+    resetAll();
+
+    expect(getValue('user1')).toBe(undefined);
+    expect(getValue('user2')).toBe(undefined);
   });
 });
 
@@ -66,5 +84,31 @@ describe('load', () => {
   test('params can be array', async () => {
     const result = await load('array', (array: any) => Promise.resolve(array.length) , { params: [0, 1] });
     expect(result).toBe(2);
+  });
+});
+
+describe('getReducedValue', () => {
+  test('getProps', () => {
+    const reducer = (state: any, params: string) => {
+      const { value, pendingMutex } = state[params] ?? {};
+      return { loading: pendingMutex !== 0, value };
+    };
+    expect(region.getReducedValue('uniq1', reducer)).toEqual({ value: undefined, loading: true });
+
+    region.set('uniq1', 1);
+    expect(region.getReducedValue('uniq1', reducer)).toEqual({ value: 1, loading: false });
+  });
+
+  test('getListValue', () => {
+    const reducer = (state: any, params: string[]) => {
+      return params.map(key => (state[key] ?? {}).value);
+    };
+    expect(region.getReducedValue(['a', 'b'], reducer)).toEqual([undefined, undefined]);
+
+    region.set('a', 1);
+    region.set('b', 2);
+    region.set('c', 3);
+
+    expect(region.getReducedValue(['a', 'b'], reducer)).toEqual([1, 2]);
   });
 });

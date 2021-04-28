@@ -64,7 +64,9 @@ function createRegion <V>(initialValue: void | V | undefined, option?: RegionOpt
     return region.set('value', resultOrFunc);
   };
 
-  const reset = region.reset;
+  const reset = () => {
+    return region.reset('value');
+  };
 
   const load = <TParams = void, TResult = unknown>(
     asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,

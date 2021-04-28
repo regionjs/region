@@ -5,7 +5,7 @@ const {
   getValue,
   getFetchTime,
   getError,
-  private_setState_just_for_test: private_setState,
+  private_setState_just_for_test,
 } = region;
 
 describe('get', () => {
@@ -19,7 +19,7 @@ describe('get', () => {
   });
 
   test('get things from initial state', () => {
-    private_setState({});
+    private_setState_just_for_test({});
     expect(getLoading('a')).toEqual(true);
     expect(getValue('a')).toEqual(undefined);
     expect(getError('a')).toEqual(undefined);
@@ -27,8 +27,8 @@ describe('get', () => {
   });
 
   test('get things from start loading', () => {
-    private_setState({
-      a: { loading: 1 },
+    private_setState_just_for_test({
+      a: { pendingMutex: 1 },
     });
     expect(getLoading('a')).toEqual(true);
     expect(getValue('a')).toEqual(undefined);
@@ -37,19 +37,19 @@ describe('get', () => {
   });
 
   test('treat undefined', () => {
-    private_setState({
-      a: { loading: 1 },
+    private_setState_just_for_test({
+      a: { pendingMutex: 1 },
     });
     expect(getLoading('a')).toEqual(true);
     expect(getLoading('b')).toEqual(true);
   });
 
   test('get things from stop loading', () => {
-    private_setState({
+    private_setState_just_for_test({
       a: {
-        loading: 0,
+        pendingMutex: 0,
         fetchTime: 999,
-        result: { name: '66', type: 'cat' },
+        value: { name: '66', type: 'cat' },
       },
     });
     expect(getLoading('a')).toEqual(false);
@@ -64,9 +64,9 @@ describe('get', () => {
   });
 
   test('getLoadings from all resolved', () => {
-    private_setState({
-      a: { loading: 0 },
-      b: { loading: 0 },
+    private_setState_just_for_test({
+      a: { pendingMutex: 0 },
+      b: { pendingMutex: 0 },
     });
     expect(getLoading('a')).toEqual(false);
     expect(getLoading('b')).toEqual(false);
@@ -74,13 +74,13 @@ describe('get', () => {
 
   test('getErrors', () => {
     const errorA = new Error('error a');
-    private_setState({
+    private_setState_just_for_test({
       a: {
-        loading: 0,
+        pendingMutex: 0,
         error: errorA,
       },
       b: {
-        loading: 0,
+        pendingMutex: 0,
         error: undefined,
       },
     });
@@ -88,13 +88,13 @@ describe('get', () => {
     expect(getError('b')).toEqual(undefined);
 
     const errorB = new Error('error b');
-    private_setState({
+    private_setState_just_for_test({
       a: {
-        loading: 0,
+        pendingMutex: 0,
         error: errorA,
       },
       b: {
-        loading: 0,
+        pendingMutex: 0,
         error: errorB,
       },
     });

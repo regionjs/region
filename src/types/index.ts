@@ -50,14 +50,13 @@ export interface Payload<V> {
 }
 
 // internal
+export type Listener = () => void;
+
 export interface Props<V> {
-  loading?: number;
-  result?: V;
+  pendingMutex?: number;
+  value?: V;
   promise?: Promise<unknown>;
   error?: unknown;
   fetchTime?: number;
+  listeners?: Listener[];
 }
-
-export type State<T> = {
-  [P in keyof T]?: Props<T[P]>;
-};

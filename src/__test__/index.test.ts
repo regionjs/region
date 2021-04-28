@@ -43,9 +43,9 @@ describe('export api', () => {
   test('createMappedRegion contains many api', () => {
     const { createMappedRegion } = api;
     const {
-      set, reset, load, loadBy,
-      getValue, getLoading, getError, getFetchTime,
-      useValue, useLoading, useError, useFetchTime,
+      set, reset, resetAll, load, loadBy,
+      getValue, getLoading, getError, getFetchTime, getReducedValue,
+      useValue, useLoading, useError, useFetchTime, useReducedValue,
       private_getState_just_for_test, private_setState_just_for_test,
       ...rest
     } = createMappedRegion();

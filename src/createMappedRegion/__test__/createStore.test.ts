@@ -11,8 +11,8 @@ describe('createStore', () => {
       user: {
         error: undefined,
         fetchTime: 0,
-        loading: 0,
-        result: 'a user',
+        pendingMutex: 0,
+        value: 'a user',
       },
     });
   });
@@ -24,8 +24,8 @@ describe('createStore', () => {
       user: {
         error: undefined,
         fetchTime: 0,
-        loading: 0,
-        result: [{ id: 1, name: 'zhangcong' }, { id: 2, name: 'milly' }],
+        pendingMutex: 0,
+        value: [{ id: 1, name: 'zhangcong' }, { id: 2, name: 'milly' }],
       },
     });
   });
@@ -37,8 +37,8 @@ describe('createStore', () => {
       user: {
         error: undefined,
         fetchTime: 0,
-        loading: 0,
-        result: 'should be string',
+        pendingMutex: 0,
+        value: 'should be string',
       },
     });
   });
@@ -52,8 +52,8 @@ describe('createStore', () => {
           user: {
             error,
             fetchTime: 0,
-            loading: 0,
-            result: undefined,
+            pendingMutex: 0,
+            value: undefined,
           },
         });
       },
@@ -72,8 +72,8 @@ describe('createStore', () => {
           user: {
             error,
             fetchTime: 0,
-            loading: 0,
-            result: 'a user',
+            pendingMutex: 0,
+            value: 'a user',
           },
         });
       },
