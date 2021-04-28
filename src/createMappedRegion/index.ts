@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useSubscription } from 'use-subscription';
 import * as jsonStableStringify from 'json-stable-stringify';
-import { isAsync, createStore } from '../util';
+import { isAsync } from '../util';
 import {
   ResultFunc,
   ResultFuncPure,
@@ -11,7 +11,15 @@ import {
   AsyncFunction,
   Strategy,
   RegionOption,
+  Props,
+  LoadPayload,
+  Payload,
 } from '../types';
+
+const increase = (v: number = 0) => v + 1;
+const decrease = (v: number = 0) => v - 1 > 0 ? v - 1 : 0;
+
+type Listener = () => void;
 
 interface ToPromiseParams<TParams, V> {
   asyncFunction: AsyncFunctionOrPromise<TParams, V>;
@@ -114,7 +122,102 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
 
   const strategy: Strategy = option?.strategy ?? 'acceptLatest';
 
-  const private_store = createStore<V>();
+  // const private_store = createStore<V>();
+
+  /* -------- */
+  interface PrivateStoreState {
+    [key: string]: Props<V>;
+  }
+  let state: PrivateStoreState = {};
+  const listeners: Listener[] = [];
+
+  const private_store_ensure = (key: string): void => {
+    if (!state[key]) {
+      state[key] = {};
+    }
+  };
+
+  const private_store_emit = (): void => {
+    listeners.forEach(listener => listener());
+  };
+
+  // only used for test
+  const private_store_getState = (): PrivateStoreState => {
+    return state;
+  };
+
+  // only used for test
+  const private_store_setState = (value: PrivateStoreState): void => {
+    state = value;
+  };
+
+  const private_store_getAttribute = <A extends keyof Props<V>>(key: string, attribute: A): Props<V>[A] => {
+    const props = state[key];
+    if (!props) {
+      return undefined;
+    }
+    return props[attribute];
+  };
+
+  const private_store_load = <TResult>(payload: LoadPayload<TResult>): void => {
+    const { key, promise } = payload;
+
+    private_store_ensure(key);
+
+    // since it is ensured
+    const props = state[key] as Props<V>;
+
+    props.promise = promise;
+    props.loading = increase(props.loading);
+    private_store_emit();
+  };
+
+  const private_store_loadEnd = (payload: {key: string}): void => {
+    const { key } = payload;
+
+    private_store_ensure(key);
+
+    // since it is ensured
+    const props = state[key] as Props<V>;
+
+    props.loading = decrease(props.loading);
+    private_store_emit();
+  };
+
+  const private_store_set = (payload: Payload<V>): void => {
+    const { key, result, error } = payload;
+
+    private_store_ensure(key);
+
+    // since it is ensured
+    const props = state[key] as Props<V>;
+
+    const snapshot = props.result;
+    const formatResult = typeof result === 'function' ? result(snapshot) : result;
+    props.loading = decrease(props.loading);
+    const fetchTime = new Date().getTime();
+    props.fetchTime = fetchTime;
+    props.result = formatResult;
+    props.error = error; // as well error ===  undefined
+
+    if (error) {
+      console.error(error);
+    }
+    private_store_emit();
+  };
+
+  const private_store_reset = (): void => {
+    state = {};
+    private_store_emit();
+  };
+
+  const private_store_subscribe = (listener: Listener): () => void => {
+    listeners.push(listener);
+    return () => {
+      listeners.splice(listeners.indexOf(listener), 1);
+    };
+  };
+  /* -------- */
 
   const getKeyString = (key: K): string => {
     if (typeof key === 'string') {
@@ -135,7 +238,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
       const subscription = useMemo(
         () => ({
           getCurrentValue: () => getFn(key),
-          subscribe: private_store.subscribe,
+          subscribe: private_store_subscribe,
         }),
         // shallow-equal
         [getFn, getKeyString(key)],
@@ -148,14 +251,14 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
   const set: Result['set'] = (key, resultOrFunc) => {
     const keyString = getKeyString(key);
     // Maybe we can use getValue here
-    const maybeSnapshot = private_store.getAttribute(keyString, 'result');
+    const maybeSnapshot = private_store_getAttribute(keyString, 'result');
     const snapshot = getValueOrInitialValue(maybeSnapshot);
     const result = getSetResult(resultOrFunc, snapshot);
-    private_store.set({ key: keyString, result });
+    private_store_set({ key: keyString, result });
     return result;
   };
 
-  const reset: Result['reset'] = private_store.reset;
+  const reset: Result['reset'] = private_store_reset;
 
   const load: Result['load'] = async (
     key,
@@ -186,7 +289,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
       const loadKey = typeof key === 'function' ? (key as Function)(params) : key;
       const keyString = getKeyString(loadKey);
       const promise = toPromise({ asyncFunction, params });
-      private_store.load({ key: keyString, promise });
+      private_store_load({ key: keyString, promise });
       /**
        * note
        * 1. always get value after await, so it is the current one
@@ -194,29 +297,29 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
        */
       try {
         const result = await promise;
-        const currentPromise = private_store.getAttribute(keyString, 'promise');
-        const snapshot = private_store.getAttribute(keyString, 'result');
+        const currentPromise = private_store_getAttribute(keyString, 'promise');
+        const snapshot = private_store_getAttribute(keyString, 'result');
 
         const formattedResult = typeof option.reducer === 'function'
           ? option.reducer(getValueOrInitialValue(snapshot), result, params)
           : result as unknown as V;
         if (strategy === 'acceptLatest' && promise !== currentPromise) {
           // decrease loading & return snapshot
-          private_store.loadEnd({ key: keyString });
+          private_store_loadEnd({ key: keyString });
           return getValueOrInitialValue(snapshot);
         }
-        private_store.set({ key: keyString, result: formattedResult });
+        private_store_set({ key: keyString, result: formattedResult });
         return getValueOrInitialValue(formattedResult);
       } catch (error) {
-        const currentPromise = private_store.getAttribute(keyString, 'promise');
-        const snapshot = private_store.getAttribute(keyString, 'result');
+        const currentPromise = private_store_getAttribute(keyString, 'promise');
+        const snapshot = private_store_getAttribute(keyString, 'result');
 
         if (strategy === 'acceptLatest' && promise !== currentPromise) {
           // decrease loading & return snapshot
-          private_store.loadEnd({ key: keyString });
+          private_store_loadEnd({ key: keyString });
           return getValueOrInitialValue(snapshot);
         }
-        private_store.set({ key: keyString, result: snapshot, error });
+        private_store_set({ key: keyString, result: snapshot, error });
         return getValueOrInitialValue(snapshot);
       }
     };
@@ -224,23 +327,23 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
 
   const getValue: Result['getValue'] = (key) => {
     const keyString = getKeyString(key);
-    const value = private_store.getAttribute(keyString, 'result');
+    const value = private_store_getAttribute(keyString, 'result');
     return getValueOrInitialValue(value);
   };
 
   const getLoading: Result['getLoading'] = (key) => {
     const keyString = getKeyString(key);
-    return formatLoading(private_store.getAttribute(keyString, 'loading'));
+    return formatLoading(private_store_getAttribute(keyString, 'loading'));
   };
 
   const getError: Result['getError'] = (key) => {
     const keyString = getKeyString(key);
-    return formatError(private_store.getAttribute(keyString, 'error'));
+    return formatError(private_store_getAttribute(keyString, 'error'));
   };
 
   const getFetchTime: Result['getFetchTime'] = (key) => {
     const keyString = getKeyString(key);
-    return private_store.getAttribute(keyString, 'fetchTime');
+    return private_store_getAttribute(keyString, 'fetchTime');
   };
 
   const useValue: Result['getValue'] = createHooks(getValue);
@@ -252,8 +355,8 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
   const useFetchTime: Result['getFetchTime'] = createHooks(getFetchTime);
 
   return {
-    private_getState_just_for_test: private_store.private_getState,
-    private_setState_just_for_test: private_store.private_setState,
+    private_getState_just_for_test: private_store_getState,
+    private_setState_just_for_test: private_store_setState,
     set,
     reset,
     load,
