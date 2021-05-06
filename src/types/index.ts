@@ -11,7 +11,7 @@ export type ResultFunc<V> = (snapshot?: V) => V;
 export type ResultFuncPure<V> = (snapshot: V) => V;
 
 // load
-export type AsyncFunction<TParams, TResult> = (params: TParams) => Promise<TResult>;
+type AsyncFunction<TParams, TResult> = (params: TParams) => Promise<TResult>;
 // actually we supports Promise<TResult> | TResult, but it is not supported in Type
 export type AsyncFunctionOrPromise<TParams, TResult> = AsyncFunction<TParams, TResult>;
 

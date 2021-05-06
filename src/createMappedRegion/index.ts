@@ -8,17 +8,14 @@ import {
   AsyncFunctionOrPromise,
   LoadOption,
   OptionOrReducer,
-  AsyncFunction,
   Strategy,
   RegionOption,
   Listener,
   Props,
-  LoadPayload,
-  Payload,
 } from '../types';
 
-const increase = (v: number = 0) => v + 1;
-const decrease = (v: number = 0) => v - 1 > 0 ? v - 1 : 0;
+const increase = (v: number = 0) => (v + 1);
+const decrease = (v: number = 0) => (v - 1 > 0 ? v - 1 : 0);
 
 interface ToPromiseParams<TParams, V> {
   asyncFunction: AsyncFunctionOrPromise<TParams, V>;
@@ -27,7 +24,7 @@ interface ToPromiseParams<TParams, V> {
 
 const toPromise = async <TParams, V>({ asyncFunction, params }: ToPromiseParams<TParams, V>) => {
   if (typeof asyncFunction === 'function') {
-    return (asyncFunction as AsyncFunction<TParams, V>)(params);
+    return asyncFunction(params);
   }
   // promise
   return asyncFunction;
@@ -181,28 +178,30 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     private_store_ensure(key);
 
     // since it is ensured
-    const props = private_state[key] as Props<V>;
+    const props = private_state[key];
 
     props.promise = promise;
     props.pendingMutex = increase(props.pendingMutex);
     private_store_emit(key);
+    private_store_emitAll();
   };
 
   const private_store_loadEnd = (key: string): void => {
     private_store_ensure(key);
 
     // since it is ensured
-    const props = private_state[key] as Props<V>;
+    const props = private_state[key];
 
     props.pendingMutex = decrease(props.pendingMutex);
     private_store_emit(key);
+    private_store_emitAll();
   };
 
   const private_store_set = (key: string, value: V): void => {
     private_store_ensure(key);
 
     // since it is ensured
-    const props = private_state[key] as Props<V>;
+    const props = private_state[key];
 
     const snapshot = props.value;
     const formatValue = typeof value === 'function' ? value(snapshot) : value;
@@ -213,13 +212,14 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     props.error = undefined; // reset error
 
     private_store_emit(key);
+    private_store_emitAll();
   };
 
   const private_store_setError = (key: string, error: unknown): void => {
     private_store_ensure(key);
 
     // since it is ensured
-    const props = private_state[key] as Props<V>;
+    const props = private_state[key];
 
     props.pendingMutex = decrease(props.pendingMutex);
     props.error = error;
@@ -228,15 +228,20 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
       console.error(error);
     }
     private_store_emit(key);
+    private_store_emitAll();
   };
 
   const private_store_reset = (key: string): void => {
-    delete private_state[key];
+    private_state[key] = { listeners: private_state[key].listeners };
     private_store_emit(key);
+    private_store_emitAll();
   };
 
   const private_store_resetAll = (): void => {
-    private_state = {};
+    Object.keys(private_state).forEach((key: string) => {
+      private_state[key] = { listeners: private_state[key].listeners };
+      private_store_emit(key);
+    });
     private_store_emitAll();
   };
 
@@ -245,17 +250,22 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     private_store_ensure(key);
 
     // since it is ensured
-    const props = private_state[key] as Props<V>;
+    const props = private_state[key];
 
     if (!props.listeners) {
       props.listeners = [];
     }
 
-    const { listeners } = props;
-
-    listeners.push(listener);
+    props.listeners.push(listener);
     return () => {
-      listeners.splice(listeners.indexOf(listener), 1);
+      private_store_ensure(key);
+
+      // since it is ensured
+      const props = private_state[key];
+      if (!props.listeners) {
+        props.listeners = [];
+      }
+      props.listeners.splice(props.listeners.indexOf(listener), 1);
     };
   };
 
@@ -310,23 +320,6 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
   //
   // const emitAll: Result['emitAll'] = private_store_emitAll;
 
-  const load: Result['load'] = async (
-    key,
-    asyncFunction,
-    optionOrReducer,
-    exOption,
-  ) => {
-    const option = getCombinedOption(optionOrReducer, exOption);
-    if (!isAsync(asyncFunction)) {
-      console.warn('set result directly');
-      const setKey = typeof key === 'function' ? (key as Function)(option.params) : key;
-      return set(setKey, asyncFunction as unknown as any);
-    }
-    // @ts-ignore
-    const params = option.params as TParams;
-    return loadBy(key, asyncFunction, option)(params);
-  };
-
   const loadBy: Result['loadBy'] = (
     key,
     asyncFunction,
@@ -373,6 +366,22 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         return getValueOrInitialValue(snapshot);
       }
     };
+  };
+
+  const load: Result['load'] = async (
+    key,
+    asyncFunction,
+    optionOrReducer,
+    exOption,
+  ) => {
+    const option = getCombinedOption(optionOrReducer, exOption);
+    if (!isAsync(asyncFunction)) {
+      console.warn('set result directly');
+      const setKey = typeof key === 'function' ? (key as Function)(option.params) : key;
+      return set(setKey, asyncFunction as unknown as any);
+    }
+    // @ts-ignore
+    return loadBy(key, asyncFunction, option)(option.params);
   };
 
   const getValue: Result['getValue'] = (key) => {
