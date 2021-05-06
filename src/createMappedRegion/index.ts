@@ -127,28 +127,24 @@ function createMappedRegion <K, V>(initialValue: void | undefined, option?: Regi
 function createMappedRegion <K, V>(initialValue: V, option?: RegionOption): CreateMappedRegionPureReturnValue<K, V>;
 // tslint:disable-next-line:max-line-length
 function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: RegionOption): CreateMappedRegionReturnValue<K, V> | CreateMappedRegionPureReturnValue<K, V> {
-  // ---- Utils ----
   type Result = CreateMappedRegionPureReturnValue<K, V>;
 
   const strategy: Strategy = option?.strategy ?? 'acceptLatest';
 
-  // const private_store = createStore<V>();
-
-  /* -------- */
   interface PrivateStoreState {
     [key: string]: Props<V>;
   }
-  let state: PrivateStoreState = {};
-  const listeners: Listener[] = [];
+  let private_state: PrivateStoreState = {};
+  const private_listeners: Listener[] = [];
 
   const private_store_ensure = (key: string): void => {
-    if (!state[key]) {
-      state[key] = {};
+    if (!private_state[key]) {
+      private_state[key] = {};
     }
   };
 
   const private_store_emit = (key: string): void => {
-    const props = state[key];
+    const props = private_state[key];
     if (!props) {
       return;
     }
@@ -160,21 +156,21 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
   };
 
   const private_store_emitAll = (): void => {
-    listeners.forEach(listener => listener());
+    private_listeners.forEach(listener => listener());
   };
 
   // only used for test
   const private_store_getState = (): PrivateStoreState => {
-    return state;
+    return private_state;
   };
 
   // only used for test
   const private_store_setState = (value: PrivateStoreState): void => {
-    state = value;
+    private_state = value;
   };
 
   const private_store_getAttribute = <A extends keyof Props<V>>(key: string, attribute: A): Props<V>[A] => {
-    const props = state[key];
+    const props = private_state[key];
     if (!props) {
       return undefined;
     }
@@ -185,7 +181,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     private_store_ensure(key);
 
     // since it is ensured
-    const props = state[key] as Props<V>;
+    const props = private_state[key] as Props<V>;
 
     props.promise = promise;
     props.pendingMutex = increase(props.pendingMutex);
@@ -196,7 +192,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     private_store_ensure(key);
 
     // since it is ensured
-    const props = state[key] as Props<V>;
+    const props = private_state[key] as Props<V>;
 
     props.pendingMutex = decrease(props.pendingMutex);
     private_store_emit(key);
@@ -206,7 +202,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     private_store_ensure(key);
 
     // since it is ensured
-    const props = state[key] as Props<V>;
+    const props = private_state[key] as Props<V>;
 
     const snapshot = props.value;
     const formatValue = typeof value === 'function' ? value(snapshot) : value;
@@ -223,7 +219,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     private_store_ensure(key);
 
     // since it is ensured
-    const props = state[key] as Props<V>;
+    const props = private_state[key] as Props<V>;
 
     props.pendingMutex = decrease(props.pendingMutex);
     props.error = error;
@@ -235,38 +231,38 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
   };
 
   const private_store_reset = (key: string): void => {
-    delete state[key];
+    delete private_state[key];
     private_store_emit(key);
   };
 
   const private_store_resetAll = (): void => {
-    state = {};
+    private_state = {};
     private_store_emitAll();
   };
 
+  // TODO add a regress test to prevent shadow variable usage of listeners
   const private_store_subscribe = (key: string, listener: Listener): () => void => {
     private_store_ensure(key);
 
     // since it is ensured
-    const props = state[key] as Props<V>;
+    const props = private_state[key] as Props<V>;
 
     if (!props.listeners) {
       props.listeners = [];
     }
 
-    props.listeners.push(listener);
+    const { listeners } = props;
+
+    listeners.push(listener);
     return () => {
-      if (!props.listeners) {
-        props.listeners = [];
-      }
-      props.listeners.splice(listeners.indexOf(listener), 1);
+      listeners.splice(listeners.indexOf(listener), 1);
     };
   };
 
   const private_store_subscribeAll = (listener: Listener): () => void => {
-    listeners.push(listener);
+    private_listeners.push(listener);
     return () => {
-      listeners.splice(listeners.indexOf(listener), 1);
+      private_listeners.splice(private_listeners.indexOf(listener), 1);
     };
   };
   /* -------- */
@@ -401,7 +397,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
   };
 
   const getReducedValue: Result['getReducedValue'] = (params, reducer) => {
-    return reducer(state, params);
+    return reducer(private_state, params);
   };
 
   const createHooks = <TReturnType>(getFn: (key: K) => TReturnType) => {
@@ -429,7 +425,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
   const useReducedValue: Result['useReducedValue'] = (params, reducer) => {
     const subscription = useMemo(
       () => ({
-        getCurrentValue: () => reducer(state, params),
+        getCurrentValue: () => reducer(private_state, params),
         subscribe: private_store_subscribeAll,
       }),
       // shallow-equal
