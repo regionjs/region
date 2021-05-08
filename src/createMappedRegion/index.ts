@@ -8,6 +8,8 @@ import {
   AsyncFunctionOrPromise,
   LoadOption,
   OptionOrReducer,
+  LoadOptionPure,
+  OptionOrReducerPure,
   Strategy,
   RegionOption,
   Listener,
@@ -43,9 +45,9 @@ const formatError = (error?: unknown): Error => {
 };
 
 const getCombinedOption = <TParams, TResult, V>(
-  optionOrReducer: OptionOrReducer<TParams, TResult, V> = {},
-  exOption?: LoadOption<TParams, TResult, V>,
-): LoadOption<TParams, TResult, V> => {
+  optionOrReducer: OptionOrReducerPure<TParams, TResult, V> = {},
+  exOption?: LoadOptionPure<TParams, TResult, V>,
+): LoadOptionPure<TParams, TResult, V> => {
   if (typeof optionOrReducer === 'function') {
     if (exOption) {
       return { reducer: optionOrReducer, ...exOption };
@@ -106,14 +108,14 @@ export interface CreateMappedRegionPureReturnValue<K, V>
   load: <TParams = void, TResult = unknown>(
     key: K | ((params: TParams) => K),
     asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
-    optionOrReducer?: OptionOrReducer<TParams, TResult, V>,
-    exOption?: LoadOption<TParams, TResult, V>,
+    optionOrReducer?: OptionOrReducerPure<TParams, TResult, V>,
+    exOption?: LoadOptionPure<TParams, TResult, V>,
   ) => Promise<V>;
   loadBy: <TParams = void, TResult = unknown>(
     key: K | ((params: TParams) => K),
     asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
-    optionOrReducer?: OptionOrReducer<TParams, TResult, V>,
-    exOption?: LoadOption<TParams, TResult, V>,
+    optionOrReducer?: OptionOrReducerPure<TParams, TResult, V>,
+    exOption?: LoadOptionPure<TParams, TResult, V>,
   ) => (params: TParams) => Promise<V>;
   getValue: (key: K) => V;
   useValue: (key: K) => V;
