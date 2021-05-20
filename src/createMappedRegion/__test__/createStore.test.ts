@@ -45,7 +45,7 @@ describe('createStore', () => {
 
   test('error', () => {
     const error = new Error('error');
-    region.load('user', () => Promise.reject(error));
+    region.loadBy('user', () => Promise.reject(error))();
     new Promise(resolve => setTimeout(resolve, 50)).then(
       () => {
         expect(region.private_getState_just_for_test()).toEqual({
@@ -65,7 +65,7 @@ describe('createStore', () => {
     const error = new Error('error');
     region.set('user', result);
     // actually region-core will do
-    region.load('user', () => Promise.reject(error));
+    region.loadBy('user', () => Promise.reject(error))();
     new Promise(resolve => setTimeout(resolve, 50)).then(
       () => {
         expect(region.private_getState_just_for_test()).toEqual({

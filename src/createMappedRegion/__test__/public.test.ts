@@ -1,6 +1,6 @@
 import { region } from './region';
 
-const { set, reset, resetAll, load, getValue } = region;
+const { set, reset, resetAll, loadBy, getValue } = region;
 
 describe('set', () => {
   test('string', () => {
@@ -47,42 +47,42 @@ describe('set', () => {
 describe('load', () => {
   test('fallback to set', async () => {
     // @ts-ignore
-    const result = await load('user', 'set a user');
+    const result = await loadBy('user', 'set a user')();
     expect(result).toBe('set a user');
   });
 
   test('promise', async () => {
     // @ts-ignore
-    const result = await load('user', Promise.resolve('a user'));
+    const result = await loadBy('user', Promise.resolve('a user'))();
     expect(result).toBe('a user');
   });
 
   test('asyncFunction', async () => {
-    const result = await load('user', () => Promise.resolve('another user'));
+    const result = await loadBy('user', () => Promise.resolve('another user'))();
     expect(result).toBe('another user');
   });
 
   test('format', async () => {
-    const result = await load('user', () => Promise.resolve('0'), (_: string, user: string) => `${user}1`);
+    const result = await loadBy('user', () => Promise.resolve('0'), (_: string, user: string) => `${user}1`)();
     expect(result).toBe('01');
   });
 
   test('format snapshot', async () => {
-    const result = await load(
+    const result = await loadBy(
       'user',
       () => Promise.resolve('2'),
       (snapshot: any, user: any) => `${snapshot}${user}3`,
-      );
+      )();
     expect(result).toBe('0123');
   });
 
   test('reject', async () => {
-    const result = await load('user', () => Promise.reject(new Error('2')));
+    const result = await loadBy('user', () => Promise.reject(new Error('2')))();
     expect(result).toBe('0123');
   });
 
   test('params can be array', async () => {
-    const result = await load('array', (array: any) => Promise.resolve(array.length) , { params: [0, 1] });
+    const result = await loadBy('array', (array: any) => Promise.resolve(array.length))([0, 1]);
     expect(result).toBe(2);
   });
 });

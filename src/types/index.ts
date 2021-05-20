@@ -15,8 +15,8 @@ type AsyncFunction<TParams, TResult> = (params: TParams) => Promise<TResult>;
 // actually we supports Promise<TResult> | TResult, but it is not supported in Type
 export type AsyncFunctionOrPromise<TParams, TResult> = AsyncFunction<TParams, TResult>;
 
-type Reducer<TParams, TResult, V> = (state: V | undefined, result: TResult, params: TParams) => V;
-type ReducerPure<TParams, TResult, V> = (state: V, result: TResult, params: TParams) => V;
+export type Reducer<TParams, TResult, V> = (state: V | undefined, result: TResult, params: TParams) => V;
+export type ReducerPure<TParams, TResult, V> = (state: V, result: TResult, params: TParams) => V;
 
 export interface LoadOption<TParams, TResult, V> {
   reducer?: Reducer<TParams, TResult, V>;

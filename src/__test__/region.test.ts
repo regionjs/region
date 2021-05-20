@@ -76,7 +76,7 @@ describe('createRegion', () => {
     const asyncFunction = () => Promise.resolve('Amy Hernandez');
 
     expect.assertions(1);
-    return region.load(asyncFunction).then(() => {
+    return region.loadBy(asyncFunction)().then(() => {
       expect(region.getValue()).toBe('Amy Hernandez');
     });
   });
@@ -86,7 +86,7 @@ describe('createRegion', () => {
     const asyncFunction = () => Promise.reject('Barbara Garcia');
 
     expect.assertions(2);
-    return region.load(asyncFunction).then(() => {
+    return region.loadBy(asyncFunction)().then(() => {
       expect(region.getValue()).toBe(undefined);
       expect(region.getError()).toStrictEqual(new Error('Barbara Garcia'));
     });
@@ -98,7 +98,7 @@ describe('createRegion', () => {
     const asyncFunction = () => Promise.reject(error);
 
     expect.assertions(2);
-    return region.load(asyncFunction).then(() => {
+    return region.loadBy(asyncFunction)().then(() => {
       expect(region.getValue()).toBe(undefined);
       expect(region.getError()).toStrictEqual(error);
     });
@@ -119,7 +119,7 @@ describe('createRegion', () => {
     const asyncFunction = (state: string) => Promise.resolve(`${state} & Robert Thomas`);
     const reducer = (state = '', result = '') => `${state} | ${result}`;
     const loadUser1 = region.loadBy(asyncFunction, reducer);
-    const loadUser2 = region.loadBy(asyncFunction, reducer, {});
+    const loadUser2 = region.loadBy(asyncFunction, reducer);
 
     expect.assertions(2);
     return loadUser1('Michael Lee').then(() => {
@@ -136,10 +136,10 @@ describe('createRegion', () => {
     const asyncFunction2 = () => Promise.reject('Susan Gonzalez');
 
     expect.assertions(4);
-    return region.load(asyncFunction).then(() => {
+    return region.loadBy(asyncFunction)().then(() => {
       expect(region.getValue()).toBe('Deborah Anderson');
       expect(region.getError()).toBe(undefined);
-      return region.load(asyncFunction2);
+      return region.loadBy(asyncFunction2)();
     }).then(() => {
       expect(region.getValue()).toBe('Deborah Anderson');
       expect(region.getError()).toStrictEqual(new Error('Susan Gonzalez'));
@@ -152,10 +152,10 @@ describe('createRegion', () => {
     const asyncFunction2 = () => Promise.resolve('Jason Lee');
 
     expect.assertions(4);
-    return region.load(asyncFunction).then(() => {
+    return region.loadBy(asyncFunction)().then(() => {
       expect(region.getValue()).toBe(undefined);
       expect(region.getError()).toStrictEqual(new Error('Christopher Hall'));
-      return region.load(asyncFunction2);
+      return region.loadBy(asyncFunction2)();
     }).then(() => {
       expect(region.getValue()).toBe('Jason Lee');
       expect(region.getError()).toBe(undefined);
@@ -167,9 +167,7 @@ describe('createRegion', () => {
     const asyncFunction = ({ id }: any) => Promise.resolve({ id, name: 'Robert Davis' });
 
     expect.assertions(1);
-    return region.load(asyncFunction, {
-      params: { id: '620000198705195453' },
-    }).then(() => {
+    return region.loadBy(asyncFunction)({ id: '620000198705195453' }).then(() => {
       expect(region.getValue()).toEqual({ id: '620000198705195453', name: 'Robert Davis' });
     });
   });
@@ -224,8 +222,8 @@ describe('createRegion', () => {
     const region = createRegion();
     const asyncFunction1 = () => new Promise(resolve => setTimeout(() => resolve('Sharon Brown'), 40));
     const asyncFunction2 = () => new Promise(resolve => setTimeout(() => resolve('William Harris'), 20));
-    const promise1 = region.load(asyncFunction1);
-    const promise2 = region.load(asyncFunction2);
+    const promise1 = region.loadBy(asyncFunction1)();
+    const promise2 = region.loadBy(asyncFunction2)();
 
     expect.assertions(2);
     return Promise.all([promise1, promise2]).then(() => {

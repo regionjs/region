@@ -6,8 +6,8 @@ import {
   ResultFunc,
   ResultFuncPure,
   AsyncFunctionOrPromise,
-  LoadOption,
-  OptionOrReducer,
+  Reducer,
+  ReducerPure,
   LoadOptionPure,
   OptionOrReducerPure,
   Strategy,
@@ -50,10 +50,12 @@ const getCombinedOption = <TParams, TResult, V>(
 ): LoadOptionPure<TParams, TResult, V> => {
   if (typeof optionOrReducer === 'function') {
     if (exOption) {
+      deprecate('loadBy accepts 2-3 arguments now, the 4th argument is deprecated.');
       return { reducer: optionOrReducer, ...exOption };
     }
     return { reducer: optionOrReducer };
   }
+  deprecate('loadBy accepts reducer as 3rd arguments now, options are deprecated.');
   return optionOrReducer;
 };
 
@@ -64,6 +66,34 @@ const getSetResult = <V>(resultOrFunc: V | ResultFuncPure<V>, snapshot: V) => {
   return resultOrFunc;
 };
 
+type LoadBy<K, V> = {
+  <TParams = void>(
+    key: K | ((params: TParams) => K),
+    asyncFunction: AsyncFunctionOrPromise<TParams, V>,
+    reducer?: Reducer<TParams, V, V>,
+  ): (params: TParams) => Promise<V | void>;
+  <TParams = void, TResult = unknown>(
+    key: K | ((params: TParams) => K),
+    asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
+    reducer: Reducer<TParams, TResult, V>,
+    exOption?: never,
+  ): (params: TParams) => Promise<V | void>;
+};
+
+type LoadByPure<K, V> = {
+  <TParams = void>(
+    key: K | ((params: TParams) => K),
+    asyncFunction: AsyncFunctionOrPromise<TParams, V>,
+    reducer?: ReducerPure<TParams, V, V>,
+  ): (params: TParams) => Promise<V>;
+  <TParams = void, TResult = unknown>(
+    key: K | ((params: TParams) => K),
+    asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
+    reducer: ReducerPure<TParams, TResult, V>,
+    exOption?: never,
+  ): (params: TParams) => Promise<V>;
+};
+
 export interface CreateMappedRegionReturnValue<K, V> {
   private_getState_just_for_test: () => any;
   private_setState_just_for_test: (value: any) => void;
@@ -72,18 +102,8 @@ export interface CreateMappedRegionReturnValue<K, V> {
   resetAll: () => void;
   // emit: (key: K) => void;
   // emitAll: () => void;
-  load: <TParams = void, TResult = unknown>(
-    key: K | ((params: TParams) => K),
-    asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
-    optionOrReducer?: OptionOrReducer<TParams, TResult, V>,
-    exOption?: LoadOption<TParams, TResult, V>,
-  ) => Promise<V | void>;
-  loadBy: <TParams = void, TResult = unknown>(
-    key: K | ((params: TParams) => K),
-    asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
-    optionOrReducer?: OptionOrReducer<TParams, TResult, V>,
-    exOption?: LoadOption<TParams, TResult, V>,
-  ) => (params: TParams) => Promise<V | void>;
+  load: unknown;
+  loadBy: LoadBy<K, V>;
   getValue: (key: K) => V | undefined;
   getLoading: (key: K) => boolean;
   getError: (key: K) => Error | undefined;
@@ -105,18 +125,8 @@ export interface CreateMappedRegionReturnValue<K, V> {
 export interface CreateMappedRegionPureReturnValue<K, V>
   extends Omit<CreateMappedRegionReturnValue<K, V>, 'set' | 'load' | 'loadBy' | 'getValue' | 'useValue'> {
   set: (key: K, resultOrFunc: V | ResultFuncPure<V>) => V;
-  load: <TParams = void, TResult = unknown>(
-    key: K | ((params: TParams) => K),
-    asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
-    optionOrReducer?: OptionOrReducerPure<TParams, TResult, V>,
-    exOption?: LoadOptionPure<TParams, TResult, V>,
-  ) => Promise<V>;
-  loadBy: <TParams = void, TResult = unknown>(
-    key: K | ((params: TParams) => K),
-    asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
-    optionOrReducer?: OptionOrReducerPure<TParams, TResult, V>,
-    exOption?: LoadOptionPure<TParams, TResult, V>,
-  ) => (params: TParams) => Promise<V>;
+  load: unknown;
+  loadBy: LoadByPure<K, V>;
   getValue: (key: K) => V;
   useValue: (key: K) => V;
 }
@@ -306,7 +316,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
 
   const reset: Result['reset'] = (key: K) => {
     if (key === undefined) {
-      deprecate('reset should be called with key, use resetAll to reset all keys');
+      deprecate('reset should be called with key, use resetAll to reset all keys.');
       private_store_resetAll();
     }
     const keyString = getKeyString(key);
@@ -322,12 +332,12 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
   //
   // const emitAll: Result['emitAll'] = private_store_emitAll;
 
-  const loadBy: Result['loadBy'] = (
-    key,
-    asyncFunction,
-    optionOrReducer,
-    exOption,
-  ) => {
+  const loadBy: Result['loadBy'] = <TParams = void, TResult = unknown>(
+    key: K | ((params: TParams) => K),
+    asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
+    optionOrReducer?: ReducerPure<TParams, TResult, V>,
+    exOption?: never,
+  ): (params: TParams) => Promise<V> => {
     const option = getCombinedOption(optionOrReducer, exOption);
 
     return async (params) => {
@@ -370,12 +380,9 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     };
   };
 
-  const load: Result['load'] = async (
-    key,
-    asyncFunction,
-    optionOrReducer,
-    exOption,
-  ) => {
+  // @ts-ignore
+  const load: Result['load'] = async (key, asyncFunction, optionOrReducer, exOption) => {
+    deprecate('load is deprecated, use loadBy instead.');
     const option = getCombinedOption(optionOrReducer, exOption);
     if (!isAsync(asyncFunction)) {
       console.warn('set result directly');

@@ -7,7 +7,7 @@ describe('reject race condition', () => {
       setTimeout(() => reject('error'), 0);
     });
 
-    region.load(throwError);
+    region.loadBy(throwError)();
 
     expect(region.getError()?.message).toBe(undefined);
     setTimeout(
@@ -30,8 +30,8 @@ describe('reject race condition', () => {
       setTimeout(() => resolve(1), 100);
     });
 
-    region.load(throwError);
-    region.load(resolve1);
+    region.loadBy(throwError)();
+    region.loadBy(resolve1)();
 
     expect(region.getError()?.message).toBe(undefined);
     setTimeout(
@@ -54,8 +54,8 @@ describe('reject race condition', () => {
       setTimeout(() => resolve(1), 100);
     });
 
-    region.load(throwError);
-    region.load(resolve1);
+    region.loadBy(throwError)();
+    region.loadBy(resolve1)();
 
     expect(region.getError()?.message).toBe(undefined);
     setTimeout(
@@ -79,7 +79,7 @@ describe('bypass error when error should not be combined', () => {
       setTimeout(() => reject(error), 0);
     });
 
-    region.load(throwError);
+    region.loadBy(throwError)();
     expect(region.getError()?.message).toBe(undefined);
 
     setTimeout(
