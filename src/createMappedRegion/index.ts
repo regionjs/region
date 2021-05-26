@@ -55,7 +55,9 @@ const getCombinedOption = <TParams, TResult, V>(
     }
     return { reducer: optionOrReducer };
   }
-  deprecate('loadBy accepts reducer as 3rd arguments now, options are deprecated.');
+  if (optionOrReducer !== undefined) {
+    deprecate('loadBy accepts reducer as 3rd arguments now, options are deprecated.');
+  }
   return optionOrReducer;
 };
 
