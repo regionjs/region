@@ -45,9 +45,9 @@ const formatError = (error?: unknown): Error => {
 };
 
 const getCombinedOption = <TParams, TResult, V>(
-  optionOrReducer: OptionOrReducerPure<TParams, TResult, V> = {},
+  optionOrReducer?: OptionOrReducerPure<TParams, TResult, V>,
   exOption?: LoadOptionPure<TParams, TResult, V>,
-): LoadOptionPure<TParams, TResult, V> => {
+): LoadOptionPure<TParams, TResult, V> | undefined => {
   if (typeof optionOrReducer === 'function') {
     if (exOption) {
       deprecate('loadBy accepts 2-3 arguments now, the 4th argument is deprecated.');
@@ -338,7 +338,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     optionOrReducer?: ReducerPure<TParams, TResult, V>,
     exOption?: never,
   ): (params: TParams) => Promise<V> => {
-    const option = getCombinedOption(optionOrReducer, exOption);
+    const option = getCombinedOption(optionOrReducer, exOption) ?? {};
 
     return async (params) => {
       const loadKey = typeof key === 'function' ? (key as Function)(params) : key;
@@ -383,7 +383,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
   // @ts-ignore
   const load: Result['load'] = async (key, asyncFunction, optionOrReducer, exOption) => {
     deprecate('load is deprecated, use loadBy instead.');
-    const option = getCombinedOption(optionOrReducer, exOption);
+    const option = getCombinedOption(optionOrReducer, exOption) ?? {};
     if (!isAsync(asyncFunction)) {
       console.warn('set result directly');
       const setKey = typeof key === 'function' ? (key as Function)(option.params) : key;
