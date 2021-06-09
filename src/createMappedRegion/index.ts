@@ -1,5 +1,14 @@
-import { useMemo } from 'react';
-import { useSubscription } from 'use-subscription';
+import {
+  useMemo,
+  // @ts-ignore
+  useMutableSource as maybe_useMutableSource,
+  // @ts-ignore
+  unstable_useMutableSource,
+  // @ts-ignore
+  createMutableSource as maybe_createMutableSource,
+  // @ts-ignore
+  unstable_createMutableSource,
+} from 'react';
 import * as jsonStableStringify from 'json-stable-stringify';
 import { deprecate, isAsync } from '../util';
 import {
@@ -8,13 +17,14 @@ import {
   AsyncFunctionOrPromise,
   Reducer,
   ReducerPure,
-  LoadOptionPure,
-  OptionOrReducerPure,
   Strategy,
   RegionOption,
   Listener,
   Props,
 } from '../types';
+
+const useMutableSource = maybe_useMutableSource ?? unstable_useMutableSource;
+const createMutableSource = maybe_createMutableSource ?? unstable_createMutableSource;
 
 const increase = (v: number = 0) => (v + 1);
 const decrease = (v: number = 0) => (v - 1 > 0 ? v - 1 : 0);
@@ -42,23 +52,6 @@ const formatLoading = (loading?: number) => {
 
 const formatError = (error?: unknown): Error => {
   return typeof error === 'string' ? new Error(error) : (error as Error);
-};
-
-const getCombinedOption = <TParams, TResult, V>(
-  optionOrReducer?: OptionOrReducerPure<TParams, TResult, V>,
-  exOption?: LoadOptionPure<TParams, TResult, V>,
-): LoadOptionPure<TParams, TResult, V> | undefined => {
-  if (typeof optionOrReducer === 'function') {
-    if (exOption) {
-      deprecate('loadBy accepts 2-3 arguments now, the 4th argument is deprecated.');
-      return { reducer: optionOrReducer, ...exOption };
-    }
-    return { reducer: optionOrReducer };
-  }
-  if (optionOrReducer !== undefined) {
-    deprecate('loadBy accepts reducer as 3rd arguments now, options are deprecated.');
-  }
-  return optionOrReducer;
 };
 
 const getSetResult = <V>(resultOrFunc: V | ResultFuncPure<V>, snapshot: V) => {
@@ -145,17 +138,24 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
   interface PrivateStoreState {
     [key: string]: Props<V>;
   }
-  let private_state: PrivateStoreState = {};
+  interface PrivateStoreStateRef {
+    current: PrivateStoreState;
+  }
+  const private_stateRef: PrivateStoreStateRef = {
+    current: {},
+  };
   const private_listeners: Listener[] = [];
 
+  const mutableSource = createMutableSource(private_stateRef, () => private_stateRef.current);
+
   const private_store_ensure = (key: string): void => {
-    if (!private_state[key]) {
-      private_state[key] = {};
+    if (!private_stateRef.current[key]) {
+      private_stateRef.current[key] = {};
     }
   };
 
   const private_store_emit = (key: string): void => {
-    const props = private_state[key];
+    const props = private_stateRef.current[key];
     if (!props) {
       return;
     }
@@ -172,16 +172,16 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
 
   // only used for test
   const private_store_getState = (): PrivateStoreState => {
-    return private_state;
+    return private_stateRef.current;
   };
 
   // only used for test
   const private_store_setState = (value: PrivateStoreState): void => {
-    private_state = value;
+    private_stateRef.current = value;
   };
 
   const private_store_getAttribute = <A extends keyof Props<V>>(key: string, attribute: A): Props<V>[A] => {
-    const props = private_state[key];
+    const props = private_stateRef.current[key];
     if (!props) {
       return undefined;
     }
@@ -192,7 +192,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     private_store_ensure(key);
 
     // since it is ensured
-    const props = private_state[key];
+    const props = private_stateRef.current[key];
 
     props.promise = promise;
     props.pendingMutex = increase(props.pendingMutex);
@@ -204,7 +204,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     private_store_ensure(key);
 
     // since it is ensured
-    const props = private_state[key];
+    const props = private_stateRef.current[key];
 
     props.pendingMutex = decrease(props.pendingMutex);
     private_store_emit(key);
@@ -215,7 +215,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     private_store_ensure(key);
 
     // since it is ensured
-    const props = private_state[key];
+    const props = private_stateRef.current[key];
 
     const snapshot = props.value;
     const formatValue = typeof value === 'function' ? value(snapshot) : value;
@@ -233,7 +233,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     private_store_ensure(key);
 
     // since it is ensured
-    const props = private_state[key];
+    const props = private_stateRef.current[key];
 
     props.pendingMutex = decrease(props.pendingMutex);
     props.error = error;
@@ -246,14 +246,14 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
   };
 
   const private_store_reset = (key: string): void => {
-    private_state[key] = { listeners: private_state[key].listeners };
+    private_stateRef.current[key] = { listeners: private_stateRef.current[key].listeners };
     private_store_emit(key);
     private_store_emitAll();
   };
 
   const private_store_resetAll = (): void => {
-    Object.keys(private_state).forEach((key: string) => {
-      private_state[key] = { listeners: private_state[key].listeners };
+    Object.keys(private_stateRef.current).forEach((key: string) => {
+      private_stateRef.current[key] = { listeners: private_stateRef.current[key].listeners };
       private_store_emit(key);
     });
     private_store_emitAll();
@@ -264,18 +264,23 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     private_store_ensure(key);
 
     // since it is ensured
-    const props = private_state[key];
+    const props = private_stateRef.current[key];
 
     if (!props.listeners) {
       props.listeners = [];
     }
 
-    props.listeners.push(listener);
+    if (typeof listener === 'function') {
+      props.listeners.push(listener);
+    } else {
+      console.warn(`listener should be function, but received ${listener}`);
+    }
+
     return () => {
       private_store_ensure(key);
 
       // since it is ensured
-      const props = private_state[key];
+      const props = private_stateRef.current[key];
       if (!props.listeners) {
         props.listeners = [];
       }
@@ -337,10 +342,9 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
   const loadBy: Result['loadBy'] = <TParams = void, TResult = unknown>(
     key: K | ((params: TParams) => K),
     asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
-    optionOrReducer?: ReducerPure<TParams, TResult, V>,
-    exOption?: never,
+    reducer?: ReducerPure<TParams, TResult, V>,
   ): (params: TParams) => Promise<V> => {
-    const option = getCombinedOption(optionOrReducer, exOption) ?? {};
+    // const option = getCombinedOption(optionOrReducer, exOption) ?? {};
 
     return async (params) => {
       const loadKey = typeof key === 'function' ? (key as Function)(params) : key;
@@ -357,8 +361,8 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         const currentPromise = private_store_getAttribute(keyString, 'promise');
         const snapshot = private_store_getAttribute(keyString, 'value');
 
-        const formattedResult = typeof option.reducer === 'function'
-          ? option.reducer(getValueOrInitialValue(snapshot), result, params)
+        const formattedResult = typeof reducer === 'function'
+          ? reducer(getValueOrInitialValue(snapshot), result, params)
           : result as unknown as V;
         if (strategy === 'acceptLatest' && promise !== currentPromise) {
           // decrease loading & return snapshot
@@ -383,16 +387,14 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
   };
 
   // @ts-ignore
-  const load: Result['load'] = async (key, asyncFunction, optionOrReducer, exOption) => {
+  const load: Result['load'] = async (key, asyncFunction, reducer) => {
     deprecate('load is deprecated, use loadBy instead.');
-    const option = getCombinedOption(optionOrReducer, exOption) ?? {};
     if (!isAsync(asyncFunction)) {
       console.warn('set result directly');
-      const setKey = typeof key === 'function' ? (key as Function)(option.params) : key;
+      const setKey = typeof key === 'function' ? (key as Function)() : key;
       return set(setKey, asyncFunction as unknown as any);
     }
-    // @ts-ignore
-    return loadBy(key, asyncFunction, option)(option.params);
+    return loadBy(key, asyncFunction, reducer)();
   };
 
   const getValue: Result['getValue'] = (key) => {
@@ -417,7 +419,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
   };
 
   const getReducedValue: Result['getReducedValue'] = (params, reducer) => {
-    return reducer(private_state, params);
+    return reducer(private_stateRef.current, params);
   };
 
   const createHooks = <TReturnType>(getFn: (key: K) => TReturnType) => {
@@ -425,12 +427,12 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
       const subscription = useMemo(
         () => ({
           getCurrentValue: () => getFn(key),
-          subscribe: (listener: Listener) => private_store_subscribe(getKeyString(key), listener),
+          subscribe: (_: any, listener: Listener) => private_store_subscribe(getKeyString(key), listener),
         }),
         // shallow-equal
         [getFn, getKeyString(key)],
       );
-      return useSubscription(subscription);
+      return useMutableSource(mutableSource, subscription.getCurrentValue, subscription.subscribe);
     };
   };
 
@@ -445,13 +447,13 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
   const useReducedValue: Result['useReducedValue'] = (params, reducer) => {
     const subscription = useMemo(
       () => ({
-        getCurrentValue: () => reducer(private_state, params),
-        subscribe: private_store_subscribeAll,
+        getCurrentValue: () => reducer(private_stateRef.current, params),
+        subscribe: (_: any, listener: Listener) => private_store_subscribeAll(listener),
       }),
       // shallow-equal
       [reducer, getKeyString(params)],
     );
-    return useSubscription(subscription);
+    return useMutableSource(mutableSource, subscription.getCurrentValue, subscription.subscribe);
   };
 
   return {
