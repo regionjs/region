@@ -11,26 +11,20 @@ import {
 type LoadBy<V> = {
   <TParams = void>(
     asyncFunction: AsyncFunctionOrPromise<TParams, V>,
-    reducer?: Reducer<TParams, V, V>,
-    exOption?: never,
   ): (params: TParams) => Promise<V | void>;
   <TParams = void, TResult = unknown>(
     asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
     reducer: Reducer<TParams, TResult, V>,
-    exOption?: never,
   ): (params: TParams) => Promise<V | void>;
 };
 
 type LoadByPure<V> = {
   <TParams = void>(
     asyncFunction: AsyncFunctionOrPromise<TParams, V>,
-    reducer?: ReducerPure<TParams, V, V>,
-    exOption?: never,
   ): (params: TParams) => Promise<V>;
   <TParams = void, TResult = unknown>(
     asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
     reducer: ReducerPure<TParams, TResult, V>,
-    exOption?: never,
   ): (params: TParams) => Promise<V>;
 };
 
@@ -43,7 +37,10 @@ export interface CreateRegionReturnValue<V> {
   getLoading: () => boolean;
   getError: () => Error | undefined;
   getFetchTime: () => number | undefined;
-  useValue: () => V | undefined;
+  useValue: {
+    (): V | undefined;
+    <TResult>(selector: (value: V | undefined) => TResult): TResult;
+  };
   useLoading: () => boolean;
   useError: () => Error | undefined;
   useFetchTime: () => number | undefined;
@@ -54,7 +51,10 @@ export interface CreateRegionPureReturnValue<V> extends Omit<CreateRegionReturnV
   load: unknown;
   loadBy: LoadByPure<V>;
   getValue: () => V;
-  useValue: () => V;
+  useValue: {
+    (): V;
+    <TResult>(selector: (value: V) => TResult): TResult;
+  };
 }
 
 // overload is unsafe in some way, ensure the return type is correct
@@ -109,8 +109,8 @@ function createRegion <V>(initialValue: void | V | undefined, option?: RegionOpt
     return region.getFetchTime('value');
   };
 
-  const useValue: Result['useValue'] = () => {
-    return region.useValue('value');
+  const useValue: Result['useValue'] = (selector?: Function) => {
+    return region.useValue('value', selector as (value: V) => any);
   };
 
   const useLoading: Result['useLoading'] = () => {

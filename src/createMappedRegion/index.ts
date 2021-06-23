@@ -1,12 +1,6 @@
 import {
   useMemo,
-  // @ts-ignore
-  useMutableSource as maybe_useMutableSource,
-  // @ts-ignore
   unstable_useMutableSource,
-  // @ts-ignore
-  createMutableSource as maybe_createMutableSource,
-  // @ts-ignore
   unstable_createMutableSource,
 } from 'react';
 import * as jsonStableStringify from 'json-stable-stringify';
@@ -23,8 +17,10 @@ import {
   Props,
 } from '../types';
 
-const useMutableSource = maybe_useMutableSource ?? unstable_useMutableSource;
-const createMutableSource = maybe_createMutableSource ?? unstable_createMutableSource;
+const useMutableSource = unstable_useMutableSource;
+const createMutableSource = unstable_createMutableSource;
+
+const identity = <T>(v: T): T => v;
 
 const increase = (v: number = 0) => (v + 1);
 const decrease = (v: number = 0) => (v - 1 > 0 ? v - 1 : 0);
@@ -65,13 +61,11 @@ type LoadBy<K, V> = {
   <TParams = void>(
     key: K | ((params: TParams) => K),
     asyncFunction: AsyncFunctionOrPromise<TParams, V>,
-    reducer?: Reducer<TParams, V, V>,
   ): (params: TParams) => Promise<V | void>;
   <TParams = void, TResult = unknown>(
     key: K | ((params: TParams) => K),
     asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
     reducer: Reducer<TParams, TResult, V>,
-    exOption?: never,
   ): (params: TParams) => Promise<V | void>;
 };
 
@@ -79,13 +73,11 @@ type LoadByPure<K, V> = {
   <TParams = void>(
     key: K | ((params: TParams) => K),
     asyncFunction: AsyncFunctionOrPromise<TParams, V>,
-    reducer?: ReducerPure<TParams, V, V>,
   ): (params: TParams) => Promise<V>;
   <TParams = void, TResult = unknown>(
     key: K | ((params: TParams) => K),
     asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
     reducer: ReducerPure<TParams, TResult, V>,
-    exOption?: never,
   ): (params: TParams) => Promise<V>;
 };
 
@@ -107,7 +99,10 @@ export interface CreateMappedRegionReturnValue<K, V> {
     params: TParams,
     reducer: (state: {[key: string]: Props<V>}, params: TParams) => TResult,
   ) => TResult;
-  useValue: (key: K) => V | undefined;
+  useValue: {
+    (key: K): V | undefined;
+    <TResult>(key: K, selector: (value: V | undefined) => TResult): TResult;
+  };
   useLoading: (key: K) => boolean;
   useError: (key: K) => Error | undefined;
   useFetchTime: (key: K) => number | undefined;
@@ -123,7 +118,10 @@ export interface CreateMappedRegionPureReturnValue<K, V>
   load: unknown;
   loadBy: LoadByPure<K, V>;
   getValue: (key: K) => V;
-  useValue: (key: K) => V;
+  useValue: {
+    (key: K): V;
+    <TResult>(key: K, selector: (value: V) => TResult): TResult;
+  };
 }
 
 // overload is unsafe in some way, ensure the return type is correct
@@ -436,13 +434,25 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     };
   };
 
-  const useValue: Result['getValue'] = createHooks(getValue);
+  const useValue: Result['useValue'] = (key: K, selector?: Function) => {
+    // keep logic as createHook is
+    const getFn = getValue;
+    const subscription = useMemo(
+      () => ({
+        getCurrentValue: () => selector ? selector(getFn(key)) : getFn(key),
+        subscribe: (_: any, listener: Listener) => private_store_subscribe(getKeyString(key), listener),
+      }),
+      // shallow-equal
+      [getFn, selector, getKeyString(key)],
+    );
+    return useMutableSource(mutableSource, subscription.getCurrentValue, subscription.subscribe);
+  };
 
-  const useLoading: Result['getLoading'] = createHooks(getLoading);
+  const useLoading: Result['useLoading'] = createHooks(getLoading);
 
-  const useError: Result['getError'] = createHooks(getError);
+  const useError: Result['useError'] = createHooks(getError);
 
-  const useFetchTime: Result['getFetchTime'] = createHooks(getFetchTime);
+  const useFetchTime: Result['useFetchTime'] = createHooks(getFetchTime);
 
   const useReducedValue: Result['useReducedValue'] = (params, reducer) => {
     const subscription = useMemo(
