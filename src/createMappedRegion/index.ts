@@ -1,8 +1,4 @@
-import {
-  useMemo,
-  unstable_useMutableSource,
-  unstable_createMutableSource,
-} from 'react';
+import { useMemo } from 'react';
 import * as jsonStableStringify from 'json-stable-stringify';
 import { deprecate, isAsync } from '../util';
 import {
@@ -16,9 +12,7 @@ import {
   Listener,
   Props,
 } from '../types';
-
-const useMutableSource = unstable_useMutableSource;
-const createMutableSource = unstable_createMutableSource;
+import { useSubscription } from 'use-subscription';
 
 const identity = <T>(v: T): T => v;
 
@@ -143,8 +137,6 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     current: {},
   };
   const private_listeners: Listener[] = [];
-
-  const mutableSource = createMutableSource(private_stateRef, () => private_stateRef.current);
 
   const private_store_ensure = (key: string): void => {
     if (!private_stateRef.current[key]) {
@@ -425,27 +417,27 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
       const subscription = useMemo(
         () => ({
           getCurrentValue: () => getFn(key),
-          subscribe: (_: any, listener: Listener) => private_store_subscribe(getKeyString(key), listener),
+          subscribe: (listener: Listener) => private_store_subscribe(getKeyString(key), listener),
         }),
         // shallow-equal
         [getFn, getKeyString(key)],
       );
-      return useMutableSource(mutableSource, subscription.getCurrentValue, subscription.subscribe);
+      return useSubscription(subscription);
     };
   };
 
-  const useValue: Result['useValue'] = (key: K, selector?: Function) => {
+  const useValue: Result['useValue'] = (key: K, selector?: any) => {
     // keep logic as createHook is
     const getFn = getValue;
     const subscription = useMemo(
       () => ({
         getCurrentValue: () => selector ? selector(getFn(key)) : getFn(key),
-        subscribe: (_: any, listener: Listener) => private_store_subscribe(getKeyString(key), listener),
+        subscribe: (listener: Listener) => private_store_subscribe(getKeyString(key), listener),
       }),
       // shallow-equal
       [getFn, selector, getKeyString(key)],
     );
-    return useMutableSource(mutableSource, subscription.getCurrentValue, subscription.subscribe);
+    return useSubscription(subscription);
   };
 
   const useLoading: Result['useLoading'] = createHooks(getLoading);
@@ -458,12 +450,12 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     const subscription = useMemo(
       () => ({
         getCurrentValue: () => reducer(private_stateRef.current, params),
-        subscribe: (_: any, listener: Listener) => private_store_subscribeAll(listener),
+        subscribe: (listener: Listener) => private_store_subscribeAll(listener),
       }),
       // shallow-equal
       [reducer, getKeyString(params)],
     );
-    return useMutableSource(mutableSource, subscription.getCurrentValue, subscription.subscribe);
+    return useSubscription(subscription);
   };
 
   return {
