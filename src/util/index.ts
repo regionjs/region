@@ -1,2 +1,1 @@
-export { deprecate } from './deprecate';
-export { isAsync } from './isAsync';
+export {deprecate} from './deprecate';

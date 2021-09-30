@@ -1,14 +1,14 @@
-import createMappedRegion, { CreateMappedRegionPureReturnValue } from '../createMappedRegion';
+import createMappedRegion, {CreateMappedRegionPureReturnValue} from '../createMappedRegion';
 import {
-  AsyncFunctionOrPromise,
-  Reducer,
-  ReducerPure,
-  RegionOption,
-  ResultFunc,
-  ResultFuncPure,
+    AsyncFunctionOrPromise,
+    Reducer,
+    ReducerPure,
+    RegionOption,
+    ResultFunc,
+    ResultFuncPure,
 } from '../types';
 
-type LoadBy<V> = {
+interface LoadBy<V> {
   <TParams = void>(
     asyncFunction: AsyncFunctionOrPromise<TParams, V>,
   ): (params: TParams) => Promise<V | void>;
@@ -16,9 +16,9 @@ type LoadBy<V> = {
     asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
     reducer: Reducer<TParams, TResult, V>,
   ): (params: TParams) => Promise<V | void>;
-};
+}
 
-type LoadByPure<V> = {
+interface LoadByPure<V> {
   <TParams = void>(
     asyncFunction: AsyncFunctionOrPromise<TParams, V>,
   ): (params: TParams) => Promise<V>;
@@ -26,7 +26,7 @@ type LoadByPure<V> = {
     asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
     reducer: ReducerPure<TParams, TResult, V>,
   ): (params: TParams) => Promise<V>;
-};
+}
 
 export interface CreateRegionReturnValue<V> {
   set: (resultOrFunc: V | ResultFunc<V>) => V;
@@ -48,7 +48,7 @@ export interface CreateRegionReturnValue<V> {
 
 export interface CreateRegionPureReturnValue<V> extends Omit<CreateRegionReturnValue<V>, 'set' | 'load' | 'loadBy' | 'getValue' | 'useValue'> {
   set: (resultOrFunc: V | ResultFuncPure<V>) => V;
-  load: unknown;
+  load: (promise: Promise<V>) => Promise<V>;
   loadBy: LoadByPure<V>;
   getValue: () => V;
   useValue: {
@@ -65,79 +65,79 @@ function createRegion <V>(initialValue: void | V | undefined, option?: RegionOpt
 
   let region: CreateMappedRegionPureReturnValue<'value', V>;
   if (initialValue !== undefined) {
-    region = createMappedRegion<'value', V>(initialValue, option);
+      region = createMappedRegion<'value', V>(initialValue, option);
   } else {
-    region = createMappedRegion<'value', V>(undefined, option) as CreateMappedRegionPureReturnValue<'value', V>;
+      region = createMappedRegion<'value', V>(undefined, option) as CreateMappedRegionPureReturnValue<'value', V>;
   }
 
   const set: Result['set'] = (resultOrFunc: V | ResultFuncPure<V>) => {
-    return region.set('value', resultOrFunc);
+      return region.set('value', resultOrFunc);
   };
 
   const reset: Result['reset'] = () => {
-    return region.reset('value');
+      return region.reset('value');
   };
 
   const load: Result['load'] = <TParams = void, TResult = unknown>(
-    asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
-    reducer?: Reducer<TParams, TResult, V>,
+      asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
+      reducer?: Reducer<TParams, TResult, V>
   ) => {
-    // @ts-ignore
-    return region.load('value', asyncFunction, reducer);
+      // @ts-ignore
+      return region.load('value', asyncFunction, reducer);
   };
 
   const loadBy: Result['loadBy'] = <TParams = void, TResult = unknown>(
-    asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
-    reducer?: Reducer<TParams, TResult, V>,
+      asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
+      reducer?: Reducer<TParams, TResult, V>
   ) => {
-    return region.loadBy('value', asyncFunction, reducer as Reducer<TParams, TResult, V>);
+      return region.loadBy('value', asyncFunction, reducer as Reducer<TParams, TResult, V>);
   };
 
   const getValue: Result['getValue'] = () => {
-    return region.getValue('value');
+      return region.getValue('value');
   };
 
   const getLoading: Result['getLoading'] = () => {
-    return region.getLoading('value');
+      return region.getLoading('value');
   };
 
   const getError: Result['getError'] = () => {
-    return region.getError('value');
+      return region.getError('value');
   };
 
   const getFetchTime: Result['getFetchTime'] = () => {
-    return region.getFetchTime('value');
+      return region.getFetchTime('value');
   };
 
-  const useValue: Result['useValue'] = (selector?: Function) => {
-    return region.useValue('value', selector as (value: V) => any);
+  const useValue: Result['useValue'] = <TResult>(selector?: (value: V) => TResult) => {
+      return region.useValue('value', selector as (value: V) => TResult);
   };
 
   const useLoading: Result['useLoading'] = () => {
-    return region.useLoading('value');
+      return region.useLoading('value');
   };
 
   const useError: Result['useError'] = () => {
-    return region.useError('value');
+      return region.useError('value');
   };
 
   const useFetchTime: Result['useFetchTime'] = () => {
-    return region.useFetchTime('value');
+      return region.useFetchTime('value');
   };
 
   return {
-    set,
-    reset,
-    load,
-    loadBy,
-    getValue,
-    getLoading,
-    getError,
-    getFetchTime,
-    useValue,
-    useLoading,
-    useError,
-    useFetchTime,
+      set,
+      reset,
+      load,
+      loadBy,
+      getValue,
+      getLoading,
+      getError,
+      getFetchTime,
+      useValue,
+      useLoading,
+      useError,
+      useFetchTime,
   };
 }
 
