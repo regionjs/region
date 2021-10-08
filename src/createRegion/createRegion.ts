@@ -1,6 +1,5 @@
 import createMappedRegion, {CreateMappedRegionPureReturnValue} from '../createMappedRegion';
 import {
-    AsyncFunctionOrPromise,
     Reducer,
     ReducerPure,
     RegionOption,
@@ -9,21 +8,23 @@ import {
 } from '../types';
 
 interface LoadBy<V> {
+  (asyncFunction: () => Promise<V>): () => Promise<void>;
   <TParams = void>(
-    asyncFunction: AsyncFunctionOrPromise<TParams, V>,
+    asyncFunction: (params: TParams) => Promise<V>,
   ): (params: TParams) => Promise<void>;
   <TParams = void, TResult = unknown>(
-    asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
+    asyncFunction: (params: TParams) => Promise<TResult>,
     reducer: Reducer<TParams, TResult, V>,
   ): (params: TParams) => Promise<void>;
 }
 
 interface LoadByPure<V> {
+  (asyncFunction: () => Promise<V>): () => Promise<void>;
   <TParams = void>(
-    asyncFunction: AsyncFunctionOrPromise<TParams, V>,
+    asyncFunction: (params: TParams) => Promise<V>,
   ): (params: TParams) => Promise<void>;
   <TParams = void, TResult = unknown>(
-    asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
+    asyncFunction: (params: TParams) => Promise<TResult>,
     reducer: ReducerPure<TParams, TResult, V>,
   ): (params: TParams) => Promise<void>;
 }
@@ -80,10 +81,10 @@ function createRegion <V>(initialValue: void | V | undefined, option?: RegionOpt
   };
 
   const loadBy: Result['loadBy'] = <TParams = void, TResult = unknown>(
-      asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
+      asyncFunction: (params: TParams) => Promise<TResult>,
       reducer?: Reducer<TParams, TResult, V>
   ) => {
-      return region.loadBy('value', asyncFunction, reducer as Reducer<TParams, TResult, V>);
+      return region.loadBy('value', asyncFunction, reducer as any) as any;
   };
 
   const getValue: Result['getValue'] = () => {

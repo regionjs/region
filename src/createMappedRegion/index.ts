@@ -5,7 +5,6 @@ import {deprecate} from '../util';
 import {
     ResultFunc,
     ResultFuncPure,
-    AsyncFunctionOrPromise,
     Reducer,
     ReducerPure,
     Strategy,
@@ -18,7 +17,7 @@ const increase = (v: number = 0) => (v + 1);
 const decrease = (v: number = 0) => (v - 1 > 0 ? v - 1 : 0);
 
 interface ToPromiseParams<TParams, V> {
-  asyncFunction: AsyncFunctionOrPromise<TParams, V>;
+  asyncFunction: (params: TParams) => Promise<V>;
   params: any;
 }
 
@@ -305,7 +304,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
 
   const loadBy: Result['loadBy'] = <TParams = void, TResult = unknown>(
       key: K | ((params: TParams) => K),
-      asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
+      asyncFunction: (params: TParams) => Promise<TResult>,
       reducer?: ReducerPure<TParams, TResult, V>
   ) => {
       const loadByReturnFunction = async (params?: TParams) => {
