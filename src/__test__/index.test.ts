@@ -21,8 +21,8 @@ describe('export api', () => {
         const {createRegion} = api;
         const {
             set, reset, load, loadBy,
-            getValue, getLoading, getError, getFetchTime,
-            useValue, useLoading, useError, useFetchTime,
+            getValue, getLoading, getError,
+            useValue, useLoading, useError,
             ...rest
         } = createRegion();
         expect(typeof set).toBe('function');
@@ -32,11 +32,9 @@ describe('export api', () => {
         expect(typeof getValue).toBe('function');
         expect(typeof getLoading).toBe('function');
         expect(typeof getError).toBe('function');
-        expect(typeof getFetchTime).toBe('function');
         expect(typeof useValue).toBe('function');
         expect(typeof useLoading).toBe('function');
         expect(typeof useError).toBe('function');
-        expect(typeof useFetchTime).toBe('function');
         expect(rest).toEqual({});
     });
 
@@ -44,8 +42,8 @@ describe('export api', () => {
         const {createMappedRegion} = api;
         const {
             set, reset, resetAll, load, loadBy,
-            getValue, getLoading, getError, getFetchTime, getReducedValue,
-            useValue, useLoading, useError, useFetchTime,
+            getValue, getLoading, getError,
+            useValue, useLoading, useError,
             private_getState_just_for_test, private_setState_just_for_test,
             ...rest
         } = createMappedRegion();
@@ -56,11 +54,9 @@ describe('export api', () => {
         expect(typeof getValue).toBe('function');
         expect(typeof getLoading).toBe('function');
         expect(typeof getError).toBe('function');
-        expect(typeof getFetchTime).toBe('function');
         expect(typeof useValue).toBe('function');
         expect(typeof useLoading).toBe('function');
         expect(typeof useError).toBe('function');
-        expect(typeof useFetchTime).toBe('function');
         expect(typeof private_getState_just_for_test).toBe('function');
         expect(typeof private_setState_just_for_test).toBe('function');
         expect(rest).toEqual({});

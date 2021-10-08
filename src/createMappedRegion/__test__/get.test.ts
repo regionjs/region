@@ -3,7 +3,6 @@ import {region} from './region';
 const {
     getLoading,
     getValue,
-    getFetchTime,
     getError,
     private_setState_just_for_test,
 } = region;
@@ -15,7 +14,6 @@ describe('get', () => {
         expect(getLoading('a')).toEqual(true);
         expect(getValue('a')).toEqual(undefined);
         expect(getError('a')).toEqual(undefined);
-        expect(getFetchTime('a')).toEqual(undefined);
     });
 
     test('get things from initial state', () => {
@@ -23,7 +21,6 @@ describe('get', () => {
         expect(getLoading('a')).toEqual(true);
         expect(getValue('a')).toEqual(undefined);
         expect(getError('a')).toEqual(undefined);
-        expect(getFetchTime('a')).toEqual(undefined);
     });
 
     test('get things from start loading', () => {
@@ -33,7 +30,6 @@ describe('get', () => {
         expect(getLoading('a')).toEqual(true);
         expect(getValue('a')).toEqual(undefined);
         expect(getError('a')).toEqual(undefined);
-        expect(getFetchTime('a')).toEqual(undefined);
     });
 
     test('treat undefined', () => {
@@ -48,19 +44,16 @@ describe('get', () => {
         private_setState_just_for_test({
             a: {
                 pendingMutex: 0,
-                fetchTime: 999,
                 value: {name: '66', type: 'cat'},
             },
         });
         expect(getLoading('a')).toEqual(false);
         expect(getValue('a')).toEqual({name: '66', type: 'cat'});
         expect(getError('a')).toEqual(undefined);
-        expect(getFetchTime('a')).toEqual(999);
 
         expect(getLoading('b')).toEqual(true);
         expect(getValue('b')).toEqual(undefined);
         expect(getError('b')).toEqual(undefined);
-        expect(getFetchTime('b')).toEqual(undefined);
     });
 
     test('getLoadings from all resolved', () => {

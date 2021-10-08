@@ -8,7 +8,7 @@
 
 ## 10.x 升级至 11.x
 
-移除了废弃的函数。
+移除了废弃的函数。移除 `getFetchTime` & `useFetchTime`。你可以在 reducer 里得到它。
 
 ## 9.x 升级至 10.x
 

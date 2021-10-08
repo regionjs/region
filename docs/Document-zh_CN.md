@@ -22,7 +22,7 @@ const region = createRegion<Value>();
 // 也可以
 const region = createRegion<Value>(initialValue);
 
-const {load, loadBy, set, useValue, useLoading, useError, useFetchTime} = region;
+const {load, loadBy, set, useValue, useLoading, useError} = region;
 ```
 
 ### region.set
@@ -76,14 +76,13 @@ loadUser({userId: 1});
 
 ### hooks
 
-包括 `useValue`, `useLoading`, `useError`, `useFetchTime`
+包括 `useValue`, `useLoading`, `useError`
 
 ```typescript
 const Component = () => {
   const value = region.useValue();
   const loading = region.useLoading();
   const error = region.useError();
-  const fetchTime = region.useFetchTime();
   
   return <div>{value}</div>
 }
@@ -93,14 +92,13 @@ const Component = () => {
 
 ### get 方法
 
-包括 `getValue`, `getLoading`, `getError`, `getFetchTime`
+包括 `getValue`, `getLoading`, `getError`
 
 ```typescript
 const handler = () => {
   const value = region.getValue();
   const loading = region.getLoading();
   const error = region.getError();
-  const fetchTime = region.getFetchTime();
   // ...
 }
 ```
@@ -125,7 +123,7 @@ const mappedRegion = createMappedRegion<Key, Value>();
 // 也可以
 const MappedRegion = createMappedRegion<Key, Value>(initialValue);
 
-const {load, loadBy, set, useValue, useLoading, useError, useFetchTime} = mappedRegion;
+const {load, loadBy, set, useValue, useLoading, useError} = mappedRegion;
 ```
 
 在使用 `mappedRegion` 中的状态时，注意要给定 key：
@@ -136,7 +134,5 @@ const Component = () => {
   // ...
 }
 ```
-
-`mappedRegion` 支持额外的 `getReducedValue` 和 `useReducedValue`，让你可以获得更多能力，但也意味着你需要更了解 region 实现的底层逻辑。
 
 前往 [examples](https://regionjs.github.io/region-core/#MappedRegion) 获得更多信息。

@@ -8,7 +8,7 @@ If you meet some problem not listed, please raise an issue.
 
 ## Migrate From 10.x to 11.x
 
-remove deprecated functions.
+remove deprecated functions. Remove `getFetchTime` & `useFetchTime`. You could inject it in reducer.
 
 ## Migrate From 9.x to 10.x
 

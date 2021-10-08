@@ -22,7 +22,7 @@ const region = createRegion<Value>();
 // also
 const region = createRegion<Value>(initialValue);
 
-const {load, loadBy, set, useValue, useLoading, useError, useFetchTime} = region;
+const {load, loadBy, set, useValue, useLoading, useError} = region;
 ```
 
 ### region.set
@@ -76,14 +76,13 @@ loadUser({userId: 1});
 
 ### hooks
 
-Includes `useValue`, `useLoading`, `useError`, `useFetchTime`
+Includes `useValue`, `useLoading`, `useError`
 
 ```typescript
 const Component = () => {
   const value = region.useValue();
   const loading = region.useLoading();
   const error = region.useError();
-  const fetchTime = region.useFetchTime();
   
   return <div>{value}</div>
 }
@@ -93,14 +92,13 @@ Go to [examples](https://regionjs.github.io/region-core/#UseValue) for more.
 
 ### get methods
 
-Includes `getValue`, `getLoading`, `getError`, `getFetchTime`
+Includes `getValue`, `getLoading`, `getError`
 
 ```typescript
 const handler = () => {
   const value = region.getValue();
   const loading = region.getLoading();
   const error = region.getError();
-  const fetchTime = region.getFetchTime();
   // ...
 }
 ```
@@ -125,7 +123,7 @@ const mappedRegion = createMappedRegion<Key, Value>();
 // alse
 const MappedRegion = createMappedRegion<Key, Value>(initialValue);
 
-const {load, loadBy, set, useValue, useLoading, useError, useFetchTime} = mappedRegion;
+const {load, loadBy, set, useValue, useLoading, useError} = mappedRegion;
 ```
 
 when use some state in `mappedRegion`, key should be provided：
@@ -136,7 +134,5 @@ const Component = () => {
   // ...
 }
 ```
-
-`mappedRegion` also supports `getReducedValue` 和 `useReducedValue`, it is a powerful tool, but requires the knowledge of implement detail to use it well.
 
 Go to [examples](https://regionjs.github.io/region-core/#MappedRegion) for more.

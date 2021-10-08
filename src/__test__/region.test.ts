@@ -9,7 +9,6 @@ describe('createRegion', () => {
         expect(region.getValue()).toBe(undefined);
         expect(region.getLoading()).toBe(true);
         expect(region.getError()).toBe(undefined);
-        expect(region.getFetchTime()).toBe(undefined);
     });
 
     test('createRegion with value', () => {
@@ -17,7 +16,6 @@ describe('createRegion', () => {
         expect(region.getValue()).toBe('Karen Martinez');
         expect(region.getLoading()).toBe(true);
         expect(region.getError()).toBe(undefined);
-        expect(region.getFetchTime()).toBe(undefined);
 
         region.set(v => `${v}+`);
         expect(region.getValue()).toBe('Karen Martinez+');

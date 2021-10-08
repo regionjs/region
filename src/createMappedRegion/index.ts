@@ -86,18 +86,12 @@ export interface CreateMappedRegionReturnValue<K, V> {
   getValue: (key: K) => V | undefined;
   getLoading: (key: K) => boolean;
   getError: (key: K) => Error | undefined;
-  getFetchTime: (key: K) => number | undefined;
-  getReducedValue: <TParams extends K | K[], TResult extends any>(
-    params: TParams,
-    reducer: (state: {[key: string]: Props<V>}, params: TParams) => TResult,
-  ) => TResult;
   useValue: {
     (key: K): V | undefined;
     <TResult>(key: K, selector: (value: V | undefined) => TResult): TResult;
   };
   useLoading: (key: K) => boolean;
   useError: (key: K) => Error | undefined;
-  useFetchTime: (key: K) => number | undefined;
 }
 
 export interface CreateMappedRegionPureReturnValue<K, V>
@@ -195,8 +189,6 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
       const snapshot = props.value;
       const formatValue = typeof value === 'function' ? value(snapshot) : value;
       props.pendingMutex = decrease(props.pendingMutex);
-      const fetchTime = new Date().getTime();
-      props.fetchTime = fetchTime;
       props.value = formatValue;
       props.error = undefined; // reset error
 
@@ -373,15 +365,6 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
       return formatError(private_store_getAttribute(keyString, 'error'));
   };
 
-  const getFetchTime: Result['getFetchTime'] = key => {
-      const keyString = getKeyString(key);
-      return private_store_getAttribute(keyString, 'fetchTime');
-  };
-
-  const getReducedValue: Result['getReducedValue'] = (params, reducer) => {
-      return reducer(private_stateRef.current, params);
-  };
-
   const createHooks = <TReturnType>(getFn: (key: K) => TReturnType) => {
       return (key: K): TReturnType => {
           const subscription = useMemo(
@@ -416,8 +399,6 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
 
   const useError: Result['useError'] = createHooks(getError);
 
-  const useFetchTime: Result['useFetchTime'] = createHooks(getFetchTime);
-
   return {
       private_getState_just_for_test: private_store_getState,
       private_setState_just_for_test: private_store_setState,
@@ -431,12 +412,9 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
       getValue,
       getLoading,
       getError,
-      getFetchTime,
-      getReducedValue,
       useValue,
       useLoading,
       useError,
-      useFetchTime,
   };
 }
 

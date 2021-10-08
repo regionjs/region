@@ -26,6 +26,5 @@ export interface Props<V> {
   value?: V;
   promise?: Promise<unknown>;
   error?: unknown;
-  fetchTime?: number;
   listeners?: Listener[];
 }

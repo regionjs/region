@@ -36,14 +36,12 @@ export interface CreateRegionReturnValue<V> {
   getValue: () => V | undefined;
   getLoading: () => boolean;
   getError: () => Error | undefined;
-  getFetchTime: () => number | undefined;
   useValue: {
     (): V | undefined;
     <TResult>(selector: (value: V | undefined) => TResult): TResult;
   };
   useLoading: () => boolean;
   useError: () => Error | undefined;
-  useFetchTime: () => number | undefined;
 }
 
 export interface CreateRegionPureReturnValue<V> extends Omit<CreateRegionReturnValue<V>, 'set' | 'load' | 'loadBy' | 'getValue' | 'useValue'> {
@@ -105,10 +103,6 @@ function createRegion <V>(initialValue: void | V | undefined, option?: RegionOpt
       return region.getError('value');
   };
 
-  const getFetchTime: Result['getFetchTime'] = () => {
-      return region.getFetchTime('value');
-  };
-
   const useValue: Result['useValue'] = <TResult>(selector?: (value: V) => TResult) => {
       return region.useValue('value', selector as (value: V) => TResult);
   };
@@ -121,10 +115,6 @@ function createRegion <V>(initialValue: void | V | undefined, option?: RegionOpt
       return region.useError('value');
   };
 
-  const useFetchTime: Result['useFetchTime'] = () => {
-      return region.useFetchTime('value');
-  };
-
   return {
       set,
       reset,
@@ -133,11 +123,9 @@ function createRegion <V>(initialValue: void | V | undefined, option?: RegionOpt
       getValue,
       getLoading,
       getError,
-      getFetchTime,
       useValue,
       useLoading,
       useError,
-      useFetchTime,
   };
 }
 

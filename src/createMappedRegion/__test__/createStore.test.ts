@@ -10,7 +10,6 @@ describe('createStore', () => {
         expect(region.private_getState_just_for_test()).toEqual({
             user: {
                 error: undefined,
-                fetchTime: 0,
                 pendingMutex: 0,
                 value: 'a user',
             },
@@ -23,7 +22,6 @@ describe('createStore', () => {
         expect(region.private_getState_just_for_test()).toEqual({
             user: {
                 error: undefined,
-                fetchTime: 0,
                 pendingMutex: 0,
                 value: [{id: 1, name: 'zhangcong'}, {id: 2, name: 'milly'}],
             },
@@ -36,7 +34,6 @@ describe('createStore', () => {
         expect(region.private_getState_just_for_test()).toEqual({
             user: {
                 error: undefined,
-                fetchTime: 0,
                 pendingMutex: 0,
                 value: 'should be string',
             },
@@ -51,7 +48,6 @@ describe('createStore', () => {
                 expect(region.private_getState_just_for_test()).toEqual({
                     user: {
                         error,
-                        fetchTime: 0,
                         pendingMutex: 0,
                         value: undefined,
                     },
@@ -71,7 +67,6 @@ describe('createStore', () => {
                 expect(region.private_getState_just_for_test()).toEqual({
                     user: {
                         error,
-                        fetchTime: 0,
                         pendingMutex: 0,
                         value: 'a user',
                     },

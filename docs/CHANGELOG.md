@@ -1,5 +1,11 @@
 # CHANGELOG
 
+### 11.x
+
+- add `resetAll`, `reset` now resets value with specific key
+
+- remove unused `getFetchTime` & `useFetchTime`, you could inject it in reducer
+
 ### 11.0
 
 - remove `createCombinedRegion`, `getProps`, `useProps`, and `getValue` & `useValue` with array of keys
