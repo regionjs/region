@@ -50,25 +50,33 @@ const getSetResult = <V>(resultOrFunc: V | ResultFuncPure<V>, snapshot: V) => {
 };
 
 interface LoadBy<K, V> {
+  (
+    key: K | (() => K),
+    asyncFunction: () => Promise<V>,
+  ): () => Promise<void>;
   <TParams = void>(
     key: K | ((params: TParams) => K),
-    asyncFunction: AsyncFunctionOrPromise<TParams, V>,
+    asyncFunction: (params: TParams) => Promise<V>,
   ): (params: TParams) => Promise<void>;
   <TParams = void, TResult = unknown>(
     key: K | ((params: TParams) => K),
-    asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
+    asyncFunction: (params: TParams) => Promise<TResult>,
     reducer: Reducer<TParams, TResult, V>,
   ): (params: TParams) => Promise<void>;
 }
 
 interface LoadByPure<K, V> {
+  (
+    key: K | (() => K),
+    asyncFunction: () => Promise<V>,
+  ): () => Promise<void>;
   <TParams = void>(
     key: K | ((params: TParams) => K),
-    asyncFunction: AsyncFunctionOrPromise<TParams, V>,
+    asyncFunction: (params: TParams) => Promise<V>,
   ): (params: TParams) => Promise<void>;
   <TParams = void, TResult = unknown>(
     key: K | ((params: TParams) => K),
-    asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
+    asyncFunction: (params: TParams) => Promise<TResult>,
     reducer: ReducerPure<TParams, TResult, V>,
   ): (params: TParams) => Promise<void>;
 }
@@ -299,8 +307,8 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
       key: K | ((params: TParams) => K),
       asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
       reducer?: ReducerPure<TParams, TResult, V>
-  ): (params: TParams) => Promise<void> => {
-      return async params => {
+  ) => {
+      const loadByReturnFunction = async (params?: TParams) => {
           const loadKey = typeof key === 'function' ? (key as any)(params) : key;
           const keyString = getKeyString(loadKey);
           const promise = toPromise({asyncFunction, params});
@@ -316,7 +324,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
               const snapshot = private_store_getAttribute(keyString, 'value');
 
               const formattedResult = typeof reducer === 'function'
-                  ? reducer(getValueOrInitialValue(snapshot), result, params)
+                  ? reducer(getValueOrInitialValue(snapshot), result, params as TParams)
                   : result as unknown as V;
               if (strategy === 'acceptLatest' && promise !== currentPromise) {
                   // decrease loading & return snapshot
@@ -338,6 +346,8 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
               return getValueOrInitialValue(snapshot) as never;
           }
       };
+
+      return loadByReturnFunction;
   };
 
   const load: Result['load'] = async (key, promise) => {
