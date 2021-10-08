@@ -53,35 +53,35 @@ interface LoadBy<K, V> {
   <TParams = void>(
     key: K | ((params: TParams) => K),
     asyncFunction: AsyncFunctionOrPromise<TParams, V>,
-  ): (params: TParams) => Promise<V | void>;
+  ): (params: TParams) => Promise<void>;
   <TParams = void, TResult = unknown>(
     key: K | ((params: TParams) => K),
     asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
     reducer: Reducer<TParams, TResult, V>,
-  ): (params: TParams) => Promise<V | void>;
+  ): (params: TParams) => Promise<void>;
 }
 
 interface LoadByPure<K, V> {
   <TParams = void>(
     key: K | ((params: TParams) => K),
     asyncFunction: AsyncFunctionOrPromise<TParams, V>,
-  ): (params: TParams) => Promise<V>;
+  ): (params: TParams) => Promise<void>;
   <TParams = void, TResult = unknown>(
     key: K | ((params: TParams) => K),
     asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
     reducer: ReducerPure<TParams, TResult, V>,
-  ): (params: TParams) => Promise<V>;
+  ): (params: TParams) => Promise<void>;
 }
 
 export interface CreateMappedRegionReturnValue<K, V> {
   private_getState_just_for_test: () => any;
   private_setState_just_for_test: (value: any) => void;
-  set: (key: K, resultOrFunc: V | ResultFunc<V>) => V;
+  set: (key: K, resultOrFunc: V | ResultFunc<V>) => void;
   reset: (key: K) => void;
   resetAll: () => void;
   // emit: (key: K) => void;
   // emitAll: () => void;
-  load: (key: K, promise: Promise<V>) => Promise<V>;
+  load: (key: K, promise: Promise<V>) => Promise<void>;
   loadBy: LoadBy<K, V>;
   getValue: (key: K) => V | undefined;
   getLoading: (key: K) => boolean;
@@ -96,7 +96,7 @@ export interface CreateMappedRegionReturnValue<K, V> {
 
 export interface CreateMappedRegionPureReturnValue<K, V>
   extends Omit<CreateMappedRegionReturnValue<K, V>, 'set' | 'loadBy' | 'getValue' | 'useValue'> {
-  set: (key: K, resultOrFunc: V | ResultFuncPure<V>) => V;
+  set: (key: K, resultOrFunc: V | ResultFuncPure<V>) => void;
   loadBy: LoadByPure<K, V>;
   getValue: (key: K) => V;
   useValue: {
@@ -299,7 +299,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
       key: K | ((params: TParams) => K),
       asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
       reducer?: ReducerPure<TParams, TResult, V>
-  ): (params: TParams) => Promise<V> => {
+  ): (params: TParams) => Promise<void> => {
       return async params => {
           const loadKey = typeof key === 'function' ? (key as any)(params) : key;
           const keyString = getKeyString(loadKey);
@@ -321,10 +321,10 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
               if (strategy === 'acceptLatest' && promise !== currentPromise) {
                   // decrease loading & return snapshot
                   private_store_loadEnd(keyString);
-                  return getValueOrInitialValue(snapshot);
+                  return getValueOrInitialValue(snapshot) as never;
               }
               private_store_set(keyString, formattedResult);
-              return getValueOrInitialValue(formattedResult);
+              return getValueOrInitialValue(formattedResult) as never;
           } catch (error) {
               const currentPromise = private_store_getAttribute(keyString, 'promise');
               const snapshot = private_store_getAttribute(keyString, 'value');
@@ -332,21 +332,20 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
               if (strategy === 'acceptLatest' && promise !== currentPromise) {
                   // decrease loading & return snapshot
                   private_store_loadEnd(keyString);
-                  return getValueOrInitialValue(snapshot);
+                  return getValueOrInitialValue(snapshot) as never;
               }
               private_store_setError(keyString, error);
-              return getValueOrInitialValue(snapshot);
+              return getValueOrInitialValue(snapshot) as never;
           }
       };
   };
 
-  const load: Result['load'] = async (key, asyncFunction) => {
-      if (asyncFunction instanceof Promise || typeof asyncFunction === 'function') {
-          return loadBy(key, asyncFunction as unknown as any)();
+  const load: Result['load'] = async (key, promise) => {
+      if (promise instanceof Promise || typeof promise === 'function') {
+          return loadBy(key, promise as unknown as any)();
       }
       console.warn('set result directly');
-      const setKey = typeof key === 'function' ? (key as any)() : key;
-      return set(setKey, asyncFunction as unknown as any) as unknown as Promise<V>;
+      return set(key, promise);
   };
 
   const getValue: Result['getValue'] = key => {

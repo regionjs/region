@@ -11,27 +11,27 @@ import {
 interface LoadBy<V> {
   <TParams = void>(
     asyncFunction: AsyncFunctionOrPromise<TParams, V>,
-  ): (params: TParams) => Promise<V | void>;
+  ): (params: TParams) => Promise<void>;
   <TParams = void, TResult = unknown>(
     asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
     reducer: Reducer<TParams, TResult, V>,
-  ): (params: TParams) => Promise<V | void>;
+  ): (params: TParams) => Promise<void>;
 }
 
 interface LoadByPure<V> {
   <TParams = void>(
     asyncFunction: AsyncFunctionOrPromise<TParams, V>,
-  ): (params: TParams) => Promise<V>;
+  ): (params: TParams) => Promise<void>;
   <TParams = void, TResult = unknown>(
     asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
     reducer: ReducerPure<TParams, TResult, V>,
-  ): (params: TParams) => Promise<V>;
+  ): (params: TParams) => Promise<void>;
 }
 
 export interface CreateRegionReturnValue<V> {
-  set: (resultOrFunc: V | ResultFunc<V>) => V;
+  set: (resultOrFunc: V | ResultFunc<V>) => void;
   reset: () => void;
-  load: (promise: Promise<V>) => Promise<V>;
+  load: (promise: Promise<V>) => Promise<void>;
   loadBy: LoadBy<V>;
   getValue: () => V | undefined;
   getLoading: () => boolean;
@@ -45,7 +45,7 @@ export interface CreateRegionReturnValue<V> {
 }
 
 export interface CreateRegionPureReturnValue<V> extends Omit<CreateRegionReturnValue<V>, 'set' | 'loadBy' | 'getValue' | 'useValue'> {
-  set: (resultOrFunc: V | ResultFuncPure<V>) => V;
+  set: (resultOrFunc: V | ResultFuncPure<V>) => void;
   loadBy: LoadByPure<V>;
   getValue: () => V;
   useValue: {
