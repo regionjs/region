@@ -1,31 +1,24 @@
 import createMappedRegion, {CreateMappedRegionPureReturnValue} from '../createMappedRegion';
 import {
-    Reducer,
-    ReducerPure,
     RegionOption,
     ResultFunc,
     ResultFuncPure,
 } from '../types';
 
-interface LoadBy<V> {
-  (asyncFunction: () => Promise<V>): () => Promise<void>;
+interface LoadBy<V, Extend> {
+  (
+    asyncFunction: () => Promise<V>,
+  ): () => Promise<void>;
+  <TResult = unknown>(
+    asyncFunction: () => Promise<TResult>,
+    reducer: (state: V | Extend, result: TResult) => V,
+  ): () => Promise<void>;
   <TParams = void>(
-    asyncFunction: (params: TParams) => Promise<V>,
+      asyncFunction: (params: TParams) => Promise<V>,
   ): (params: TParams) => Promise<void>;
   <TParams = void, TResult = unknown>(
-    asyncFunction: (params: TParams) => Promise<TResult>,
-    reducer: Reducer<TParams, TResult, V>,
-  ): (params: TParams) => Promise<void>;
-}
-
-interface LoadByPure<V> {
-  (asyncFunction: () => Promise<V>): () => Promise<void>;
-  <TParams = void>(
-    asyncFunction: (params: TParams) => Promise<V>,
-  ): (params: TParams) => Promise<void>;
-  <TParams = void, TResult = unknown>(
-    asyncFunction: (params: TParams) => Promise<TResult>,
-    reducer: ReducerPure<TParams, TResult, V>,
+      asyncFunction: (params: TParams) => Promise<TResult>,
+      reducer: (state: V | Extend, result: TResult, params: TParams) => V,
   ): (params: TParams) => Promise<void>;
 }
 
@@ -33,7 +26,7 @@ export interface CreateRegionReturnValue<V> {
   set: (resultOrFunc: V | ResultFunc<V>) => void;
   reset: () => void;
   load: (promise: Promise<V>) => Promise<void>;
-  loadBy: LoadBy<V>;
+  loadBy: LoadBy<V, undefined>;
   getValue: () => V | undefined;
   getLoading: () => boolean;
   getError: () => Error | undefined;
@@ -47,7 +40,7 @@ export interface CreateRegionReturnValue<V> {
 
 export interface CreateRegionPureReturnValue<V> extends Omit<CreateRegionReturnValue<V>, 'set' | 'loadBy' | 'getValue' | 'useValue'> {
   set: (resultOrFunc: V | ResultFuncPure<V>) => void;
-  loadBy: LoadByPure<V>;
+  loadBy: LoadBy<V, never>;
   getValue: () => V;
   useValue: {
     (): V;
@@ -82,7 +75,7 @@ function createRegion <V>(initialValue: void | V | undefined, option?: RegionOpt
 
   const loadBy: Result['loadBy'] = <TParams = void, TResult = unknown>(
       asyncFunction: (params: TParams) => Promise<TResult>,
-      reducer?: Reducer<TParams, TResult, V>
+      reducer?: (state: V, result: TResult, params: TParams) => V
   ) => {
       return region.loadBy('value', asyncFunction, reducer as any) as any;
   };

@@ -5,8 +5,6 @@ import {deprecate} from '../util';
 import {
     ResultFunc,
     ResultFuncPure,
-    Reducer,
-    ReducerPure,
     Strategy,
     RegionOption,
     Listener,
@@ -48,10 +46,15 @@ const getSetResult = <V>(resultOrFunc: V | ResultFuncPure<V>, snapshot: V) => {
     return resultOrFunc;
 };
 
-interface LoadBy<K, V> {
+interface LoadBy<K, V, Extend> {
   (
     key: K | (() => K),
     asyncFunction: () => Promise<V>,
+  ): () => Promise<void>;
+  <TResult = unknown>(
+    key: K | (() => K),
+    asyncFunction: () => Promise<TResult>,
+    reducer: (state: V | Extend, result: TResult) => V,
   ): () => Promise<void>;
   <TParams = void>(
     key: K | ((params: TParams) => K),
@@ -60,23 +63,7 @@ interface LoadBy<K, V> {
   <TParams = void, TResult = unknown>(
     key: K | ((params: TParams) => K),
     asyncFunction: (params: TParams) => Promise<TResult>,
-    reducer: Reducer<TParams, TResult, V>,
-  ): (params: TParams) => Promise<void>;
-}
-
-interface LoadByPure<K, V> {
-  (
-    key: K | (() => K),
-    asyncFunction: () => Promise<V>,
-  ): () => Promise<void>;
-  <TParams = void>(
-    key: K | ((params: TParams) => K),
-    asyncFunction: (params: TParams) => Promise<V>,
-  ): (params: TParams) => Promise<void>;
-  <TParams = void, TResult = unknown>(
-    key: K | ((params: TParams) => K),
-    asyncFunction: (params: TParams) => Promise<TResult>,
-    reducer: ReducerPure<TParams, TResult, V>,
+    reducer: (state: V | Extend, result: TResult, params: TParams) => V,
   ): (params: TParams) => Promise<void>;
 }
 
@@ -89,7 +76,7 @@ export interface CreateMappedRegionReturnValue<K, V> {
   // emit: (key: K) => void;
   // emitAll: () => void;
   load: (key: K, promise: Promise<V>) => Promise<void>;
-  loadBy: LoadBy<K, V>;
+  loadBy: LoadBy<K, V, undefined>;
   getValue: (key: K) => V | undefined;
   getLoading: (key: K) => boolean;
   getError: (key: K) => Error | undefined;
@@ -104,7 +91,7 @@ export interface CreateMappedRegionReturnValue<K, V> {
 export interface CreateMappedRegionPureReturnValue<K, V>
   extends Omit<CreateMappedRegionReturnValue<K, V>, 'set' | 'loadBy' | 'getValue' | 'useValue'> {
   set: (key: K, resultOrFunc: V | ResultFuncPure<V>) => void;
-  loadBy: LoadByPure<K, V>;
+  loadBy: LoadBy<K, V, never>;
   getValue: (key: K) => V;
   useValue: {
     (key: K): V;
@@ -305,7 +292,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
   const loadBy: Result['loadBy'] = <TParams = void, TResult = unknown>(
       key: K | ((params: TParams) => K),
       asyncFunction: (params: TParams) => Promise<TResult>,
-      reducer?: ReducerPure<TParams, TResult, V>
+      reducer?: (state: V, result: TResult, params: TParams) => V
   ) => {
       const loadByReturnFunction = async (params?: TParams) => {
           const loadKey = typeof key === 'function' ? (key as any)(params) : key;
