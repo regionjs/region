@@ -31,7 +31,7 @@ interface LoadByPure<V> {
 export interface CreateRegionReturnValue<V> {
   set: (resultOrFunc: V | ResultFunc<V>) => V;
   reset: () => void;
-  load: unknown;
+  load: (promise: Promise<V>) => Promise<V>;
   loadBy: LoadBy<V>;
   getValue: () => V | undefined;
   getLoading: () => boolean;
@@ -44,9 +44,8 @@ export interface CreateRegionReturnValue<V> {
   useError: () => Error | undefined;
 }
 
-export interface CreateRegionPureReturnValue<V> extends Omit<CreateRegionReturnValue<V>, 'set' | 'load' | 'loadBy' | 'getValue' | 'useValue'> {
+export interface CreateRegionPureReturnValue<V> extends Omit<CreateRegionReturnValue<V>, 'set' | 'loadBy' | 'getValue' | 'useValue'> {
   set: (resultOrFunc: V | ResultFuncPure<V>) => V;
-  load: (promise: Promise<V>) => Promise<V>;
   loadBy: LoadByPure<V>;
   getValue: () => V;
   useValue: {
@@ -76,12 +75,8 @@ function createRegion <V>(initialValue: void | V | undefined, option?: RegionOpt
       return region.reset('value');
   };
 
-  const load: Result['load'] = <TParams = void, TResult = unknown>(
-      asyncFunction: AsyncFunctionOrPromise<TParams, TResult>,
-      reducer?: Reducer<TParams, TResult, V>
-  ) => {
-      // @ts-ignore
-      return region.load('value', asyncFunction, reducer);
+  const load: Result['load'] = promise => {
+      return region.load('value', promise);
   };
 
   const loadBy: Result['loadBy'] = <TParams = void, TResult = unknown>(
