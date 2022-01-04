@@ -14,19 +14,6 @@ import {
 const increase = (v: number = 0) => (v + 1);
 const decrease = (v: number = 0) => (v - 1 > 0 ? v - 1 : 0);
 
-interface ToPromiseParams<TParams, V> {
-  asyncFunction: (params: TParams) => Promise<V>;
-  params: any;
-}
-
-const toPromise = async <TParams, V>({asyncFunction, params}: ToPromiseParams<TParams, V>) => {
-    if (typeof asyncFunction === 'function') {
-        return asyncFunction(params);
-    }
-    // promise
-    return asyncFunction;
-};
-
 const formatLoading = (loading?: number) => {
     // treat undefined as true
     if (loading === undefined) {
@@ -80,12 +67,17 @@ export interface CreateMappedRegionReturnValue<K, V> {
   getValue: (key: K) => V | undefined;
   getLoading: (key: K) => boolean;
   getError: (key: K) => Error | undefined;
+  getPromise: (key: K) => Promise<V> | undefined;
   useValue: {
     (key: K): V | undefined;
     <TResult>(key: K, selector: (value: V | undefined) => TResult): TResult;
   };
   useLoading: (key: K) => boolean;
   useError: (key: K) => Error | undefined;
+  useData: {
+      (key: K): V;
+      <TResult>(key: K, selector: (value: V) => TResult): TResult;
+  };
 }
 
 export interface CreateMappedRegionPureReturnValue<K, V>
@@ -153,7 +145,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
       return props[attribute];
   };
 
-  const private_store_load = <TResult>(key: string, promise: Promise<TResult>): void => {
+  const private_store_load = (key: string, promise: Promise<V>): void => {
       private_store_ensure(key);
 
       // since it is ensured
@@ -289,6 +281,26 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
   //
   // const emitAll: Result['emitAll'] = private_store_emitAll;
 
+  const toPromise = async <TParams, TResult>(
+      asyncFunction: (params: TParams) => Promise<TResult>,
+      reducer?: (state: V, result: TResult, params: TParams) => V,
+      params?: TParams,
+      // @ts-ignore
+      getReducerState: () => V
+  ): Promise<V> => {
+
+      // const formattedResult = typeof reducer === 'function'
+      //     ? reducer(getValueOrInitialValue(snapshot), result, params as TParams)
+      //     : result as unknown as V;
+      const promise = typeof asyncFunction === 'function' ? asyncFunction(params as TParams) : asyncFunction;
+      if (typeof reducer === 'function') {
+          return promise.then((result: TResult) => {
+              return reducer(getReducerState(), result, params as TParams);
+          });
+      }
+      return promise as unknown as Promise<V>;
+  };
+
   const loadBy: Result['loadBy'] = <TParams = void, TResult = unknown>(
       key: K | ((params: TParams) => K),
       asyncFunction: (params: TParams) => Promise<TResult>,
@@ -297,7 +309,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
       const loadByReturnFunction = async (params?: TParams) => {
           const loadKey = typeof key === 'function' ? (key as any)(params) : key;
           const keyString = getKeyString(loadKey);
-          const promise = toPromise({asyncFunction, params});
+          const promise = toPromise(asyncFunction, reducer, params, () => getValueOrInitialValue(private_store_getAttribute(keyString, 'value')));
           private_store_load(keyString, promise);
           /**
        * note
@@ -309,16 +321,13 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
               const currentPromise = private_store_getAttribute(keyString, 'promise');
               const snapshot = private_store_getAttribute(keyString, 'value');
 
-              const formattedResult = typeof reducer === 'function'
-                  ? reducer(getValueOrInitialValue(snapshot), result, params as TParams)
-                  : result as unknown as V;
               if (strategy === 'acceptLatest' && promise !== currentPromise) {
                   // decrease loading & return snapshot
                   private_store_loadEnd(keyString);
                   return getValueOrInitialValue(snapshot) as never;
               }
-              private_store_set(keyString, formattedResult);
-              return getValueOrInitialValue(formattedResult) as never;
+              private_store_set(keyString, result);
+              return getValueOrInitialValue(result) as never;
           } catch (error) {
               const currentPromise = private_store_getAttribute(keyString, 'promise');
               const snapshot = private_store_getAttribute(keyString, 'value');
@@ -360,6 +369,12 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
       return formatError(private_store_getAttribute(keyString, 'error'));
   };
 
+  const getPromise: Result['getPromise'] = key => {
+      const keyString = getKeyString(key);
+      const promise = private_store_getAttribute(keyString, 'promise');
+      return promise;
+  };
+
   const createHooks = <TReturnType>(getFn: (key: K) => TReturnType) => {
       return (key: K): TReturnType => {
           const subscription = useMemo(
@@ -390,6 +405,30 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
       return useSubscription(subscription);
   };
 
+  const useData: Result['useData'] = <TResult>(key: K, selector?: (value: V) => TResult) => {
+      // keep logic as createHook is
+      const getFn = getValue;
+      const subscription = useMemo(
+          () => ({
+              getCurrentValue: () => (selector ? selector(getFn(key)) : getFn(key)),
+              subscribe: (listener: Listener) => private_store_subscribe(getKeyString(key), listener),
+          }),
+          // shallow-equal
+          // eslint-disable-next-line react-hooks/exhaustive-deps
+          [getFn, selector, getKeyString(key)]
+      );
+      const currentPromise = useMemo(
+          () => getPromise(key),
+          // shallow-equal
+          // eslint-disable-next-line react-hooks/exhaustive-deps
+          [getPromise, getKeyString(key)]
+      );
+      if (subscription.getCurrentValue() === undefined && currentPromise) {
+          throw currentPromise;
+      }
+      return useSubscription(subscription);
+  };
+
   const useLoading: Result['useLoading'] = createHooks(getLoading);
 
   const useError: Result['useError'] = createHooks(getError);
@@ -407,9 +446,11 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
       getValue,
       getLoading,
       getError,
+      getPromise,
       useValue,
       useLoading,
       useError,
+      useData,
   };
 }
 

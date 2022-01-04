@@ -30,12 +30,17 @@ export interface CreateRegionReturnValue<V> {
   getValue: () => V | undefined;
   getLoading: () => boolean;
   getError: () => Error | undefined;
+  getPromise: () => Promise<V> | undefined;
   useValue: {
     (): V | undefined;
     <TResult>(selector: (value: V | undefined) => TResult): TResult;
   };
   useLoading: () => boolean;
   useError: () => Error | undefined;
+  useData: {
+    (): V;
+    <TResult>(selector: (value: V) => TResult): TResult;
+  };
 }
 
 export interface CreateRegionPureReturnValue<V> extends Omit<CreateRegionReturnValue<V>, 'set' | 'loadBy' | 'getValue' | 'useValue'> {
@@ -92,6 +97,10 @@ function createRegion <V>(initialValue: void | V | undefined, option?: RegionOpt
       return region.getError('value');
   };
 
+  const getPromise: Result['getPromise'] = () => {
+      return region.getPromise('value');
+  };
+
   const useValue: Result['useValue'] = <TResult>(selector?: (value: V) => TResult) => {
       return region.useValue('value', selector as (value: V) => TResult);
   };
@@ -104,6 +113,10 @@ function createRegion <V>(initialValue: void | V | undefined, option?: RegionOpt
       return region.useError('value');
   };
 
+  const useData: Result['useData'] = () => {
+      return region.useData('value');
+  };
+
   return {
       set,
       reset,
@@ -112,9 +125,11 @@ function createRegion <V>(initialValue: void | V | undefined, option?: RegionOpt
       getValue,
       getLoading,
       getError,
+      getPromise,
       useValue,
       useLoading,
       useError,
+      useData,
   };
 }
 

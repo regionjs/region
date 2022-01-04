@@ -16,7 +16,7 @@ export type Listener = () => void;
 export interface Props<V> {
   pendingMutex?: number;
   value?: V;
-  promise?: Promise<unknown>;
+  promise?: Promise<V>;
   error?: unknown;
   listeners?: Listener[];
 }
