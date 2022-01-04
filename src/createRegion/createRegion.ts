@@ -38,8 +38,8 @@ export interface CreateRegionReturnValue<V> {
   useLoading: () => boolean;
   useError: () => Error | undefined;
   useData: {
-    (): V;
-    <TResult>(selector: (value: V) => TResult): TResult;
+    (fetcher: () => Promise<void>): V;
+    <TResult>(fetcher: () => Promise<void>, selector: (value: V) => TResult): TResult;
   };
 }
 
@@ -113,8 +113,8 @@ function createRegion <V>(initialValue: void | V | undefined, option?: RegionOpt
       return region.useError('value');
   };
 
-  const useData: Result['useData'] = () => {
-      return region.useData('value');
+  const useData: Result['useData'] = <TResult>(fetcher: () => Promise<void>, selector?: (value: V) => TResult) => {
+      return region.useData('value', fetcher, selector as (value: V) => TResult);
   };
 
   return {

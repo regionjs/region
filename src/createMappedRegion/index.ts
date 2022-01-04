@@ -75,8 +75,8 @@ export interface CreateMappedRegionReturnValue<K, V> {
   useLoading: (key: K) => boolean;
   useError: (key: K) => Error | undefined;
   useData: {
-      (key: K): V;
-      <TResult>(key: K, selector: (value: V) => TResult): TResult;
+      (key: K, fetcher: () => Promise<void>): V;
+      <TResult>(key: K, fetcher: () => Promise<void>, selector: (value: V) => TResult): TResult;
   };
 }
 
@@ -405,7 +405,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
       return useSubscription(subscription);
   };
 
-  const useData: Result['useData'] = <TResult>(key: K, selector?: (value: V) => TResult) => {
+  const useData: Result['useData'] = <TResult>(key: K, fetcher: () => Promise<void>, selector?: (value: V) => TResult) => {
       // keep logic as createHook is
       const getFn = getValue;
       const subscription = useMemo(
@@ -423,8 +423,13 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
           // eslint-disable-next-line react-hooks/exhaustive-deps
           [getPromise, getKeyString(key)]
       );
-      if (subscription.getCurrentValue() === undefined && currentPromise) {
-          throw currentPromise;
+      if (subscription.getCurrentValue() === undefined) {
+          if (currentPromise) {
+              throw currentPromise;
+          } else {
+              // fetcher may cause infinite loop?
+              throw fetcher();
+          }
       }
       return useSubscription(subscription);
   };
