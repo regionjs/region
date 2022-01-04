@@ -288,15 +288,11 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
       // @ts-ignore
       getReducerState: () => V
   ): Promise<V> => {
-
-      // const formattedResult = typeof reducer === 'function'
-      //     ? reducer(getValueOrInitialValue(snapshot), result, params as TParams)
-      //     : result as unknown as V;
+      // maybe promise, asyncFunction may return native value
       const promise = typeof asyncFunction === 'function' ? asyncFunction(params as TParams) : asyncFunction;
       if (typeof reducer === 'function') {
-          return promise.then((result: TResult) => {
-              return reducer(getReducerState(), result, params as TParams);
-          });
+          const result = await promise;
+          return reducer(getReducerState(), result, params as TParams);
       }
       return promise as unknown as Promise<V>;
   };

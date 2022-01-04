@@ -93,3 +93,14 @@ describe('bypass error when error should not be combined', () => {
         );
     });
 });
+
+describe('loadBy sync function with reducer will not omit', () => {
+    test('basic', async () => {
+        const region = createRegion();
+        const syncFunction = () => 1;
+        expect(region.getValue()).toBe(undefined);
+        // @ts-expect-error
+        await region.loadBy(syncFunction, (_, result) => result)();
+        expect(region.getValue()).toBe(1);
+    });
+});
