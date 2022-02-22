@@ -197,13 +197,13 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
   };
 
   const private_store_reset = (key: string): void => {
-      private_stateRef.current[key] = {listeners: private_stateRef.current[key].listeners};
+      private_stateRef.current[key] = {listeners: private_stateRef.current[key]?.listeners};
       private_store_emit(key);
   };
 
   const private_store_resetAll = (): void => {
       Object.keys(private_stateRef.current).forEach((key: string) => {
-          private_stateRef.current[key] = {listeners: private_stateRef.current[key].listeners};
+          private_stateRef.current[key] = {listeners: private_stateRef.current[key]?.listeners};
           private_store_emit(key);
       });
   };

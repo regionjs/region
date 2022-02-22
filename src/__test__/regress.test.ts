@@ -1,4 +1,4 @@
-import {createRegion} from '..';
+import {createMappedRegion, createRegion} from '..';
 
 describe('reject race condition', () => {
     test('basic', done => {
@@ -102,5 +102,15 @@ describe('loadBy sync function with reducer will not omit', () => {
         // @ts-expect-error
         await region.loadBy(syncFunction, (_, result) => result)();
         expect(region.getValue()).toBe(1);
+    });
+});
+
+describe('reset region first', () => {
+    test('basic', () => {
+        const region = createRegion();
+        expect(() => region.reset()).not.toThrow();
+
+        const mappedRegion = createMappedRegion();
+        expect(() => mappedRegion.resetAll()).not.toThrow();
     });
 });
