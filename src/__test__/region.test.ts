@@ -68,6 +68,17 @@ describe('createRegion', () => {
         expect(region.getValue()).toBe(undefined);
     });
 
+
+    test('setValue with function in function region', () => {
+        const func = () => 'Angela Robinson';
+        const region = createRegion(func);
+        region.set(() => 'Bryan Adams');
+        expect(region.getValue()).toBe('Bryan Adams');
+        const func2 = () => 'Cheryl Cole';
+        region.set(() => func2);
+        expect(region.getValue()).toBe(func2);
+    });
+
     test('load', async () => {
         const region = createRegion();
         const asyncFunction = () => Promise.resolve('Amy Hernandez');

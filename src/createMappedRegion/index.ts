@@ -164,8 +164,7 @@ function createMappedRegion <K extends string | AnyKey, V>(initialValue: V | voi
         // since it is ensured
         const props = private_stateRef.current[key];
 
-        const snapshot = props.value;
-        const formatValue = typeof value === 'function' ? value(snapshot) : value;
+        const formatValue = value;
         props.pendingMutex = decrease(props.pendingMutex);
         props.value = formatValue;
         props.error = undefined; // reset error

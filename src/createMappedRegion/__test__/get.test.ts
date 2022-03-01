@@ -9,8 +9,8 @@ const {
 
 describe('get', () => {
     test('get things from nothing', () => {
-    // NOTE loading is true because we want to display loading ui when state is undefined.
-    // private_setState({});
+        // NOTE loading is true because we want to display loading ui when state is undefined.
+        // private_setState({});
         expect(getLoading('a')).toEqual(true);
         expect(getValue('a')).toEqual(undefined);
         expect(getError('a')).toEqual(undefined);
