@@ -3,6 +3,8 @@ import mockDate from './mockDate';
 
 mockDate();
 
+interface ParamsId { id: string }
+
 describe('createRegion', () => {
     test('createRegion with undefined', () => {
         const region = createRegion();
@@ -162,7 +164,7 @@ describe('createRegion', () => {
 
     test('load with id', () => {
         const region = createRegion();
-        const asyncFunction = ({id}: any) => Promise.resolve({id, name: 'Robert Davis'});
+        const asyncFunction = ({id}: ParamsId) => Promise.resolve({id, name: 'Robert Davis'});
 
         expect.assertions(1);
         return region.loadBy(asyncFunction)({id: '620000198705195453'}).then(() => {
@@ -172,7 +174,7 @@ describe('createRegion', () => {
 
     test('load with idFunc', () => {
         const region = createRegion();
-        const asyncFunction = ({id}: {id: string}) => Promise.resolve({id, name: 'Scott Davis'});
+        const asyncFunction = ({id}: ParamsId) => Promise.resolve({id, name: 'Scott Davis'});
         const loadUser = region.loadBy(asyncFunction);
 
         expect.assertions(1);
@@ -183,8 +185,8 @@ describe('createRegion', () => {
 
     test('load normalize', () => {
         const region = createRegion();
-        const asyncFunction = ({id}: any) => Promise.resolve({id, name: 'Amy Davis'});
-        const asyncFunction2 = ({id}: any) => Promise.resolve({id, name: 'Carol Jackson'});
+        const asyncFunction = ({id}: ParamsId) => Promise.resolve({id, name: 'Amy Davis'});
+        const asyncFunction2 = ({id}: ParamsId) => Promise.resolve({id, name: 'Carol Jackson'});
         const loadUser = region.loadBy(asyncFunction);
         const loadUser2 = region.loadBy(asyncFunction2);
 

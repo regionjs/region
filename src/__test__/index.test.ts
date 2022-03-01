@@ -3,7 +3,7 @@ import * as api from '..';
 describe('export api', () => {
     test('api contains', () => {
         const {
-            // @ts-ignore
+            // @ts-expect-error
             __esModule,
             createRegion,
             createLocalStorageRegion,

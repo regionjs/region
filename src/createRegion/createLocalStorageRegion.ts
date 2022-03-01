@@ -1,8 +1,10 @@
+/** TODO add type inference */
 import createRegion from './createRegion';
 
 const localStorage = typeof window === 'object' && window.localStorage;
 
 type Key = string;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Value = any;
 
 const setLocalStorageState = (key: Key, value: Value) => {
@@ -25,7 +27,7 @@ const getLocalStorageState = (key: Key, fallbackValue: Value) => {
             setLocalStorageState(key, fallbackValue);
             return fallbackValue;
         }
-        // @ts-ignore
+        // @ts-expect-error
         return JSON.parse(jsonString);
     } catch (e) {
         setLocalStorageState(key, fallbackValue);

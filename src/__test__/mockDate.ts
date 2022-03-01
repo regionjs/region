@@ -1,7 +1,7 @@
 
 const mockDate = () => {
     /* eslint-disable no-global-assign, class-methods-use-this */
-    // @ts-ignore
+    // @ts-expect-error
     Date = class {
         getTime() {
             return 0;

@@ -74,7 +74,7 @@ describe('bypass error when error should not be combined', () => {
         const region = createRegion();
         const throwError = () => new Promise((resolve, reject) => {
             const error = new Error('error');
-            // @ts-ignore
+            // @ts-expect-error
             error.a = 1;
             setTimeout(() => reject(error), 0);
         });
@@ -85,7 +85,7 @@ describe('bypass error when error should not be combined', () => {
         setTimeout(
             () => {
                 expect(region.getError()?.message).toBe('error');
-                // @ts-ignore
+                // @ts-expect-error
                 expect(region.getError()?.a).toBe(1);
                 done();
             },

@@ -46,13 +46,13 @@ describe('set', () => {
 
 describe('load', () => {
     test('fallback to set', async () => {
-    // @ts-ignore
+    // @ts-expect-error
         const result = await loadBy('user', 'set a user')();
         expect(result).toBe('set a user');
     });
 
     test('promise', async () => {
-    // @ts-ignore
+    // @ts-expect-error
         const result = await loadBy('user', Promise.resolve('a user'))();
         expect(result).toBe('a user');
     });
@@ -71,7 +71,7 @@ describe('load', () => {
         const result = await loadBy(
             'user',
             () => Promise.resolve('2'),
-            (snapshot: any, user: any) => `${snapshot}${user}3`
+            (snapshot, user) => `${snapshot}${user}3`
         )();
         expect(result).toBe('0123');
     });
@@ -82,7 +82,7 @@ describe('load', () => {
     });
 
     test('params can be array', async () => {
-        const result = await loadBy('array', (array: any) => Promise.resolve(array.length))([0, 1]);
+        const result = await loadBy('array', (array: unknown[]) => Promise.resolve(array.length))([0, 1]);
         expect(result).toBe(2);
     });
 });

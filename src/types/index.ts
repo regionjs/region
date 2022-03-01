@@ -2,7 +2,7 @@
 export type Strategy = 'acceptLatest' | 'acceptEvery';
 
 export interface RegionOption {
-  strategy: Strategy;
+    strategy: Strategy;
 }
 
 // set & load
@@ -14,9 +14,12 @@ export type ResultFuncPure<V> = (snapshot: V) => V;
 export type Listener = () => void;
 
 export interface Props<V> {
-  pendingMutex?: number;
-  value?: V;
-  promise?: Promise<V>;
-  error?: Error;
-  listeners?: Listener[];
+    pendingMutex?: number;
+    value?: V;
+    promise?: Promise<V>;
+    error?: Error;
+    listeners?: Listener[];
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AnyKey = string | Record<string, any>;

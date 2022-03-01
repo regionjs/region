@@ -4,6 +4,7 @@ import {region} from './region';
 
 const {set, useLoading, useValue} = region;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const connect = (key: any) => (Component: any) => {
     return () => {
         const loading = useLoading(key);
@@ -13,11 +14,12 @@ const connect = (key: any) => (Component: any) => {
     };
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const connectWith = (key: any, Component: any) => connect(key)(Component);
 
 describe('react', () => {
     test('useProps', () => {
-        const User: React.FC = () => {
+        const User = () => {
             const loading = useLoading('user');
             const user = useValue('user');
             return loading ? <div>{`loading ${user}`}</div> : <div>{`!loading ${user}`}</div>;
@@ -28,7 +30,11 @@ describe('react', () => {
     });
 
     test('connect and connectWith', () => {
-        const User: React.FC = ({loading, user}: any) => (loading ? <div>{`loading ${user}`}</div> : <div>{`!loading ${user}`}</div>);
+        interface Props {
+            loading: boolean;
+            user: string;
+        }
+        const User = ({loading, user}: Props) => (loading ? <div>{`loading ${user}`}</div> : <div>{`!loading ${user}`}</div>);
         const ConnectUser = connect('user')(User);
         expect(reactTestRenderer.create(<ConnectUser />).toJSON()).toMatchSnapshot();
         set('user', 'user2');
