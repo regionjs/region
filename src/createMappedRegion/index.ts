@@ -22,10 +22,6 @@ const formatLoading = (loading?: number) => {
     return loading > 0;
 };
 
-const formatError = (error?: unknown): Error => {
-    return typeof error === 'string' ? new Error(error) : (error as Error);
-};
-
 const getSetResult = <V>(resultOrFunc: V | ResultFuncPure<V>, snapshot: V) => {
     if (typeof resultOrFunc === 'function') {
         return (resultOrFunc as ResultFuncPure<V>)(snapshot);
@@ -102,9 +98,11 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
   interface PrivateStoreState {
     [key: string]: Props<V>;
   }
+
   interface PrivateStoreStateRef {
     current: PrivateStoreState;
   }
+
   const private_stateRef: PrivateStoreStateRef = {
       current: {},
   };
@@ -181,7 +179,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
       private_store_emit(key);
   };
 
-  const private_store_setError = (key: string, error: unknown): void => {
+  const private_store_setError = (key: string, error: Error): void => {
       private_store_ensure(key);
 
       // since it is ensured
@@ -281,7 +279,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
   //
   // const emitAll: Result['emitAll'] = private_store_emitAll;
 
-  const toPromise = async <TParams, TResult>(
+  const private_toPromise = async <TParams, TResult>(
       asyncFunction: (params: TParams) => Promise<TResult>,
       reducer?: (state: V, result: TResult, params: TParams) => V,
       params?: TParams,
@@ -297,6 +295,16 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
       return promise as unknown as Promise<V>;
   };
 
+  const private_toError = (error: unknown): Error => {
+      if (error instanceof Error) {
+          return error;
+      }
+      if (typeof error === 'string') {
+          return new Error(error);
+      }
+      return new Error(`You should throw an Error or a string to reject Promise, received ${error}`);
+  };
+
   const loadBy: Result['loadBy'] = <TParams = void, TResult = unknown>(
       key: K | ((params: TParams) => K),
       asyncFunction: (params: TParams) => Promise<TResult>,
@@ -305,13 +313,13 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
       const loadByReturnFunction = async (params?: TParams) => {
           const loadKey = typeof key === 'function' ? (key as any)(params) : key;
           const keyString = getKeyString(loadKey);
-          const promise = toPromise(asyncFunction, reducer, params, () => getValueOrInitialValue(private_store_getAttribute(keyString, 'value')));
+          const promise = private_toPromise(asyncFunction, reducer, params, () => getValueOrInitialValue(private_store_getAttribute(keyString, 'value')));
           private_store_load(keyString, promise);
           /**
-       * note
-       * 1. always get value after await, so it is the current one
-       * 2. ensure if initialValue is gaven, every branch should return initialValueOfKey as T[K]
-       */
+           * note
+           * 1. always get value after await, so it is the current one
+           * 2. ensure if initialValue is gaven, every branch should return initialValueOfKey as T[K]
+           */
           try {
               const result = await promise;
               const currentPromise = private_store_getAttribute(keyString, 'promise');
@@ -324,7 +332,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
               }
               private_store_set(keyString, result);
               return getValueOrInitialValue(result) as never;
-          } catch (error) {
+          } catch (error: unknown) {
               const currentPromise = private_store_getAttribute(keyString, 'promise');
               const snapshot = private_store_getAttribute(keyString, 'value');
 
@@ -333,7 +341,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
                   private_store_loadEnd(keyString);
                   return getValueOrInitialValue(snapshot) as never;
               }
-              private_store_setError(keyString, error);
+              private_store_setError(keyString, private_toError(error));
               return getValueOrInitialValue(snapshot) as never;
           }
       };
@@ -362,7 +370,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
 
   const getError: Result['getError'] = key => {
       const keyString = getKeyString(key);
-      return formatError(private_store_getAttribute(keyString, 'error'));
+      return private_store_getAttribute(keyString, 'error');
   };
 
   const getPromise: Result['getPromise'] = key => {
@@ -391,7 +399,13 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
       const getFn = getValue;
       const subscription = useMemo(
           () => ({
-              getCurrentValue: () => (selector ? selector(getFn(key)) : getFn(key)),
+              getCurrentValue: () => {
+                  const value = getFn(key);
+                  if (!value) {
+                      return undefined;
+                  }
+                  return selector ? selector(value) : value;
+              },
               subscribe: (listener: Listener) => private_store_subscribe(getKeyString(key), listener),
           }),
           // shallow-equal
@@ -401,7 +415,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
       return useSubscription(subscription);
   };
 
-  const useData: Result['useData'] = <TResult>(key: K, fetcher: () => Promise<void>, selector?: (value: V) => TResult) => {
+  const useData: Result['useData'] = <TResult>(key: K, selector?: (value: V) => TResult) => {
       // keep logic as createHook is
       const getFn = getValue;
       const subscription = useMemo(
@@ -423,8 +437,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
           if (currentPromise) {
               throw currentPromise;
           } else {
-              // fetcher may cause infinite loop?
-              throw fetcher();
+              throw new Error('Doesn\'t found any work in progress load process');
           }
       }
       return useSubscription(subscription);

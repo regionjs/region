@@ -17,6 +17,6 @@ export interface Props<V> {
   pendingMutex?: number;
   value?: V;
   promise?: Promise<V>;
-  error?: unknown;
+  error?: Error;
   listeners?: Listener[];
 }
