@@ -1,10 +1,9 @@
-/**
- * TODO Warning: An update to User inside a test was not wrapped in act(...).
- */
 const noop = () => {};
-const { warn, error } = console;
+// TODO spy on console.error
+/* eslint-disable no-console */
 console.debug = noop;
-console.warn = () => warn('console.warn');
-console.error = () => error('console.error');
+console.warn = noop;
+console.error = noop;
 console.groupCollapsed = noop;
 console.groupEnd = noop;
+/* eslint-enable no-console */

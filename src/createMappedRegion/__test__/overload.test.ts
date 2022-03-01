@@ -1,7 +1,7 @@
 import {createMappedRegion} from '../..';
 
 describe('overload', () => {
-    test('overload', () => {
+    test('overload', async () => {
         const mappedRegion = createMappedRegion<'a'| 'b', number | string>();
         const pureMappedRegion = createMappedRegion<'a'| 'b', number | string>(1);
 
@@ -15,9 +15,8 @@ describe('overload', () => {
         const loadAPure = pureMappedRegion.loadBy('a', getAReject);
 
         expect.assertions(6); // sync 4 + async 2
-        return Promise.all([loadA(), loadAPure()]).then(([resultA, resultAPure]) => {
-            expect(resultA).toBe(undefined);
-            expect(resultAPure).toBe(1);
-        });
+        const [resultA, resultAPure] = await Promise.all([loadA(), loadAPure()]);
+        expect(resultA).toBe(undefined);
+        expect(resultAPure).toBe(1);
     });
 });

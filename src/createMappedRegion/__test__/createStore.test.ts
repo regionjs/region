@@ -1,10 +1,9 @@
-import mockDate from '../../__test__/mockDate';
-import {region} from './region';
-
-mockDate();
+import {delay} from '../../util/delay';
+import {createMappedRegion} from '../..';
 
 describe('createStore', () => {
     test('set string', () => {
+        const region = createMappedRegion<string, string>();
         const result = 'a user';
         region.set('user', result);
         expect(region.private_getState_just_for_test()).toEqual({
@@ -17,6 +16,7 @@ describe('createStore', () => {
     });
 
     test('set array', () => {
+        const region = createMappedRegion<string, Array<{id: number, name: string}>>();
         const result = [{id: 1, name: 'zhangcong'}, {id: 2, name: 'milly'}];
         region.set('user', result);
         expect(region.private_getState_just_for_test()).toEqual({
@@ -29,6 +29,7 @@ describe('createStore', () => {
     });
 
     test('function', () => {
+        const region = createMappedRegion<string, () => string>();
         const result = () => 'should be string';
         region.set('user', result);
         expect(region.private_getState_just_for_test()).toEqual({
@@ -40,38 +41,38 @@ describe('createStore', () => {
         });
     });
 
-    test('error', () => {
+    test('error', async () => {
+        const region = createMappedRegion<string, string>();
         const error = new Error('error');
-        region.loadBy('user', () => Promise.reject(error))();
-        new Promise(resolve => setTimeout(resolve, 50)).then(
-            () => {
-                expect(region.private_getState_just_for_test()).toEqual({
-                    user: {
-                        error,
-                        pendingMutex: 0,
-                        value: undefined,
-                    },
-                });
-            }
-        );
+        const promise = Promise.reject(error);
+        region.loadBy('user', () => promise)();
+        await delay(50);
+        expect(region.private_getState_just_for_test()).toEqual({
+            user: {
+                error,
+                pendingMutex: 0,
+                value: undefined,
+                promise,
+            },
+        });
     });
 
-    test('error not cover snapshot', () => {
+    test('error not cover snapshot', async () => {
+        const region = createMappedRegion<string, string>();
         const result = 'a user';
         const error = new Error('error');
+        const promise = Promise.reject(error);
         region.set('user', result);
         // actually region-core will do
-        region.loadBy('user', () => Promise.reject(error))();
-        new Promise(resolve => setTimeout(resolve, 50)).then(
-            () => {
-                expect(region.private_getState_just_for_test()).toEqual({
-                    user: {
-                        error,
-                        pendingMutex: 0,
-                        value: 'a user',
-                    },
-                });
-            }
-        );
+        region.loadBy('user', () => promise)();
+        await delay(50);
+        expect(region.private_getState_just_for_test()).toEqual({
+            user: {
+                error,
+                pendingMutex: 0,
+                value: 'a user',
+                promise,
+            },
+        });
     });
 });

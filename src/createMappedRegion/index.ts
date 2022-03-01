@@ -1,7 +1,7 @@
 import {useMemo} from 'react';
 import * as jsonStableStringify from 'json-stable-stringify';
 import {useSubscription} from 'use-subscription';
-import {deprecate} from '../util';
+import {deprecate} from '../util/deprecate';
 import {ResultFunc, ResultFuncPure, Strategy, RegionOption, Listener, Props, AnyKey} from '../types';
 
 const increase = (v: number = 0) => (v + 1);

@@ -10,6 +10,7 @@
         "skipLibCheck": true
     },
     "include": [
-        "./src/**/*/"
+        "./src/**/*/",
+        "./scripts/**/*/"
     ]
 }
