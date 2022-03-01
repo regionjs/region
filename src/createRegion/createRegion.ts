@@ -34,8 +34,8 @@ export interface CreateRegionReturnValue<V> {
     useLoading: () => boolean;
     useError: () => Error | undefined;
     useData: {
-        (fetcher: () => Promise<void>): V;
-        <TResult>(fetcher: () => Promise<void>, selector: (value: V) => TResult): TResult;
+        (): V;
+        <TResult>(selector: (value: V) => TResult): TResult;
     };
 }
 
@@ -100,7 +100,9 @@ function createRegion <V>(initialValue: void | V | undefined, option?: RegionOpt
     };
 
     const useValue: Result['useValue'] = <TResult>(selector?: (value: V) => TResult) => {
-        return region.useValue('value', selector as (value: V) => TResult);
+        // type actually strict, it is loose when developed
+        // @ts-expect-error
+        return region.useValue('value', selector);
     };
 
     const useLoading: Result['useLoading'] = () => {
@@ -111,8 +113,10 @@ function createRegion <V>(initialValue: void | V | undefined, option?: RegionOpt
         return region.useError('value');
     };
 
-    const useData: Result['useData'] = <TResult>(fetcher: () => Promise<void>, selector?: (value: V) => TResult) => {
-        return region.useData('value', fetcher, selector as (value: V) => TResult);
+    const useData: Result['useData'] = <TResult>(selector?: (value: V) => TResult) => {
+        // type actually strict, it is loose when developed
+        // @ts-expect-error
+        return region.useData('value', selector);
     };
 
     return {

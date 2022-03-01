@@ -66,8 +66,8 @@ export interface CreateMappedRegionReturnValue<K extends string | AnyKey, V> {
     useLoading: (key: K) => boolean;
     useError: (key: K) => Error | undefined;
     useData: {
-        (key: K, fetcher: () => Promise<void>): V;
-        <TResult>(key: K, fetcher: () => Promise<void>, selector: (value: V) => TResult): TResult;
+        (key: K): V;
+        <TResult>(key: K, selector: (value: V) => TResult): TResult;
     };
 }
 
@@ -110,6 +110,7 @@ function createMappedRegion <K extends string | AnyKey, V>(initialValue: V | voi
     const private_store_emit = (key: string): void => {
         const props = private_stateRef.current[key];
         if (!props) {
+            // istanbul ignore next
             return;
         }
         const {listeners} = props;
@@ -213,6 +214,7 @@ function createMappedRegion <K extends string | AnyKey, V>(initialValue: V | voi
         if (typeof listener === 'function') {
             props.listeners.push(listener);
         } else {
+            // istanbul ignore next
             console.warn(`listener should be function, but received ${listener}`);
         }
 
@@ -222,6 +224,7 @@ function createMappedRegion <K extends string | AnyKey, V>(initialValue: V | voi
             // since it is ensured
             const props = private_stateRef.current[key];
             if (!props.listeners) {
+                // istanbul ignore next
                 props.listeners = [];
             }
             props.listeners.splice(props.listeners.indexOf(listener), 1);
@@ -381,19 +384,17 @@ function createMappedRegion <K extends string | AnyKey, V>(initialValue: V | voi
                 }),
                 // shallow-equal
                 // eslint-disable-next-line react-hooks/exhaustive-deps
-                [getFn, getKeyString(key)]
+                [getKeyString(key)]
             );
             return useSubscription(subscription);
         };
     };
 
-    const useValue: Result['useValue'] = <TResult>(key: K, selector?: (value: V) => TResult) => {
-        // keep logic as createHook is
-        const getFn = getValue;
+    const useValueSelectorSubscription = <TResult>(key: K, selector?: (value: V) => TResult) => {
         const subscription = useMemo(
             () => ({
                 getCurrentValue: () => {
-                    const value = getFn(key);
+                    const value = getValue(key);
                     if (!value) {
                         return undefined;
                     }
@@ -403,23 +404,18 @@ function createMappedRegion <K extends string | AnyKey, V>(initialValue: V | voi
             }),
             // shallow-equal
             // eslint-disable-next-line react-hooks/exhaustive-deps
-            [getFn, selector, getKeyString(key)]
+            [selector, getKeyString(key)]
         );
+        return subscription;
+    };
+
+    const useValue: Result['useValue'] = <TResult>(key: K, selector?: (value: V) => TResult) => {
+        const subscription = useValueSelectorSubscription(key, selector);
         return useSubscription(subscription);
     };
 
     const useData: Result['useData'] = <TResult>(key: K, selector?: (value: V) => TResult) => {
-        // keep logic as createHook is
-        const getFn = getValue;
-        const subscription = useMemo(
-            () => ({
-                getCurrentValue: () => (selector ? selector(getFn(key)) : getFn(key)),
-                subscribe: (listener: Listener) => private_store_subscribe(getKeyString(key), listener),
-            }),
-            // shallow-equal
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-            [getFn, selector, getKeyString(key)]
-        );
+        const subscription = useValueSelectorSubscription(key, selector);
         const currentPromise = useMemo(
             () => getPromise(key),
             // shallow-equal

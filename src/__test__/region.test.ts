@@ -1,3 +1,4 @@
+import {renderHook} from '@testing-library/react-hooks';
 import {createRegion} from '..';
 
 interface ParamsId { id: string }
@@ -8,6 +9,7 @@ describe('createRegion', () => {
         expect(region.getValue()).toBe(undefined);
         expect(region.getLoading()).toBe(true);
         expect(region.getError()).toBe(undefined);
+        expect(region.getPromise()).toBe(undefined);
     });
 
     test('createRegion with value', () => {
@@ -41,6 +43,17 @@ describe('createRegion', () => {
         const region = createRegion(func);
         expect(region.getValue()).toBe(func);
     });
+});
+
+describe('set', () => {
+    test('setValue', () => {
+        const region = createRegion();
+        region.set('Karen Martinez');
+        expect(region.getValue()).toBe('Karen Martinez');
+        expect(region.getLoading()).toBe(false);
+        expect(region.getError()).toBe(undefined);
+        expect(region.getPromise()).toBe(undefined);
+    });
 
     test('setValue with value', () => {
         const region = createRegion();
@@ -64,10 +77,13 @@ describe('createRegion', () => {
     test('setValue with undefined', () => {
         const region = createRegion();
         region.set('Jennifer Rodriguez');
+        expect(region.getValue()).toBe('Jennifer Rodriguez');
         region.set(undefined);
         expect(region.getValue()).toBe(undefined);
+        expect(region.getLoading()).toBe(false);
+        expect(region.getError()).toBe(undefined);
+        expect(region.getPromise()).toBe(undefined);
     });
-
 
     test('setValue with function in function region', () => {
         const func = () => 'Angela Robinson';
@@ -78,14 +94,30 @@ describe('createRegion', () => {
         region.set(() => func2);
         expect(region.getValue()).toBe(func2);
     });
+});
 
+describe('load', () => {
     test('load', async () => {
         const region = createRegion();
         const asyncFunction = () => Promise.resolve('Amy Hernandez');
 
-        expect.assertions(1);
+        expect.assertions(4);
         await region.loadBy(asyncFunction)();
         expect(region.getValue()).toBe('Amy Hernandez');
+        expect(region.getLoading()).toBe(false);
+        expect(region.getError()).toBe(undefined);
+        const promiseValue = await region.getPromise();
+        expect(promiseValue).toBe('Amy Hernandez');
+    });
+
+    test('load resolve function', async () => {
+        const region = createRegion();
+        const func = () => 'David Anderson';
+        const asyncFunction = () => Promise.resolve(func);
+
+        expect.assertions(1);
+        await region.loadBy(asyncFunction)();
+        expect(region.getValue()).toBe(func);
     });
 
     test('load with reject', async () => {
@@ -218,5 +250,92 @@ describe('createRegion', () => {
         await Promise.all([promise1, promise2]);
         expect(region.getLoading()).toBe(false);
         expect(region.getValue()).toBe('William Harris');
+    });
+});
+
+describe('useLoading', () => {
+    test('useLoading', () => {
+        const region = createRegion();
+        const {result} = renderHook(() => region.useLoading());
+        expect(result.current).toBe(true);
+        region.set('Sharon Brown');
+        expect(result.current).toBe(false);
+    });
+});
+
+describe('useValue', () => {
+    test('useValue', () => {
+        const region = createRegion();
+        const {result} = renderHook(() => region.useValue());
+        expect(result.current).toBe(undefined);
+        region.set('Elizabeth Taylor');
+        expect(result.current).toBe('Elizabeth Taylor');
+    });
+
+    test('useValue with reset', () => {
+        const region = createRegion('Fred Smith');
+        const {result} = renderHook(() => region.useValue());
+        expect(result.current).toBe('Fred Smith');
+        region.set('George Washington');
+        expect(result.current).toBe('George Washington');
+        region.reset();
+        expect(result.current).toBe('Fred Smith');
+    });
+
+    test('useValue with load', async () => {
+        const region = createRegion();
+        const {result} = renderHook(() => region.useValue());
+        expect(result.current).toBe(undefined);
+        await region.load(Promise.resolve('Henry Ford'));
+        expect(result.current).toBe('Henry Ford');
+    });
+
+    test('useValue with selector', async () => {
+        const region = createRegion<string>();
+        const {result, rerender} = renderHook(() => region.useValue(s => s?.charAt(0)));
+        expect(result.current).toBe(undefined);
+        await region.load(Promise.resolve('Henry Ford'));
+        await rerender();
+        expect(result.current).toBe('H');
+    });
+});
+
+describe('useError', () => {
+    test('useError', async () => {
+        const region = createRegion();
+        const {result} = renderHook(() => region.useError());
+        expect(result.current).toBe(undefined);
+        region.set('Irene Kennedy');
+        expect(result.current).toBe(undefined);
+        const error = new Error('Oops');
+        await region.load(Promise.reject(error));
+        expect(result.current instanceof Error).toBe(true);
+        expect(result.current).toBe(error);
+        region.reset();
+        expect(result.current).toBe(undefined);
+    });
+
+    test('useError with string reject', async () => {
+        const region = createRegion();
+        const {result} = renderHook(() => region.useError());
+        expect(result.current).toBe(undefined);
+        region.set('Irene Kennedy');
+        expect(result.current).toBe(undefined);
+        const error = 'just string';
+        await region.load(Promise.reject(error));
+        expect(result.current instanceof Error).toBe(true);
+        expect(result.current).not.toBe('just string');
+        expect(result.current?.message).toBe('just string');
+    });
+});
+
+describe('useData', () => {
+    test('useData', async () => {
+        const region = createRegion();
+        const {result, rerender} = renderHook(() => region.useData());
+        expect(result.error?.message).toBe('Doesn\'t found any work in progress load process');
+        await region.load(Promise.resolve('John Adams'));
+        await rerender();
+        expect(result.current).toBe('John Adams');
     });
 });
