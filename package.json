@@ -26,7 +26,6 @@
     "build-es": "rm -rf es/ && tsc --project tsconfig.es.json",
     "lint": "skr lint",
     "test": "skr test -- --coverage",
-    "codecov": "yarn test && codecov",
     "prepublishOnly": "yarn build && yarn build-es"
   },
   "peerDependencies": {
@@ -48,7 +47,6 @@
     "@types/react": "^17.0.39",
     "@types/react-test-renderer": "^17.0.1",
     "@types/use-subscription": "^1.0.0",
-    "codecov": "^3.8.3",
     "core-js": "^3.21.1",
     "eslint": "^8.10.0",
     "husky": "^7.0.4",

@@ -2,7 +2,7 @@
 
 [![version](https://img.shields.io/npm/v/region-core.svg?style=flat-square)](http://npm.im/region-core)
 [![npm downloads](https://img.shields.io/npm/dm/region-core.svg?style=flat-square)](https://www.npmjs.com/package/region-core)
-[![codecov](https://codecov.io/gh/regionjs/region-core/branch/develop/graph/badge.svg)](https://codecov.io/gh/regionjs/region-core)
+[![codecov](https://img.shields.io/codecov/c/gh/regionjs/region-core)](https://codecov.io/gh/regionjs/region-core)
 [![MIT License](https://img.shields.io/npm/l/region-core.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 
 region-core is a progressive View Model Management Framework. You can use it while using react state, redux, and benefit from it.
