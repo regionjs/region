@@ -1,5 +1,5 @@
 import {useMemo} from 'react';
-import * as jsonStableStringify from 'json-stable-stringify';
+import jsonStableStringify from 'json-stable-stringify';
 import {useSubscription} from 'use-subscription';
 import {deprecate} from '../util/deprecate';
 import {ResultFunc, ResultFuncPure, Strategy, RegionOption, Listener, Props, AnyKey} from '../types';
@@ -165,9 +165,8 @@ function createMappedRegion <K extends string | AnyKey, V>(initialValue: V | voi
         // since it is ensured
         const props = private_stateRef.current[key];
 
-        const formatValue = value;
         props.pendingMutex = decrease(props.pendingMutex);
-        props.value = formatValue;
+        props.value = value;
         props.error = undefined; // reset error
 
         private_store_emit(key);

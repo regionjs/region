@@ -43,8 +43,12 @@ const createLocalStorageRegion = <V>(key: LocalStorageKey, fallbackValue: V) => 
         setLocalStorageState(key, value);
         return regionSet(value);
     };
+
+    // unable to fire storage event yet, see https://github.com/testing-library/dom-testing-library/issues/438
     typeof window === 'object' && window.addEventListener('storage', () => {
+        // istanbul ignore next
         const value = getLocalStorageState(key, fallbackValue);
+        // istanbul ignore next
         regionSet(value);
     });
     return region;

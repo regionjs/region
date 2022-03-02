@@ -1,5 +1,6 @@
 import {renderHook} from '@testing-library/react-hooks';
 import {createRegion} from '..';
+import {delay} from '../util/delay';
 
 interface ParamsId { id: string }
 
@@ -251,6 +252,14 @@ describe('load', () => {
         expect(region.getLoading()).toBe(false);
         expect(region.getValue()).toBe('William Harris');
     });
+
+    // unexpected operation
+    test('load with direct value', () => {
+        const region = createRegion();
+        // @ts-expect-error
+        region.load('Steven Walker');
+        expect(region.getValue()).toBe('Steven Walker');
+    });
 });
 
 describe('useLoading', () => {
@@ -260,6 +269,20 @@ describe('useLoading', () => {
         expect(result.current).toBe(true);
         region.set('Sharon Brown');
         expect(result.current).toBe(false);
+    });
+
+    test('hook unmount and mount', async () => {
+        const region = createRegion();
+        const {result: result1, unmount} = renderHook(() => region.useLoading());
+        const {result: result2} = renderHook(() => region.useLoading());
+        expect(result1.current).toBe(true);
+        expect(result2.current).toBe(true);
+        await unmount();
+        expect(result1.current).toBe(true);
+        expect(result2.current).toBe(true);
+        region.set('Sharon Brown');
+        expect(result1.current).toBe(true);
+        expect(result2.current).toBe(false);
     });
 });
 
@@ -337,5 +360,20 @@ describe('useData', () => {
         await region.load(Promise.resolve('John Adams'));
         await rerender();
         expect(result.current).toBe('John Adams');
+    });
+
+    test('useData should throw promise when loading', async () => {
+        const region = createRegion();
+        region.loadBy(async () => {
+            await delay(50);
+            return 'Quentin Tarantino';
+        })();
+        expect(region.getPromise()).not.toBe(undefined);
+        const {result, rerender} = renderHook(() => region.useData());
+        // TODO add test for throw promise
+        expect(result.current).toBe(undefined);
+        await region.getPromise();
+        await rerender();
+        expect(result.current).toBe('Quentin Tarantino');
     });
 });
