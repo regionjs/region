@@ -17,27 +17,27 @@ English | [中文](https://github.com/regionjs/region-core/blob/master/docs/READ
 npm i region-core
 ```
 
-- Create a Component with region
+- Build your Component above region
 
-```jsx harmony
-import { createRegion } from 'region-core';
+```typescript jsx
+import {createRegion} from 'region-core';
 
-const region = createRegion('initialValue');
+const region = createRegion<string>('initialValue');
 
 const handleChange = e => region.set(e.target.value);
 
 const Component = () => {
-  const value = region.useValue();
-  return <input value={value} onChange={handleChange} />;
+    const value = region.useValue();
+    return <input value={value} onChange={handleChange} />;
 };
 ```
 
 - Fetching data with region
 
-```jsx harmony
-import { createRegion } from 'region-core';
+```typescript jsx
+import {createRegion} from 'region-core';
 
-const region = createRegion();
+const region = createRegion<User>();
 
 const loadUser = region.loadBy(asyncFuncion);
 
@@ -45,11 +45,12 @@ const loadUser = region.loadBy(asyncFuncion);
 loadUser({userId: 1});
 
 const Component = () => {
-  const value = region.useValue();
-  const loading = region.useLoading();
-  const error = region.useError();
+    const value = region.useValue();
+    const loading = region.useLoading();
+    const error = region.useError();
 
-  return <div>{value}</div>;
+    // ...
+    return <div>{value}</div>;
 }
 ```
 

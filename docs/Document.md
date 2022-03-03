@@ -33,59 +33,74 @@ region.set(value);
 region.set(prevValue => value);
 ```
 
-### region.load && region.loadBy
+### region.loadBy
 
-`region.loadBy` returns a function, it calls the given asyncFunction and store the value it resolved.
+`region.loadBy` returns a function, it calls the given `asyncFunction` and store the value it resolved.
 
-When load starts, region will mark it `loading: true`, and when it is settled, it will be marked as `loading: false`.
+When load starts, region will mark it `loading: true`. And when it is settled, it will be marked as `loading: false`.
 
 You can have multiple load at the same time, since it is well race-condition optimized.
 
-Commonly, asyncFunction is called with params.
+Commonly, `asyncFunction` is called with params.
 
 ```typescript
-const loadUser = region.loadBy(asyncFuncion);
+const asyncFunction = async (params: Params): Result => {};
+
+// wrapped with loadBy, the result will be store in region
+const loadUser = region.loadBy(asyncFunction);
 
 // when you call it, params will be passed to asyncFunction
-loadUser({userId: 1});
+loadUser(params);
 
-// also
-region.load(asyncFunction);
-
-// it returns a promise
-const result = await load(asyncFunction);
-
-// this also works, but it is not recommended
-load(promise);
+// it returns a promise so you can await it
+await load(asyncFunction);
 ```
 
 - You can use a `reducer` to format resolved data before it is stored.
 
 ```typescript
 const loadUser = region.loadBy(
-  asyncFuncion,
-  (state = [], result, params) => {
-    state.push(result);
-    return state;
-  }
+    asyncFuncion,
+    (state = [], result, params) => {
+        state.push(result);
+        return state;
+    }
 );
+```
 
-// params will be passed through
-loadUser({userId: 1});
+### region.load
+
+`region.load` is similar to `region.loadBy`, but it accepts a promise.
+
+Note that in this case, we can't handle async issues for you. So it is not recommended.
+
+```typescript
+const promise = asuncFunction(params);
+
+region.load(promise);
 ```
 
 ### hooks
 
-Includes `useValue`, `useLoading`, `useError`
+Includes `useValue`, `useLoading`, `useError`, `useData`
 
-```typescript
+```typescript jsx
 const Component = () => {
-  const value = region.useValue();
-  const loading = region.useLoading();
-  const error = region.useError();
-  
-  return <div>{value}</div>
+    const value = region.useValue();
+    const loading = region.useLoading();
+    const error = region.useError();
+
+    // ...
+    return <div>{value}</div>
 }
+```
+
+When use `useData`, you should provide a `Suspense`
+
+```typescript jsx
+<Suspense fallback={<div>loading...</div>}>
+    <Component />
+</Suspense>
 ```
 
 Go to [examples](https://regionjs.github.io/region-core/#UseValue) for more.
@@ -105,34 +120,31 @@ const handler = () => {
 
 Note: Do not use them inside components, the component will not update.
 
-### use region with class component
-
-You can wrap a class component with function component hoc.
-
-Go to [examples](https://regionjs.github.io/region-core/#ClassComponent) for more.
-
 ### createMappedRegion
 
-A `MappedRegion` provides a key-value way of managing your data. Key could be string type, or it can be n-dimension such as `{x: 0, y: 0}`.
+A `mappedRegion` provides a key-value way of managing your data. Key could be `string` type, or it can be n-dimension such as `{x: 0, y: 0}`.
 
-```typescript
-import { createMappedRegion } from 'region-core';
+```typescript jsx
+import {createMappedRegion} from 'region-core';
 
-const mappedRegion = createMappedRegion<Key, Value>();
+const mappedRegion = createMappedRegion<Key, Value>(initialValue);
 
-// alse
-const MappedRegion = createMappedRegion<Key, Value>(initialValue);
-
-const {load, loadBy, set, useValue, useLoading, useError} = mappedRegion;
-```
-
-when use some state in `mappedRegion`, key should be provided：
-
-```typescript
 const Component = () => {
-  const value = mappedRegion.useValue({x: 0, y: 0});
-  // ...
+    const value = mappedRegion.useValue({x: 0, y: 0});
+    // ...
 }
 ```
 
 Go to [examples](https://regionjs.github.io/region-core/#MappedRegion) for more.
+
+### createLocalStorageRegion
+
+A `localStorageRegion` will sync data with localStorage with a specific key.
+
+```typescript
+import {createLocalStorageRegion} from 'region-core';
+
+const localStorageRegion = createLocalStorageRegion('key', fallbackValue);
+
+const {set, getValue, useValue} = localStorageRegion;
+```

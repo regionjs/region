@@ -17,27 +17,27 @@ region-core 是一个 React 渐进式状态管理框架，你可以在使用 rea
 npm i region-core
 ```
 
-- 使用 region 创建一个组件
+- 在 region 的基础上构造一个组件
 
-```jsx harmony
-import { createRegion } from 'region-core';
+```typescript jsx
+import {createRegion} from 'region-core';
 
-const region = createRegion('initialValue');
+const region = createRegion<string>('initialValue');
 
 const handleChange = e => region.set(e.target.value);
 
 const Component = () => {
-  const value = region.useValue();
-  return <input value={value} onChange={handleChange} />;
+    const value = region.useValue();
+    return <input value={value} onChange={handleChange} />;
 };
 ```
 
 - 使用 region 请求数据
 
-```jsx harmony
-import { createRegion } from 'region-core';
+```typescript jsx
+import {createRegion} from 'region-core';
 
-const region = createRegion();
+const region = createRegion<User>();
 
 const loadUser = region.loadBy(asyncFuncion);
 
@@ -45,11 +45,12 @@ const loadUser = region.loadBy(asyncFuncion);
 loadUser({userId: 1});
 
 const Component = () => {
-  const value = region.useValue();
-  const loading = region.useLoading();
-  const error = region.useError();
+    const value = region.useValue();
+    const loading = region.useLoading();
+    const error = region.useError();
 
-  return <div>{value}</div>;
+    // ...
+    return <div>{value}</div>;
 }
 ```
 
