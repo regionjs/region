@@ -46,7 +46,6 @@ describe('export api', () => {
             set, reset, resetAll, load, loadBy,
             getValue, getLoading, getError, getPromise,
             useValue, useLoading, useError, useData,
-            private_getState_just_for_test, private_setState_just_for_test,
             ...rest
         } = createMappedRegion();
         expect(typeof set).toBe('function');
@@ -61,8 +60,6 @@ describe('export api', () => {
         expect(typeof useLoading).toBe('function');
         expect(typeof useError).toBe('function');
         expect(typeof useData).toBe('function');
-        expect(typeof private_getState_just_for_test).toBe('function');
-        expect(typeof private_setState_just_for_test).toBe('function');
         expect(rest).toEqual({});
     });
 });

@@ -6,39 +6,21 @@ describe('createStore', () => {
         const region = createMappedRegion<string, string>();
         const result = 'a user';
         region.set('user', result);
-        expect(region.private_getState_just_for_test()).toEqual({
-            user: {
-                error: undefined,
-                pendingMutex: 0,
-                value: 'a user',
-            },
-        });
+        expect(region.getValue('user')).toEqual('a user');
     });
 
     test('set array', () => {
         const region = createMappedRegion<string, Array<{id: number, name: string}>>();
         const result = [{id: 1, name: 'zhangcong'}, {id: 2, name: 'milly'}];
         region.set('user', result);
-        expect(region.private_getState_just_for_test()).toEqual({
-            user: {
-                error: undefined,
-                pendingMutex: 0,
-                value: [{id: 1, name: 'zhangcong'}, {id: 2, name: 'milly'}],
-            },
-        });
+        expect(region.getValue('user')).toEqual([{id: 1, name: 'zhangcong'}, {id: 2, name: 'milly'}]);
     });
 
     test('function', () => {
         const region = createMappedRegion<string, () => string>();
         const result = () => 'should be string';
         region.set('user', result);
-        expect(region.private_getState_just_for_test()).toEqual({
-            user: {
-                error: undefined,
-                pendingMutex: 0,
-                value: 'should be string',
-            },
-        });
+        expect(region.getValue('user')).toEqual('should be string');
     });
 
     test('error', async () => {
@@ -47,14 +29,8 @@ describe('createStore', () => {
         const promise = Promise.reject(error);
         region.loadBy('user', () => promise)();
         await delay(50);
-        expect(region.private_getState_just_for_test()).toEqual({
-            user: {
-                error,
-                pendingMutex: 0,
-                value: undefined,
-                promise,
-            },
-        });
+        expect(region.getValue('user')).toEqual(undefined);
+        expect(region.getError('user')).toEqual(error);
     });
 
     test('error not cover snapshot', async () => {
@@ -66,13 +42,16 @@ describe('createStore', () => {
         // actually region-core will do
         region.loadBy('user', () => promise)();
         await delay(50);
-        expect(region.private_getState_just_for_test()).toEqual({
-            user: {
-                error,
-                pendingMutex: 0,
-                value: 'a user',
-                promise,
-            },
-        });
+        expect(region.getValue('user')).toEqual('a user');
+        expect(region.getError('user')).toEqual(error);
+    });
+});
+
+describe('get', () => {
+    test('get things from nothing', () => {
+        const region = createMappedRegion<string, string>();
+        expect(region.getLoading('a')).toEqual(true);
+        expect(region.getValue('a')).toEqual(undefined);
+        expect(region.getError('a')).toEqual(undefined);
     });
 });

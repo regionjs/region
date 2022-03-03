@@ -2,10 +2,11 @@ import {useMemo} from 'react';
 import jsonStableStringify from 'json-stable-stringify';
 import {useSubscription} from 'use-subscription';
 import {deprecate} from '../util/deprecate';
-import {ResultFunc, ResultFuncPure, Strategy, RegionOption, Listener, Props, AnyKey} from '../types';
+import {ResultFunc, ResultFuncPure, Strategy, RegionOption, Listener, AnyKey} from '../types';
 
-const increase = (v: number = 0) => (v + 1);
-const decrease = (v: number = 0) => (v - 1 > 0 ? v - 1 : 0);
+type IncreaseDecrease = (v: number | undefined) => number;
+const increase: IncreaseDecrease = (v: number = 0) => (v + 1);
+const decrease: IncreaseDecrease = (v: number = 0) => (v - 1 > 0 ? v - 1 : 0);
 
 const formatLoading = (loading?: number) => {
     // treat undefined as true
@@ -44,10 +45,6 @@ interface LoadBy<K, V, Extend> {
 }
 
 export interface CreateMappedRegionReturnValue<K extends string | AnyKey, V> {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private_getState_just_for_test: () => any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private_setState_just_for_test: (value: any) => void;
     set: (key: K, resultOrFunc: V | ResultFunc<V>) => void;
     reset: (key: K) => void;
     resetAll: () => void;
@@ -89,144 +86,97 @@ function createMappedRegion <K extends string | AnyKey, V>(initialValue: V | voi
 
     const strategy: Strategy = option?.strategy ?? 'acceptLatest';
 
-    interface PrivateStoreState {
-        [key: string]: Props<V>;
-    }
-
     interface PrivateStoreStateRef {
-        current: PrivateStoreState;
+        pendingMutex: Map<string, number>;
+        value: Map<string, V>;
+        promise: Map<string, Promise<V>>;
+        error: Map<string, Error>;
+        listeners: Map<string, Set<Listener>>;
     }
 
-    const private_stateRef: PrivateStoreStateRef = {
-        current: {},
-    };
-
-    const private_store_ensure = (key: string): void => {
-        if (!private_stateRef.current[key]) {
-            private_stateRef.current[key] = {};
-        }
+    const ref: PrivateStoreStateRef = {
+        pendingMutex: new Map<string, number>(),
+        value: new Map<string, V>(),
+        promise: new Map<string, Promise<V>>(),
+        error: new Map<string, Error>(),
+        listeners: new Map<string, Set<Listener>>(),
     };
 
     const private_store_emit = (key: string): void => {
-        const props = private_stateRef.current[key];
-        if (!props) {
-            // istanbul ignore next
-            return;
-        }
-        const {listeners} = props;
+        const listeners = ref.listeners.get(key);
         if (!listeners) {
             return;
         }
         listeners.forEach(listener => listener());
     };
 
-    // only used for test
-    const private_store_getState = (): PrivateStoreState => {
-        return private_stateRef.current;
-    };
-
-    // only used for test
-    const private_store_setState = (value: PrivateStoreState): void => {
-        private_stateRef.current = value;
-    };
-
-    const private_store_getAttribute = <A extends keyof Props<V>>(key: string, attribute: A): Props<V>[A] => {
-        const props = private_stateRef.current[key];
-        if (!props) {
-            return undefined;
-        }
-        return props[attribute];
-    };
-
     const private_store_load = (key: string, promise: Promise<V>): void => {
-        private_store_ensure(key);
-
-        // since it is ensured
-        const props = private_stateRef.current[key];
-
-        props.promise = promise;
-        props.pendingMutex = increase(props.pendingMutex);
+        ref.promise.set(key, promise);
+        const prevPendingMutex = ref.pendingMutex.get(key);
+        ref.pendingMutex.set(key, increase(prevPendingMutex));
         private_store_emit(key);
     };
 
     const private_store_loadEnd = (key: string): void => {
-        private_store_ensure(key);
-
-        // since it is ensured
-        const props = private_stateRef.current[key];
-
-        props.pendingMutex = decrease(props.pendingMutex);
+        const prevPendingMutex = ref.pendingMutex.get(key);
+        ref.pendingMutex.set(key, decrease(prevPendingMutex));
         private_store_emit(key);
     };
 
     const private_store_set = (key: string, value: V): void => {
-        private_store_ensure(key);
-
-        // since it is ensured
-        const props = private_stateRef.current[key];
-
-        props.pendingMutex = decrease(props.pendingMutex);
-        props.value = value;
-        props.error = undefined; // reset error
+        const prevPendingMutex = ref.pendingMutex.get(key);
+        ref.pendingMutex.set(key, decrease(prevPendingMutex));
+        ref.value.set(key, value);
+        ref.error.delete(key); // reset error
 
         private_store_emit(key);
     };
 
     const private_store_setError = (key: string, error: Error): void => {
-        private_store_ensure(key);
-
-        // since it is ensured
-        const props = private_stateRef.current[key];
-
-        props.pendingMutex = decrease(props.pendingMutex);
-        props.error = error;
-
-        if (error) {
-            console.error(error);
-        }
+        const prevPendingMutex = ref.pendingMutex.get(key);
+        ref.pendingMutex.set(key, decrease(prevPendingMutex));
+        ref.error.set(key, error);
+        console.error(error);
         private_store_emit(key);
     };
 
     const private_store_reset = (key: string): void => {
-        private_stateRef.current[key] = {listeners: private_stateRef.current[key]?.listeners};
+        ref.pendingMutex.delete(key);
+        ref.value.delete(key);
+        ref.promise.delete(key);
+        ref.error.delete(key);
         private_store_emit(key);
     };
 
     const private_store_resetAll = (): void => {
-        Object.keys(private_stateRef.current).forEach((key: string) => {
-            private_stateRef.current[key] = {listeners: private_stateRef.current[key]?.listeners};
+        // pendingMutex covers load/loadEnd/set/setError
+        const keys = Array.from(ref.pendingMutex.keys());
+        ref.pendingMutex.clear();
+        ref.value.clear();
+        ref.promise.clear();
+        ref.error.clear();
+        keys.forEach((key: string) => {
             private_store_emit(key);
         });
     };
 
-    // TODO add a regress test to prevent shadow variable usage of listeners
     const private_store_subscribe = (key: string, listener: Listener): () => void => {
-        private_store_ensure(key);
-
-        // since it is ensured
-        const props = private_stateRef.current[key];
-
-        if (!props.listeners) {
-            props.listeners = [];
+        if (!ref.listeners.get(key)) {
+            ref.listeners.set(key, new Set());
         }
 
         if (typeof listener === 'function') {
-            props.listeners.push(listener);
+            const listeners = ref.listeners.get(key);
+            // since it is ensured
+            listeners?.add(listener);
         } else {
             // istanbul ignore next
             console.warn(`listener should be function, but received ${listener}`);
         }
 
         return () => {
-            private_store_ensure(key);
-
-            // since it is ensured
-            const props = private_stateRef.current[key];
-            if (!props.listeners) {
-                // istanbul ignore next
-                props.listeners = [];
-            }
-            props.listeners.splice(props.listeners.indexOf(listener), 1);
+            const listeners = ref.listeners.get(key);
+            listeners?.delete(listener);
         };
     };
     /* -------- */
@@ -246,17 +196,17 @@ function createMappedRegion <K extends string | AnyKey, V>(initialValue: V | voi
     };
 
     // ---- APIs ----
-    const set: Result['set'] = (key, resultOrFunc) => {
+    const set: Result['set'] = (key, resultOrFunc): V => {
         const keyString = getKeyString(key);
         // Maybe we can use getValue here
-        const maybeSnapshot = private_store_getAttribute(keyString, 'value');
+        const maybeSnapshot = ref.value.get(keyString);
         const snapshot = getValueOrInitialValue(maybeSnapshot);
         const result = getSetResult(resultOrFunc, snapshot);
         private_store_set(keyString, result);
         return result;
     };
 
-    const reset: Result['reset'] = (key: K) => {
+    const reset: Result['reset'] = (key: K): void => {
         if (key === undefined) {
             deprecate('reset should be called with key, use resetAll to reset all keys.');
             private_store_resetAll();
@@ -305,10 +255,10 @@ function createMappedRegion <K extends string | AnyKey, V>(initialValue: V | voi
         asyncFunction: (params: TParams) => Promise<TResult>,
         reducer?: (state: V, result: TResult, params: TParams) => V
     ) => {
-        const loadByReturnFunction = async (params?: TParams) => {
+        const loadByReturnFunction = async (params?: TParams): Promise<void> => {
             const loadKey = typeof key === 'function' ? key(params as TParams) : key;
             const keyString = getKeyString(loadKey);
-            const promise = private_toPromise(asyncFunction, reducer, params, () => getValueOrInitialValue(private_store_getAttribute(keyString, 'value')));
+            const promise = private_toPromise(asyncFunction, reducer, params, () => getValueOrInitialValue(ref.value.get(keyString)));
             private_store_load(keyString, promise);
             /**
              * note
@@ -317,8 +267,8 @@ function createMappedRegion <K extends string | AnyKey, V>(initialValue: V | voi
              */
             try {
                 const result = await promise;
-                const currentPromise = private_store_getAttribute(keyString, 'promise');
-                const snapshot = private_store_getAttribute(keyString, 'value');
+                const currentPromise = ref.promise.get(keyString);
+                const snapshot = ref.value.get(keyString);
 
                 if (strategy === 'acceptLatest' && promise !== currentPromise) {
                     // decrease loading & return snapshot
@@ -328,8 +278,8 @@ function createMappedRegion <K extends string | AnyKey, V>(initialValue: V | voi
                 private_store_set(keyString, result);
                 return getValueOrInitialValue(result) as never;
             } catch (error: unknown) {
-                const currentPromise = private_store_getAttribute(keyString, 'promise');
-                const snapshot = private_store_getAttribute(keyString, 'value');
+                const currentPromise = ref.promise.get(keyString);
+                const snapshot = ref.value.get(keyString);
 
                 if (strategy === 'acceptLatest' && promise !== currentPromise) {
                     // decrease loading & return snapshot
@@ -354,23 +304,23 @@ function createMappedRegion <K extends string | AnyKey, V>(initialValue: V | voi
 
     const getValue: Result['getValue'] = key => {
         const keyString = getKeyString(key);
-        const value = private_store_getAttribute(keyString, 'value');
+        const value = ref.value.get(keyString);
         return getValueOrInitialValue(value);
     };
 
     const getLoading: Result['getLoading'] = key => {
         const keyString = getKeyString(key);
-        return formatLoading(private_store_getAttribute(keyString, 'pendingMutex'));
+        return formatLoading(ref.pendingMutex.get(keyString));
     };
 
     const getError: Result['getError'] = key => {
         const keyString = getKeyString(key);
-        return private_store_getAttribute(keyString, 'error');
+        return ref.error.get(keyString);
     };
 
     const getPromise: Result['getPromise'] = key => {
         const keyString = getKeyString(key);
-        const promise = private_store_getAttribute(keyString, 'promise');
+        const promise = ref.promise.get(keyString);
         return promise;
     };
 
@@ -436,8 +386,6 @@ function createMappedRegion <K extends string | AnyKey, V>(initialValue: V | voi
     const useError: Result['useError'] = createHooks(getError);
 
     return {
-        private_getState_just_for_test: private_store_getState,
-        private_setState_just_for_test: private_store_setState,
         set,
         reset,
         resetAll,
