@@ -41,18 +41,17 @@ describe('createMappedRegion', () => {
         expect(region.getValue('key')).toBe('Michael Jackson');
     });
 
-    // TODO reopen after https://github.com/ecomfe/reskript/issues/271
-    // test('createMappedRegion with dimension key', () => {
-    //     const region = createMappedRegion();
-    //     region.set({x: 0, y: 0}, 0);
-    //     region.set({x: 1, y: 1}, 2);
-    //     expect(region.getValue({x: 0, y: 0})).toBe(0);
-    //     expect(region.getValue({x: 1, y: 1})).toBe(2);
-    //     region.set({x: 0, y: 0}, 1);
-    //     expect(region.getValue({x: 0, y: 0})).toBe(1);
-    //     region.reset({x: 0, y: 0});
-    //     expect(region.getValue({x: 0, y: 0})).toBe(undefined);
-    // });
+    test('createMappedRegion with dimension key', () => {
+        const region = createMappedRegion();
+        region.set({x: 0, y: 0}, 0);
+        region.set({x: 1, y: 1}, 2);
+        expect(region.getValue({x: 0, y: 0})).toBe(0);
+        expect(region.getValue({x: 1, y: 1})).toBe(2);
+        region.set({x: 0, y: 0}, 1);
+        expect(region.getValue({x: 0, y: 0})).toBe(1);
+        region.reset({x: 0, y: 0});
+        expect(region.getValue({x: 0, y: 0})).toBe(undefined);
+    });
 
     test('createMappedRegion loadBy key function', async () => {
         const region = createMappedRegion<string, string>();

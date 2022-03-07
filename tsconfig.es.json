@@ -7,10 +7,10 @@
         "target": "es6",
         "moduleResolution": "node",
         "lib": ["esnext", "dom"],
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "allowSyntheticDefaultImports": true
     },
     "include": [
-        "./src/**/*/",
-        "./scripts/**/*/"
+        "./src/**/*/"
     ]
 }

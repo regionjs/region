@@ -1,5 +1,5 @@
 import {useMemo} from 'react';
-import * as jsonStableStringify from 'json-stable-stringify';
+import jsonStableStringify from 'json-stable-stringify';
 import {useSubscription} from 'use-subscription';
 import {deprecate} from '../util/deprecate';
 import {ResultFunc, ResultFuncPure, Strategy, RegionOption, Listener, AnyKey} from '../types';
@@ -185,9 +185,7 @@ function createMappedRegion <K extends string | AnyKey, V>(initialValue: V | voi
         if (typeof key === 'string') {
             return key;
         }
-        // TODO remove after https://github.com/ecomfe/reskript/issues/271
-        // istanbul ignore next
-        return key === undefined ? key : jsonStableStringify(key);
+        return jsonStableStringify(key);
     };
 
     const getValueOrInitialValue = (value: V | undefined): V => {
