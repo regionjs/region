@@ -7,8 +7,7 @@
         "target": "es5",
         "moduleResolution": "node",
         "lib": ["esnext", "dom"],
-        "skipLibCheck": true,
-        "allowSyntheticDefaultImports": true
+        "skipLibCheck": true
     },
     "include": [
         "./src/**/*/",
