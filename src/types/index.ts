@@ -20,6 +20,3 @@ export interface Props<V> {
     error?: Error;
     listeners?: Listener[];
 }
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type AnyKey = string | Record<string, any>;

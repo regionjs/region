@@ -2,7 +2,7 @@ import {useMemo} from 'react';
 import * as jsonStableStringify from 'json-stable-stringify';
 import {useSubscription} from 'use-subscription';
 import {deprecate} from '../util/deprecate';
-import {ResultFunc, ResultFuncPure, Strategy, RegionOption, Listener, AnyKey} from '../types';
+import {ResultFunc, ResultFuncPure, Strategy, RegionOption, Listener} from '../types';
 
 type IncreaseDecrease = (v: number | undefined) => number;
 const increase: IncreaseDecrease = (v: number = 0) => (v + 1);
@@ -44,7 +44,7 @@ interface LoadBy<K, V, Extend> {
     ): (params: TParams) => Promise<void>;
 }
 
-export interface CreateMappedRegionReturnValue<K extends string | AnyKey, V> {
+export interface CreateMappedRegionReturnValue<K, V> {
     set: (key: K, resultOrFunc: V | ResultFunc<V>) => void;
     reset: (key: K) => void;
     resetAll: () => void;
@@ -68,7 +68,7 @@ export interface CreateMappedRegionReturnValue<K extends string | AnyKey, V> {
     };
 }
 
-export interface CreateMappedRegionPureReturnValue<K extends string | AnyKey, V> extends Omit<CreateMappedRegionReturnValue<K, V>, 'set' | 'loadBy' | 'getValue' | 'useValue'> {
+export interface CreateMappedRegionPureReturnValue<K, V> extends Omit<CreateMappedRegionReturnValue<K, V>, 'set' | 'loadBy' | 'getValue' | 'useValue'> {
     set: (key: K, resultOrFunc: V | ResultFuncPure<V>) => void;
     loadBy: LoadBy<K, V, never>;
     getValue: (key: K) => V;
@@ -79,9 +79,9 @@ export interface CreateMappedRegionPureReturnValue<K extends string | AnyKey, V>
 }
 
 // overload is unsafe in some way, ensure the return type is correct
-function createMappedRegion <K extends string | AnyKey, V>(initialValue: void | undefined, option?: RegionOption): CreateMappedRegionReturnValue<K, V>;
-function createMappedRegion <K extends string | AnyKey, V>(initialValue: V, option?: RegionOption): CreateMappedRegionPureReturnValue<K, V>;
-function createMappedRegion <K extends string | AnyKey, V>(initialValue: V | void | undefined, option?: RegionOption): CreateMappedRegionReturnValue<K, V> | CreateMappedRegionPureReturnValue<K, V> {
+function createMappedRegion <K, V>(initialValue: void | undefined, option?: RegionOption): CreateMappedRegionReturnValue<K, V>;
+function createMappedRegion <K, V>(initialValue: V, option?: RegionOption): CreateMappedRegionPureReturnValue<K, V>;
+function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: RegionOption): CreateMappedRegionReturnValue<K, V> | CreateMappedRegionPureReturnValue<K, V> {
     type Result = CreateMappedRegionPureReturnValue<K, V>;
 
     const strategy: Strategy = option?.strategy ?? 'acceptLatest';
@@ -186,6 +186,7 @@ function createMappedRegion <K extends string | AnyKey, V>(initialValue: V | voi
             return key;
         }
         // TODO remove after https://github.com/ecomfe/reskript/issues/271
+        // @ts-expect-error
         // istanbul ignore next
         return key === undefined ? key : jsonStableStringify(key);
     };
@@ -258,6 +259,7 @@ function createMappedRegion <K extends string | AnyKey, V>(initialValue: V | voi
         reducer?: (state: V, result: TResult, params: TParams) => V
     ) => {
         const loadByReturnFunction = async (params?: TParams): Promise<void> => {
+            // @ts-expect-error
             const loadKey = typeof key === 'function' ? key(params as TParams) : key;
             const keyString = getKeyString(loadKey);
             const promise = private_toPromise(asyncFunction, reducer, params, () => getValueOrInitialValue(ref.value.get(keyString)));
