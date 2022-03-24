@@ -165,6 +165,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
             ref.listeners.set(key, new Set());
         }
 
+        // istanbul ignore next - should always be true
         if (typeof listener === 'function') {
             const listeners = ref.listeners.get(key);
             // since it is ensured
@@ -348,10 +349,17 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
             () => ({
                 getCurrentValue: () => {
                     const value = getValue(key);
-                    if (!value) {
-                        return undefined;
+                    if (!selector) {
+                        return value;
                     }
-                    return selector ? selector(value) : value;
+                    try {
+                        return selector(value);
+                    }
+                    catch (e) {
+                        console.error(e);
+                        console.error('Above error occurs in selector.');
+                        return value;
+                    }
                 },
                 subscribe: (listener: Listener) => private_store_subscribe(getKeyString(key), listener),
             }),

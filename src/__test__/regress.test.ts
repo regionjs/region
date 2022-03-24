@@ -1,3 +1,4 @@
+import {renderHook} from '@testing-library/react-hooks';
 import {createMappedRegion, createRegion} from '..';
 
 describe('reject race condition', () => {
@@ -112,5 +113,17 @@ describe('reset region first', () => {
 
         const mappedRegion = createMappedRegion();
         expect(() => mappedRegion.resetAll()).not.toThrow();
+    });
+});
+
+describe('falsy useValue will not return undefined', () => {
+    test('basic', () => {
+        const region = createRegion();
+        region.set(false);
+        const {result} = renderHook(() => region.useValue());
+        expect(result.current).toBe(false);
+        // @ts-expect-error
+        const {result: result2} = renderHook(() => region.useValue(aBoolean => aBoolean.value.value));
+        expect(result2.current).toBe(false);
     });
 });
