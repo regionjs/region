@@ -1,5 +1,5 @@
 // public
-export type Strategy = 'acceptLatest' | 'acceptEvery';
+export type Strategy = 'acceptFirst' | 'acceptLatest' | 'acceptEvery';
 
 export interface RegionOption {
     strategy: Strategy;

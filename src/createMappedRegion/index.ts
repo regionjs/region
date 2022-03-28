@@ -2,6 +2,7 @@ import {useMemo} from 'react';
 import * as jsonStableStringify from 'json-stable-stringify';
 import {useSyncExternalStore} from 'use-sync-external-store/shim';
 import {deprecate} from '../util/deprecate';
+import {uniqLast, isLatest} from '../util/promiseQueue';
 import {ResultFunc, ResultFuncPure, Strategy, RegionOption, Listener} from '../types';
 
 type IncreaseDecrease = (v: number | undefined) => number;
@@ -89,7 +90,8 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     interface PrivateStoreStateRef {
         pendingMutex: Map<string, number>;
         value: Map<string, V>;
-        promise: Map<string, Promise<V>>;
+        emittedPromiseQueue: Map<string, Array<Promise<V>>>;
+        receivedPromiseQueue: Map<string, Array<Promise<V>>>;
         error: Map<string, Error>;
         listeners: Map<string, Set<Listener>>;
     }
@@ -97,7 +99,8 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     const ref: PrivateStoreStateRef = {
         pendingMutex: new Map<string, number>(),
         value: new Map<string, V>(),
-        promise: new Map<string, Promise<V>>(),
+        emittedPromiseQueue: new Map<string, Array<Promise<V>>>(),
+        receivedPromiseQueue: new Map<string, Array<Promise<V>>>(),
         error: new Map<string, Error>(),
         listeners: new Map<string, Set<Listener>>(),
     };
@@ -110,16 +113,38 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         listeners.forEach(listener => listener());
     };
 
-    const private_store_load = (key: string, promise: Promise<V>): void => {
-        ref.promise.set(key, promise);
+    interface OptionsLoadStart {
+        promise: Promise<V>;
+    }
+
+    const private_store_loadStart = (key: string, {promise}: OptionsLoadStart): void => {
+        const emittedPromiseQueue = ref.emittedPromiseQueue.get(key) ?? [];
+        const nextPromiseQueue = uniqLast(emittedPromiseQueue, promise);
+        ref.emittedPromiseQueue.set(key, nextPromiseQueue);
         const prevPendingMutex = ref.pendingMutex.get(key);
         ref.pendingMutex.set(key, increase(prevPendingMutex));
         private_store_emit(key);
     };
 
-    const private_store_loadEnd = (key: string): void => {
+    type OptionsLoadEnd = {
+        skip: true;
+        promise: Promise<V>;
+    } | {
+        skip: false;
+        promise: Promise<V>;
+        value: V;
+    };
+
+    const private_store_loadEnd = (key: string, options: OptionsLoadEnd): void => {
+        const receivedPromiseQueue = ref.receivedPromiseQueue.get(key) ?? [];
+        const nextPromiseQueue = uniqLast(receivedPromiseQueue, options.promise);
+        ref.receivedPromiseQueue.set(key, nextPromiseQueue);
         const prevPendingMutex = ref.pendingMutex.get(key);
         ref.pendingMutex.set(key, decrease(prevPendingMutex));
+        if (!options.skip) {
+            ref.value.set(key, options.value);
+            ref.error.delete(key); // reset error
+        }
         private_store_emit(key);
     };
 
@@ -143,7 +168,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     const private_store_reset = (key: string): void => {
         ref.pendingMutex.delete(key);
         ref.value.delete(key);
-        ref.promise.delete(key);
+        ref.emittedPromiseQueue.delete(key);
         ref.error.delete(key);
         private_store_emit(key);
     };
@@ -153,7 +178,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         const keys = Array.from(ref.pendingMutex.keys());
         ref.pendingMutex.clear();
         ref.value.clear();
-        ref.promise.clear();
+        ref.emittedPromiseQueue.clear();
         ref.error.clear();
         keys.forEach((key: string) => {
             private_store_emit(key);
@@ -254,6 +279,19 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         return new Error(`You should throw an Error or a string to reject Promise, received ${error}`);
     };
 
+
+    const throttleByStrategy = (keyString: string): boolean => {
+        const receivedPromiseQueue = ref.receivedPromiseQueue.get(keyString);
+        return strategy === 'acceptFirst' && receivedPromiseQueue !== undefined;
+    };
+
+    const skipByStrategy = (keyString: string, promise: Promise<V>): boolean => {
+        const emittedPromiseQueue = ref.emittedPromiseQueue.get(keyString) as Array<Promise<V>>;
+        const receivedPromiseQueue = ref.receivedPromiseQueue.get(keyString);
+        return strategy === 'acceptLatest' && !isLatest(emittedPromiseQueue, promise)
+            || strategy === 'acceptFirst' && receivedPromiseQueue !== undefined;
+    };
+
     const loadBy: Result['loadBy'] = <TParams = void, TResult = unknown>(
         key: K | ((params: TParams) => K),
         asyncFunction: (params: TParams) => Promise<TResult>,
@@ -263,36 +301,29 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
             // @ts-expect-error
             const loadKey = typeof key === 'function' ? key(params as TParams) : key;
             const keyString = getKeyString(loadKey);
+
+            if (throttleByStrategy(keyString)) {
+                return;
+            }
+
             const promise = private_toPromise(asyncFunction, reducer, params, () => getValueOrInitialValue(ref.value.get(keyString)));
-            private_store_load(keyString, promise);
-            /**
-             * note
-             * 1. always get value after await, so it is the current one
-             * 2. ensure if initialValue is gaven, every branch should return initialValueOfKey as T[K]
-             */
+            private_store_loadStart(keyString, {promise});
+
             try {
                 const result = await promise;
-                const currentPromise = ref.promise.get(keyString);
-                const snapshot = ref.value.get(keyString);
-
-                if (strategy === 'acceptLatest' && promise !== currentPromise) {
-                    // decrease loading & return snapshot
-                    private_store_loadEnd(keyString);
-                    return getValueOrInitialValue(snapshot) as never;
+                if (skipByStrategy(keyString, promise)) {
+                    private_store_loadEnd(keyString, {skip: true, promise});
                 }
-                private_store_set(keyString, result);
-                return getValueOrInitialValue(result) as never;
+                else {
+                    private_store_loadEnd(keyString, {skip: false, promise, value: result});
+                }
             } catch (error: unknown) {
-                const currentPromise = ref.promise.get(keyString);
-                const snapshot = ref.value.get(keyString);
-
-                if (strategy === 'acceptLatest' && promise !== currentPromise) {
-                    // decrease loading & return snapshot
-                    private_store_loadEnd(keyString);
-                    return getValueOrInitialValue(snapshot) as never;
+                if (skipByStrategy(keyString, promise)) {
+                    private_store_loadEnd(keyString, {skip: true, promise});
                 }
-                private_store_setError(keyString, private_toError(error));
-                return getValueOrInitialValue(snapshot) as never;
+                else {
+                    private_store_setError(keyString, private_toError(error));
+                }
             }
         };
 
@@ -325,8 +356,11 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
 
     const getPromise: Result['getPromise'] = key => {
         const keyString = getKeyString(key);
-        const promise = ref.promise.get(keyString);
-        return promise;
+        const promiseQueue = ref.emittedPromiseQueue.get(keyString);
+        if (!promiseQueue) {
+            return undefined;
+        }
+        return promiseQueue[promiseQueue.length - 1];
     };
 
     const createHooks = <TReturnType>(getFn: (key: K) => TReturnType) => {

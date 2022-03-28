@@ -15,8 +15,8 @@ describe('overload', () => {
         const loadAPure = pureMappedRegion.loadBy('a', getAReject);
 
         expect.assertions(6); // sync 4 + async 2
-        const [resultA, resultAPure] = await Promise.all([loadA(), loadAPure()]);
-        expect(resultA).toBe(undefined);
-        expect(resultAPure).toBe(1);
+        await Promise.all([loadA(), loadAPure()]);
+        expect(mappedRegion.getValue('a')).toBe(undefined);
+        expect(pureMappedRegion.getValue('a')).toBe(1);
     });
 });

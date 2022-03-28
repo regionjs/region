@@ -82,4 +82,36 @@ describe('strategy', () => {
         await Promise.all(promises);
         expect(region.getValue()).toBe('b');
     });
+
+    test('acceptFirst 1', async () => {
+        const region = createRegion(undefined, {strategy: 'acceptFirst'});
+        const load1 = region.loadBy(fn1);
+        const load2 = region.loadBy(fn2);
+        await load1();
+        expect(region.getValue()).toBe('a');
+        await load2();
+        expect(region.getValue()).toBe('a');
+    });
+
+    test('acceptFirst 2', async () => {
+        const region = createRegion(undefined, {strategy: 'acceptFirst'});
+        const load1 = region.loadBy(fn1);
+        const load2 = region.loadBy(fn2);
+        const promises = [load1(), load2()];
+        await Promise.race(promises);
+        expect(region.getValue()).toBe('a');
+        // await Promise.all(promises);
+        // expect(region.getValue()).toBe('a');
+    });
+
+    test('acceptFirst 3', async () => {
+        const region = createRegion(undefined, {strategy: 'acceptFirst'});
+        const load1 = region.loadBy(fn1);
+        const load2 = region.loadBy(fn2);
+        const promises = [load2(), load1()];
+        await Promise.race(promises);
+        expect(region.getValue()).toBe('a');
+        // await Promise.all(promises);
+        // expect(region.getValue()).toBe('b');
+    });
 });

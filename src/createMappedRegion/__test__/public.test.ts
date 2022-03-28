@@ -46,43 +46,43 @@ describe('set', () => {
 
 describe('load', () => {
     test('fallback to set', async () => {
-    // @ts-expect-error
-        const result = await loadBy('user', 'set a user')();
-        expect(result).toBe('set a user');
+        // @ts-expect-error
+        await loadBy('user', 'set a user')();
+        expect(getValue('user')).toBe('set a user');
     });
 
     test('promise', async () => {
-    // @ts-expect-error
-        const result = await loadBy('user', Promise.resolve('a user'))();
-        expect(result).toBe('a user');
+        // @ts-expect-error
+        await loadBy('user', Promise.resolve('a user'))();
+        expect(getValue('user')).toBe('a user');
     });
 
     test('asyncFunction', async () => {
-        const result = await loadBy('user', () => Promise.resolve('another user'))();
-        expect(result).toBe('another user');
+        await loadBy('user', () => Promise.resolve('another user'))();
+        expect(getValue('user')).toBe('another user');
     });
 
     test('format', async () => {
-        const result = await loadBy('user', () => Promise.resolve('0'), (_: string, user: string) => `${user}1`)();
-        expect(result).toBe('01');
+        await loadBy('user', () => Promise.resolve('0'), (_: string, user: string) => `${user}1`)();
+        expect(getValue('user')).toBe('01');
     });
 
     test('format snapshot', async () => {
-        const result = await loadBy(
+        await loadBy(
             'user',
             () => Promise.resolve('2'),
             (snapshot, user) => `${snapshot}${user}3`
         )();
-        expect(result).toBe('0123');
+        expect(getValue('user')).toBe('0123');
     });
 
     test('reject', async () => {
-        const result = await loadBy('user', () => Promise.reject(new Error('2')))();
-        expect(result).toBe('0123');
+        await loadBy('user', () => Promise.reject(new Error('2')))();
+        expect(getValue('user')).toBe('0123');
     });
 
     test('params can be array', async () => {
-        const result = await loadBy('array', (array: unknown[]) => Promise.resolve(array.length))([0, 1]);
-        expect(result).toBe(2);
+        await loadBy('array', (array: unknown[]) => Promise.resolve(array.length))([0, 1]);
+        expect(getValue('array')).toBe(2);
     });
 });
