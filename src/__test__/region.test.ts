@@ -1,6 +1,6 @@
 import {renderHook} from '@testing-library/react-hooks';
 import {createRegion} from '..';
-import {delay} from '../util/delay';
+import {delayLoop} from '../util/delayLoop';
 
 interface ParamsId { id: string }
 
@@ -295,13 +295,14 @@ describe('useValue', () => {
         expect(result.current).toBe('Elizabeth Taylor');
     });
 
-    test('useValue with reset', () => {
+    test('useValue with reset', async () => {
         const region = createRegion('Fred Smith');
-        const {result} = renderHook(() => region.useValue());
+        const {result, waitForNextUpdate} = renderHook(() => region.useValue());
         expect(result.current).toBe('Fred Smith');
         region.set('George Washington');
         expect(result.current).toBe('George Washington');
         region.reset();
+        await waitForNextUpdate();
         expect(result.current).toBe('Fred Smith');
     });
 
@@ -326,7 +327,7 @@ describe('useValue', () => {
 describe('useError', () => {
     test('useError', async () => {
         const region = createRegion();
-        const {result} = renderHook(() => region.useError());
+        const {result, waitForNextUpdate} = renderHook(() => region.useError());
         expect(result.current).toBe(undefined);
         region.set('Irene Kennedy');
         expect(result.current).toBe(undefined);
@@ -335,6 +336,7 @@ describe('useError', () => {
         expect(result.current instanceof Error).toBe(true);
         expect(result.current).toBe(error);
         region.reset();
+        await waitForNextUpdate();
         expect(result.current).toBe(undefined);
     });
 
@@ -365,7 +367,7 @@ describe('useData', () => {
     test('useData should throw promise when loading', async () => {
         const region = createRegion();
         region.loadBy(async () => {
-            await delay(50);
+            await delayLoop();
             return 'Quentin Tarantino';
         })();
         expect(region.getPromise()).not.toBe(undefined);

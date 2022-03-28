@@ -1,4 +1,4 @@
-import {delay} from '../../util/delay';
+import {delayLoop} from '../../util/delayLoop';
 import {createMappedRegion} from '../..';
 
 describe('createStore', () => {
@@ -28,7 +28,7 @@ describe('createStore', () => {
         const error = new Error('error');
         const promise = Promise.reject(error);
         region.loadBy('user', () => promise)();
-        await delay(50);
+        await delayLoop();
         expect(region.getValue('user')).toEqual(undefined);
         expect(region.getError('user')).toEqual(error);
     });
@@ -41,7 +41,7 @@ describe('createStore', () => {
         region.set('user', result);
         // actually region-core will do
         region.loadBy('user', () => promise)();
-        await delay(50);
+        await delayLoop();
         expect(region.getValue('user')).toEqual('a user');
         expect(region.getError('user')).toEqual(error);
     });

@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "json-stable-stringify": "^1.0.1",
-    "use-subscription": "^1.5.1"
+    "use-sync-external-store": "^1.0.0-rc.3"
   },
   "devDependencies": {
     "@reskript/cli": "^4.2.1",
@@ -46,7 +46,7 @@
     "@types/json-stable-stringify": "^1.0.33",
     "@types/react": "^17.0.39",
     "@types/react-test-renderer": "^17.0.1",
-    "@types/use-subscription": "^1.0.0",
+    "@types/use-sync-external-store": "^0.0.3",
     "core-js": "^3.21.1",
     "eslint": "^8.10.0",
     "husky": "^7.0.4",

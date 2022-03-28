@@ -1,6 +1,6 @@
 import {useMemo} from 'react';
 import * as jsonStableStringify from 'json-stable-stringify';
-import {useSubscription} from 'use-subscription';
+import {useSyncExternalStore} from 'use-sync-external-store/shim';
 import {deprecate} from '../util/deprecate';
 import {ResultFunc, ResultFuncPure, Strategy, RegionOption, Listener} from '../types';
 
@@ -340,7 +340,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
                 // eslint-disable-next-line react-hooks/exhaustive-deps
                 [getKeyString(key)]
             );
-            return useSubscription(subscription);
+            return useSyncExternalStore(subscription.subscribe, subscription.getCurrentValue);
         };
     };
 
@@ -372,7 +372,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
 
     const useValue: Result['useValue'] = <TResult>(key: K, selector?: (value: V) => TResult) => {
         const subscription = useValueSelectorSubscription(key, selector);
-        return useSubscription(subscription);
+        return useSyncExternalStore(subscription.subscribe, subscription.getCurrentValue);
     };
 
     const useData: Result['useData'] = <TResult>(key: K, selector?: (value: V) => TResult) => {
@@ -390,7 +390,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
                 throw new Error('Doesn\'t found any work in progress load process');
             }
         }
-        return useSubscription(subscription);
+        return useSyncExternalStore(subscription.subscribe, subscription.getCurrentValue);
     };
 
     const useLoading: Result['useLoading'] = createHooks(getLoading);
