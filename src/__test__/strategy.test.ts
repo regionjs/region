@@ -100,8 +100,8 @@ describe('strategy', () => {
         const promises = [load1(), load2()];
         await Promise.race(promises);
         expect(region.getValue()).toBe('a');
-        // await Promise.all(promises);
-        // expect(region.getValue()).toBe('a');
+        await Promise.all(promises);
+        expect(region.getValue()).toBe('a');
     });
 
     test('acceptFirst 3', async () => {
@@ -110,8 +110,8 @@ describe('strategy', () => {
         const load2 = region.loadBy(fn2);
         const promises = [load2(), load1()];
         await Promise.race(promises);
-        expect(region.getValue()).toBe('a');
-        // await Promise.all(promises);
-        // expect(region.getValue()).toBe('b');
+        expect(region.getValue()).toBe('b');
+        await Promise.all(promises);
+        expect(region.getValue()).toBe('b');
     });
 });
