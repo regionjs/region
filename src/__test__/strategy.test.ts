@@ -19,7 +19,7 @@ describe('strategy', () => {
         expect(result2).toBe('a');
     });
 
-    test('acceptLatest 1', async () => {
+    test('acceptSequenced 1', async () => {
         const region = createRegion();
         const load1 = region.loadBy(fn1);
         const load2 = region.loadBy(fn2);
@@ -29,8 +29,40 @@ describe('strategy', () => {
         expect(region.getValue()).toBe('b');
     });
 
-    test('acceptLatest 2', async () => {
+    test('acceptSequenced 2', async () => {
         const region = createRegion();
+        const load1 = region.loadBy(fn1);
+        const load2 = region.loadBy(fn2);
+        const promises = [load1(), load2()];
+        await Promise.race(promises);
+        expect(region.getValue()).toBe('a');
+        await Promise.all(promises);
+        expect(region.getValue()).toBe('b');
+    });
+
+    test('acceptSequenced 3', async () => {
+        const region = createRegion();
+        const load1 = region.loadBy(fn1);
+        const load2 = region.loadBy(fn2);
+        const promises = [load2(), load1()];
+        await Promise.race(promises);
+        expect(region.getValue()).toBe('a');
+        await Promise.all(promises);
+        expect(region.getValue()).toBe('a');
+    });
+
+    test('acceptLatest 1', async () => {
+        const region = createRegion(undefined, {strategy: 'acceptLatest'});
+        const load1 = region.loadBy(fn1);
+        const load2 = region.loadBy(fn2);
+        await load1();
+        expect(region.getValue()).toBe('a');
+        await load2();
+        expect(region.getValue()).toBe('b');
+    });
+
+    test('acceptLatest 2', async () => {
+        const region = createRegion(undefined, {strategy: 'acceptLatest'});
         const load1 = region.loadBy(fn1);
         const load2 = region.loadBy(fn2);
         const promises = [load1(), load2()];
@@ -41,7 +73,7 @@ describe('strategy', () => {
     });
 
     test('acceptLatest 3', async () => {
-        const region = createRegion();
+        const region = createRegion(undefined, {strategy: 'acceptLatest'});
         const load1 = region.loadBy(fn1);
         const load2 = region.loadBy(fn2);
         const promises = [load2(), load1()];

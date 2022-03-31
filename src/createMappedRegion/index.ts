@@ -85,7 +85,7 @@ function createMappedRegion <K, V>(initialValue: V, option?: RegionOption): Crea
 function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: RegionOption): CreateMappedRegionReturnValue<K, V> | CreateMappedRegionPureReturnValue<K, V> {
     type Result = CreateMappedRegionPureReturnValue<K, V>;
 
-    const strategy: Strategy = option?.strategy ?? 'acceptLatest';
+    const strategy: Strategy = option?.strategy ?? 'acceptSequenced';
 
     interface PrivateStoreStateRef {
         pendingMutex: Map<string, number>;
@@ -116,8 +116,8 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     }
 
     const private_store_loadStart = (key: string, {promise}: OptionsLoadStart): void => {
-        const emittedPromiseQueue = ref.promiseQueue.get(key) ?? [];
-        const nextPromiseQueue = uniqLast(emittedPromiseQueue, promise);
+        const promiseQueue = ref.promiseQueue.get(key) ?? [];
+        const nextPromiseQueue = uniqLast(promiseQueue, promise);
         ref.promiseQueue.set(key, nextPromiseQueue);
         const prevPendingMutex = ref.pendingMutex.get(key);
         ref.pendingMutex.set(key, increase(prevPendingMutex));
@@ -275,8 +275,18 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     };
 
     const skipByStrategy = (keyString: string, promise: Promise<V>): boolean => {
-        const emittedPromiseQueue = ref.promiseQueue.get(keyString) as Array<Promise<V>>;
-        return strategy === 'acceptLatest' && !isLatest(emittedPromiseQueue, promise);
+        const promiseQueue = ref.promiseQueue.get(keyString) as Array<Promise<V>>;
+        if (strategy === 'acceptSequenced') {
+            const index = promiseQueue.indexOf(promise);
+            if (index === -1) {
+                return true;
+            }
+            // invalid promises before this one while keep itself
+            const nextPromiseQueue = promiseQueue.slice(index);
+            ref.promiseQueue.set(keyString, nextPromiseQueue);
+            return false;
+        }
+        return strategy === 'acceptLatest' && !isLatest(promiseQueue, promise);
     };
 
     const loadBy: Result['loadBy'] = <TParams = void, TResult = unknown>(
@@ -289,9 +299,9 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
             const loadKey = typeof key === 'function' ? key(params as TParams) : key;
             const keyString = getKeyString(loadKey);
 
-            const emittedPromiseQueue = ref.promiseQueue.get(keyString);
-            if (strategy === 'acceptFirst' && emittedPromiseQueue !== undefined) {
-                await emittedPromiseQueue[0];
+            const promiseQueue = ref.promiseQueue.get(keyString);
+            if (strategy === 'acceptFirst' && promiseQueue !== undefined) {
+                await promiseQueue[0];
                 return;
             }
 
