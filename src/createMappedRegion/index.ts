@@ -3,6 +3,8 @@ import * as jsonStableStringify from 'json-stable-stringify';
 import {useSyncExternalStore} from 'use-sync-external-store/shim';
 import {deprecate} from '../util/deprecate';
 import {uniqLast, isLatest} from '../util/promiseQueue';
+import {getLocalStorageState, setLocalStorageState} from '../util/localStorageUtils';
+import {useStorageEvent} from '../util/document';
 import {ResultFunc, ResultFuncPure, Strategy, RegionOption, Listener} from '../types';
 
 type IncreaseDecrease = (v: number | undefined) => number;
@@ -86,6 +88,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     type Result = CreateMappedRegionPureReturnValue<K, V>;
 
     const strategy: Strategy = option?.strategy ?? 'acceptSequenced';
+    const withLocalStorageKey: string | undefined = option?.withLocalStorageKey;
 
     interface PrivateStoreStateRef {
         pendingMutex: Map<string, number>;
@@ -138,6 +141,9 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         ref.pendingMutex.set(key, decrease(prevPendingMutex));
         if (!options.skip) {
             ref.value.set(key, options.value);
+            if (withLocalStorageKey) {
+                setLocalStorageState(`${withLocalStorageKey}/${key}`, options.value);
+            }
             ref.error.delete(key); // reset error
         }
         private_store_emit(key);
@@ -147,6 +153,9 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         const prevPendingMutex = ref.pendingMutex.get(key);
         ref.pendingMutex.set(key, decrease(prevPendingMutex));
         ref.value.set(key, value);
+        if (withLocalStorageKey) {
+            setLocalStorageState(`${withLocalStorageKey}/${key}`, value);
+        }
         ref.error.delete(key); // reset error
 
         private_store_emit(key);
@@ -200,7 +209,19 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
             listeners?.delete(listener);
         };
     };
-    /* -------- */
+
+    const private_getValueOrInitialValue = (key: string, value: V | undefined): V => {
+        if (value !== undefined) {
+            return value;
+        }
+        if (withLocalStorageKey) {
+            const localStorageValue = getLocalStorageState<V>(`${withLocalStorageKey}/${key}`, initialValue as V);
+            // cache, so the value is strict equal
+            ref.value.set(key, localStorageValue);
+            return localStorageValue;
+        }
+        return initialValue as V;
+    };
 
     const getKeyString = (key: K | K[]): string => {
         if (typeof key === 'string') {
@@ -211,20 +232,14 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         // istanbul ignore next
         return key === undefined ? key : jsonStableStringify(key);
     };
-
-    const getValueOrInitialValue = (value: V | undefined): V => {
-        if (value !== undefined) {
-            return value;
-        }
-        return initialValue as V;
-    };
+    /* -------- */
 
     // ---- APIs ----
     const set: Result['set'] = (key, resultOrFunc): V => {
         const keyString = getKeyString(key);
         // Maybe we can use getValue here
         const maybeSnapshot = ref.value.get(keyString);
-        const snapshot = getValueOrInitialValue(maybeSnapshot);
+        const snapshot = private_getValueOrInitialValue(keyString, maybeSnapshot);
         const result = getSetResult(resultOrFunc, snapshot);
         private_store_set(keyString, result);
         return result;
@@ -305,7 +320,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
                 return;
             }
 
-            const promise = private_toPromise(asyncFunction, reducer, params, () => getValueOrInitialValue(ref.value.get(keyString)));
+            const promise = private_toPromise(asyncFunction, reducer, params, () => private_getValueOrInitialValue(keyString, ref.value.get(keyString)));
             private_store_loadStart(keyString, {promise});
 
             try {
@@ -340,7 +355,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     const getValue: Result['getValue'] = key => {
         const keyString = getKeyString(key);
         const value = ref.value.get(keyString);
-        return getValueOrInitialValue(value);
+        return private_getValueOrInitialValue(keyString, value);
     };
 
     const getLoading: Result['getLoading'] = key => {
@@ -378,6 +393,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     };
 
     const useValueSelectorSubscription = <TResult>(key: K, selector?: (value: V) => TResult) => {
+        const keyString = getKeyString(key);
         const subscription = useMemo(
             () => ({
                 getCurrentValue: () => {
@@ -394,12 +410,21 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
                         return value;
                     }
                 },
-                subscribe: (listener: Listener) => private_store_subscribe(getKeyString(key), listener),
+                subscribe: (listener: Listener) => private_store_subscribe(keyString, listener),
             }),
             // shallow-equal
             // eslint-disable-next-line react-hooks/exhaustive-deps
-            [selector, getKeyString(key)]
+            [selector, keyString]
         );
+        useStorageEvent(e => {
+            if (withLocalStorageKey) {
+                const storageKey = `${withLocalStorageKey}/${keyString}`;
+                if (e.key === storageKey) {
+                    const localStorageValue = getLocalStorageState<V>(storageKey, initialValue as V);
+                    private_store_set(keyString, localStorageValue);
+                }
+            }
+        });
         return subscription;
     };
 

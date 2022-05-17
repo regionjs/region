@@ -2,7 +2,8 @@
 export type Strategy = 'acceptFirst' | 'acceptLatest' | 'acceptEvery' | 'acceptSequenced';
 
 export interface RegionOption {
-    strategy: Strategy;
+    strategy?: Strategy;
+    withLocalStorageKey?: string;
 }
 
 // set & load
