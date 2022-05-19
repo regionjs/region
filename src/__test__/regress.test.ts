@@ -152,3 +152,19 @@ describe('falsy useValue will not return undefined', () => {
         expect(result2.current).toBe(false);
     });
 });
+
+describe('acceptFirst should clear promise with promise is rejected', () => {
+    test('basic', async () => {
+        const region = createRegion(undefined, {strategy: 'acceptFirst'});
+        const asyncResolve = () => Promise.resolve('Angela Merkel');
+        const asyncReject = () => Promise.reject('error');
+
+        expect.assertions(3);
+        await region.loadBy(asyncReject)();
+        expect(region.getValue()).toBe(undefined);
+        expect(region.getError()).toStrictEqual(new Error('error'));
+
+        await region.loadBy(asyncResolve)();
+        expect(region.getValue()).toBe('Angela Merkel');
+    });
+});

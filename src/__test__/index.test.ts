@@ -6,13 +6,11 @@ describe('export api', () => {
             // @ts-expect-error
             __esModule,
             createRegion,
-            createLocalStorageRegion,
             createMappedRegion,
             ...rest
         } = api;
         expect(__esModule || __esModule === undefined).toBe(true);
         expect(typeof createRegion).toBe('function');
-        expect(typeof createLocalStorageRegion).toBe('function');
         expect(typeof createMappedRegion).toBe('function');
         expect(rest).toEqual({});
     });

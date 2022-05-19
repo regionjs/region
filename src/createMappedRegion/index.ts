@@ -26,6 +26,14 @@ const getSetResult = <V>(resultOrFunc: V | ResultFuncPure<V>, snapshot: V) => {
     return resultOrFunc;
 };
 
+const silent = async (promise: Promise<unknown>) => {
+    try {
+        await promise;
+    } catch {
+        // do nothing
+    }
+};
+
 interface LoadBy<K, V, Extend> {
     (
         key: K | (() => K),
@@ -316,7 +324,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
 
             const promiseQueue = ref.promiseQueue.get(keyString);
             if (strategy === 'acceptFirst' && promiseQueue !== undefined) {
-                await promiseQueue[0];
+                await silent(promiseQueue[0]);
                 return;
             }
 
@@ -337,6 +345,9 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
                 }
                 else {
                     private_store_setError(keyString, private_toError(error));
+                    if (strategy === 'acceptFirst') {
+                        ref.promiseQueue.delete(keyString);
+                    }
                 }
             }
         };
@@ -416,6 +427,8 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
             // eslint-disable-next-line react-hooks/exhaustive-deps
             [selector, keyString]
         );
+        // unable to fire storage event yet, see https://github.com/testing-library/dom-testing-library/issues/438
+        // istanbul ignore next
         useStorageEvent(e => {
             if (withLocalStorageKey) {
                 const storageKey = `${withLocalStorageKey}/${keyString}`;
