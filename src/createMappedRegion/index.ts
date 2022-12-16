@@ -430,7 +430,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         // unable to fire storage event yet, see https://github.com/testing-library/dom-testing-library/issues/438
         // istanbul ignore next
         useStorageEvent(e => {
-            if (withLocalStorageKey) {
+            if (withLocalStorageKey && e.storageArea === localStorage) {
                 const storageKey = `${withLocalStorageKey}/${keyString}`;
                 if (e.key === storageKey) {
                     const localStorageValue = getLocalStorageState<V>(storageKey, initialValue as V);
