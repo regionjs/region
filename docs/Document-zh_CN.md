@@ -75,7 +75,7 @@ const loadUser = region.loadBy(
 注意，在使用 load 的时候，我们不能为你处理异步问题，所以不推荐使用它。
 
 ```typescript
-const promise = asuncFunction(params);
+const promise = asyncFunction(params);
 
 region.load(promise);
 ```

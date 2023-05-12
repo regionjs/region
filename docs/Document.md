@@ -75,7 +75,7 @@ const loadUser = region.loadBy(
 Note that in this case, we can't handle async issues for you. So it is not recommended.
 
 ```typescript
-const promise = asuncFunction(params);
+const promise = asyncFunction(params);
 
 region.load(promise);
 ```
