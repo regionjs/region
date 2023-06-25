@@ -298,7 +298,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     };
 
     const skipByStrategy = (keyString: string, promise: Promise<V>): boolean => {
-        const promiseQueue = ref.promiseQueue.get(keyString) as Array<Promise<V>>;
+        const promiseQueue = ref.promiseQueue.get(keyString) ?? [];
         if (strategy === 'acceptSequenced') {
             const index = promiseQueue.indexOf(promise);
             if (index === -1) {

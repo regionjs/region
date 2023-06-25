@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "json-stable-stringify": "^1.0.1",
-    "use-sync-external-store": "^1.1.0"
+    "use-sync-external-store": "^1.2.0"
   },
   "devDependencies": {
     "@reskript/cli": "^4.2.1",
