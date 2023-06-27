@@ -6,61 +6,101 @@
 
 我们推荐使用 TypeScript，`region-core` 有非常智能的类型推断。
 
-### createRegion
+### 了解 createRegion 和 createMappedRegion
 
-创建一个 region 来管理你的数据。
+`region` 和 `mappedRegion` 拥有相同的底层代码。 唯一的区别是，`mappedRegion` 中的数据是以 `key-value` 的键值对的形式储存的，而 `region` 无需指定键（或者说，被内部确定了隐藏的键）。
 
-你可能会创建很多个 region，它们是彼此分离的。
+当你需要访问 `mappedRegion` 中的值的时候，需要指定 key，这是非常常见的模式，比如用一个 `userId` 换取一个 `User` 类型的值。
 
-我们提供了多个方法，可以 set, load, get 和 use 你存在 region 中的数据。
+在了解 `mappedRegion` 前，我们首先了解一下 `region`，region 中的所有方法在 `mappedRegion` 中有对应的方法。
+
+### 创建一个 region
+
+创建一个 `region` 来管理你的数据。
+
+在你的应用中，你会创建很多个 `region`，它们是彼此分离的，并且同为全局。这意味着你可以在不同的组件内访问相同的数据，并且数据不随着组件的 `mount` 和 `unmount` 而发生变化（当然，你在 `useEffect` 中很可能会进行数据管理）。
+
+通过以下代码创建一个 `region`：
 
 ```typescript
 import { createRegion } from 'region-core';
 
 const region = createRegion<Value>();
+```
 
-// 也可以
+你也可以传入一个 `initialValue`：
+
+```typescript
 const region = createRegion<Value>(initialValue);
-
-const {load, loadBy, set, useValue, useLoading, useError} = region;
 ```
 
-### region.set
+### 对 region 赋值
+
+我们提供了多个方法，来赋值、加载、获取、订阅你存在 region 中的数据。包括 set, load, loadBy, getXXX 和 useXXX。
+
+你可以使用 `region.set` 对 `region` 进行直接赋值：
 
 ```typescript
-region.set(value);
-// also
-region.set(prevValue => value);
+const setTrue = () => {
+    region.set(true);
+}
 ```
 
-### region.loadBy
-
-`region.loadBy` 会返回一个异步函数，调用它时，region 会调用给定 `asyncFunction` 并把它返回的值进行储存。
-
-当 load 开始时，region 会标记 `loading: true`，当它结束时，则会标记为 `loading: false`。
-
-你可以同时发起多个 load，我们已经很好地处理了竞态问题。
-
-一般来说，`asyncFunction` 接受一些参数。
+类似 `setState` 的用法，你可以传入一个函数，在现有值的基础上更改：
 
 ```typescript
-const asyncFunction = async (params: Params): Result => {};
+const toggle = () => {
+    region.set(value => !value);
+}
+```
 
-// 用 loadBy 包裹异步函数，结果会被存到 region 中
-const loadUser = region.loadBy(asyncFunction);
+### 使用 region 管理异步任务
 
-// 调用时，params 会被传给 asyncFunction
+`region.loadBy` 会返回一个异步函数，通常你可以将它命名为 `loadXXX`，调用它时，region 会调用给定 `asyncFunction` 并把它返回的值进行储存。
+
+```typescript
+type FetchUser = () => Promise<User>;
+const fetchUser: FetchUser = async () => {/* do something */};
+
+const loadUser = region.loadBy(fetchUser);
+
+useEffect(
+    () => {
+        loadUser();
+    },
+    []
+);
+```
+
+当 `loadFunc` 被调用时，`region` 会标记 `loading: true`，当它结束时，则会标记为 `loading: false`，你可以使用 `getLoading` 和 `useLoading` 来获知。
+
+你可以同时发起多个异步加载，`region` 会使用 `acceptSequenced` 的策略来处理多个异步之间的冲突，你可以指定对应的策略，关于策略的部分我们将在后面详述。
+
+`loadFunc` 并非一定要与 `useEffect` 配合使用，你可以在 `onClick` 中传入 `loadFunc`，甚至可以在 `ReactDOM` 的 `render` 前就发出请求：
+
+```typescript jsx
+loadUser();
+
+const Component = () => {
+    return <button onClick={loadUser}>加载</button>;
+}
+```
+
+- `asyncFunction` 可以接受一些参数。
+
+```typescript
+const fetchUser = async (params: Params): User => {};
+const loadUser = region.loadBy(fetchUser);
 loadUser(params);
-
-// 他返回一个 promise，所以你可以 await
-await load(asyncFunction);
 ```
 
 - 你可以使用 `reducer` 处理返回的数据，在它被储存之前。
 
-```javascript
+```typescript
+const region = createRegion<User[]>([]);
+
 const loadUser = region.loadBy(
-    asyncFuncion,
+    fetchUser,
     (state = [], result, params) => {
         state.push(result);
         return state;
@@ -68,11 +108,9 @@ const loadUser = region.loadBy(
 );
 ```
 
-### region.load
+你还可以使用 `region.load` 来处理异步任务，它和 `region.loadBy` 很像，不过它接受一个 promise。
 
-`region.load` 和 `region.loadBy` 很像，但它接受一个 promise。
-
-注意，在使用 load 的时候，我们不能为你处理异步问题，所以不推荐使用它。
+注意，在使用 `load` 的时候，异步任务已经事先开始了，所以一部分节流和竞态的功能会受到影响，在遇到相关的问题的时候，你可能需要自己处理。
 
 ```typescript
 const promise = asyncFunction(params);
@@ -80,9 +118,9 @@ const promise = asyncFunction(params);
 region.load(promise);
 ```
 
-### hooks
+### 使用 react hooks 订阅数据和状态的变更
 
-包括 `useValue`, `useLoading`, `useError`, `useData`
+使用 `useValue`, `useLoading`, `useError` 订阅相关的变更。
 
 ```typescript jsx
 const Component = () => {
@@ -95,19 +133,13 @@ const Component = () => {
 }
 ```
 
-使用 `useData` 时应该提供一个  `Suspense`
+其中 `loading` 和 `error` 都与异步任务相关，`loading` 指当前 region 是否有异步任务在执行。而 `value` 和 `error` 指当前最后一个异步任务的返回，或是对应 `reject` 的内容。
 
-```typescript jsx
-<Suspense fallback={<div>loading...</div>}>
-    <Component />
-</Suspense>
-```
+关于异步策略，我们将在后面详述。
 
-前往 [examples](https://regionjs.github.io/region-core/#UseValue) 获得更多信息。
+### 使用 get 方法直接获取值
 
-### get 方法
-
-包括 `getValue`, `getLoading`, `getError`
+包括 `getValue`, `getLoading`, `getError`，不过注意不要在 react 组件内使用它们，而是在你确定应该使用它们的场合来使用。
 
 ```typescript
 const handler = () => {
@@ -118,9 +150,7 @@ const handler = () => {
 }
 ```
 
-注意：不要在组件里这样调用，数据发生变化时，组件不会更新。
-
-### createMappedRegion
+### 使用 mappedRegion 以 key-value 的形式管理数据
 
 `mappedRegion` 可以让你以 key-value 的形式管理数据。key 可以是 `string` 类型，也可以是多维度的，比如 `{x: 0, y: 0}`。
 
@@ -135,16 +165,42 @@ const Component = () => {
 }
 ```
 
-前往 [examples](https://regionjs.github.io/region-core/#MappedRegion) 获得更多信息。
+当你使用 `mappedRegion` 的时候，你需要在调用所有方法之前指定一个 `key`，比如：
 
-### createLocalStorageRegion
+```typescript jsx
+mappedRegion.set({x: 0, y: 0}, 1);
+const value = mappedRegion.useValue({x: 0, y: 0}); // 1
+```
 
-`localStorageRegion` 会把你存入的数据与 localStorage 中某个特定的 key 同步。
+特别的，在 `loadBy` 中，你可以从 `params` 中指定 `key`：
+
+```typescript jsx
+const loadUser = mappedRegion.loadBy(
+    params => params.userId,
+    fetchUser
+);
+```
+
+### 使 region 与 localStorage 同步
+
+在创建 `region` 和 `mappedRegion` 的时候，你可以进行一些配置，使 `region` 具备额外的功能。
+
+当配置 `withLocalStorageKey` 后，region 在存取值的时候，会自动的和 `localStorage` 中对应的项进行同步，同时，可以在多个标签页之间通过 [`storage 事件`](https://developer.mozilla.org/en-US/docs/Web/API/Window/storage_event) 进行通信。
 
 ```typescript
-import {createLocalStorageRegion} from 'region-core';
+const userRegion = createRegion(initialUser, {withLocalStorageKey: 'user'});
+```
 
-const localStorageRegion = createLocalStorageRegion('key', fallbackValue);
+### 更合适的异步策略
 
-const {set, getValue, useValue} = localStorageRegion;
+你可以使用 `strategy` 配置异步策略，目前提供了四种异步策略：
+- `acceptFirst`：在多个异步任务同时发出的情况下，只接受第一个成功的结果。如果已经有成功的返回，则后续请求不再发出。
+- `acceptLatest`：在多个异步任务同时发出的情况下，只接受最后一个发出的任务的结果，成功或失败。
+- `acceptEvery`：在多个异步任务同时发出的情况下，接受所有的返回，按照到达的顺序处理。由于到达的顺序可能是乱序，你需要处理乱序导致的问题。
+- `acceptSequenced`：在多个异步任务同时发出的情况下，按照任务发出的顺序，接受结果，当中间的任务到达时，则不再接受此任务之前发起的任务的结果，但依旧等待后续发出的结果。
+
+默认使用 `acceptSequenced` 的策略，这个策略满足绝大多数情况，在你需要特别的优化的时候，你可以选择其他的策略。
+
+```typescript
+const userRegion = createRegion(initialUser, {strategy: 'acceptSequenced'});
 ```
