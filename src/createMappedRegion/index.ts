@@ -1,5 +1,5 @@
 import {useMemo} from 'react';
-import * as jsonStableStringify from 'json-stable-stringify';
+import jsonStableStringify from 'json-stable-stringify';
 import {useSyncExternalStore} from 'use-sync-external-store/shim';
 import {deprecate} from '../util/deprecate';
 import {uniqLast, isLatest} from '../util/promiseQueue';
