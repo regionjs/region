@@ -1,6 +1,12 @@
 import {createRegion} from '..';
+import {delayLoop} from '../util/delayLoop';
 
 const toRaw = (key: string) => `${key}/value`;
+
+const asyncFunc = async () => {
+    await delayLoop();
+    return 'a';
+};
 
 describe('localStorageRegion', () => {
     test('basic', async () => {
@@ -33,5 +39,12 @@ describe('localStorageRegion', () => {
         window.localStorage.setItem(toRaw('key4'), 'bar');
         const region = createRegion('foo', {withLocalStorageKey: 'key4'});
         expect(region.getValue()).toBe('foo');
+    });
+
+    test('load with localStorage', async () => {
+        const region = createRegion<string>(undefined, {withLocalStorageKey: 'key5'});
+        await region.load(asyncFunc());
+        expect(region.getValue()).toBe('a');
+        expect(window.localStorage.getItem(toRaw('key5'))).toBe('"a"');
     });
 });

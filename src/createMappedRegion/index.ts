@@ -11,14 +11,6 @@ type IncreaseDecrease = (v: number | undefined) => number;
 const increase: IncreaseDecrease = (v: number = 0) => (v + 1);
 const decrease: IncreaseDecrease = (v: number = 0) => (v - 1 > 0 ? v - 1 : 0);
 
-const formatLoading = (loading?: number) => {
-    // treat undefined as true
-    if (loading === undefined) {
-        return true;
-    }
-    return loading > 0;
-};
-
 const getSetResult = <V>(resultOrFunc: V | ResultFuncPure<V>, snapshot: V) => {
     if (typeof resultOrFunc === 'function') {
         return (resultOrFunc as ResultFuncPure<V>)(snapshot);
@@ -371,7 +363,13 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
 
     const getLoading: Result['getLoading'] = key => {
         const keyString = getKeyString(key);
-        return formatLoading(ref.pendingMutex.get(keyString));
+        const pendingMutex = ref.pendingMutex.get(keyString);
+
+        // treat undefined as true
+        if (pendingMutex === undefined) {
+            return option?.startLoadingWith ?? true;
+        }
+        return pendingMutex > 0;
     };
 
     const getError: Result['getError'] = key => {

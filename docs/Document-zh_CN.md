@@ -74,6 +74,8 @@
 
 你可以同时发起多个异步加载，`region` 会使用特定的异步策略来处理多个异步之间的冲突，关于策略的部分我们将在后面详述。
 
+有时候我们需要指定 `region` 的初始 `loading` 值，没有任何赋值的 `region` 默认视为 `loading: true`，但是你可以通过 `startLoadingWith` 参数来控制这个行为。
+
 - `loadFunc` 并非一定要与 `useEffect` 配合使用，你可以在 `onCallback` 中调用 `loadFunc`：
 
     ```typescript jsx
@@ -222,3 +224,11 @@
     ```typescript
     const userRegion = createRegion(initialUser, {strategy: 'acceptSequenced'});
     ```
+
+### 配置 startLoadingWith
+
+- 你可以通过 `startLoadingWith` 来配置 `region` 的初始 `loading` 值，这个值默认为 `true`。
+
+  ```typescript
+  const userRegion = createRegion(initialUser, {startLoadingWith: false});
+  ```

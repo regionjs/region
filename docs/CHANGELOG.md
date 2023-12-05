@@ -2,11 +2,11 @@
 
 ### 11.x
 
+- add `startLoadingWith` option to control initial loading state
+
 - add `resetAll`, `reset` now resets value with specific key
 
 - remove unused `getFetchTime` & `useFetchTime`, you could inject it in reducer
-
-- add `useData` to load data with `Suspense`
 
 ### 11.0
 
