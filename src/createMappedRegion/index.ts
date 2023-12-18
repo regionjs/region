@@ -216,8 +216,6 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         }
         if (withLocalStorageKey) {
             const localStorageValue = getLocalStorageState<V>(`${withLocalStorageKey}/${key}`, initialValue as V);
-            // cache, so the value is strict equal
-            ref.value.set(key, localStorageValue);
             return localStorageValue;
         }
         return initialValue as V;

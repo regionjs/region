@@ -47,4 +47,27 @@ describe('localStorageRegion', () => {
         expect(region.getValue()).toBe('a');
         expect(window.localStorage.getItem(toRaw('key5'))).toBe('"a"');
     });
+
+    test('getValue from localStorage will reset fallback value', () => {
+        const region = createRegion(false, {withLocalStorageKey: 'key6'});
+        expect(window.localStorage.getItem(toRaw('key6'))).toBe(null);
+        expect(region.getValue()).toBe(false);
+        expect(window.localStorage.getItem(toRaw('key6'))).toBe('false');
+    });
+
+    test('toggle localStorage value', () => {
+        const region = createRegion(false, {withLocalStorageKey: 'key7'});
+        expect(window.localStorage.getItem(toRaw('key7'))).toBe(null);
+        region.set(v => !v);
+        expect(window.localStorage.getItem(toRaw('key7'))).toBe('true');
+    });
+
+    test('toggle localStorage value with a prev get', () => {
+        const region = createRegion(false, {withLocalStorageKey: 'key8'});
+        expect(window.localStorage.getItem(toRaw('key8'))).toBe(null);
+        expect(region.getValue()).toBe(false);
+        region.set(v => !v);
+        expect(region.getValue()).toBe(true);
+        expect(window.localStorage.getItem(toRaw('key8'))).toBe('true');
+    });
 });
