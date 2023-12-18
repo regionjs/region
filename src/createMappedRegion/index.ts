@@ -221,14 +221,14 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         return initialValue as V;
     };
 
-    const getKeyString = (key: K | K[]): string => {
+    const getKeyString = (key: K): string => {
         if (typeof key === 'string') {
             return key;
         }
-        // TODO remove after https://github.com/ecomfe/reskript/issues/271
-        // @ts-expect-error
-        // istanbul ignore next
-        return key === undefined ? key : jsonStableStringify(key);
+        if (key === undefined) {
+            return key as string;
+        }
+        return jsonStableStringify(key);
     };
     /* -------- */
 
@@ -309,7 +309,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     ) => {
         const loadByReturnFunction = async (params?: TParams): Promise<void> => {
             // @ts-expect-error
-            const loadKey = typeof key === 'function' ? key(params as TParams) : key;
+            const loadKey: K = typeof key === 'function' ? key(params as TParams) : key;
             const keyString = getKeyString(loadKey);
 
             const promiseQueue = ref.promiseQueue.get(keyString);
@@ -443,6 +443,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     };
 
     const useData: Result['useData'] = <TResult>(key: K, selector?: (value: V) => TResult) => {
+        console.warn('useData is deprecated since it is hardly maintained. Use useValue instead.');
         const subscription = useValueSelectorSubscription(key, selector);
         const currentPromise = useMemo(
             () => getPromise(key),
