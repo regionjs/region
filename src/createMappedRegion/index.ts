@@ -453,7 +453,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
                 const storageKey = `${withLocalStorageKey}/${keyString}`;
                 if (e.key === storageKey) {
                     const jsonString = getLocalStorageState(`${withLocalStorageKey}/${key}`);
-                    if (jsonString === ref.localStorageCache.get(keyString)) {
+                    if (ref.localStorageCache.get(keyString) !== jsonString) {
                         const localStorageValue = parseLocalStorageState<V>(jsonString, initialValue as V);
                         private_store_set(keyString, localStorageValue);
                     }
