@@ -1,12 +1,6 @@
-const localStorage = typeof window === 'object' && window.localStorage;
-
 type LocalStorageKey = string;
 
 export const setLocalStorageState = (key: LocalStorageKey, jsonString: string | undefined) => {
-    // istanbul ignore next - only used in browser
-    if (!localStorage) {
-        return;
-    }
     // JSON.stringify(undefined) === undefined
     // JSON.stringify(null) === 'null'
     if (typeof jsonString === 'string') {
@@ -17,10 +11,6 @@ export const setLocalStorageState = (key: LocalStorageKey, jsonString: string | 
 };
 
 export const getLocalStorageState = (key: LocalStorageKey): string | null => {
-    // istanbul ignore next - only used in browser
-    if (!localStorage) {
-        return null;
-    }
     const jsonString = localStorage.getItem(key);
     return jsonString;
 };

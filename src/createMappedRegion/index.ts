@@ -116,6 +116,19 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         listeners.forEach(listener => listener());
     };
 
+    const private_sync_localStorage = (key: string, value: V): void => {
+        if (withLocalStorageKey) {
+            const jsonString: string | undefined = JSON.stringify(value);
+            setLocalStorageState(`${withLocalStorageKey}/${key}`, jsonString);
+            if (jsonString === undefined) {
+                ref.localStorageCache.delete(key);
+            }
+            else {
+                ref.localStorageCache.set(key, jsonString);
+            }
+        }
+    };
+
     interface OptionsLoadStart {
         promise: Promise<V>;
     }
@@ -143,16 +156,6 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         ref.pendingMutex.set(key, decrease(prevPendingMutex));
         if (!options.skip) {
             ref.value.set(key, options.value);
-            if (withLocalStorageKey) {
-                const jsonString: string | undefined = JSON.stringify(options.value);
-                setLocalStorageState(`${withLocalStorageKey}/${key}`, jsonString);
-                if (jsonString === undefined) {
-                    ref.localStorageCache.delete(key);
-                }
-                else {
-                    ref.localStorageCache.set(key, jsonString);
-                }
-            }
             ref.error.delete(key); // reset error
         }
         private_store_emit(key);
@@ -162,16 +165,6 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         const prevPendingMutex = ref.pendingMutex.get(key);
         ref.pendingMutex.set(key, decrease(prevPendingMutex));
         ref.value.set(key, value);
-        if (withLocalStorageKey) {
-            const jsonString: string | undefined = JSON.stringify(value);
-            setLocalStorageState(`${withLocalStorageKey}/${key}`, jsonString);
-            if (jsonString === undefined) {
-                ref.localStorageCache.delete(key);
-            }
-            else {
-                ref.localStorageCache.set(key, jsonString);
-            }
-        }
         ref.error.delete(key); // reset error
 
         private_store_emit(key);
@@ -226,10 +219,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         };
     };
 
-    const private_getValueOrInitialValue = (key: string, value: V | undefined): V => {
-        if (value !== undefined) {
-            return value;
-        }
+    const private_getValueOrInitialValue = (key: string): V => {
         if (withLocalStorageKey) {
             const jsonString = getLocalStorageState(`${withLocalStorageKey}/${key}`);
             if (jsonString === null) {
@@ -239,6 +229,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
                 ref.localStorageCache.set(key, jsonString);
             }
             const localStorageValue = parseLocalStorageState<V>(jsonString, initialValue as V);
+            private_store_set(key, localStorageValue);
             return localStorageValue;
         }
         return initialValue as V;
@@ -260,9 +251,10 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         const keyString = getKeyString(key);
         // Maybe we can use getValue here
         const maybeSnapshot = ref.value.get(keyString);
-        const snapshot = private_getValueOrInitialValue(keyString, maybeSnapshot);
+        const snapshot = maybeSnapshot === undefined ? private_getValueOrInitialValue(keyString) : maybeSnapshot;
         const result = getSetResult(resultOrFunc, snapshot);
         private_store_set(keyString, result);
+        private_sync_localStorage(keyString, result);
         return result;
     };
 
@@ -341,7 +333,10 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
                 return;
             }
 
-            const promise = private_toPromise(asyncFunction, reducer, params, () => private_getValueOrInitialValue(keyString, ref.value.get(keyString)));
+            const promise = private_toPromise(asyncFunction, reducer, params, () => {
+                const maybeSnapshot = ref.value.get(keyString);
+                return maybeSnapshot === undefined ? private_getValueOrInitialValue(keyString) : maybeSnapshot;
+            });
             private_store_loadStart(keyString, {promise});
 
             try {
@@ -351,6 +346,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
                 }
                 else {
                     private_store_loadEnd(keyString, {skip: false, promise, value: result});
+                    private_sync_localStorage(keyString, result);
                 }
             } catch (error: unknown) {
                 if (skipByStrategy(keyString, promise)) {
@@ -378,8 +374,8 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
 
     const getValue: Result['getValue'] = key => {
         const keyString = getKeyString(key);
-        const value = ref.value.get(keyString);
-        return private_getValueOrInitialValue(keyString, value);
+        const maybeSnapshot = ref.value.get(keyString);
+        return maybeSnapshot === undefined ? private_getValueOrInitialValue(keyString) : maybeSnapshot;
     };
 
     const getLoading: Result['getLoading'] = key => {
@@ -451,13 +447,21 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         useStorageEvent(e => {
             if (withLocalStorageKey && e.storageArea === localStorage) {
                 const storageKey = `${withLocalStorageKey}/${keyString}`;
-                if (e.key === storageKey) {
-                    const jsonString = getLocalStorageState(`${withLocalStorageKey}/${key}`);
-                    if (ref.localStorageCache.get(keyString) !== jsonString) {
-                        const localStorageValue = parseLocalStorageState<V>(jsonString, initialValue as V);
-                        private_store_set(keyString, localStorageValue);
-                    }
+                if (e.key !== storageKey) {
+                    return;
                 }
+                const jsonString = getLocalStorageState(`${withLocalStorageKey}/${key}`);
+                if (ref.localStorageCache.get(keyString) === jsonString) {
+                    return;
+                }
+                if (jsonString === null) {
+                    ref.localStorageCache.delete(keyString);
+                }
+                else {
+                    ref.localStorageCache.set(keyString, jsonString);
+                }
+                const localStorageValue = parseLocalStorageState<V>(jsonString, initialValue as V);
+                private_store_set(keyString, localStorageValue);
             }
         });
         return subscription;

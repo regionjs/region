@@ -322,6 +322,13 @@ describe('useValue', () => {
         await rerender();
         expect(result.current).toBe('H');
     });
+
+    test('useValue with localStorage', async () => {
+        const region = createRegion<string[]>([], {withLocalStorageKey: 'region/useValue'});
+        window.localStorage.setItem('region/useValue/value', '["a"]');
+        const {result} = renderHook(() => region.useValue());
+        expect(result.current).toEqual(['a']);
+    });
 });
 
 describe('useError', () => {
