@@ -2,30 +2,38 @@ const localStorage = typeof window === 'object' && window.localStorage;
 
 type LocalStorageKey = string;
 
-export const setLocalStorageState = <V>(key: LocalStorageKey, value: V) => {
-    const jsonString = JSON.stringify(value);
+export const setLocalStorageState = (key: LocalStorageKey, jsonString: string | undefined) => {
+    // istanbul ignore next - only used in browser
+    if (!localStorage) {
+        return;
+    }
     // JSON.stringify(undefined) === undefined
     // JSON.stringify(null) === 'null'
     if (typeof jsonString === 'string') {
-        localStorage && localStorage.setItem(key, jsonString);
+        localStorage.setItem(key, jsonString);
     } else {
-        localStorage && localStorage.removeItem(key);
+        localStorage.removeItem(key);
     }
 };
 
-export const getLocalStorageState = <V>(key: LocalStorageKey, fallbackValue: V): V => {
+export const getLocalStorageState = (key: LocalStorageKey): string | null => {
+    // istanbul ignore next - only used in browser
+    if (!localStorage) {
+        return null;
+    }
+    const jsonString = localStorage.getItem(key);
+    return jsonString;
+};
+
+export const parseLocalStorageState = <V>(jsonString: string | null, fallbackValue: V): V => {
     try {
-        const jsonString = localStorage && localStorage.getItem(key);
         if (jsonString === null) {
             // when jsonString === null => item is undefined
             // when jsonString === 'null' => item is null
-            setLocalStorageState(key, fallbackValue);
             return fallbackValue;
         }
-        // @ts-expect-error
         return JSON.parse(jsonString);
     } catch (e) {
-        setLocalStorageState(key, fallbackValue);
         return fallbackValue;
     }
 };

@@ -3,7 +3,7 @@ import jsonStableStringify from 'json-stable-stringify';
 import {useSyncExternalStore} from 'use-sync-external-store/shim';
 import {deprecate} from '../util/deprecate';
 import {uniqLast, isLatest} from '../util/promiseQueue';
-import {getLocalStorageState, setLocalStorageState} from '../util/localStorageUtils';
+import {getLocalStorageState, parseLocalStorageState, setLocalStorageState} from '../util/localStorageUtils';
 import {useStorageEvent} from '../util/document';
 import {ResultFunc, ResultFuncPure, Strategy, RegionOption, Listener} from '../types';
 
@@ -95,6 +95,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         value: Map<string, V>;
         promiseQueue: Map<string, Array<Promise<V>>>;
         error: Map<string, Error>;
+        localStorageCache: Map<string, string>;
         listeners: Map<string, Set<Listener>>;
     }
 
@@ -103,6 +104,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         value: new Map<string, V>(),
         promiseQueue: new Map<string, Array<Promise<V>>>(),
         error: new Map<string, Error>(),
+        localStorageCache: new Map<string, string>(),
         listeners: new Map<string, Set<Listener>>(),
     };
 
@@ -142,7 +144,14 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         if (!options.skip) {
             ref.value.set(key, options.value);
             if (withLocalStorageKey) {
-                setLocalStorageState(`${withLocalStorageKey}/${key}`, options.value);
+                const jsonString: string | undefined = JSON.stringify(options.value);
+                setLocalStorageState(`${withLocalStorageKey}/${key}`, jsonString);
+                if (jsonString === undefined) {
+                    ref.localStorageCache.delete(key);
+                }
+                else {
+                    ref.localStorageCache.set(key, jsonString);
+                }
             }
             ref.error.delete(key); // reset error
         }
@@ -154,7 +163,14 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         ref.pendingMutex.set(key, decrease(prevPendingMutex));
         ref.value.set(key, value);
         if (withLocalStorageKey) {
-            setLocalStorageState(`${withLocalStorageKey}/${key}`, value);
+            const jsonString: string | undefined = JSON.stringify(value);
+            setLocalStorageState(`${withLocalStorageKey}/${key}`, jsonString);
+            if (jsonString === undefined) {
+                ref.localStorageCache.delete(key);
+            }
+            else {
+                ref.localStorageCache.set(key, jsonString);
+            }
         }
         ref.error.delete(key); // reset error
 
@@ -215,7 +231,14 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
             return value;
         }
         if (withLocalStorageKey) {
-            const localStorageValue = getLocalStorageState<V>(`${withLocalStorageKey}/${key}`, initialValue as V);
+            const jsonString = getLocalStorageState(`${withLocalStorageKey}/${key}`);
+            if (jsonString === null) {
+                ref.localStorageCache.delete(key);
+            }
+            else {
+                ref.localStorageCache.set(key, jsonString);
+            }
+            const localStorageValue = parseLocalStorageState<V>(jsonString, initialValue as V);
             return localStorageValue;
         }
         return initialValue as V;
@@ -429,8 +452,11 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
             if (withLocalStorageKey && e.storageArea === localStorage) {
                 const storageKey = `${withLocalStorageKey}/${keyString}`;
                 if (e.key === storageKey) {
-                    const localStorageValue = getLocalStorageState<V>(storageKey, initialValue as V);
-                    private_store_set(keyString, localStorageValue);
+                    const jsonString = getLocalStorageState(`${withLocalStorageKey}/${key}`);
+                    if (jsonString === ref.localStorageCache.get(keyString)) {
+                        const localStorageValue = parseLocalStorageState<V>(jsonString, initialValue as V);
+                        private_store_set(keyString, localStorageValue);
+                    }
                 }
             }
         });
