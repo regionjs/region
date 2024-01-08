@@ -5,6 +5,7 @@ export interface RegionOption {
     withLocalStorageKey?: string;
     strategy?: Strategy;
     startLoadingWith?: boolean;
+    syncLocalStorageFromEvent?: boolean;
 }
 
 // set & load

@@ -89,6 +89,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
 
     const strategy: Strategy = option?.strategy ?? 'acceptSequenced';
     const withLocalStorageKey: string | undefined = option?.withLocalStorageKey;
+    const syncLocalStorageFromEvent = option?.syncLocalStorageFromEvent ?? true;
 
     interface PrivateStoreStateRef {
         pendingMutex: Map<string, number>;
@@ -445,7 +446,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         // unable to fire storage event yet, see https://github.com/testing-library/dom-testing-library/issues/438
         // istanbul ignore next
         useStorageEvent(e => {
-            if (withLocalStorageKey && e.storageArea === localStorage) {
+            if (withLocalStorageKey && syncLocalStorageFromEvent && e.storageArea === localStorage) {
                 const storageKey = `${withLocalStorageKey}/${keyString}`;
                 if (e.key !== storageKey) {
                     return;

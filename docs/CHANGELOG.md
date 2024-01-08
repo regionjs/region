@@ -2,6 +2,8 @@
 
 ### 11.x
 
+- add `syncLocalStorageFromEvent` option to control localStorage sync strategy
+
 - add `startLoadingWith` option to control initial loading state
 
 - add `resetAll`, `reset` now resets value with specific key
