@@ -1,4 +1,4 @@
-import {useMemo} from 'react';
+import {useMemo, useRef} from 'react';
 import jsonStableStringify from 'json-stable-stringify';
 import {useSyncExternalStore} from 'use-sync-external-store/shim';
 import {deprecate} from '../util/deprecate';
@@ -96,7 +96,6 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         value: Map<string, V>;
         promiseQueue: Map<string, Array<Promise<V>>>;
         error: Map<string, Error>;
-        localStorageCache: Map<string, string>;
         listeners: Map<string, Set<Listener>>;
     }
 
@@ -105,7 +104,6 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         value: new Map<string, V>(),
         promiseQueue: new Map<string, Array<Promise<V>>>(),
         error: new Map<string, Error>(),
-        localStorageCache: new Map<string, string>(),
         listeners: new Map<string, Set<Listener>>(),
     };
 
@@ -121,12 +119,6 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         if (withLocalStorageKey) {
             const jsonString: string | undefined = JSON.stringify(value);
             setLocalStorageState(`${withLocalStorageKey}/${key}`, jsonString);
-            if (jsonString === undefined) {
-                ref.localStorageCache.delete(key);
-            }
-            else {
-                ref.localStorageCache.set(key, jsonString);
-            }
         }
     };
 
@@ -223,12 +215,6 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     const private_getValueOrInitialValue = (key: string): V => {
         if (withLocalStorageKey) {
             const jsonString = getLocalStorageState(`${withLocalStorageKey}/${key}`);
-            if (jsonString === null) {
-                ref.localStorageCache.delete(key);
-            }
-            else {
-                ref.localStorageCache.set(key, jsonString);
-            }
             const localStorageValue = parseLocalStorageState<V>(jsonString, initialValue as V);
             private_store_set(key, localStorageValue);
             return localStorageValue;
@@ -443,9 +429,14 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
             // eslint-disable-next-line react-hooks/exhaustive-deps
             [selector, keyString]
         );
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const timerRef = useRef<any>();
+
         // unable to fire storage event yet, see https://github.com/testing-library/dom-testing-library/issues/438
         // istanbul ignore next
         useStorageEvent(e => {
+            clearTimeout(timerRef.current);
             if (!withLocalStorageKey || !syncLocalStorageFromEvent) {
                 return;
             }
@@ -457,17 +448,20 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
                 return;
             }
             const jsonString = getLocalStorageState(`${withLocalStorageKey}/${key}`);
-            if (ref.localStorageCache.get(keyString) === jsonString) {
+            const snapshot = ref.value.get(keyString);
+            const jsonStringSnapshot: string | undefined = JSON.stringify(snapshot);
+            if (jsonStringSnapshot === jsonString) {
                 return;
             }
-            if (jsonString === null) {
-                ref.localStorageCache.delete(keyString);
-            }
-            else {
-                ref.localStorageCache.set(keyString, jsonString);
-            }
-            const localStorageValue = parseLocalStorageState<V>(jsonString, initialValue as V);
-            private_store_set(keyString, localStorageValue);
+            // setTimeout to avoid potential infinite loop
+            timerRef.current = setTimeout(
+                () => {
+                    const localStorageValue = parseLocalStorageState<V>(jsonString, initialValue as V);
+                    private_store_set(keyString, localStorageValue);
+                    private_sync_localStorage(keyString, localStorageValue);
+                },
+                300
+            );
         });
         return subscription;
     };
