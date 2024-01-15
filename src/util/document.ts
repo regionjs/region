@@ -1,25 +1,28 @@
-import {useEffect} from 'react';
+import {RefObject, useEffect, useRef} from 'react';
 
 type Listener = (e: StorageEvent) => void;
 
 const createStorageEventListenerHook = () => {
-    const listeners = new Set<Listener>();
+    const listeners = new Set<RefObject<Listener>>();
     const handleStorageEvent = (e: StorageEvent) => {
         // find some utils to test storage event
         // istanbul ignore next
         listeners.forEach(listener => {
-            listener(e);
+            listener.current?.(e);
         });
     };
     const useEventListener = (listener: Listener) => {
+        const listenerRef = useRef(listener);
+        listenerRef.current = listener;
+
         useEffect(
             () => {
-                listeners.add(listener);
+                listeners.add(listenerRef);
                 return () => {
-                    listeners.delete(listener);
+                    listeners.delete(listenerRef);
                 };
             },
-            [listener]
+            []
         );
     };
     typeof window === 'object' && window.addEventListener('storage', handleStorageEvent);

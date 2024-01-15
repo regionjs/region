@@ -446,24 +446,28 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         // unable to fire storage event yet, see https://github.com/testing-library/dom-testing-library/issues/438
         // istanbul ignore next
         useStorageEvent(e => {
-            if (withLocalStorageKey && syncLocalStorageFromEvent && e.storageArea === localStorage) {
-                const storageKey = `${withLocalStorageKey}/${keyString}`;
-                if (e.key !== storageKey) {
-                    return;
-                }
-                const jsonString = getLocalStorageState(`${withLocalStorageKey}/${key}`);
-                if (ref.localStorageCache.get(keyString) === jsonString) {
-                    return;
-                }
-                if (jsonString === null) {
-                    ref.localStorageCache.delete(keyString);
-                }
-                else {
-                    ref.localStorageCache.set(keyString, jsonString);
-                }
-                const localStorageValue = parseLocalStorageState<V>(jsonString, initialValue as V);
-                private_store_set(keyString, localStorageValue);
+            if (!withLocalStorageKey || !syncLocalStorageFromEvent) {
+                return;
             }
+            if (e.storageArea !== localStorage) {
+                return;
+            }
+            const storageKey = `${withLocalStorageKey}/${keyString}`;
+            if (e.key !== storageKey) {
+                return;
+            }
+            const jsonString = getLocalStorageState(`${withLocalStorageKey}/${key}`);
+            if (ref.localStorageCache.get(keyString) === jsonString) {
+                return;
+            }
+            if (jsonString === null) {
+                ref.localStorageCache.delete(keyString);
+            }
+            else {
+                ref.localStorageCache.set(keyString, jsonString);
+            }
+            const localStorageValue = parseLocalStorageState<V>(jsonString, initialValue as V);
+            private_store_set(keyString, localStorageValue);
         });
         return subscription;
     };
