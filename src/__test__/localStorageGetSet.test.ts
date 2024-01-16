@@ -1,3 +1,4 @@
+import {renderHook} from '@testing-library/react-hooks';
 import {createRegion} from '..';
 import {delayLoop} from '../util/delayLoop';
 
@@ -8,7 +9,7 @@ const asyncFunc = async () => {
     return 'a';
 };
 
-describe('localStorageRegion', () => {
+describe('localStorageGetSet', () => {
     test('basic', async () => {
         const region = createRegion(false, {withLocalStorageKey: 'key'});
         expect(region.getValue()).toBe(false);
@@ -93,5 +94,16 @@ describe('localStorageRegion', () => {
         expect(region.getValue()).toEqual(false);
         await region.load(Promise.resolve());
         expect(region.getValue()).toEqual(undefined);
+    });
+
+    test('hook basic', () => {
+        const region = createRegion<Record<string, number>>({a: 1}, {withLocalStorageKey: 'key12'});
+        const {result} = renderHook(() => region.useValue());
+        expect(result.current).toEqual({a: 1});
+        region.set({b: 2});
+        expect(result.current).toEqual({b: 2});
+        const region2 = createRegion<Record<string, number>>({a: 1}, {withLocalStorageKey: 'key12'});
+        const {result: result3} = renderHook(() => region2.useValue());
+        expect(result3.current).toEqual({b: 2});
     });
 });

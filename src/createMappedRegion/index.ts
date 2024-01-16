@@ -26,6 +26,32 @@ const silent = async (promise: Promise<unknown>) => {
     }
 };
 
+const private_toPromise = async <V, TParams, TResult>(
+    asyncFunction: (params: TParams) => Promise<TResult>,
+    reducer?: (state: V, result: TResult, params: TParams) => V,
+    params?: TParams,
+    // @ts-expect-error
+    getReducerState: () => V
+): Promise<V> => {
+    // maybe promise, asyncFunction may return native value
+    const promise = typeof asyncFunction === 'function' ? asyncFunction(params as TParams) : asyncFunction;
+    if (typeof reducer === 'function') {
+        const result = await promise;
+        return reducer(getReducerState(), result, params as TParams);
+    }
+    return promise as unknown as Promise<V>;
+};
+
+const toError = (error: unknown): Error => {
+    if (error instanceof Error) {
+        return error;
+    }
+    if (typeof error === 'string') {
+        return new Error(error);
+    }
+    return new Error(`You should throw an Error or a string to reject Promise, received ${error}`);
+};
+
 interface LoadBy<K, V, Extend> {
     (
         key: K | (() => K),
@@ -115,18 +141,11 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         listeners.forEach(listener => listener());
     };
 
-    const private_sync_localStorage = (key: string, value: V): void => {
-        if (withLocalStorageKey) {
-            const jsonString: string | undefined = JSON.stringify(value);
-            setLocalStorageState(`${withLocalStorageKey}/${key}`, jsonString);
-        }
-    };
-
-    interface OptionsLoadStart {
+    interface PrivateOptionsLoadStart {
         promise: Promise<V>;
     }
 
-    const private_store_loadStart = (key: string, {promise}: OptionsLoadStart): void => {
+    const private_store_loadStart = (key: string, {promise}: PrivateOptionsLoadStart): void => {
         const promiseQueue = ref.promiseQueue.get(key) ?? [];
         const nextPromiseQueue = uniqLast(promiseQueue, promise);
         ref.promiseQueue.set(key, nextPromiseQueue);
@@ -135,7 +154,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         private_store_emit(key);
     };
 
-    type OptionsLoadEnd = {
+    type PrivateOptionsLoadEnd = {
         skip: true;
         promise: Promise<V>;
     } | {
@@ -144,20 +163,32 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         value: V;
     };
 
-    const private_store_loadEnd = (key: string, options: OptionsLoadEnd): void => {
+    const private_store_loadEnd = (key: string, options: PrivateOptionsLoadEnd): void => {
         const prevPendingMutex = ref.pendingMutex.get(key);
         ref.pendingMutex.set(key, decrease(prevPendingMutex));
         if (!options.skip) {
             ref.value.set(key, options.value);
+            if (withLocalStorageKey) {
+                const jsonString: string | undefined = JSON.stringify(options.value);
+                setLocalStorageState(`${withLocalStorageKey}/${key}`, jsonString);
+            }
             ref.error.delete(key); // reset error
         }
         private_store_emit(key);
     };
 
-    const private_store_set = (key: string, value: V): void => {
+    interface PrivateOptionsSet {
+        fromLocalStorage?: boolean;
+    }
+
+    const private_store_set = (key: string, value: V, options?: PrivateOptionsSet): void => {
         const prevPendingMutex = ref.pendingMutex.get(key);
         ref.pendingMutex.set(key, decrease(prevPendingMutex));
         ref.value.set(key, value);
+        if (withLocalStorageKey && !options?.fromLocalStorage) {
+            const jsonString: string | undefined = JSON.stringify(value);
+            setLocalStorageState(`${withLocalStorageKey}/${key}`, jsonString);
+        }
         ref.error.delete(key); // reset error
 
         private_store_emit(key);
@@ -216,13 +247,13 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         if (withLocalStorageKey) {
             const jsonString = getLocalStorageState(`${withLocalStorageKey}/${key}`);
             const localStorageValue = parseLocalStorageState<V>(jsonString, initialValue as V);
-            private_store_set(key, localStorageValue);
+            private_store_set(key, localStorageValue, {fromLocalStorage: true});
             return localStorageValue;
         }
         return initialValue as V;
     };
 
-    const getKeyString = (key: K): string => {
+    const private_getKeyString = (key: K): string => {
         if (typeof key === 'string') {
             return key;
         }
@@ -235,13 +266,12 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
 
     // ---- APIs ----
     const set: Result['set'] = (key, resultOrFunc): V => {
-        const keyString = getKeyString(key);
+        const keyString = private_getKeyString(key);
         // Maybe we can use getValue here
         const maybeSnapshot = ref.value.get(keyString);
         const snapshot = maybeSnapshot === undefined ? private_getValueOrInitialValue(keyString) : maybeSnapshot;
         const result = getSetResult(resultOrFunc, snapshot);
         private_store_set(keyString, result);
-        private_sync_localStorage(keyString, result);
         return result;
     };
 
@@ -250,7 +280,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
             deprecate('reset should be called with key, use resetAll to reset all keys.');
             private_store_resetAll();
         }
-        const keyString = getKeyString(key);
+        const keyString = private_getKeyString(key);
         private_store_reset(keyString);
     };
 
@@ -262,32 +292,6 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     // };
     //
     // const emitAll: Result['emitAll'] = private_store_emitAll;
-
-    const private_toPromise = async <TParams, TResult>(
-        asyncFunction: (params: TParams) => Promise<TResult>,
-        reducer?: (state: V, result: TResult, params: TParams) => V,
-        params?: TParams,
-        // @ts-expect-error
-        getReducerState: () => V
-    ): Promise<V> => {
-        // maybe promise, asyncFunction may return native value
-        const promise = typeof asyncFunction === 'function' ? asyncFunction(params as TParams) : asyncFunction;
-        if (typeof reducer === 'function') {
-            const result = await promise;
-            return reducer(getReducerState(), result, params as TParams);
-        }
-        return promise as unknown as Promise<V>;
-    };
-
-    const private_toError = (error: unknown): Error => {
-        if (error instanceof Error) {
-            return error;
-        }
-        if (typeof error === 'string') {
-            return new Error(error);
-        }
-        return new Error(`You should throw an Error or a string to reject Promise, received ${error}`);
-    };
 
     const skipByStrategy = (keyString: string, promise: Promise<V>): boolean => {
         const promiseQueue = ref.promiseQueue.get(keyString) ?? [];
@@ -312,7 +316,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         const loadByReturnFunction = async (params?: TParams): Promise<void> => {
             // @ts-expect-error
             const loadKey: K = typeof key === 'function' ? key(params as TParams) : key;
-            const keyString = getKeyString(loadKey);
+            const keyString = private_getKeyString(loadKey);
 
             const promiseQueue = ref.promiseQueue.get(keyString);
             if (strategy === 'acceptFirst' && promiseQueue !== undefined) {
@@ -333,17 +337,16 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
                 }
                 else {
                     private_store_loadEnd(keyString, {skip: false, promise, value: result});
-                    private_sync_localStorage(keyString, result);
                 }
             } catch (error: unknown) {
                 if (skipByStrategy(keyString, promise)) {
                     private_store_loadEnd(keyString, {skip: true, promise});
                 }
                 else {
-                    private_store_setError(keyString, private_toError(error));
                     if (strategy === 'acceptFirst') {
                         ref.promiseQueue.delete(keyString);
                     }
+                    private_store_setError(keyString, toError(error));
                 }
             }
         };
@@ -360,13 +363,13 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     };
 
     const getValue: Result['getValue'] = key => {
-        const keyString = getKeyString(key);
+        const keyString = private_getKeyString(key);
         const maybeSnapshot = ref.value.get(keyString);
         return maybeSnapshot === undefined ? private_getValueOrInitialValue(keyString) : maybeSnapshot;
     };
 
     const getLoading: Result['getLoading'] = key => {
-        const keyString = getKeyString(key);
+        const keyString = private_getKeyString(key);
         const pendingMutex = ref.pendingMutex.get(keyString);
 
         // treat undefined as true
@@ -377,12 +380,12 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     };
 
     const getError: Result['getError'] = key => {
-        const keyString = getKeyString(key);
+        const keyString = private_getKeyString(key);
         return ref.error.get(keyString);
     };
 
     const getPromise: Result['getPromise'] = key => {
-        const keyString = getKeyString(key);
+        const keyString = private_getKeyString(key);
         const promiseQueue = ref.promiseQueue.get(keyString);
         if (!promiseQueue) {
             return undefined;
@@ -395,18 +398,18 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
             const subscription = useMemo(
                 () => ({
                     getCurrentValue: () => getFn(key),
-                    subscribe: (listener: Listener) => private_store_subscribe(getKeyString(key), listener),
+                    subscribe: (listener: Listener) => private_store_subscribe(private_getKeyString(key), listener),
                 }),
                 // shallow-equal
                 // eslint-disable-next-line react-hooks/exhaustive-deps
-                [getKeyString(key)]
+                [private_getKeyString(key)]
             );
             return useSyncExternalStore(subscription.subscribe, subscription.getCurrentValue);
         };
     };
 
     const useValueSelectorSubscription = <TResult>(key: K, selector?: (value: V) => TResult) => {
-        const keyString = getKeyString(key);
+        const keyString = private_getKeyString(key);
         const subscription = useMemo(
             () => ({
                 getCurrentValue: () => {
@@ -457,8 +460,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
             timerRef.current = setTimeout(
                 () => {
                     const localStorageValue = parseLocalStorageState<V>(jsonString, initialValue as V);
-                    private_store_set(keyString, localStorageValue);
-                    private_sync_localStorage(keyString, localStorageValue);
+                    private_store_set(keyString, localStorageValue, {fromLocalStorage: true});
                 },
                 300
             );
@@ -478,7 +480,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
             () => getPromise(key),
             // shallow-equal
             // eslint-disable-next-line react-hooks/exhaustive-deps
-            [getPromise, getKeyString(key)]
+            [getPromise, private_getKeyString(key)]
         );
         if (subscription.getCurrentValue() === undefined) {
             if (currentPromise) {
