@@ -247,7 +247,8 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         if (withLocalStorageKey) {
             const jsonString = getLocalStorageState(`${withLocalStorageKey}/${key}`);
             const localStorageValue = parseLocalStorageState<V>(jsonString, initialValue as V);
-            private_store_set(key, localStorageValue, {fromLocalStorage: true});
+            // 这里不 emit，所以直接操作 ref
+            ref.value.set(key, localStorageValue);
             return localStorageValue;
         }
         return initialValue as V;
