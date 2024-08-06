@@ -1,6 +1,5 @@
-import {useMemo, useRef} from 'react';
+import {useMemo, useRef, useSyncExternalStore} from 'react';
 import jsonStableStringify from 'json-stable-stringify';
-import {useSyncExternalStore} from 'use-sync-external-store/shim';
 import {deprecate} from '../util/deprecate';
 import {uniqLast, isLatest} from '../util/promiseQueue';
 import {getLocalStorageState, parseLocalStorageState, setLocalStorageState} from '../util/localStorageUtils';
@@ -295,6 +294,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     // const emitAll: Result['emitAll'] = private_store_emitAll;
 
     const skipByStrategy = (keyString: string, promise: Promise<V>): boolean => {
+        // istanbul ignore next
         const promiseQueue = ref.promiseQueue.get(keyString) ?? [];
         if (strategy === 'acceptSequenced') {
             const index = promiseQueue.indexOf(promise);

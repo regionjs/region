@@ -32,8 +32,7 @@
     "react": ">=18"
   },
   "dependencies": {
-    "json-stable-stringify": "^1.1.0",
-    "use-sync-external-store": "^1.2.0"
+    "json-stable-stringify": "^1.1.0"
   },
   "devDependencies": {
     "@reskript/cli": "^5.7.4",
@@ -46,7 +45,6 @@
     "@types/json-stable-stringify": "^1.0.36",
     "@types/react": "^18.2.42",
     "@types/react-test-renderer": "^18.0.7",
-    "@types/use-sync-external-store": "^0.0.6",
     "core-js": "^3.33.3",
     "eslint": "^8.53.0",
     "husky": "^8.0.3",
