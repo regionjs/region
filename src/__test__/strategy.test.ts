@@ -115,8 +115,8 @@ describe('strategy', () => {
         expect(region.getValue()).toBe('b');
     });
 
-    test('acceptFirst 1', async () => {
-        const region = createRegion(undefined, {strategy: 'acceptFirst'});
+    test('skipIfArrived 1', async () => {
+        const region = createRegion(undefined, {strategy: 'skipIfArrived'});
         const load1 = region.loadBy(asyncFunc1);
         const load2 = region.loadBy(asyncFunc2);
         await load1();
@@ -125,24 +125,24 @@ describe('strategy', () => {
         expect(region.getValue()).toBe('a');
     });
 
-    test('acceptFirst 2', async () => {
-        const region = createRegion(undefined, {strategy: 'acceptFirst'});
+    test('skipIfArrived 2', async () => {
+        const region = createRegion(undefined, {strategy: 'skipIfArrived'});
         const load1 = region.loadBy(asyncFunc1);
         const load2 = region.loadBy(asyncFunc2);
         const promises = [load1(), load2()];
         await Promise.race(promises);
         expect(region.getValue()).toBe('a');
         await Promise.all(promises);
-        expect(region.getValue()).toBe('a');
+        expect(region.getValue()).toBe('b');
     });
 
-    test('acceptFirst 3', async () => {
-        const region = createRegion(undefined, {strategy: 'acceptFirst'});
+    test('skipIfArrived 3', async () => {
+        const region = createRegion(undefined, {strategy: 'skipIfArrived'});
         const load1 = region.loadBy(asyncFunc1);
         const load2 = region.loadBy(asyncFunc2);
         const promises = [load2(), load1()];
         await Promise.race(promises);
-        expect(region.getValue()).toBe('b');
+        expect(region.getValue()).toBe('a');
         await Promise.all(promises);
         expect(region.getValue()).toBe('b');
     });

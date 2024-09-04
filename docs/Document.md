@@ -212,7 +212,7 @@ You can use `strategy` to configure asynchronous strategy. Currently, four async
 
 | Strategy          | Description |
 | --- | --- |
-| `acceptFirst`     | When multiple asynchronous tasks are sent at the same time, only the first successful result is accepted. If there is already a successful return, the subsequent request will not be sent. |
+| `skipIfArrived`   | If there is already a successful return, the subsequent request will not be sent. |
 | `acceptLatest`    | When multiple asynchronous tasks are sent at the same time, only the result of the last task sent is accepted, whether it is successful or failed. |
 | `acceptEvery`     | When multiple asynchronous tasks are sent at the same time, all returns are accepted and processed in the order of arrival. Since the order of arrival may be out of order, you need to deal with the problem of out of order. |
 | `acceptSequenced` | When multiple asynchronous tasks are sent at the same time, the results are accepted in the order of task sending. When the middle task arrives, the results of the tasks sent before this task are no longer accepted, but the results of the tasks sent later are still accepted. |

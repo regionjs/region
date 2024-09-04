@@ -17,14 +17,6 @@ const getSetResult = <V>(resultOrFunc: V | ResultFuncPure<V>, snapshot: V) => {
     return resultOrFunc;
 };
 
-const silent = async (promise: Promise<unknown>) => {
-    try {
-        await promise;
-    } catch {
-        // do nothing
-    }
-};
-
 const private_toPromise = async <V, TParams, TResult>(
     asyncFunction: (params: TParams) => Promise<TResult>,
     reducer?: (state: V, result: TResult, params: TParams) => V,
@@ -319,9 +311,8 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
             const loadKey: K = typeof key === 'function' ? key(params as TParams) : key;
             const keyString = private_getKeyString(loadKey);
 
-            const promiseQueue = ref.promiseQueue.get(keyString);
-            if (strategy === 'acceptFirst' && promiseQueue !== undefined) {
-                await silent(promiseQueue[0]);
+            const maybeSnapshot = ref.value.get(keyString);
+            if (strategy === 'skipIfArrived' && maybeSnapshot !== undefined) {
                 return;
             }
 
@@ -344,9 +335,6 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
                     private_store_loadEnd(keyString, {skip: true, promise});
                 }
                 else {
-                    if (strategy === 'acceptFirst') {
-                        ref.promiseQueue.delete(keyString);
-                    }
                     private_store_setError(keyString, toError(error));
                 }
             }
