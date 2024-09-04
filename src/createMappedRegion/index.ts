@@ -104,7 +104,14 @@ function createMappedRegion <K, V>(initialValue: V, option?: RegionOption): Crea
 function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: RegionOption): CreateMappedRegionReturnValue<K, V> | CreateMappedRegionPureReturnValue<K, V> {
     type Result = CreateMappedRegionPureReturnValue<K, V>;
 
-    const strategy: Strategy = option?.strategy ?? 'acceptSequenced';
+    let strategy: Strategy = option?.strategy ?? 'acceptSequenced';
+
+    // @ts-expect-error
+    // istanbul ignore next - deprecated
+    if (strategy === 'acceptFirst') {
+        console.warn('acceptFirst strategy is deprecated and converted to skipIfArrived. Use skipIfArrived instead.');
+        strategy = 'skipIfArrived';
+    }
     const withLocalStorageKey: string | undefined = option?.withLocalStorageKey;
     const syncLocalStorageFromEvent = option?.syncLocalStorageFromEvent ?? true;
 
