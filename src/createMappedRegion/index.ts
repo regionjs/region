@@ -17,6 +17,14 @@ const getSetResult = <V>(resultOrFunc: V | ResultFuncPure<V>, snapshot: V) => {
     return resultOrFunc;
 };
 
+const silent = async (promise: Promise<unknown>) => {
+    try {
+        await promise;
+    } catch {
+        // do nothing
+    }
+};
+
 const private_toPromise = async <V, TParams, TResult>(
     asyncFunction: (params: TParams) => Promise<TResult>,
     reducer?: (state: V, result: TResult, params: TParams) => V,
@@ -104,14 +112,8 @@ function createMappedRegion <K, V>(initialValue: V, option?: RegionOption): Crea
 function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: RegionOption): CreateMappedRegionReturnValue<K, V> | CreateMappedRegionPureReturnValue<K, V> {
     type Result = CreateMappedRegionPureReturnValue<K, V>;
 
-    let strategy: Strategy = option?.strategy ?? 'acceptSequenced';
+    const strategy: Strategy = option?.strategy ?? 'acceptSequenced';
 
-    // @ts-expect-error
-    // istanbul ignore next - deprecated
-    if (strategy === 'acceptFirst') {
-        console.warn('acceptFirst strategy is deprecated and converted to skipIfArrived. Use skipIfArrived instead.');
-        strategy = 'skipIfArrived';
-    }
     const withLocalStorageKey: string | undefined = option?.withLocalStorageKey;
     const syncLocalStorageFromEvent = option?.syncLocalStorageFromEvent ?? true;
 
@@ -318,8 +320,9 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
             const loadKey: K = typeof key === 'function' ? key(params as TParams) : key;
             const keyString = private_getKeyString(loadKey);
 
-            const maybeSnapshot = ref.value.get(keyString);
-            if (strategy === 'skipIfArrived' && maybeSnapshot !== undefined) {
+            const promiseQueue = ref.promiseQueue.get(keyString);
+            if (strategy === 'acceptFirst' && promiseQueue !== undefined) {
+                await silent(promiseQueue[0]);
                 return;
             }
 
@@ -342,6 +345,9 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
                     private_store_loadEnd(keyString, {skip: true, promise});
                 }
                 else {
+                    if (strategy === 'acceptFirst') {
+                        ref.promiseQueue.delete(keyString);
+                    }
                     private_store_setError(keyString, toError(error));
                 }
             }

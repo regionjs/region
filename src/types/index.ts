@@ -1,5 +1,5 @@
 // public
-export type Strategy = 'skipIfArrived' | 'acceptLatest' | 'acceptEvery' | 'acceptSequenced';
+export type Strategy = 'acceptFirst' | 'acceptLatest' | 'acceptEvery' | 'acceptSequenced';
 
 export interface RegionOption {
     withLocalStorageKey?: string;

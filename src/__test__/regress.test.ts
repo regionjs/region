@@ -153,9 +153,9 @@ describe('falsy useValue will not return undefined', () => {
     });
 });
 
-describe('skipIfArrived should clear promise with promise is rejected', () => {
+describe('acceptFirst should clear promise with promise is rejected', () => {
     test('basic', async () => {
-        const region = createRegion(undefined, {strategy: 'skipIfArrived'});
+        const region = createRegion(undefined, {strategy: 'acceptFirst'});
         const asyncResolve = () => Promise.resolve('Angela Merkel');
         const asyncReject = () => Promise.reject('error');
 
