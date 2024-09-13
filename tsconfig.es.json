@@ -3,9 +3,9 @@
         "outDir": "./es",
         "strict": true,
         "declaration": true,
-        "jsx": "react",
-        "target": "es6",
-        "moduleResolution": "node",
+        "jsx": "react-jsx",
+        "target": "esnext",
+        "moduleResolution": "bundler",
         "lib": ["esnext", "dom"],
         "skipLibCheck": true,
         "esModuleInterop": true
