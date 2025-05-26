@@ -1,3 +1,4 @@
+import {describe, test, expect} from 'vitest';
 import {region} from './region';
 
 const {set, reset, resetAll, loadBy, getValue} = region;

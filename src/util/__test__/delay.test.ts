@@ -1,7 +1,8 @@
+import {describe, test, expect} from 'vitest';
 import {delayLoop} from '../delayLoop';
 
 describe('delayLoop', () => {
-    it('should delay after a loop', async () => {
+    test('should delay after a loop', async () => {
         const result: number[] = [];
         await Promise.all([
             (async () => {

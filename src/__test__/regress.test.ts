@@ -1,3 +1,4 @@
+import {describe, test, expect} from 'vitest';
 import {renderHook} from '@testing-library/react-hooks';
 import {createMappedRegion, createRegion} from '..';
 import {delayLoop} from '../util/delayLoop';
@@ -70,7 +71,7 @@ describe('reject race condition', () => {
         expect(region.getError()?.message).toBe(undefined);
     });
 
-    test('acceptEvery', done => {
+    test('acceptEvery', async () => {
         const region = createRegion(undefined, {strategy: 'acceptEvery'});
         const throwError = () => new Promise((resolve, reject) => {
             setTimeout(() => reject('error'), 0);
@@ -84,19 +85,15 @@ describe('reject race condition', () => {
         region.loadBy(resolve1)();
 
         expect(region.getError()?.message).toBe(undefined);
-        setTimeout(
-            () => {
-                expect(region.getLoading()).toBe(true);
-                expect(region.getError()?.message).toBe('error');
-                done();
-            },
-            50
-        );
+
+        await delayLoop();
+        expect(region.getLoading()).toBe(true);
+        expect(region.getError()?.message).toBe('error');
     });
 });
 
 describe('bypass error when error should not be combined', () => {
-    test('basic', done => {
+    test('basic', async () => {
         const region = createRegion();
         const throwError = () => new Promise((resolve, reject) => {
             const error = new Error('error');
@@ -108,15 +105,10 @@ describe('bypass error when error should not be combined', () => {
         region.loadBy(throwError)();
         expect(region.getError()?.message).toBe(undefined);
 
-        setTimeout(
-            () => {
-                expect(region.getError()?.message).toBe('error');
-                // @ts-expect-error
-                expect(region.getError()?.a).toBe(1);
-                done();
-            },
-            50
-        );
+        await delayLoop();
+        expect(region.getError()?.message).toBe('error');
+        // @ts-expect-error
+        expect(region.getError()?.a).toBe(1);
     });
 });
 

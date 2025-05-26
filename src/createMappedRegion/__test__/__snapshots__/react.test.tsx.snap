@@ -1,36 +1,36 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`react connect and connectWith 1`] = `
+exports[`react > connect and connectWith 1`] = `
 <div>
   !loading user
 </div>
 `;
 
-exports[`react connect and connectWith 2`] = `
+exports[`react > connect and connectWith 2`] = `
 <div>
   !loading user2
 </div>
 `;
 
-exports[`react connect and connectWith 3`] = `
+exports[`react > connect and connectWith 3`] = `
 <div>
   !loading user2
 </div>
 `;
 
-exports[`react connect and connectWith 4`] = `
+exports[`react > connect and connectWith 4`] = `
 <div>
   !loading user3
 </div>
 `;
 
-exports[`react useProps 1`] = `
+exports[`react > useProps 1`] = `
 <div>
   loading undefined
 </div>
 `;
 
-exports[`react useProps 2`] = `
+exports[`react > useProps 2`] = `
 <div>
   !loading user
 </div>

@@ -1,3 +1,4 @@
+import {describe, test, expect} from 'vitest';
 import {delayLoop} from '../../util/delayLoop';
 import {createMappedRegion} from '../..';
 

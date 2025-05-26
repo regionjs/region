@@ -1,3 +1,4 @@
+import {describe, test, expect} from 'vitest';
 import * as React from 'react';
 import * as reactTestRenderer from 'react-test-renderer';
 import {region} from './region';
