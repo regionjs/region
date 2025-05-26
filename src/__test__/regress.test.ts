@@ -74,10 +74,11 @@ describe('reject race condition', () => {
     test('acceptEvery', async () => {
         const region = createRegion(undefined, {strategy: 'acceptEvery'});
         const throwError = () => new Promise((resolve, reject) => {
+            // eslint-disable-next-line prefer-promise-reject-errors
             setTimeout(() => reject('error'), 0);
         });
 
-        const resolve1 = () => new Promise(resolve => {
+        const resolve1 = () => new Promise((resolve) => {
             setTimeout(() => resolve(1), 100);
         });
 
@@ -149,6 +150,7 @@ describe('acceptFirst should clear promise with promise is rejected', () => {
     test('basic', async () => {
         const region = createRegion(undefined, {strategy: 'acceptFirst'});
         const asyncResolve = () => Promise.resolve('Angela Merkel');
+        // eslint-disable-next-line prefer-promise-reject-errors
         const asyncReject = () => Promise.reject('error');
 
         expect.assertions(3);

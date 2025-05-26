@@ -1,9 +1,10 @@
+/* eslint-disable max-lines */
 import {describe, test, expect} from 'vitest';
 import {renderHook} from '@testing-library/react-hooks';
 import {createRegion} from '..';
 import {delayLoop} from '../util/delayLoop';
 
-interface ParamsId { id: string }
+interface ParamsId {id: string}
 
 describe('createRegion', () => {
     test('createRegion with undefined', () => {
@@ -124,6 +125,7 @@ describe('load', () => {
 
     test('load with reject', async () => {
         const region = createRegion();
+        // eslint-disable-next-line prefer-promise-reject-errors
         const asyncFunction = () => Promise.reject('Barbara Garcia');
 
         expect.assertions(2);
@@ -169,6 +171,7 @@ describe('load', () => {
     test('reject will not erase resolve', async () => {
         const region = createRegion();
         const asyncFunction = () => Promise.resolve('Deborah Anderson');
+        // eslint-disable-next-line prefer-promise-reject-errors
         const asyncFunction2 = () => Promise.reject('Susan Gonzalez');
 
         expect.assertions(4);
@@ -182,6 +185,7 @@ describe('load', () => {
 
     test('resolve will erase reject', async () => {
         const region = createRegion();
+        // eslint-disable-next-line prefer-promise-reject-errors
         const asyncFunction = () => Promise.reject('Christopher Hall');
         const asyncFunction2 = () => Promise.resolve('Jason Lee');
 

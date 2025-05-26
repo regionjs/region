@@ -59,7 +59,7 @@ describe('createMappedRegion', () => {
         const asyncFunction = async ({id}: {id: string}) => `${id}+`;
         const loadFunction = region.loadBy(
             params => params.id,
-            asyncFunction
+            asyncFunction,
         );
         await loadFunction({id: '1'});
         expect(region.getValue('1')).toBe('1+');

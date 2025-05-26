@@ -7,7 +7,7 @@ const createStorageEventListenerHook = () => {
     const handleStorageEvent = (e: StorageEvent) => {
         // find some utils to test storage event
         // istanbul ignore next
-        listeners.forEach(listener => {
+        listeners.forEach((listener) => {
             listener.current?.(e);
         });
     };
@@ -22,7 +22,7 @@ const createStorageEventListenerHook = () => {
                     listeners.delete(listenerRef);
                 };
             },
-            []
+            [],
         );
     };
     typeof window === 'object' && window.addEventListener('storage', handleStorageEvent);

@@ -11,7 +11,7 @@ describe('createStore', () => {
     });
 
     test('set array', () => {
-        const region = createMappedRegion<string, Array<{id: number, name: string}>>();
+        const region = createMappedRegion<string, {id: number; name: string}[]>();
         const result = [{id: 1, name: 'zhangcong'}, {id: 2, name: 'milly'}];
         region.set('user', result);
         expect(region.getValue('user')).toEqual([{id: 1, name: 'zhangcong'}, {id: 2, name: 'milly'}]);

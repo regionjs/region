@@ -50,15 +50,17 @@ export interface CreateRegionPureReturnValue<V> extends Omit<CreateRegionReturnV
 }
 
 // overload is unsafe in some way, ensure the return type is correct
-function createRegion <V>(initialValue: void | undefined, option?: RegionOption): CreateRegionReturnValue<V>;
-function createRegion <V>(initialValue: V, option?: RegionOption): CreateRegionPureReturnValue<V>;
-function createRegion <V>(initialValue: void | V | undefined, option?: RegionOption): CreateRegionReturnValue<V> | CreateRegionPureReturnValue<V> {
+// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
+function createRegion<V>(initialValue: void | undefined, option?: RegionOption): CreateRegionReturnValue<V>;
+function createRegion<V>(initialValue: V, option?: RegionOption): CreateRegionPureReturnValue<V>;
+function createRegion<V>(initialValue: void | V | undefined, option?: RegionOption): CreateRegionReturnValue<V> | CreateRegionPureReturnValue<V> {
     type Result = CreateRegionReturnValue<V>;
 
     let region: CreateMappedRegionPureReturnValue<'value', V>;
     if (initialValue !== undefined) {
         region = createMappedRegion<'value', V>(initialValue, option);
-    } else {
+    }
+    else {
         region = createMappedRegion<'value', V>(undefined, option) as CreateMappedRegionPureReturnValue<'value', V>;
     }
 
@@ -70,13 +72,13 @@ function createRegion <V>(initialValue: void | V | undefined, option?: RegionOpt
         return region.reset('value');
     };
 
-    const load: Result['load'] = promise => {
+    const load: Result['load'] = (promise) => {
         return region.load('value', promise);
     };
 
     const loadBy: Result['loadBy'] = <TParams = void, TResult = unknown>(
         asyncFunction: (params: TParams) => Promise<TResult>,
-        reducer?: (state: V, result: TResult, params: TParams) => V
+        reducer?: (state: V, result: TResult, params: TParams) => V,
     ) => {
         // type actually strict, it is loose when developed
         // @ts-expect-error

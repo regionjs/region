@@ -1,4 +1,5 @@
 import {describe, test, expect} from 'vitest';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as React from 'react';
 import * as reactTestRenderer from 'react-test-renderer';
 import {region} from './region';
@@ -7,12 +8,13 @@ const {set, useLoading, useValue} = region;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const connect = (key: any) => (Component: any) => {
-    return () => {
+    const Connect = () => {
         const loading = useLoading(key);
         const value = useValue(key);
         const props = {[key]: value};
         return <Component loading={loading} {...props} />;
     };
+    return Connect;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

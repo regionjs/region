@@ -72,7 +72,7 @@ describe('load', () => {
         await loadBy(
             'user',
             () => Promise.resolve('2'),
-            (snapshot, user) => `${snapshot}${user}3`
+            (snapshot, user) => `${snapshot}${user}3`,
         )();
         expect(getValue('user')).toBe('0123');
     });

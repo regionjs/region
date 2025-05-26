@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import {useMemo, useRef, useSyncExternalStore} from 'react';
 import jsonStableStringify from 'json-stable-stringify';
 import {deprecate} from '../util/deprecate';
@@ -7,8 +8,8 @@ import {useStorageEvent} from '../util/document';
 import {ResultFunc, ResultFuncPure, Strategy, RegionOption, Listener} from '../types';
 
 type IncreaseDecrease = (v: number | undefined) => number;
-const increase: IncreaseDecrease = (v: number = 0) => (v + 1);
-const decrease: IncreaseDecrease = (v: number = 0) => (v - 1 > 0 ? v - 1 : 0);
+const increase: IncreaseDecrease = (v = 0) => (v + 1);
+const decrease: IncreaseDecrease = (v = 0) => (v - 1 > 0 ? v - 1 : 0);
 
 const getSetResult = <V>(resultOrFunc: V | ResultFuncPure<V>, snapshot: V) => {
     if (typeof resultOrFunc === 'function') {
@@ -20,7 +21,8 @@ const getSetResult = <V>(resultOrFunc: V | ResultFuncPure<V>, snapshot: V) => {
 const silent = async (promise: Promise<unknown>) => {
     try {
         await promise;
-    } catch {
+    }
+    catch {
         // do nothing
     }
 };
@@ -30,7 +32,7 @@ const private_toPromise = async <V, TParams, TResult>(
     reducer?: (state: V, result: TResult, params: TParams) => V,
     params?: TParams,
     // @ts-expect-error
-    getReducerState: () => V
+    getReducerState: () => V,
 ): Promise<V> => {
     // maybe promise, asyncFunction may return native value
     const promise = typeof asyncFunction === 'function' ? asyncFunction(params as TParams) : asyncFunction;
@@ -107,9 +109,10 @@ export interface CreateMappedRegionPureReturnValue<K, V> extends Omit<CreateMapp
 }
 
 // overload is unsafe in some way, ensure the return type is correct
-function createMappedRegion <K, V>(initialValue: void | undefined, option?: RegionOption): CreateMappedRegionReturnValue<K, V>;
-function createMappedRegion <K, V>(initialValue: V, option?: RegionOption): CreateMappedRegionPureReturnValue<K, V>;
-function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: RegionOption): CreateMappedRegionReturnValue<K, V> | CreateMappedRegionPureReturnValue<K, V> {
+// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
+function createMappedRegion<K, V>(initialValue: void | undefined, option?: RegionOption): CreateMappedRegionReturnValue<K, V>;
+function createMappedRegion<K, V>(initialValue: V, option?: RegionOption): CreateMappedRegionPureReturnValue<K, V>;
+function createMappedRegion<K, V>(initialValue: V | void | undefined, option?: RegionOption): CreateMappedRegionReturnValue<K, V> | CreateMappedRegionPureReturnValue<K, V> {
     type Result = CreateMappedRegionPureReturnValue<K, V>;
 
     const strategy: Strategy = option?.strategy ?? 'acceptSequenced';
@@ -120,7 +123,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     interface PrivateStoreStateRef {
         pendingMutex: Map<string, number>;
         value: Map<string, V>;
-        promiseQueue: Map<string, Array<Promise<V>>>;
+        promiseQueue: Map<string, Promise<V>[]>;
         error: Map<string, Error>;
         listeners: Map<string, Set<Listener>>;
     }
@@ -128,7 +131,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     const ref: PrivateStoreStateRef = {
         pendingMutex: new Map<string, number>(),
         value: new Map<string, V>(),
-        promiseQueue: new Map<string, Array<Promise<V>>>(),
+        promiseQueue: new Map<string, Promise<V>[]>(),
         error: new Map<string, Error>(),
         listeners: new Map<string, Set<Listener>>(),
     };
@@ -232,7 +235,8 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
             const listeners = ref.listeners.get(key);
             // since it is ensured
             listeners?.add(listener);
-        } else {
+        }
+        else {
             // istanbul ignore next
             console.warn(`listener should be function, but received ${listener}`);
         }
@@ -313,7 +317,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
     const loadBy: Result['loadBy'] = <TParams = void, TResult = unknown>(
         key: K | ((params: TParams) => K),
         asyncFunction: (params: TParams) => Promise<TResult>,
-        reducer?: (state: V, result: TResult, params: TParams) => V
+        reducer?: (state: V, result: TResult, params: TParams) => V,
     ) => {
         const loadByReturnFunction = async (params?: TParams): Promise<void> => {
             // @ts-expect-error
@@ -340,7 +344,8 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
                 else {
                     private_store_loadEnd(keyString, {skip: false, promise, value: result});
                 }
-            } catch (error: unknown) {
+            }
+            catch (error: unknown) {
                 if (skipByStrategy(keyString, promise)) {
                     private_store_loadEnd(keyString, {skip: true, promise});
                 }
@@ -364,13 +369,13 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         return set(key, promise);
     };
 
-    const getValue: Result['getValue'] = key => {
+    const getValue: Result['getValue'] = (key) => {
         const keyString = private_getKeyString(key);
         const maybeSnapshot = ref.value.get(keyString);
         return maybeSnapshot === undefined ? private_getValueOrInitialValue(keyString) : maybeSnapshot;
     };
 
-    const getLoading: Result['getLoading'] = key => {
+    const getLoading: Result['getLoading'] = (key) => {
         const keyString = private_getKeyString(key);
         const pendingMutex = ref.pendingMutex.get(keyString);
 
@@ -381,12 +386,12 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
         return pendingMutex > 0;
     };
 
-    const getError: Result['getError'] = key => {
+    const getError: Result['getError'] = (key) => {
         const keyString = private_getKeyString(key);
         return ref.error.get(keyString);
     };
 
-    const getPromise: Result['getPromise'] = key => {
+    const getPromise: Result['getPromise'] = (key) => {
         const keyString = private_getKeyString(key);
         const promiseQueue = ref.promiseQueue.get(keyString);
         if (!promiseQueue) {
@@ -404,7 +409,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
                 }),
                 // shallow-equal
                 // eslint-disable-next-line react-hooks/exhaustive-deps
-                [private_getKeyString(key)]
+                [private_getKeyString(key)],
             );
             return useSyncExternalStore(subscription.subscribe, subscription.getCurrentValue);
         };
@@ -432,7 +437,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
             }),
             // shallow-equal
             // eslint-disable-next-line react-hooks/exhaustive-deps
-            [selector, keyString]
+            [selector, keyString],
         );
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -440,7 +445,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
 
         // unable to fire storage event yet, see https://github.com/testing-library/dom-testing-library/issues/438
         // istanbul ignore next
-        useStorageEvent(e => {
+        useStorageEvent((e) => {
             clearTimeout(timerRef.current);
             if (!withLocalStorageKey || !syncLocalStorageFromEvent) {
                 return;
@@ -464,7 +469,7 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
                     const localStorageValue = parseLocalStorageState<V>(jsonString, initialValue as V);
                     private_store_set(keyString, localStorageValue, {fromLocalStorage: true});
                 },
-                300
+                300,
             );
         });
         return subscription;
@@ -482,12 +487,13 @@ function createMappedRegion <K, V>(initialValue: V | void | undefined, option?: 
             () => getPromise(key),
             // shallow-equal
             // eslint-disable-next-line react-hooks/exhaustive-deps
-            [getPromise, private_getKeyString(key)]
+            [getPromise, private_getKeyString(key)],
         );
         if (subscription.getCurrentValue() === undefined) {
             if (currentPromise) {
                 throw currentPromise;
-            } else {
+            }
+            else {
                 throw new Error('Doesn\'t found any work in progress load process');
             }
         }

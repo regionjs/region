@@ -5,7 +5,8 @@ export const setLocalStorageState = (key: LocalStorageKey, jsonString: string | 
     // JSON.stringify(null) === 'null'
     if (typeof jsonString === 'string') {
         localStorage.setItem(key, jsonString);
-    } else {
+    }
+    else {
         localStorage.removeItem(key);
     }
 };
@@ -23,7 +24,8 @@ export const parseLocalStorageState = <V>(jsonString: string | null, fallbackVal
             return fallbackValue;
         }
         return JSON.parse(jsonString);
-    } catch (e) {
+    }
+    catch (_) {
         return fallbackValue;
     }
 };
