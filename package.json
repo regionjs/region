@@ -11,7 +11,7 @@
   "license": "MIT",
   "author": "Cong Zhang <dancerphil1994@gmail.com>",
   "type": "module",
-  "main": "lib/index.js",
+  "main": "es/index.js",
   "module": "es/index.js",
   "types": "es/index.d.ts",
   "sideEffects": false,
@@ -19,15 +19,14 @@
     "example": "example"
   },
   "files": [
-    "lib",
     "es"
   ],
   "scripts": {
-    "build": "rm -rf lib/ && tsc",
-    "build-es": "rm -rf es/ && tsc --project tsconfig.es.json",
+    "build": "rm -rf es/ && tsc",
     "lint": "eslint src",
+    "lint-type": "tsc --noEmit",
     "test": "vitest run --coverage",
-    "prepublishOnly": "yarn build && yarn build-es"
+    "prepublishOnly": "yarn build"
   },
   "peerDependencies": {
     "react": ">=18"
@@ -43,7 +42,6 @@
     "@types/react": "^18.2.42",
     "@types/react-test-renderer": "^18.0.7",
     "@vitest/coverage-v8": "3.1.4",
-    "core-js": "^3.33.3",
     "eslint": "^9.27.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
