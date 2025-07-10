@@ -265,7 +265,7 @@ function createMappedRegion<K, V>(initialValue: V | void | undefined, option?: R
         if (key === undefined) {
             return key as string;
         }
-        return jsonStableStringify(key);
+        return jsonStableStringify(key) as string;
     };
     /* -------- */
 
@@ -440,7 +440,7 @@ function createMappedRegion<K, V>(initialValue: V | void | undefined, option?: R
             [selector, keyString],
         );
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // @ts-ignore
         const timerRef = useRef<any>();
 
         // unable to fire storage event yet, see https://github.com/testing-library/dom-testing-library/issues/438

@@ -8,6 +8,6 @@ export default defineConfig({
         setupFiles: ['./scripts/test.setup.ts'],
         coverage: {
             include: ['src/**/*.{ts,tsx}'],
-        }
+        },
     },
 });
