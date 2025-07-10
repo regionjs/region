@@ -5,9 +5,7 @@
   "homepage": "https://regionjs.github.io/region-core/",
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
-    "@types/faker": "^5.5.8",
     "@types/history": "^4.7.9",
-    "@types/jest": "^27.0.2",
     "@types/lodash": "^4.14.175",
     "@types/node": "^16.10.3",
     "@types/react": "^17.0.27",

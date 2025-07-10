@@ -8,7 +8,6 @@ describe('reject race condition', () => {
         const region = createRegion();
         const throwError = async () => {
             await delayLoop();
-            // eslint-disable-next-line no-throw-literal
             throw 'error';
         };
 
@@ -25,7 +24,6 @@ describe('reject race condition', () => {
         const region = createRegion();
         const throwError = async () => {
             await delayLoop();
-            // eslint-disable-next-line no-throw-literal
             throw 'error';
         };
 
@@ -50,7 +48,6 @@ describe('reject race condition', () => {
         const region = createRegion(undefined, {strategy: 'acceptLatest'});
         const throwError = async () => {
             await delayLoop();
-            // eslint-disable-next-line no-throw-literal
             throw 'error';
         };
 

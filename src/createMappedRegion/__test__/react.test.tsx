@@ -1,50 +1,30 @@
 import {describe, test, expect} from 'vitest';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as React from 'react';
-import * as reactTestRenderer from 'react-test-renderer';
+import {render, screen} from '@testing-library/react';
 import {region} from './region';
 
 const {set, useLoading, useValue} = region;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const connect = (key: any) => (Component: any) => {
-    const Connect = () => {
-        const loading = useLoading(key);
-        const value = useValue(key);
-        const props = {[key]: value};
-        return <Component loading={loading} {...props} />;
-    };
-    return Connect;
+const User = () => {
+    const loading = useLoading('user');
+    const user = useValue('user');
+    return (
+        <>
+            <div role="loading">{String(loading)}</div>
+            <div role="user">{String(user)}</div>
+        </>
+    );
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const connectWith = (key: any, Component: any) => connect(key)(Component);
-
 describe('react', () => {
-    test('useProps', () => {
-        const User = () => {
-            const loading = useLoading('user');
-            const user = useValue('user');
-            return loading ? <div>{`loading ${user}`}</div> : <div>{`!loading ${user}`}</div>;
-        };
-        expect(reactTestRenderer.create(<User />).toJSON()).toMatchSnapshot();
+    test('useProps', async () => {
+        render(<User />);
+        expect(screen.getByRole('loading').textContent).toBe('true');
+        expect(screen.getByRole('user').textContent).toBe('undefined');
         set('user', 'user');
-        expect(reactTestRenderer.create(<User />).toJSON()).toMatchSnapshot();
-    });
-
-    test('connect and connectWith', () => {
-        interface Props {
-            loading: boolean;
-            user: string;
-        }
-        const User = ({loading, user}: Props) => (loading ? <div>{`loading ${user}`}</div> : <div>{`!loading ${user}`}</div>);
-        const ConnectUser = connect('user')(User);
-        expect(reactTestRenderer.create(<ConnectUser />).toJSON()).toMatchSnapshot();
-        set('user', 'user2');
-        expect(reactTestRenderer.create(<ConnectUser />).toJSON()).toMatchSnapshot();
-        const ConnectWithUser = connectWith('user', User);
-        expect(reactTestRenderer.create(<ConnectWithUser />).toJSON()).toMatchSnapshot();
-        set('user', 'user3');
-        expect(reactTestRenderer.create(<ConnectWithUser />).toJSON()).toMatchSnapshot();
+        await new Promise(resolve => setTimeout(resolve, 0)); // wait for state update
+        expect(screen.getByRole('loading').textContent).toBe('false');
+        expect(screen.getByRole('user').textContent).toBe('user');
     });
 });

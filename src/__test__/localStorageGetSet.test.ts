@@ -97,11 +97,12 @@ describe('localStorageGetSet', () => {
         expect(region.getValue()).toEqual(undefined);
     });
 
-    test('hook basic', () => {
+    test('hook basic', async () => {
         const region = createRegion<Record<string, number>>({a: 1}, {withLocalStorageKey: 'key12'});
-        const {result} = renderHook(() => region.useValue());
+        const {result, waitForNextUpdate} = renderHook(() => region.useValue());
         expect(result.current).toEqual({a: 1});
         region.set({b: 2});
+        await waitForNextUpdate();
         expect(result.current).toEqual({b: 2});
         const region2 = createRegion<Record<string, number>>({a: 1}, {withLocalStorageKey: 'key12'});
         const {result: result3} = renderHook(() => region2.useValue());
