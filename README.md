@@ -5,22 +5,22 @@
 [![codecov](https://img.shields.io/codecov/c/gh/regionjs/region-core)](https://codecov.io/gh/regionjs/region-core)
 [![MIT License](https://img.shields.io/npm/l/region-core.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 
-region-core is a progressive View Model Management Framework. You can use it while using react state, redux, and benefit from it.
+`react-react` along with `region-vanilla` provide a way to manage global context. Supports  React, NextJS, Node, Vanilla. You can use it while using any current solution. (Such as `useState`、`createContext`、`redux`、`recoil`、`mobx`、`jotai`)
 
-English | [中文](https://github.com/regionjs/region-core/blob/master/docs/README-zh_CN.md)
+English | [中文](https://github.com/regionjs/region/blob/master/docs/README-zh_CN.md)
 
 ## Get Started
 
 - install
 
 ```bash
-npm i region-core
+npm i region-react
 ```
 
 - Build your Component above region
 
 ```typescript jsx
-import {createRegion} from 'region-core';
+import {createRegion} from 'region-react';
 
 const region = createRegion<string>('initialValue');
 
@@ -35,7 +35,7 @@ const Component = () => {
 - Fetching data with region
 
 ```typescript jsx
-import {createRegion} from 'region-core';
+import {createRegion} from 'region-react';
 
 const region = createRegion<User>();
 
@@ -56,26 +56,13 @@ const Component = () => {
 
 ## Docs
 
-[Document And Best Practices](https://github.com/regionjs/region-core/blob/master/docs/Document.md)
+[Document And Best Practices](https://github.com/regionjs/region/blob/master/docs/Document.md)
 
-[Migrate Guide](https://github.com/regionjs/region-core/blob/master/docs/Migrate.md)
+[Migrate Guide](https://github.com/regionjs/region/blob/master/docs/Migrate.md)
 
-[ChangeLog](https://github.com/regionjs/region-core/blob/master/docs/CHANGELOG.md)
+[ChangeLog](https://github.com/regionjs/region/blob/master/docs/CHANGELOG.md)
 
 [Request for Comments](https://github.com/regionjs/rfcs/issues)
-
-## Example
-
-[Online Example](https://regionjs.github.io/region-core/)
-
-```bash
-git clone https://github.com/regionjs/region-core.git
-cd example
-npm i
-npm start
-```
-
-[SSR: NextJs with Region](https://codesandbox.io/s/region-ssr-6xprd)
 
 ## Contribute
 

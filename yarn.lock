@@ -2441,7 +2441,7 @@ json-stable-stringify-without-jsonify@^1.0.1:
   resolved "https://registry.yarnpkg.com/json-stable-stringify-without-jsonify/-/json-stable-stringify-without-jsonify-1.0.1.tgz#9db7b59496ad3f3cfef30a75142d2d930ad72651"
   integrity sha512-Bdboy+l7tA3OGW6FjyFHWkP5LuByj1Tk33Ljyq0axyzdk9//JSi2u3fP1QSmd1KNwq6VOKYGlAu87CisVir6Pw==
 
-json-stable-stringify@^1.3.0:
+json-stable-stringify@^1.0.1, json-stable-stringify@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/json-stable-stringify/-/json-stable-stringify-1.3.0.tgz#8903cfac42ea1a0f97f35d63a4ce0518f0cc6a70"
   integrity sha512-qtYiSSFlwot9XHtF9bD9c7rwKjr+RecWT//ZnPvSmEjpV5mmPOCN4j8UjY5hbjNkOwZ/jQv3J6R1/pL7RwgMsg==
@@ -2924,6 +2924,13 @@ regexp.prototype.flags@^1.5.3, regexp.prototype.flags@^1.5.4:
     get-proto "^1.0.1"
     gopd "^1.2.0"
     set-function-name "^2.0.2"
+
+"region-core@workspace:^":
+  version "12.0.0-alpha.1"
+  resolved "https://registry.yarnpkg.com/region-core/-/region-core-12.0.0-alpha.1.tgz#82e6eeb28db2802dc705ef8892df98d88d082434"
+  integrity sha512-L5/ufrhSo//uatMNLEVLE8GM8qZ/PQmThsBolURhhV3am3uEZCHEBOF96ouWfss770Mh8RydaM282sBr9DWEBw==
+  dependencies:
+    json-stable-stringify "^1.0.1"
 
 resolve-from@^4.0.0:
   version "4.0.0"

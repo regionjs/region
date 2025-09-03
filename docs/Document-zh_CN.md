@@ -1,10 +1,10 @@
 # Document
 
-[English](https://github.com/regionjs/region-core/blob/master/docs/Document.md) | 中文
+[English](https://github.com/regionjs/region/blob/master/docs/Document.md) | 中文
 
 ### TypeScript 支持
 
-我们推荐使用 TypeScript，`region-core` 有非常智能的类型推断。
+建议你使用 TypeScript 以享受类型推断。
 
 ### 了解 createRegion 和 createMappedRegion
 
@@ -21,7 +21,7 @@
 - 通过以下代码创建一个 `region`：
 
     ```typescript
-    import { createRegion } from 'region-core';
+    import { createRegion } from 'region-react';
     
     const region = createRegion<Value>();
     ```
@@ -96,7 +96,7 @@
     ```typescript jsx
     const main = () => {
         loadUser();
-        ReactDOM.render(/**/);
+        root.render(/**/);
     }
     ```
 
@@ -168,7 +168,7 @@
 - `mappedRegion` 可以让你以 `key-value` 的形式管理数据。`key` 可以是 `string` 类型，也可以是多维度的，比如 `{x: 0, y: 0}`：
 
     ```typescript jsx
-    import {createMappedRegion} from 'region-core';
+    import {createMappedRegion} from 'region-react';
     
     const mappedRegion = createMappedRegion<Key, Value>(initialValue);
     

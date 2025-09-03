@@ -5,22 +5,22 @@
 [![codecov](https://codecov.io/gh/regionjs/region-core/branch/develop/graph/badge.svg)](https://codecov.io/gh/regionjs/region-core)
 [![MIT License](https://img.shields.io/npm/l/region-core.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 
-region-core 是一个 React 渐进式状态管理框架，你可以在使用 react state，redux 的同时使用它，并获得开发的便利。
+`react-react` 和 `region-vanilla` 以全局方式管理上下文。支持 React、NextJS、Node、Vanilla 等开发方式。它与现有的所有方案都不冲突（包括 `useState`、`createContext`、`redux`、`recoil`、`mobx`、`jotai`）。
 
-[English](https://github.com/regionjs/region-core/blob/master/README.md) | 中文
+[English](https://github.com/regionjs/region/blob/master/README.md) | 中文
 
 ## Get Started
 
 - 安装
 
 ```bash
-npm i region-core
+npm i region-react
 ```
 
 - 在 region 的基础上构造一个组件
 
 ```typescript jsx
-import {createRegion} from 'region-core';
+import {createRegion} from 'region-react';
 
 const region = createRegion<string>('initialValue');
 
@@ -35,7 +35,7 @@ const Component = () => {
 - 使用 region 请求数据
 
 ```typescript jsx
-import {createRegion} from 'region-core';
+import {createRegion} from 'region-react';
 
 const region = createRegion<User>();
 
@@ -56,23 +56,10 @@ const Component = () => {
 
 ## 文档
 
-[中文文档和最佳实践](https://github.com/regionjs/region-core/blob/master/docs/Document-zh_CN.md)
+[中文文档和最佳实践](https://github.com/regionjs/region/blob/master/docs/Document-zh_CN.md)
 
-[迁移指南](https://github.com/regionjs/region-core/blob/master/docs/Migrate-zh_CN.md)
+[迁移指南](https://github.com/regionjs/region/blob/master/docs/Migrate-zh_CN.md)
 
-[更新日志](https://github.com/regionjs/region-core/blob/master/docs/CHANGELOG.md)
+[更新日志](https://github.com/regionjs/region/blob/master/docs/CHANGELOG.md)
 
 [征求意见(rfcs)](https://github.com/regionjs/rfcs/issues)
-
-## 示例
-
-[在线示例](https://regionjs.github.io/region-core/)
-
-```bash
-git clone https://github.com/regionjs/region-core.git
-cd example
-npm i
-npm start
-```
-
-[服务端渲染: NextJs with Region](https://codesandbox.io/s/region-ssr-6xprd)

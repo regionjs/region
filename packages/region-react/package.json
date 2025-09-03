@@ -1,13 +1,14 @@
 {
-  "name": "region-core",
-  "version": "11.13.0-alpha.2",
-  "description": "region-core",
+  "name": "region-react",
+  "version": "11.0.0-alpha.0",
+  "description": "region-react",
   "keywords": [
     "react",
     "region",
-    "region-core"
+    "region-core",
+    "region-react"
   ],
-  "repository": "github:regionjs/region-core",
+  "repository": "github:regionjs/region",
   "license": "MIT",
   "author": "Cong Zhang <dancerphil1994@gmail.com>",
   "type": "module",

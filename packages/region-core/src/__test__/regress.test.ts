@@ -1,5 +1,5 @@
 import {describe, test, expect} from 'vitest';
-import {delayLoop} from 'region-core/es/utils/delayLoop.js';
+import {delayLoop} from '../utils/delayLoop.js';
 import {createMappedRegion, createRegion} from '../index.js';
 
 describe('reject race condition', () => {

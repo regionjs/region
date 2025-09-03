@@ -1,14 +1,25 @@
 # 迁移文档
 
-[English](https://github.com/regionjs/region-core/blob/master/docs/Migrate.md) | 中文
+[English](https://github.com/regionjs/region/blob/master/docs/Migrate.md) | 中文
 
 首先，在你迁移之前确保处理所有的警告，然后阅读以下文档。
 
 如果你遇到的问题没有列出，请创建一个 issue。
 
+## 11.x 升级至 12.x
+
+`region-core` 分拆为 `region-react` 和 `region-vanilla`，前者支持了 React 和 NextJS（新），后者不依赖 react 和浏览器环境，你可以将它用于 Node 开发。
+
+移除了 `useData`，这是一个没有被完全跑通的用法，并不再支持。
+
 ## 10.x 升级至 11.x
 
 移除了废弃的函数。移除 `getFetchTime` & `useFetchTime`。你可以在 reducer 里得到它。
+
+<details>
+  <summary>
+    低版本
+  </summary>
 
 ## 9.x 升级至 10.x
 
@@ -38,15 +49,10 @@
 
 `connect` 用 hooks 重写了，`selector` 参数不再支持。
 
-如果你被影响了，使用 `unstable_connect` 或者参考[示例](https://github.com/regionjs/region-core/blob/master/example/src/Selector/index.jsx)
+如果你被影响了，使用 `unstable_connect`。
 
 `getLoading`, `getResults`, `getFetchTimes`, `getError` 现在是私有的，你可以用 `getProps` 代替。
 
-<details>
-  <summary>
-    低版本
-  </summary>
-  
 ## 0.6 升级至 0.7
 
 由于支持新的 `useProps` hook，你需要升级 `react@16.8` 以及 `react-redux@6` （如果你用了 react-redux 的话）。
@@ -62,8 +68,6 @@
 包已经重命名为 `region-core` 和 `region-shortcut`，当然 `redux-loadings` 依旧会持续一段时间。
 
 expireTime 现在默认为 0，你可以移除所有的 forceUpdate 了。
-
-或者如果你需要 expireTime ，你可以用 [Region](https://github.com/regionjs/region-core/blob/master/docs/Document-zh_CN.md#Region) 来设置。
 
 如果你在使用自己的 store，创建一个文件名为 `Provider.js`，然后写：
 

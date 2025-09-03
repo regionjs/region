@@ -1,6 +1,6 @@
 # Migrate Guide
 
-English | [中文](https://github.com/regionjs/region-core/blob/master/docs/Migrate-zh_CN.md)
+English | [中文](https://github.com/regionjs/region/blob/master/docs/Migrate-zh_CN.md)
 
 First of all, you should ensure no deprecated warning before migrate. Then read the tips below.
 
@@ -38,7 +38,7 @@ Rewrite in ts. Enjoy it.
 
 `connect` is rewrite with hooks instead of hoc, and `selector` is not supported any more.
 
-If you are affected, use `unstable_connect` or see [example](https://github.com/regionjs/region-core/blob/master/example/src/Selector/index.jsx)
+If you are affected, use `unstable_connect`.
 
 `getLoading`, `getResults`, `getFetchTimes`, `getError` are private now, use `useProps` instead.
 
@@ -62,8 +62,6 @@ They are `private_setState`, `private_reducer`, `private_selectorFactory` (from 
 package is renamed to `region-core` & `region-shortcut`, `redux-loadings` will be maintained for a while.
 
 expireTime is set to 0, you can remove your forceUpdate.
-
-You can get expireTime back, using [Region](https://github.com/regionjs/region-core/blob/master/docs/Document.md#Region).
 
 If you are using your own store, create a file named `Provider.js`, then write:
 

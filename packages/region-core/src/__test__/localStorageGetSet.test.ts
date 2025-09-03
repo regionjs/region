@@ -1,5 +1,4 @@
 import {describe, test, expect} from 'vitest';
-import {renderHook} from '@testing-library/react-hooks';
 import {delayLoop} from '../utils/delayLoop.js';
 import {createRegion} from '../index.js';
 

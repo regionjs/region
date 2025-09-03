@@ -1,10 +1,10 @@
 # Document
 
-English | [中文](https://github.com/regionjs/region-core/blob/master/docs/Document-zh_CN.md)
+English | [中文](https://github.com/regionjs/region/blob/master/docs/Document-zh_CN.md)
 
 ### TypeScript 支持
 
-We highly recommend to use `region-core` with TypeScript.
+It is highly recommend to use TypeScript to get type inference.
 
 ### Know createRegion and createMappedRegion
 
@@ -21,7 +21,7 @@ In your application, you will create many `region` to manage data, they are sepa
 - Create a `region` with the following code:
 
     ```typescript
-    import { createRegion } from 'region-core';
+    import { createRegion } from 'region-react';
     
     const region = createRegion<Value>();
     ```
@@ -96,7 +96,7 @@ Sometimes we need to specify the initial `loading` value of `region`. `region` w
     ```typescript jsx
     const main = () => {
         loadUser();
-        ReactDOM.render(/**/);
+        root.render(/**/);
     }
     ```
 
@@ -168,7 +168,7 @@ Where `loading` and `error` are related to asynchronous tasks, `loading` indicat
 - `mappedRegion` allows you to manage data in `key-value` forms. `key` can be of type `string` or multi-dimensional, such as `{x: 0, y: 0}`:
 
     ```typescript jsx
-    import {createMappedRegion} from 'region-core';
+    import {createMappedRegion} from 'region-react';
     
     const mappedRegion = createMappedRegion<Key, Value>(initialValue);
     
