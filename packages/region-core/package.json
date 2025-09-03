@@ -1,6 +1,6 @@
 {
   "name": "region-core",
-  "version": "11.12.0",
+  "version": "11.13.0-alpha.0",
   "description": "region-core",
   "keywords": [
     "react",
@@ -15,9 +15,6 @@
   "module": "es/index.js",
   "types": "es/index.d.ts",
   "sideEffects": false,
-  "directories": {
-    "example": "example"
-  },
   "files": [
     "es"
   ],
@@ -33,28 +30,5 @@
   },
   "dependencies": {
     "json-stable-stringify": "^1.3.0"
-  },
-  "devDependencies": {
-    "@eslint/compat": "^1.3.1",
-    "@eslint/js": "^9.30.1",
-    "@hero-u/eslint-config": "^0.1.1",
-    "@stylistic/eslint-plugin": "^5.1.0",
-    "@testing-library/dom": "^10.4.0",
-    "@testing-library/react": "^16.3.0",
-    "@testing-library/react-hooks": "^8.0.1",
-    "@types/react": "^19.1.8",
-    "@types/react-test-renderer": "^19.1.0",
-    "@vitest/coverage-v8": "^3.2.4",
-    "eslint": "^9.30.1",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "husky": "^9.1.7",
-    "jsdom": "^26.1.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "react-test-renderer": "^19.1.0",
-    "typescript": "^5.8.3",
-    "typescript-eslint": "^8.36.0",
-    "vitest": "^3.2.4"
   }
 }
