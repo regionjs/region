@@ -372,29 +372,3 @@ describe('useError', () => {
         expect(result.current?.message).toBe('just string');
     });
 });
-
-describe('useData', () => {
-    test('useData', async () => {
-        const region = createRegion();
-        const {result, rerender} = renderHook(() => region.useData());
-        expect(result.error?.message).toBe('Doesn\'t found any work in progress load process');
-        await region.load(Promise.resolve('John Adams'));
-        await rerender();
-        expect(result.current).toBe('John Adams');
-    });
-
-    test('useData should throw promise when loading', async () => {
-        const region = createRegion();
-        region.loadBy(async () => {
-            await delayLoop();
-            return 'Quentin Tarantino';
-        })();
-        expect(region.getPromise()).not.toBe(undefined);
-        const {result, rerender} = renderHook(() => region.useData());
-        // TODO add test for throw promise
-        expect(result.current).toBe(undefined);
-        await region.getPromise();
-        await rerender();
-        expect(result.current).toBe('Quentin Tarantino');
-    });
-});

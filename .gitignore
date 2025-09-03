@@ -3,6 +3,7 @@
 /build
 /lib
 /es
+/packages/*/node_modules
 /packages/*/es
 
 # misc

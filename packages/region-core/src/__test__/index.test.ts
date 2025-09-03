@@ -21,7 +21,7 @@ describe('export api', () => {
         const {
             set, reset, load, loadBy,
             getValue, getLoading, getError, getPromise,
-            useValue, useLoading, useError, useData,
+            useValue, useLoading, useError,
             ...rest
         } = createRegion();
         expect(typeof set).toBe('function');
@@ -35,7 +35,6 @@ describe('export api', () => {
         expect(typeof useValue).toBe('function');
         expect(typeof useLoading).toBe('function');
         expect(typeof useError).toBe('function');
-        expect(typeof useData).toBe('function');
         expect(rest).toEqual({});
     });
 
@@ -44,7 +43,7 @@ describe('export api', () => {
         const {
             set, reset, resetAll, load, loadBy,
             getValue, getLoading, getError, getPromise,
-            useValue, useLoading, useError, useData,
+            useValue, useLoading, useError,
             ...rest
         } = createMappedRegion();
         expect(typeof set).toBe('function');
@@ -58,7 +57,6 @@ describe('export api', () => {
         expect(typeof useValue).toBe('function');
         expect(typeof useLoading).toBe('function');
         expect(typeof useError).toBe('function');
-        expect(typeof useData).toBe('function');
         expect(rest).toEqual({});
     });
 });

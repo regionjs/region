@@ -33,10 +33,6 @@ export interface CreateRegionReturnValue<V> {
     };
     useLoading: () => boolean;
     useError: () => Error | undefined;
-    useData: {
-        (): V;
-        <TResult>(selector: (value: V) => TResult): TResult;
-    };
 }
 
 export interface CreateRegionPureReturnValue<V> extends Omit<CreateRegionReturnValue<V>, 'set' | 'loadBy' | 'getValue' | 'useValue'> {
@@ -115,12 +111,6 @@ function createRegion<V>(initialValue: void | V | undefined, option?: RegionOpti
         return region.useError('value');
     };
 
-    const useData: Result['useData'] = <TResult>(selector?: (value: V) => TResult) => {
-        // type actually strict, it is loose when developed
-        // @ts-expect-error
-        return region.useData('value', selector);
-    };
-
     return {
         set,
         reset,
@@ -133,7 +123,6 @@ function createRegion<V>(initialValue: void | V | undefined, option?: RegionOpti
         useValue,
         useLoading,
         useError,
-        useData,
     };
 }
 

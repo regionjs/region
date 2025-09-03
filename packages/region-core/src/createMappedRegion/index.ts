@@ -92,10 +92,6 @@ export interface CreateMappedRegionReturnValue<K, V> {
     };
     useLoading: (key: K) => boolean;
     useError: (key: K) => Error | undefined;
-    useData: {
-        (key: K): V;
-        <TResult>(key: K, selector: (value: V) => TResult): TResult;
-    };
 }
 
 export interface CreateMappedRegionPureReturnValue<K, V> extends Omit<CreateMappedRegionReturnValue<K, V>, 'set' | 'loadBy' | 'getValue' | 'useValue'> {
@@ -402,20 +398,26 @@ function createMappedRegion<K, V>(initialValue: V | void | undefined, option?: R
 
     const createHooks = <TReturnType>(getFn: (key: K) => TReturnType) => {
         return (key: K): TReturnType => {
+            const keyString = private_getKeyString(key);
             const subscription = useMemo(
                 () => ({
                     getCurrentValue: () => getFn(key),
-                    subscribe: (listener: Listener) => private_store_subscribe(private_getKeyString(key), listener),
+                    subscribe: (listener: Listener) => private_store_subscribe(keyString, listener),
+                    getServerSnapshot: () => initialValue as TReturnType,
                 }),
                 // shallow-equal
                 // eslint-disable-next-line react-hooks/exhaustive-deps
-                [private_getKeyString(key)],
+                [keyString],
             );
-            return useSyncExternalStore(subscription.subscribe, subscription.getCurrentValue);
+            return useSyncExternalStore(
+                subscription.subscribe,
+                subscription.getCurrentValue,
+                subscription.getServerSnapshot,
+            );
         };
     };
 
-    const useValueSelectorSubscription = <TResult>(key: K, selector?: (value: V) => TResult) => {
+    const useValue: Result['useValue'] = <TResult>(key: K, selector?: (value: V) => TResult) => {
         const keyString = private_getKeyString(key);
         const subscription = useMemo(
             () => ({
@@ -434,6 +436,19 @@ function createMappedRegion<K, V>(initialValue: V | void | undefined, option?: R
                     }
                 },
                 subscribe: (listener: Listener) => private_store_subscribe(keyString, listener),
+                getServerSnapshot: () => {
+                    if (!selector) {
+                        return initialValue;
+                    }
+                    try {
+                        return selector(initialValue as V);
+                    }
+                    catch (e) {
+                        console.error(e);
+                        console.error('Above error occurs in selector.');
+                        return initialValue;
+                    }
+                },
             }),
             // shallow-equal
             // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -472,32 +487,11 @@ function createMappedRegion<K, V>(initialValue: V | void | undefined, option?: R
                 300,
             );
         });
-        return subscription;
-    };
-
-    const useValue: Result['useValue'] = <TResult>(key: K, selector?: (value: V) => TResult) => {
-        const subscription = useValueSelectorSubscription(key, selector);
-        return useSyncExternalStore(subscription.subscribe, subscription.getCurrentValue);
-    };
-
-    const useData: Result['useData'] = <TResult>(key: K, selector?: (value: V) => TResult) => {
-        console.warn('useData is deprecated since it is hardly maintained. Use useValue instead.');
-        const subscription = useValueSelectorSubscription(key, selector);
-        const currentPromise = useMemo(
-            () => getPromise(key),
-            // shallow-equal
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-            [getPromise, private_getKeyString(key)],
+        return useSyncExternalStore(
+            subscription.subscribe,
+            subscription.getCurrentValue,
+            subscription.getServerSnapshot,
         );
-        if (subscription.getCurrentValue() === undefined) {
-            if (currentPromise) {
-                throw currentPromise;
-            }
-            else {
-                throw new Error('Doesn\'t found any work in progress load process');
-            }
-        }
-        return useSyncExternalStore(subscription.subscribe, subscription.getCurrentValue);
     };
 
     const useLoading: Result['useLoading'] = createHooks(getLoading);
@@ -519,7 +513,6 @@ function createMappedRegion<K, V>(initialValue: V | void | undefined, option?: R
         useValue,
         useLoading,
         useError,
-        useData,
     };
 }
 

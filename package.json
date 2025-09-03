@@ -5,7 +5,8 @@
     "packages/*"
   ],
   "scripts": {
-    "lint": "eslint packages/region-core/src"
+    "lint": "eslint packages/region-core/src",
+    "test": "vitest run --coverage"
   },
   "devDependencies": {
     "@eslint/compat": "^1.3.1",
