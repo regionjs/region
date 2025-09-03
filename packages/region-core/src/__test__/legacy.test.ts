@@ -1,6 +1,6 @@
 import {describe, test, expect} from 'vitest';
-import {delayLoop} from '../../util/delayLoop.js';
-import {createMappedRegion} from '../../index.js';
+import {delayLoop} from '../utils/delayLoop.js';
+import {createMappedRegion} from '../index.js';
 
 describe('createStore', () => {
     test('set string', () => {
@@ -40,7 +40,6 @@ describe('createStore', () => {
         const error = new Error('error');
         const promise = Promise.reject(error);
         region.set('user', result);
-        // actually region-core will do
         region.loadBy('user', () => promise)();
         await delayLoop();
         expect(region.getValue('user')).toEqual('a user');

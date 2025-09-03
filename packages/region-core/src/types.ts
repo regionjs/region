@@ -10,8 +10,8 @@ export interface RegionOption {
 
 // set & load
 // set
-export type ResultFunc<V> = (snapshot?: V) => V;
-export type ResultFuncPure<V> = (snapshot: V) => V;
+export type ResultFuncUninitialized<V> = (snapshot?: V) => V;
+export type ResultFuncInitialized<V> = (snapshot: V) => V;
 
 // internal
 export type Listener = () => void;

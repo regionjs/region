@@ -1,7 +1,6 @@
 import {describe, test, expect} from 'vitest';
-import {renderHook} from '@testing-library/react-hooks';
+import {delayLoop} from 'region-core/es/utils/delayLoop.js';
 import {createMappedRegion, createRegion} from '../index.js';
-import {delayLoop} from '../util/delayLoop.js';
 
 describe('reject race condition', () => {
     test('basic', async () => {
@@ -128,18 +127,6 @@ describe('reset region first', () => {
 
         const mappedRegion = createMappedRegion();
         expect(() => mappedRegion.resetAll()).not.toThrow();
-    });
-});
-
-describe('falsy useValue will not return undefined', () => {
-    test('basic', () => {
-        const region = createRegion();
-        region.set(false);
-        const {result} = renderHook(() => region.useValue());
-        expect(result.current).toBe(false);
-        // @ts-expect-error
-        const {result: result2} = renderHook(() => region.useValue(aBoolean => aBoolean.value.value));
-        expect(result2.current).toBe(false);
     });
 });
 

@@ -21,16 +21,22 @@ describe('export api', () => {
         const {
             set, reset, load, loadBy, emit, subscribe,
             getValue, getLoading, getError, getPromise,
+            useValue, useLoading, useError,
             ...rest
         } = createRegion();
         expect(typeof set).toBe('function');
         expect(typeof reset).toBe('function');
         expect(typeof load).toBe('function');
         expect(typeof loadBy).toBe('function');
+        expect(typeof emit).toBe('function');
+        expect(typeof subscribe).toBe('function');
         expect(typeof getValue).toBe('function');
         expect(typeof getLoading).toBe('function');
         expect(typeof getError).toBe('function');
         expect(typeof getPromise).toBe('function');
+        expect(typeof useValue).toBe('function');
+        expect(typeof useLoading).toBe('function');
+        expect(typeof useError).toBe('function');
         expect(rest).toEqual({});
     });
 
@@ -39,18 +45,22 @@ describe('export api', () => {
         const {
             set, reset, resetAll, load, loadBy, emit, subscribe,
             getValue, getLoading, getError, getPromise,
-            _internal,
+            useValue, useLoading, useError,
             ...rest
         } = createMappedRegion();
         expect(typeof set).toBe('function');
         expect(typeof reset).toBe('function');
         expect(typeof load).toBe('function');
         expect(typeof loadBy).toBe('function');
+        expect(typeof emit).toBe('function');
+        expect(typeof subscribe).toBe('function');
         expect(typeof getValue).toBe('function');
         expect(typeof getLoading).toBe('function');
         expect(typeof getError).toBe('function');
         expect(typeof getPromise).toBe('function');
-        expect(typeof _internal).toBe('object');
+        expect(typeof useValue).toBe('function');
+        expect(typeof useLoading).toBe('function');
+        expect(typeof useError).toBe('function');
         expect(rest).toEqual({});
     });
 });

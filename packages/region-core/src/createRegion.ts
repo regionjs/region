@@ -1,5 +1,5 @@
-import createMappedRegion, {CreateMappedRegionPureReturnValue} from '../createMappedRegion/index.js';
-import {RegionOption, ResultFunc, ResultFuncPure} from '../types/index.js';
+import {createMappedRegion, MappedRegionInitialized} from './createMappedRegion.js';
+import {Listener, RegionOption, ResultFuncUninitialized, ResultFuncInitialized} from './types.js';
 
 interface LoadBy<V, Extend> {
     (
@@ -18,54 +18,48 @@ interface LoadBy<V, Extend> {
     ): (params: TParams) => Promise<void>;
 }
 
-export interface CreateRegionReturnValue<V> {
-    set: (resultOrFunc: V | ResultFunc<V>) => void;
+export interface RegionUninitialized<V> {
+    set: (resultOrFunc: V | ResultFuncUninitialized<V>) => void;
     reset: () => void;
+    emit: () => void;
+    subscribe: (listener: Listener) => void;
     load: (promise: Promise<V>) => Promise<void>;
     loadBy: LoadBy<V, undefined>;
     getValue: () => V | undefined;
     getLoading: () => boolean;
     getError: () => Error | undefined;
     getPromise: () => Promise<V> | undefined;
-    useValue: {
-        (): V | undefined;
-        <TResult>(selector: (value: V | undefined) => TResult): TResult;
-    };
-    useLoading: () => boolean;
-    useError: () => Error | undefined;
 }
 
-export interface CreateRegionPureReturnValue<V> extends Omit<CreateRegionReturnValue<V>, 'set' | 'loadBy' | 'getValue' | 'useValue'> {
-    set: (resultOrFunc: V | ResultFuncPure<V>) => void;
+export interface RegionInitialized<V> extends Omit<RegionUninitialized<V>, 'set' | 'loadBy' | 'getValue'> {
+    set: (resultOrFunc: V | ResultFuncInitialized<V>) => void;
     loadBy: LoadBy<V, never>;
     getValue: () => V;
-    useValue: {
-        (): V;
-        <TResult>(selector: (value: V) => TResult): TResult;
-    };
 }
 
 // overload is unsafe in some way, ensure the return type is correct
 // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
-function createRegion<V>(initialValue: void | undefined, option?: RegionOption): CreateRegionReturnValue<V>;
-function createRegion<V>(initialValue: V, option?: RegionOption): CreateRegionPureReturnValue<V>;
-function createRegion<V>(initialValue: void | V | undefined, option?: RegionOption): CreateRegionReturnValue<V> | CreateRegionPureReturnValue<V> {
-    type Result = CreateRegionReturnValue<V>;
+export function createRegion<V>(initialValue: void | undefined, option?: RegionOption): RegionUninitialized<V>;
+export function createRegion<V>(initialValue: V, option?: RegionOption): RegionInitialized<V>;
+export function createRegion<V>(initialValue: void | V | undefined, option?: RegionOption): RegionUninitialized<V> | RegionInitialized<V> {
+    type Result = RegionInitialized<V>;
 
-    let region: CreateMappedRegionPureReturnValue<'value', V>;
-    if (initialValue !== undefined) {
-        region = createMappedRegion<'value', V>(initialValue, option);
-    }
-    else {
-        region = createMappedRegion<'value', V>(undefined, option) as CreateMappedRegionPureReturnValue<'value', V>;
-    }
+    const region = createMappedRegion<'value', V>(initialValue as V, option) as MappedRegionInitialized<'value', V>;
 
-    const set: Result['set'] = (resultOrFunc: V | ResultFuncPure<V>) => {
+    const set: Result['set'] = (resultOrFunc: V | ResultFuncInitialized<V>) => {
         return region.set('value', resultOrFunc);
     };
 
     const reset: Result['reset'] = () => {
         return region.reset('value');
+    };
+
+    const emit: Result['emit'] = () => {
+        return region.emit('value');
+    };
+
+    const subscribe: Result['subscribe'] = (listener: Listener) => {
+        return region.subscribe('value', listener);
     };
 
     const load: Result['load'] = (promise) => {
@@ -97,33 +91,16 @@ function createRegion<V>(initialValue: void | V | undefined, option?: RegionOpti
         return region.getPromise('value');
     };
 
-    const useValue: Result['useValue'] = <TResult>(selector?: (value: V) => TResult) => {
-        // type actually strict, it is loose when developed
-        // @ts-expect-error
-        return region.useValue('value', selector);
-    };
-
-    const useLoading: Result['useLoading'] = () => {
-        return region.useLoading('value');
-    };
-
-    const useError: Result['useError'] = () => {
-        return region.useError('value');
-    };
-
     return {
         set,
         reset,
+        emit,
+        subscribe,
         load,
         loadBy,
         getValue,
         getLoading,
         getError,
         getPromise,
-        useValue,
-        useLoading,
-        useError,
     };
 }
-
-export default createRegion;

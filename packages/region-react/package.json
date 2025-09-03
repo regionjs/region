@@ -1,0 +1,32 @@
+{
+  "name": "region-core",
+  "version": "11.13.0-alpha.2",
+  "description": "region-core",
+  "keywords": [
+    "react",
+    "region",
+    "region-core"
+  ],
+  "repository": "github:regionjs/region-core",
+  "license": "MIT",
+  "author": "Cong Zhang <dancerphil1994@gmail.com>",
+  "type": "module",
+  "main": "es/index.js",
+  "module": "es/index.js",
+  "types": "es/index.d.ts",
+  "sideEffects": false,
+  "files": [
+    "es"
+  ],
+  "scripts": {
+    "build": "rm -rf es/ && tsc",
+    "lint-type": "tsc --noEmit",
+    "prepublishOnly": "yarn build"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "dependencies": {
+    "region-core": "workspace:^"
+  }
+}

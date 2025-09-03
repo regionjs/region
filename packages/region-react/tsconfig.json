@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "outDir": "./es",
+        "target": "esnext",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "lib": ["esnext", "dom"],
+        "jsx": "react-jsx",
+        "strict": true,
+        "declaration": true,
+        "skipLibCheck": true,
+        "esModuleInterop": true
+    },
+    "include": [
+        "./src/**/*/"
+    ]
+}

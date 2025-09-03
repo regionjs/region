@@ -1,19 +1,17 @@
 /* eslint-disable max-lines */
-import {useMemo, useRef, useSyncExternalStore} from 'react';
 import jsonStableStringify from 'json-stable-stringify';
-import {deprecate} from '../util/deprecate.js';
-import {uniqLast, isLatest} from '../util/promiseQueue.js';
-import {getLocalStorageState, parseLocalStorageState, setLocalStorageState} from '../util/localStorageUtils.js';
-import {useStorageEvent} from '../util/document.js';
-import {ResultFunc, ResultFuncPure, Strategy, RegionOption, Listener} from '../types/index.js';
+import {deprecate} from './utils/deprecate.js';
+import {uniqLast, isLatest} from './utils/promiseQueue.js';
+import {getLocalStorageState, parseLocalStorageState, setLocalStorageState} from './utils/localStorageUtils.js';
+import {ResultFuncUninitialized, ResultFuncInitialized, Strategy, RegionOption, Listener} from './types.js';
 
 type IncreaseDecrease = (v: number | undefined) => number;
 const increase: IncreaseDecrease = (v = 0) => (v + 1);
 const decrease: IncreaseDecrease = (v = 0) => (v - 1 > 0 ? v - 1 : 0);
 
-const getSetResult = <V>(resultOrFunc: V | ResultFuncPure<V>, snapshot: V) => {
+const getSetResult = <V>(resultOrFunc: V | ResultFuncInitialized<V>, snapshot: V) => {
     if (typeof resultOrFunc === 'function') {
-        return (resultOrFunc as ResultFuncPure<V>)(snapshot);
+        return (resultOrFunc as ResultFuncInitialized<V>)(snapshot);
     }
     return resultOrFunc;
 };
@@ -74,47 +72,48 @@ interface LoadBy<K, V, Extend> {
     ): (params: TParams) => Promise<void>;
 }
 
-export interface CreateMappedRegionReturnValue<K, V> {
-    set: (key: K, resultOrFunc: V | ResultFunc<V>) => void;
+interface PrivateStoreSetOptions {
+    fromLocalStorage?: boolean;
+}
+
+export interface MappedRegionUninitialized<K, V> {
+    set: (key: K, resultOrFunc: V | ResultFuncUninitialized<V>) => void;
     reset: (key: K) => void;
     resetAll: () => void;
-    // emit: (key: K) => void;
+    emit: (key: K) => void;
     // emitAll: () => void;
+    subscribe: (key: K, listener: Listener) => () => void;
+    // subscribeAll 不应存在，会导致超预期的更新
     load: (key: K, promise: Promise<V>) => Promise<void>;
     loadBy: LoadBy<K, V, undefined>;
     getValue: (key: K) => V | undefined;
     getLoading: (key: K) => boolean;
     getError: (key: K) => Error | undefined;
     getPromise: (key: K) => Promise<V> | undefined;
-    useValue: {
-        (key: K): V | undefined;
-        <TResult>(key: K, selector: (value: V | undefined) => TResult): TResult;
+    _internal: {
+        private_store_get: (keyString: string) => V | undefined;
+        private_store_set: (keyString: string, value: V, options?: PrivateStoreSetOptions) => void;
+        private_getKeyString: (key: K) => string;
     };
-    useLoading: (key: K) => boolean;
-    useError: (key: K) => Error | undefined;
 }
 
-export interface CreateMappedRegionPureReturnValue<K, V> extends Omit<CreateMappedRegionReturnValue<K, V>, 'set' | 'loadBy' | 'getValue' | 'useValue'> {
-    set: (key: K, resultOrFunc: V | ResultFuncPure<V>) => void;
+export interface MappedRegionInitialized<K, V> extends Omit<MappedRegionUninitialized<K, V>, 'set' | 'loadBy' | 'getValue'> {
+    set: (key: K, resultOrFunc: V | ResultFuncInitialized<V>) => void;
     loadBy: LoadBy<K, V, never>;
     getValue: (key: K) => V;
-    useValue: {
-        (key: K): V;
-        <TResult>(key: K, selector: (value: V) => TResult): TResult;
-    };
 }
 
 // overload is unsafe in some way, ensure the return type is correct
 // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
-function createMappedRegion<K, V>(initialValue: void | undefined, option?: RegionOption): CreateMappedRegionReturnValue<K, V>;
-function createMappedRegion<K, V>(initialValue: V, option?: RegionOption): CreateMappedRegionPureReturnValue<K, V>;
-function createMappedRegion<K, V>(initialValue: V | void | undefined, option?: RegionOption): CreateMappedRegionReturnValue<K, V> | CreateMappedRegionPureReturnValue<K, V> {
-    type Result = CreateMappedRegionPureReturnValue<K, V>;
+export function createMappedRegion<K, V>(initialValue: void | undefined, option?: RegionOption): MappedRegionUninitialized<K, V>;
+export function createMappedRegion<K, V>(initialValue: V, option?: RegionOption): MappedRegionInitialized<K, V>;
+export function createMappedRegion<K, V>(initialValue: V | void | undefined, option?: RegionOption): MappedRegionUninitialized<K, V> | MappedRegionInitialized<K, V> {
+    type Result = MappedRegionUninitialized<K, V>;
 
     const strategy: Strategy = option?.strategy ?? 'acceptSequenced';
 
     const withLocalStorageKey: string | undefined = option?.withLocalStorageKey;
-    const syncLocalStorageFromEvent = option?.syncLocalStorageFromEvent ?? true;
+    // const syncLocalStorageFromEvent = option?.syncLocalStorageFromEvent ?? true;
 
     interface PrivateStoreStateRef {
         pendingMutex: Map<string, number>;
@@ -176,11 +175,7 @@ function createMappedRegion<K, V>(initialValue: V | void | undefined, option?: R
         private_store_emit(key);
     };
 
-    interface PrivateOptionsSet {
-        fromLocalStorage?: boolean;
-    }
-
-    const private_store_set = (key: string, value: V, options?: PrivateOptionsSet): void => {
+    const private_store_set = (key: string, value: V, options?: PrivateStoreSetOptions): void => {
         const prevPendingMutex = ref.pendingMutex.get(key);
         ref.pendingMutex.set(key, decrease(prevPendingMutex));
         ref.value.set(key, value);
@@ -287,12 +282,17 @@ function createMappedRegion<K, V>(initialValue: V | void | undefined, option?: R
 
     const resetAll: Result['resetAll'] = private_store_resetAll;
 
-    // const emit: Result['emit'] = (key: K) => {
-    //   const keyString = getKeyString(key);
-    //   private_store_emit(keyString);
-    // };
-    //
+    const emit: Result['emit'] = (key: K) => {
+        const keyString = private_getKeyString(key);
+        private_store_emit(keyString);
+    };
+
     // const emitAll: Result['emitAll'] = private_store_emitAll;
+
+    const subscribe: Result['subscribe'] = (key: K, listener: Listener) => {
+        const keyString = private_getKeyString(key);
+        return private_store_subscribe(keyString, listener);
+    };
 
     const skipByStrategy = (keyString: string, promise: Promise<V>): boolean => {
         // istanbul ignore next
@@ -396,124 +396,23 @@ function createMappedRegion<K, V>(initialValue: V | void | undefined, option?: R
         return promiseQueue[promiseQueue.length - 1];
     };
 
-    const createHooks = <TReturnType>(getFn: (key: K) => TReturnType) => {
-        return (key: K): TReturnType => {
-            const keyString = private_getKeyString(key);
-            const subscription = useMemo(
-                () => ({
-                    getCurrentValue: () => getFn(key),
-                    subscribe: (listener: Listener) => private_store_subscribe(keyString, listener),
-                    getServerSnapshot: () => initialValue as TReturnType,
-                }),
-                // shallow-equal
-                // eslint-disable-next-line react-hooks/exhaustive-deps
-                [keyString],
-            );
-            return useSyncExternalStore(
-                subscription.subscribe,
-                subscription.getCurrentValue,
-                subscription.getServerSnapshot,
-            );
-        };
-    };
-
-    const useValue: Result['useValue'] = <TResult>(key: K, selector?: (value: V) => TResult) => {
-        const keyString = private_getKeyString(key);
-        const subscription = useMemo(
-            () => ({
-                getCurrentValue: () => {
-                    const value = getValue(key);
-                    if (!selector) {
-                        return value;
-                    }
-                    try {
-                        return selector(value);
-                    }
-                    catch (e) {
-                        console.error(e);
-                        console.error('Above error occurs in selector.');
-                        return value;
-                    }
-                },
-                subscribe: (listener: Listener) => private_store_subscribe(keyString, listener),
-                getServerSnapshot: () => {
-                    if (!selector) {
-                        return initialValue;
-                    }
-                    try {
-                        return selector(initialValue as V);
-                    }
-                    catch (e) {
-                        console.error(e);
-                        console.error('Above error occurs in selector.');
-                        return initialValue;
-                    }
-                },
-            }),
-            // shallow-equal
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-            [selector, keyString],
-        );
-
-        // @ts-ignore
-        const timerRef = useRef<any>();
-
-        // unable to fire storage event yet, see https://github.com/testing-library/dom-testing-library/issues/438
-        // istanbul ignore next
-        useStorageEvent((e) => {
-            clearTimeout(timerRef.current);
-            if (!withLocalStorageKey || !syncLocalStorageFromEvent) {
-                return;
-            }
-            if (e.storageArea !== localStorage) {
-                return;
-            }
-            const storageKey = `${withLocalStorageKey}/${keyString}`;
-            if (e.key !== storageKey) {
-                return;
-            }
-            const jsonString = getLocalStorageState(`${withLocalStorageKey}/${key}`);
-            const snapshot = ref.value.get(keyString);
-            const jsonStringSnapshot: string | undefined = JSON.stringify(snapshot);
-            if (jsonStringSnapshot === jsonString) {
-                return;
-            }
-            // setTimeout to avoid potential infinite loop
-            timerRef.current = setTimeout(
-                () => {
-                    const localStorageValue = parseLocalStorageState<V>(jsonString, initialValue as V);
-                    private_store_set(keyString, localStorageValue, {fromLocalStorage: true});
-                },
-                300,
-            );
-        });
-        return useSyncExternalStore(
-            subscription.subscribe,
-            subscription.getCurrentValue,
-            subscription.getServerSnapshot,
-        );
-    };
-
-    const useLoading: Result['useLoading'] = createHooks(getLoading);
-
-    const useError: Result['useError'] = createHooks(getError);
-
     return {
         set,
         reset,
         resetAll,
-        // emit,
+        emit,
         // emitAll,
+        subscribe,
         load,
         loadBy,
         getValue,
         getLoading,
         getError,
         getPromise,
-        useValue,
-        useLoading,
-        useError,
+        _internal: {
+            private_store_get: (keyString: string) => ref.value.get(keyString),
+            private_store_set,
+            private_getKeyString,
+        },
     };
 }
-
-export default createMappedRegion;
