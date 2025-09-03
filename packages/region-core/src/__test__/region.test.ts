@@ -1,8 +1,8 @@
 /* eslint-disable max-lines */
 import {describe, test, expect} from 'vitest';
 import {renderHook} from '@testing-library/react-hooks';
-import {createRegion} from '..';
-import {delayLoop} from '../util/delayLoop';
+import {createRegion} from '../index.js';
+import {delayLoop} from '../util/delayLoop.js';
 
 interface ParamsId {id: string}
 

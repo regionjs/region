@@ -1,5 +1,5 @@
 import {describe, test, expect} from 'vitest';
-import {deprecate} from '../deprecate';
+import {deprecate} from '../deprecate.js';
 
 describe('deprecate', () => {
     test('deprecate', () => {

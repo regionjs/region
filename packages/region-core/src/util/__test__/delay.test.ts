@@ -1,5 +1,5 @@
 import {describe, test, expect} from 'vitest';
-import {delayLoop} from '../delayLoop';
+import {delayLoop} from '../delayLoop.js';
 
 describe('delayLoop', () => {
     test('should delay after a loop', async () => {

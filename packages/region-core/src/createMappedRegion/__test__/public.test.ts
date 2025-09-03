@@ -1,7 +1,7 @@
 import {describe, test, expect} from 'vitest';
-import {region} from './region';
+import {createMappedRegion} from '../../index.js';
 
-const {set, reset, resetAll, loadBy, getValue} = region;
+const {set, reset, resetAll, loadBy, getValue} = createMappedRegion();
 
 describe('set', () => {
     test('string', () => {
@@ -64,6 +64,7 @@ describe('load', () => {
     });
 
     test('format', async () => {
+        // @ts-expect-error
         await loadBy('user', () => Promise.resolve('0'), (_: string, user: string) => `${user}1`)();
         expect(getValue('user')).toBe('01');
     });

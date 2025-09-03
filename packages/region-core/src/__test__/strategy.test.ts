@@ -1,6 +1,6 @@
 import {describe, test, expect} from 'vitest';
-import {createRegion} from '..';
-import {delayLoop} from '../util/delayLoop';
+import {createRegion} from '../index.js';
+import {delayLoop} from '../util/delayLoop.js';
 
 const asyncFunc1 = async () => {
     await delayLoop();

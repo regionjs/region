@@ -1,5 +1,5 @@
-import createMappedRegion, {CreateMappedRegionPureReturnValue} from '../createMappedRegion';
-import {RegionOption, ResultFunc, ResultFuncPure} from '../types';
+import createMappedRegion, {CreateMappedRegionPureReturnValue} from '../createMappedRegion/index.js';
+import {RegionOption, ResultFunc, ResultFuncPure} from '../types/index.js';
 
 interface LoadBy<V, Extend> {
     (

@@ -1,11 +1,11 @@
 /* eslint-disable max-lines */
 import {useMemo, useRef, useSyncExternalStore} from 'react';
 import jsonStableStringify from 'json-stable-stringify';
-import {deprecate} from '../util/deprecate';
-import {uniqLast, isLatest} from '../util/promiseQueue';
-import {getLocalStorageState, parseLocalStorageState, setLocalStorageState} from '../util/localStorageUtils';
-import {useStorageEvent} from '../util/document';
-import {ResultFunc, ResultFuncPure, Strategy, RegionOption, Listener} from '../types';
+import {deprecate} from '../util/deprecate.js';
+import {uniqLast, isLatest} from '../util/promiseQueue.js';
+import {getLocalStorageState, parseLocalStorageState, setLocalStorageState} from '../util/localStorageUtils.js';
+import {useStorageEvent} from '../util/document.js';
+import {ResultFunc, ResultFuncPure, Strategy, RegionOption, Listener} from '../types/index.js';
 
 type IncreaseDecrease = (v: number | undefined) => number;
 const increase: IncreaseDecrease = (v = 0) => (v + 1);

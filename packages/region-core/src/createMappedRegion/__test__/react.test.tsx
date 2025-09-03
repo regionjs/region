@@ -2,9 +2,9 @@ import {describe, test, expect} from 'vitest';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as React from 'react';
 import {render, screen} from '@testing-library/react';
-import {region} from './region';
+import {createMappedRegion} from '../../index.js';
 
-const {set, useLoading, useValue} = region;
+const {set, useLoading, useValue} = createMappedRegion();
 
 const User = () => {
     const loading = useLoading('user');

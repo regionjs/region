@@ -1,6 +1,6 @@
 import {describe, test, expect} from 'vitest';
-import {delayLoop} from '../../util/delayLoop';
-import {createMappedRegion} from '../..';
+import {delayLoop} from '../../util/delayLoop.js';
+import {createMappedRegion} from '../../index.js';
 
 describe('createStore', () => {
     test('set string', () => {

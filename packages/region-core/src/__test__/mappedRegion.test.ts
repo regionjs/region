@@ -1,5 +1,5 @@
 import {describe, test, expect} from 'vitest';
-import {createMappedRegion} from '..';
+import {createMappedRegion} from '../index.js';
 
 describe('createMappedRegion', () => {
     test('createMappedRegion with undefined', () => {
