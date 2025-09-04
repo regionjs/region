@@ -1,1 +1,1 @@
-yarn lint && yarn test
+pnpm lint-all

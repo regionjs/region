@@ -7,8 +7,9 @@
     "lint-type": "pnpm --filter './packages/*' run lint-type",
     "build": "pnpm --filter './packages/*' run build",
     "test": "vitest run --coverage",
+    "lint-all": "pnpm lint && pnpm lint-type && pnpm test",
     "prepare": "husky",
-    "publish-all": "pnpm --filter './packages/*' publish --tag alpha"
+    "publish-all": "pnpm lint-all && pnpm --filter './packages/*' publish"
   },
   "devDependencies": {
     "@eslint/compat": "^1.3.1",

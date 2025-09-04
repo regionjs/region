@@ -1,6 +1,6 @@
 # region-react
 
-`react-react` along with `region-vanilla` provide a way to manage global context. Supports  React, NextJS, Node, Vanilla. You can use it while using any current solution. (Such as `useState`、`createContext`、`redux`、`recoil`、`mobx`、`jotai`)
+`react-react` along with [`region-vanilla`](https://github.com/regionjs/region/blob/master/packages/region-vanilla/README.md) provide a way to manage global context. Supports  React, NextJS, Node, Vanilla. You can use it while using any current solution. (Such as `useState`、`createContext`、`redux`、`recoil`、`mobx`、`jotai`)
 
 English | [中文](https://github.com/regionjs/region/blob/master/docs/README-zh_CN.md)
 

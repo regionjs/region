@@ -87,6 +87,12 @@ importers:
         specifier: workspace:^
         version: link:../region-core
 
+  packages/region-vanilla:
+    dependencies:
+      region-core:
+        specifier: workspace:^
+        version: link:../region-core
+
 packages:
 
   '@ampproject/remapping@2.3.0':
