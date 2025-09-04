@@ -22,7 +22,7 @@
   "scripts": {
     "build": "rm -rf es/ && tsc",
     "lint-type": "tsc --noEmit",
-    "prepublishOnly": "yarn build"
+    "prepublishOnly": "pnpm build"
   },
   "peerDependencies": {
     "react": ">=18"
