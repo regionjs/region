@@ -20,11 +20,13 @@ interface LoadBy<V, Extend> {
 
 export interface RegionUninitialized<V> {
     set: (resultOrFunc: V | ResultFuncUninitialized<V>) => void;
+    setValue: (resultOrFunc: V | ResultFuncUninitialized<V>) => void;
     reset: () => void;
     emit: () => void;
     subscribe: (listener: Listener) => void;
     load: (promise: Promise<V>) => Promise<void>;
     loadBy: LoadBy<V, undefined>;
+    get: () => V | undefined;
     getValue: () => V | undefined;
     getLoading: () => boolean;
     getError: () => Error | undefined;
@@ -33,7 +35,9 @@ export interface RegionUninitialized<V> {
 
 export interface RegionInitialized<V> extends Omit<RegionUninitialized<V>, 'set' | 'loadBy' | 'getValue'> {
     set: (resultOrFunc: V | ResultFuncInitialized<V>) => void;
+    setValue: (resultOrFunc: V | ResultFuncInitialized<V>) => void;
     loadBy: LoadBy<V, never>;
+    get: () => V;
     getValue: () => V;
 }
 
@@ -46,7 +50,7 @@ export function createRegion<V>(initialValue: void | V | undefined, option?: Reg
 
     const region = createMappedRegion<'value', V>(initialValue as V, option) as MappedRegionInitialized<'value', V>;
 
-    const set: Result['set'] = (resultOrFunc: V | ResultFuncInitialized<V>) => {
+    const setValue: Result['setValue'] = (resultOrFunc: V | ResultFuncInitialized<V>) => {
         return region.set('value', resultOrFunc);
     };
 
@@ -92,12 +96,14 @@ export function createRegion<V>(initialValue: void | V | undefined, option?: Reg
     };
 
     return {
-        set,
+        set: setValue,
+        setValue,
         reset,
         emit,
         subscribe,
         load,
         loadBy,
+        get: getValue,
         getValue,
         getLoading,
         getError,

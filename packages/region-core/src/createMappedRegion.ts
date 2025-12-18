@@ -78,6 +78,7 @@ interface PrivateStoreSetOptions {
 
 export interface MappedRegionUninitialized<K, V> {
     set: (key: K, resultOrFunc: V | ResultFuncUninitialized<V>) => void;
+    setValue: (key: K, resultOrFunc: V | ResultFuncUninitialized<V>) => void;
     reset: (key: K) => void;
     resetAll: () => void;
     emit: (key: K) => void;
@@ -86,6 +87,7 @@ export interface MappedRegionUninitialized<K, V> {
     // subscribeAll 不应存在，会导致超预期的更新
     load: (key: K, promise: Promise<V>) => Promise<void>;
     loadBy: LoadBy<K, V, undefined>;
+    get: (key: K) => V | undefined;
     getValue: (key: K) => V | undefined;
     getLoading: (key: K) => boolean;
     getError: (key: K) => Error | undefined;
@@ -99,7 +101,9 @@ export interface MappedRegionUninitialized<K, V> {
 
 export interface MappedRegionInitialized<K, V> extends Omit<MappedRegionUninitialized<K, V>, 'set' | 'loadBy' | 'getValue'> {
     set: (key: K, resultOrFunc: V | ResultFuncInitialized<V>) => void;
+    setValue: (key: K, resultOrFunc: V | ResultFuncInitialized<V>) => void;
     loadBy: LoadBy<K, V, never>;
+    get: (key: K) => V;
     getValue: (key: K) => V;
 }
 
@@ -261,7 +265,7 @@ export function createMappedRegion<K, V>(initialValue: V | void | undefined, opt
     /* -------- */
 
     // ---- APIs ----
-    const set: Result['set'] = (key, resultOrFunc): V => {
+    const setValue: Result['setValue'] = (key, resultOrFunc): V => {
         const keyString = private_getKeyString(key);
         // Maybe we can use getValue here
         const maybeSnapshot = ref.value.get(keyString);
@@ -361,8 +365,8 @@ export function createMappedRegion<K, V>(initialValue: V | void | undefined, opt
         if (promise instanceof Promise || typeof promise === 'function') {
             return loadBy(key, promise as never)();
         }
-        console.warn('set result directly');
-        return set(key, promise);
+        console.warn('set value directly');
+        return setValue(key, promise);
     };
 
     const getValue: Result['getValue'] = (key) => {
@@ -397,7 +401,8 @@ export function createMappedRegion<K, V>(initialValue: V | void | undefined, opt
     };
 
     return {
-        set,
+        set: setValue,
+        setValue,
         reset,
         resetAll,
         emit,
@@ -405,6 +410,7 @@ export function createMappedRegion<K, V>(initialValue: V | void | undefined, opt
         subscribe,
         load,
         loadBy,
+        get: getValue,
         getValue,
         getLoading,
         getError,

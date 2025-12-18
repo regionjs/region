@@ -6,6 +6,10 @@ import type {
 import {Listener, RegionOption, ResultFuncInitialized} from 'region-core/es/types.js';
 
 export interface RegionUninitialized<V> extends CoreRegionUninitialized<V> {
+    use: {
+        (): V | undefined;
+        <TResult>(selector: (value: V | undefined) => TResult): TResult;
+    };
     useValue: {
         (): V | undefined;
         <TResult>(selector: (value: V | undefined) => TResult): TResult;
@@ -15,6 +19,10 @@ export interface RegionUninitialized<V> extends CoreRegionUninitialized<V> {
 }
 
 export interface RegionInitialized<V> extends CoreRegionInitialized<V> {
+    use: {
+        (): V;
+        <TResult>(selector: (value: V) => TResult): TResult;
+    };
     useValue: {
         (): V;
         <TResult>(selector: (value: V) => TResult): TResult;
@@ -32,7 +40,7 @@ export function createRegion<V>(initialValue: void | V | undefined, option?: Reg
 
     const region = createMappedRegion<'value', V>(initialValue as V, option) as MappedRegionInitialized<'value', V>;
 
-    const set: Result['set'] = (resultOrFunc: V | ResultFuncInitialized<V>) => {
+    const setValue: Result['setValue'] = (resultOrFunc: V | ResultFuncInitialized<V>) => {
         return region.set('value', resultOrFunc);
     };
 
@@ -92,16 +100,19 @@ export function createRegion<V>(initialValue: void | V | undefined, option?: Reg
     };
 
     return {
-        set,
+        set: setValue,
+        setValue,
         reset,
         load,
         loadBy,
         emit,
         subscribe,
+        get: getValue,
         getValue,
         getLoading,
         getError,
         getPromise,
+        use: useValue,
         useValue,
         useLoading,
         useError,

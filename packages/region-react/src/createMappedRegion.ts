@@ -8,8 +8,13 @@ import type {
 import {getLocalStorageState, parseLocalStorageState} from 'region-core/es/utils/localStorageUtils.js';
 import {useStorageEvent} from './utils/document.js';
 import {RegionOption, Listener} from 'region-core/es/types.js';
+import {g} from 'vitest/dist/chunks/suite.d.FvehnV49.js';
 
 export interface MappedRegionUninitialized<K, V> extends Omit<CoreMappedRegionUninitialized<K, V>, '_internal'> {
+    use: {
+        (key: K): V | undefined;
+        <TResult>(key: K, selector: (value: V | undefined) => TResult): TResult;
+    };
     useValue: {
         (key: K): V | undefined;
         <TResult>(key: K, selector: (value: V | undefined) => TResult): TResult;
@@ -19,6 +24,10 @@ export interface MappedRegionUninitialized<K, V> extends Omit<CoreMappedRegionUn
 }
 
 export interface MappedRegionInitialized<K, V> extends Omit<CoreMappedRegionInitialized<K, V>, '_internal'> {
+    use: {
+        (key: K): V;
+        <TResult>(key: K, selector: (value: V) => TResult): TResult;
+    };
     useValue: {
         (key: K): V;
         <TResult>(key: K, selector: (value: V) => TResult): TResult;
@@ -47,7 +56,7 @@ export function createMappedRegion<K, V>(initialValue: V | void | undefined, opt
     /* -------- */
 
     // ---- APIs ----
-    const set: Result['set'] = mappedRegion.set as Result['set'];
+    const setValue: Result['setValue'] = mappedRegion.set as Result['setValue'];
 
     const reset: Result['reset'] = mappedRegion.reset;
 
@@ -172,7 +181,8 @@ export function createMappedRegion<K, V>(initialValue: V | void | undefined, opt
     const useError: Result['useError'] = createHooks(getError);
 
     return {
-        set,
+        set: setValue,
+        setValue,
         reset,
         resetAll,
         emit,
@@ -180,10 +190,12 @@ export function createMappedRegion<K, V>(initialValue: V | void | undefined, opt
         subscribe,
         load,
         loadBy,
+        get: getValue,
         getValue,
         getLoading,
         getError,
         getPromise,
+        use: useValue,
         useValue,
         useLoading,
         useError,
